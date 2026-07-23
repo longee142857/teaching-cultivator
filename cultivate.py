@@ -1,0 +1,779 @@
+"""培养闭环：assess → decide → generate → deliver → record
+
+用法:
+    python cultivate.py math      # 推数学一
+    python cultivate.py comm      # 推通信原理
+    python cultivate.py review    # 错题复盘
+"""
+from __future__ import annotations
+import sys, os, json, datetime
+
+from config import LP_PATH, DAILY_RECORD_DIR, DATA_DIR
+from decide.router import call_llm
+from deliver.bridge import get_bridge
+from prompts.prompt_builder import PromptBuilder
+from prompts.ref_picker import RefPicker
+
+# ── 基建模块（复用 knowledge-system/lib/） ──
+from bkt import BKTLogger, KCState
+from intervention import decide_intervention, InterventionDecision
+from heartbeat_summary import extract as get_heartbeat_summary
+
+
+# ── 答案追踪 + 难度偏好 ──
+_last_answer = ""
+_last_ref_source = ""
+_last_item_form = ""  # BIG-TEACH-011d
+_rag_strict_blocked = False  # BIG-TEACH-011c: agent 区分 RAG miss vs 质检失败
+DIFFICULTY_PREF_PATH = os.path.join(DATA_DIR, "difficulty.json")
+LAST_PUSH_PATH = os.path.join(DATA_DIR, "last_push.json")
+
+
+def _load_difficulty_pref() -> dict:
+    try:
+        if os.path.exists(DIFFICULTY_PREF_PATH):
+            with open(DIFFICULTY_PREF_PATH) as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {}
+
+
+def set_difficulty_pref(subject: str, level: str) -> bool:
+    """设置用户难度偏好。level: basic / intermediate / challenge"""
+    if level not in ("basic", "intermediate", "challenge"):
+        return False
+    pref = _load_difficulty_pref()
+    pref[subject] = level
+    try:
+        with open(DIFFICULTY_PREF_PATH, "w") as f:
+            json.dump(pref, f)
+        return True
+    except Exception:
+        return False
+
+
+def get_difficulty_pref(subject: str) -> str:
+    return _load_difficulty_pref().get(subject, "")
+
+
+def get_last_answer() -> str:
+    return _last_answer
+
+
+def _save_last_push(subject: str, decision: InterventionDecision, content: str,
+                    answer: str = "", ref_source: str = "", kp: str = ""):
+    try:
+        record = {
+            "subject": subject,
+            "difficulty": decision.difficulty,
+            "question": content,
+            "answer": answer,
+            "timestamp": datetime.datetime.now().isoformat(),
+        }
+        if ref_source:
+            record["ref_source"] = ref_source
+        if kp:
+            record["kp"] = kp
+        # BIG-TEACH-011d: 记录 ability_goal / item_form / l3_id
+        if hasattr(decision, 'ability_goal') and decision.ability_goal:
+            record["ability_goal"] = decision.ability_goal
+        global _last_item_form
+        if _last_item_form:
+            record["item_form"] = _last_item_form
+        from learner.kp_registry import parse_l3_from_reason
+        l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
+        if l3_id:
+            record["l3_id"] = l3_id
+        with open(LAST_PUSH_PATH, "w", encoding="utf-8") as f:
+            json.dump(record, f, ensure_ascii=False)
+        if kp and subject in ("math", "comm", "review"):
+            from learner.kp_registry import append_recent_pick
+            append_recent_pick(subject if subject != "review" else "math", kp)
+        # 成功推送后才记 ability 轮换（避免 RAG/编排失败污染）
+        if hasattr(decision, "ability_goal") and decision.ability_goal:
+            from learner.ability_cycle import append_recent_ability
+            append_recent_ability(subject, decision.ability_goal)
+    except Exception:
+        pass
+
+
+# ═══════════════════════════════════════════
+# 1. ASSESS — 评估当前状态
+# ═══════════════════════════════════════════
+
+def assess_state(subject: str) -> dict:
+    """返回当前学习状态摘要。"""
+    summary = get_heartbeat_summary()
+    return {
+        "heartbeat": summary,
+        "subject": subject,
+        "bkt_log": BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl")),
+    }
+
+
+# ═══════════════════════════════════════════
+# 2. DECIDE — 干预决策
+# ═══════════════════════════════════════════
+
+WEIGHTS_PATH = os.path.join(DATA_DIR, "weights.json")
+
+
+def _get_days_since_last_push(subject: str) -> float | None:
+    """从 last_push.json 读取该科目距上次推送天数。
+
+    若 subject != "all" 且 last_push 科目不匹配，视为未知返回 None。
+    """
+    path = os.path.join(DATA_DIR, "last_push.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if subject != "all" and data.get("subject") != subject:
+            return None
+        ts = data.get("timestamp", "")
+        if ts:
+            last = datetime.datetime.fromisoformat(ts)
+            delta = datetime.datetime.now() - last
+            return max(0.0, delta.total_seconds() / 86400)
+    except Exception:
+        pass
+    return None
+
+
+def _resolve_log_kp(entry_kp: str) -> str | None:
+    """把 answer-log 里的自由文本/别名归一到考纲 L2 名。"""
+    hint = (entry_kp or "").strip()
+    if not hint:
+        return None
+    try:
+        from learner.kp_registry import resolve_kp
+        for subj in ("math", "comm"):
+            resolved = resolve_kp(subj, hint)
+            if resolved:
+                return resolved
+    except Exception:
+        pass
+    return None
+
+
+def _kp_history_match(entry_kp: str, target_kp: str) -> bool:
+    """判断日志知识点是否对应目标 L2（精确 / 互含 / 别名归一）。"""
+    ek = (entry_kp or "").strip()
+    tk = (target_kp or "").strip()
+    if not ek or not tk:
+        return False
+    if ek == tk:
+        return True
+    if tk in ek or ek in tk:
+        return True
+    return _resolve_log_kp(ek) == tk
+
+
+def _get_consecutive_failures(user_id: str, bkt_log: BKTLogger,
+                              kp: str | None = None) -> int:
+    """从 answer-log 读取该知识点连续答错次数。
+
+    指定 kp 时只计该 L2（含别名）；无匹配记录返回 0，绝不回退全局。
+    """
+    history = bkt_log.get_user_history(user_id) if hasattr(bkt_log, 'get_user_history') else []
+    if not history:
+        return 0
+    if kp:
+        kp_history = [e for e in history if _kp_history_match(e.get("knowledge_point", ""), kp)]
+        if not kp_history:
+            return 0
+    else:
+        kp_history = history
+
+    count = 0
+    for entry in reversed(kp_history):
+        if entry.get("correct") is False:
+            count += 1
+        else:
+            break
+    return count
+
+
+def _remap_dead_escalate(decision: InterventionDecision) -> InterventionDecision:
+    """定时培养没有 Claude escalate 通道：改为基础讲解+小题。"""
+    if decision.type != "escalate":
+        return decision
+    kp = decision.reason.split(":")[0].strip() if ":" in decision.reason else decision.reason
+    return InterventionDecision(
+        "explain",
+        "basic",
+        f"{kp}: 连续受挫，改为基础讲解并配 1 道小题巩固",
+        decision.priority,
+    )
+
+
+def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
+    """从 answer-log 取最近一条答错记录，拼成 review 用的摘要。"""
+    history = bkt_log.get_user_history("wx_123") if hasattr(bkt_log, "get_user_history") else []
+    if not history:
+        return ""
+    for entry in reversed(history):
+        if entry.get("correct") is not False:
+            continue
+        entry_kp = entry.get("knowledge_point", "")
+        if kp and entry_kp and entry_kp != kp:
+            continue
+        parts = [f"知识点：{entry_kp or kp or '未知'}", "结果：上次答错，需巩固"]
+        try:
+            if os.path.isfile(LAST_PUSH_PATH):
+                with open(LAST_PUSH_PATH, encoding="utf-8") as f:
+                    lp = json.load(f)
+                q = (lp.get("question") or "").strip()
+                if q:
+                    parts.insert(1, f"题目摘要：{q[:300]}")
+        except Exception:
+            pass
+        return "；".join(parts)
+    return ""
+
+
+def _dynamic_style_pcts(consecutive_failures: int, subject: str) -> tuple[int, int]:
+    """连续答错越多越偏向真题套路；简单 clamp。"""
+    exam_pct = max(60, min(90, 50 + consecutive_failures * 10))
+    return exam_pct, 100 - exam_pct
+
+
+def _load_weights() -> dict:
+    """加载 data/weights.json，失败则返回空 dict。"""
+    try:
+        if os.path.exists(WEIGHTS_PATH):
+            with open(WEIGHTS_PATH, encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return {}
+
+
+def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> str | None:
+    """按 weight×(1-mastery) 加权随机选题；同 L1 近 3 次不重复同一 L2。"""
+    if subject not in weights:
+        return None
+    kp_w = weights[subject].get("kp_weights") or {}
+    if not kp_w:
+        return None
+    mastery: dict[str, float] = {}
+    try:
+        if hasattr(bkt_log, "get_all_kp_mastery"):
+            mastery = bkt_log.get_all_kp_mastery("wx_123") or {}
+        for kp in kp_w:
+            if kp in mastery:
+                continue
+            if hasattr(bkt_log, "get_kp_mastery"):
+                kc = bkt_log.get_kp_mastery("wx_123", kp)
+                if kc and hasattr(kc, "p_mastery"):
+                    mastery[kp] = kc.p_mastery
+    except Exception:
+        pass
+    from learner.kp_registry import pick_kp_weighted
+    due_kps = set()
+    try:
+        if hasattr(bkt_log, "get_due_kps"):
+            due_kps = bkt_log.get_due_kps("wx_123") or set()
+    except Exception:
+        due_kps = set()
+    return pick_kp_weighted(subject, kp_w, mastery, due_kps=due_kps)
+
+
+def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
+    """基于 weights.json + BKT + 规则决定干预方案。
+
+    选题优先级：
+    1. weight×(1-mastery) 加权随机（同 L1 近 3 次降权重复；到期提权）
+    2. 无 weights → 回退 BKT 最低掌握度
+    """
+    from learner.kp_registry import (
+        pick_l3, syllabus_subject, resolve_kp, list_l3_for_l2,
+    )
+    weights = _load_weights()
+    target_kp = None
+    target_val = 0.0  # mastery for the selected KP
+    kc = None
+    # review 与 math 共用考纲/weights（与 rag_retrieve 一致）
+    weight_subj = syllabus_subject(subject)
+
+    # ── 优先从 weights 选题（含 review→math）──
+    if weight_subj in ("math", "comm") and weight_subj in weights:
+        kp_from_w = _pick_kp_from_weights(weights, weight_subj, bkt_log)
+        if kp_from_w:
+            target_kp = kp_from_w
+            kc = bkt_log.get_kp_mastery("wx_123", kp_from_w) \
+                if hasattr(bkt_log, 'get_kp_mastery') else None
+            if kc and hasattr(kc, 'p_mastery'):
+                target_val = kc.p_mastery
+            else:
+                target_val = 0.2  # 新知识点默认初始掌握度
+
+    # ── 回退：BKT 全局最低掌握度（需 resolve 到正式 L2）──
+    if target_kp is None:
+        mastery = bkt_log.get_all_kp_mastery("wx_123") \
+            if hasattr(bkt_log, 'get_all_kp_mastery') else {}
+        if mastery:
+            raw_kp = min(mastery, key=mastery.get)
+            kp_w = (weights.get(weight_subj) or {}).get("kp_weights")
+            resolved = resolve_kp(weight_subj, raw_kp, kp_w)
+            target_kp = resolved or raw_kp
+            target_val = mastery[raw_kp]
+
+    if target_kp:
+        # 确保 target_kp 是考纲 L2（BKT 脏键 / 别名 → 正式名）
+        kp_w = (weights.get(weight_subj) or {}).get("kp_weights")
+        resolved_l2 = resolve_kp(weight_subj, target_kp, kp_w)
+        if resolved_l2:
+            target_kp = resolved_l2
+
+        days_since_last_push = _get_days_since_last_push(subject)
+        consecutive_failures = _get_consecutive_failures("wx_123", bkt_log, target_kp)
+        opportunity_count = 0
+        if kc is None:
+            kc = bkt_log.get_kp_mastery("wx_123", target_kp) \
+                if hasattr(bkt_log, 'get_kp_mastery') else None
+        if kc and hasattr(kc, 'opportunity_count'):
+            opportunity_count = kc.opportunity_count
+        is_mastered = bool(getattr(kc, "is_mastered", False)) if kc else False
+        is_due = bool(kc.is_due()) if kc and hasattr(kc, "is_due") else False
+        recent_correct = None
+        if hasattr(bkt_log, "get_recent_correct"):
+            try:
+                recent_correct = bkt_log.get_recent_correct("wx_123", target_kp)
+            except Exception:
+                recent_correct = None
+
+        decision = decide_intervention(
+            kp_name=target_kp,
+            mastery=target_val,
+            opportunity_count=opportunity_count,
+            is_mastered=is_mastered,
+            recent_correct=recent_correct,
+            days_since_last_push=days_since_last_push,
+            consecutive_failures=consecutive_failures,
+            is_due=is_due,
+        )
+        decision = _remap_dead_escalate(decision)
+        # ── L3 选取 (BIG-TEACH-011c) ──
+        if decision.type != "defer" and target_kp:
+            l3_id = pick_l3(weight_subj, target_kp)
+            if not l3_id and not list_l3_for_l2(weight_subj, target_kp):
+                # 仍非考纲 L2：再从 weights 抽一个有 L3 的 L2
+                kp_alt = _pick_kp_from_weights(weights, weight_subj, bkt_log) \
+                    if weight_subj in weights else None
+                if kp_alt and list_l3_for_l2(weight_subj, kp_alt):
+                    target_kp = kp_alt
+                    l3_id = pick_l3(weight_subj, target_kp)
+            if l3_id:
+                decision.reason = f"{decision.reason} [l3={l3_id}]"
+            else:
+                decision = InterventionDecision(
+                    "defer", decision.difficulty,
+                    f"{target_kp}: 无 L3 子知识点，跳过", 5,
+                )
+    else:
+        decision = InterventionDecision("push", "intermediate", "无薄弱点，出综合题", 3)
+
+    # ── ability_goal 选取 (BIG-TEACH-011d)；轮换记账延后到成功 _save_last_push ──
+    if decision.type != "defer":
+        from learner.ability_cycle import decide_ability, encode_ability_reason
+        ability_goal = decide_ability(
+            subject, decision.type,
+            is_mastered=is_mastered if target_kp else True,
+            opportunity_count=opportunity_count if target_kp else 0,
+            recent_correct=recent_correct if target_kp else None,
+            consecutive_failures=consecutive_failures if target_kp else 0,
+            is_due=is_due if target_kp else False,
+            mastery=target_val if target_kp else 0.0,
+        )
+        decision.ability_goal = ability_goal
+        decision.reason = f"{decision.reason} {encode_ability_reason(ability_goal)}"
+
+    pref = get_difficulty_pref(subject)
+    if pref:
+        decision.difficulty = pref
+    return decision
+
+
+# ═══════════════════════════════════════════
+# 3. GENERATE — 两阶段 LLM（出题验算 → 发送文案）
+# ═══════════════════════════════════════════
+
+TOPIC_MAP = {
+    "math":   "数学一考研（教育部考试大纲；题型与难度对齐近年真题，教材体系同济高数/线代、浙大概率）",
+    "comm":   "北邮801通信原理（周炯槃教材第4版 Ch2–11，严格考纲范围）",
+    "review": "错题巩固（数学一+通信原理）",
+}
+
+def _answer_looks_contaminated(answer: str) -> bool:
+    from quality_gate import looks_contaminated
+
+    return looks_contaminated(answer)
+
+
+def _author_once(
+    builder: PromptBuilder,
+    *,
+    subject_cn: str,
+    kp: str,
+    diff: str,
+    action: str,
+    decision: InterventionDecision,
+    tpl_type: str,
+    topic_desc: str,
+    mastery: float,
+    opportunity_count: int,
+    consecutive_failures: int,
+    ref_entry,
+    rag_items: list,
+    exam_pct: int,
+    theory_pct: int,
+    last_error: str,
+    item_form: str = "mcq",
+) -> tuple[str, str]:
+    """阶段1：出题+验算。返回 (draft_body, answer)。"""
+    system, user = builder.build(
+        subject_cn=subject_cn,
+        kp=kp,
+        difficulty_cn=diff,
+        action_cn=action,
+        reason=decision.reason,
+        decision_type=tpl_type,
+        topic_desc=topic_desc,
+        mastery=mastery,
+        opportunity_count=opportunity_count,
+        consecutive_failures=consecutive_failures,
+        ref_entry=ref_entry,
+        rag_items=rag_items,
+        exam_style_pct=exam_pct,
+        theory_extension_pct=theory_pct,
+        last_error=last_error,
+        item_form=item_form,
+    )
+    raw = call_llm(system, user, "author", decision.difficulty)
+    from math_format import split_question_answer, sanitize_answer_meta
+    draft, answer = split_question_answer(raw)
+    answer = sanitize_answer_meta(answer)
+    return draft, answer
+
+
+def _polish_once(builder: PromptBuilder, draft: str, answer: str, difficulty: str) -> str:
+    """阶段2：整理发送文案（不含答案）。"""
+    system, user = builder.build_polish(draft_body=draft, answer_body=answer)
+    polished = call_llm(system, user, "polish", difficulty)
+    # 防模型把 <answer> 又带出来
+    from math_format import split_question_answer, normalize_markdown_body
+    body, leaked = split_question_answer(polished)
+    if leaked:
+        print("[cultivate] polish leaked answer — stripped")
+    return normalize_markdown_body(body) or normalize_markdown_body(draft)
+
+
+def generate(subject: str, decision: InterventionDecision, *,
+             mastery: float = 0.0, opportunity_count: int = 0,
+             consecutive_failures: int = 0,
+             source: str = "schedule") -> str:
+    """出题契约 → 编排质检/文案 → 可发送正文（Phase C）。"""
+    topic_desc = TOPIC_MAP.get(subject, subject)
+    difficulty_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
+    diff = difficulty_map.get(decision.difficulty, "中等")
+    intervention_map = {"push": "出题", "explain": "讲解概念", "review": "复诊错题", "defer": "", "escalate": ""}
+    action = intervention_map.get(decision.type, "出题")
+
+    if decision.type == "defer":
+        return ""
+
+    tpl_type = decision.type if decision.type in ("push", "explain", "review") else "explain"
+    kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
+    subject_map = {"math": "数学一", "comm": "通信原理", "review": "数学一（错题复盘）"}
+    subject_cn = subject_map.get(subject, subject)
+
+    # ── RefPicker：选 YAML 锚点 ──
+    global _last_ref_source
+    _last_ref_source = ""
+    ref_entry = None
+    try:
+        picker = RefPicker(subject)
+        ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
+        if ref_entry:
+            src = ref_entry.get("source", {})
+            if isinstance(src, dict):
+                _last_ref_source = f"{src.get('year', '')}年{src.get('subject', '')}"
+            else:
+                _last_ref_source = str(src)
+    except Exception:
+        pass
+
+    # ── L3 硬闸 (BIG-TEACH-011c) ──
+    from learner.kp_registry import parse_l3_from_reason, is_valid_l3_id, pick_l3, syllabus_subject
+    l3_subj = syllabus_subject(subject)
+    l3_id = parse_l3_from_reason(decision.reason)
+    if l3_id and not is_valid_l3_id(l3_subj, l3_id):
+        print(f"[cultivate] l3_id '{l3_id}' not in syllabus — treated as miss")
+        l3_id = None
+
+    # ── RAG 硬契约（011-rag）：唯一入口 rag_retrieve；禁止直调 query_rag ──
+    rag_items: list[dict] = []
+    try:
+        from learner.rag_retrieve import rag_retrieve, rag_strict_enabled
+        global _rag_strict_blocked
+        _rag_strict_blocked = False
+
+        if not l3_id:
+            print(f"[cultivate] no valid l3_id — L2='{kp}' blocked (need L3)")
+            if rag_strict_enabled():
+                _rag_strict_blocked = True
+                return ""
+            unit_id = kp  # RAG_STRICT=0 兼容旧路径
+        else:
+            unit_id = l3_id
+
+        rag = rag_retrieve(subject, unit_id, top_k=4, N=2)
+        print(
+            f"[cultivate] rag_retrieve ok={rag.ok} hit={rag.hit_count} "
+            f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
+        )
+        if rag_strict_enabled() and not rag.ok:
+            # 换 L3 重试：同 L2 再试 1 个其他 L3
+            if l3_id:
+                retry_l3 = pick_l3(l3_subj, kp, recent_l3=[l3_id])
+                if retry_l3 and retry_l3 != l3_id:
+                    print(f"[cultivate] retry alternate L3: {retry_l3}")
+                    unit_id = retry_l3
+                    rag = rag_retrieve(subject, unit_id, top_k=4, N=2)
+                    print(
+                        f"[cultivate] rag_retrieve (retry) ok={rag.ok} hit={rag.hit_count} "
+                        f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
+                    )
+            if rag_strict_enabled() and not rag.ok:
+                print(f"[cultivate] RAG_STRICT: abort author ({rag.reason})")
+                _rag_strict_blocked = True
+                return ""
+        rag_items = rag.to_prompt_items()
+    except Exception as e:
+        print(f"[cultivate] rag_retrieve failed: {e}")
+        from learner.rag_retrieve import rag_strict_enabled
+
+        if rag_strict_enabled():
+                _rag_strict_blocked = True
+                return ""
+
+    exam_pct, theory_pct = _dynamic_style_pcts(consecutive_failures, subject)
+
+    last_error = ""
+    if subject == "review" or decision.type == "review":
+        try:
+            log = BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl"))
+            last_error = _get_last_error_text(log, kp)
+        except Exception:
+            pass
+
+    builder = PromptBuilder()
+
+    # ── ability_goal → item_form (BIG-TEACH-011d)；transfer 继承上次 form ──
+    from learner.ability_cycle import (
+        ability_to_item_form, parse_ability_from_reason, _load_last_push_item_form,
+    )
+    ability_goal = getattr(decision, 'ability_goal', '') or parse_ability_from_reason(decision.reason) or ''
+    global _last_item_form
+    last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
+    _last_item_form = (
+        ability_to_item_form(ability_goal, last_form=last_form or None)
+        if ability_goal else "mcq"
+    )
+
+    author_kwargs = dict(
+        subject_cn=subject_cn,
+        kp=kp,
+        diff=diff,
+        action=action,
+        decision=decision,
+        tpl_type=tpl_type,
+        topic_desc=topic_desc,
+        mastery=mastery,
+        opportunity_count=opportunity_count,
+        consecutive_failures=consecutive_failures,
+        ref_entry=ref_entry,
+        rag_items=rag_items,
+        exam_pct=exam_pct,
+        theory_pct=theory_pct,
+        last_error=last_error,
+        item_form=_last_item_form,
+    )
+
+    global _last_answer
+    _last_answer = ""
+
+    # ── 出题 LLM（短契约）──
+    print(f"[cultivate] author ({tpl_type}/{decision.difficulty})")
+    draft, answer = _author_once(builder, **author_kwargs)
+    if not draft:
+        print("[cultivate] author produced empty draft")
+        return ""
+
+    ref_id = ""
+    if isinstance(ref_entry, dict):
+        ref_id = str(ref_entry.get("id") or "")
+
+    def _reauthor():
+        d, a = _author_once(builder, **author_kwargs)
+        return {"draft": d, "answer": a, "kp": kp, "ref_id": ref_id}
+
+    # ── 编排：质检 + 文案（含 memory digest）──
+    from orchestrate import orchestrate_push
+
+    result = orchestrate_push(
+        {
+            "draft": draft,
+            "answer": answer,
+            "kp": kp,
+            "ref_id": ref_id,
+            "decision_type": tpl_type,
+            "item_form": _last_item_form,
+        },
+        subject=subject,
+        difficulty=decision.difficulty,
+        source=source,
+        max_author_retries=1,
+        reauthor_fn=_reauthor,
+    )
+    _last_answer = result.get("answer") or answer
+    if result.get("status") != "accept":
+        print(f"[cultivate] orchestrate reject: {result.get('reason')}")
+        return ""
+    return (result.get("content") or "").strip()
+
+
+# ═══════════════════════════════════════════
+# 4. DELIVER — 推送
+# ═══════════════════════════════════════════
+
+def deliver(content: str) -> bool:
+    """通过可用推送桥发送。"""
+    if not content:
+        return False
+    from math_format import format_for_dingtalk
+    content = format_for_dingtalk(content)
+    bridge = get_bridge()
+    ok = bridge.send(content)
+    if not ok:
+        print(content)  # fallback: print to stdout
+    return ok
+
+
+# ═══════════════════════════════════════════
+# 5. RECORD — 记录到每日题目文件
+# ═══════════════════════════════════════════
+
+def record(subject: str, content: str, decision: InterventionDecision, answer: str = "",
+           ref_source: str = ""):
+    """追加到当月题目记录 + 侧车索引，并写 sync-queue。"""
+    if not content:
+        return
+    from record_index import (
+        append_index_entry,
+        count_today_entries,
+        ensure_trailing_blank,
+        file_char_size,
+        month_md_path,
+        month_of,
+        parse_entry_meta,
+    )
+
+    os.makedirs(DAILY_RECORD_DIR, exist_ok=True)
+    today = datetime.date.today().isoformat()
+    now = datetime.datetime.now().strftime("%H:%M")
+    month = month_of(today)
+    path = month_md_path(DAILY_RECORD_DIR, month)
+
+    num = count_today_entries(DAILY_RECORD_DIR, today) + 1
+    ensure_trailing_blank(path)
+    char_offset = file_char_size(path)
+
+    # 条目以 ## 开头；若文件非空则前缀换行分隔
+    prefix = "" if char_offset == 0 else "\n"
+    block = (
+        f"{prefix}## {today} {now} #{num}\n"
+        f"### 题目\n"
+        f"**{subject} · {decision.difficulty}**\n\n"
+        f"{content}\n\n"
+    )
+    if answer:
+        block += f"### 解答\n{answer}\n\n"
+    block += (
+        f"### 出题逻辑\n"
+        f"- 决策类型：{decision.type}\n"
+        f"- 决策原因：{decision.reason}\n"
+    )
+    if ref_source:
+        block += f"- 参考来源：{ref_source}\n"
+    block += "---\n"
+
+    # char_offset 指向 ## 行起点（跳过前缀换行）
+    entry_offset = char_offset + len(prefix)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(block)
+
+    meta = parse_entry_meta(block.lstrip("\n"), char_offset=entry_offset)
+    if meta:
+        append_index_entry(DAILY_RECORD_DIR, meta)
+
+    # ── 同步队列：给本机 sync_teaching 拉取 ──
+    SYNC_QUEUE_DIR = os.path.join(DATA_DIR, "sync-queue")
+    os.makedirs(SYNC_QUEUE_DIR, exist_ok=True)
+    qpath = os.path.join(SYNC_QUEUE_DIR, f"{today}-{num:03d}.md")
+    # 首尾各保证空行，避免远端拼接粘连
+    with open(qpath, "w", encoding="utf-8") as f:
+        f.write("\n" + block.lstrip("\n").rstrip() + "\n\n")
+
+
+# ═══════════════════════════════════════════
+# 主流程
+# ═══════════════════════════════════════════
+
+def cultivate(subject: str):
+    """一次完整的培养循环。"""
+    state = assess_state(subject)
+    bkt_log = state["bkt_log"]
+    decision = decide(subject, bkt_log)
+    if decision.type == "defer":
+        print(f"[cultivate] {subject}: 跳过（{decision.reason}）")
+        return
+
+    # ── 为提示词上下文计算 BKT 统计数据 ──
+    kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
+    mastery = 0.0
+    opportunity_count = 0
+    try:
+        if hasattr(bkt_log, 'get_kp_mastery'):
+            kc = bkt_log.get_kp_mastery("wx_123", kp)
+            if kc and hasattr(kc, 'p_mastery'):
+                mastery = kc.p_mastery
+            if kc and hasattr(kc, 'opportunity_count'):
+                opportunity_count = kc.opportunity_count
+    except Exception:
+        pass
+    consecutive_failures = _get_consecutive_failures("wx_123", bkt_log, kp)
+
+    content = generate(
+        subject,
+        decision,
+        mastery=mastery,
+        opportunity_count=opportunity_count,
+        consecutive_failures=consecutive_failures,
+        source="schedule",
+    )
+    if not content:
+        print(f"[cultivate] {subject}: 编排未通过，跳过推送（{decision.type}/{kp}）")
+        return
+    answer = _last_answer
+    ref_source = _last_ref_source
+    deliver(content)
+    record(subject, content, decision, answer, ref_source)
+    _save_last_push(subject, decision, content, answer, ref_source, kp=kp)
+    print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
+
+
+if __name__ == "__main__":
+    subject = sys.argv[1] if len(sys.argv) > 1 else "math"
+    cultivate(subject)

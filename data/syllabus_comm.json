@@ -1,0 +1,2841 @@
+{
+  "subject": "comm",
+  "syllabus": "北邮801-通信原理-2026",
+  "textbook": "周炯槃《通信原理》第4版 Ch2-11",
+  "l1": {
+    "sig_rand": {
+      "name": "确定信号及随机信号分析",
+      "weight": 1.15
+    },
+    "analog_mod": {
+      "name": "模拟调制",
+      "weight": 1.0
+    },
+    "baseband": {
+      "name": "数字基带传输",
+      "weight": 1.15
+    },
+    "passband": {
+      "name": "数字频带传输",
+      "weight": 1.25
+    },
+    "source": {
+      "name": "信源及信源编码",
+      "weight": 1.05
+    },
+    "channel": {
+      "name": "信道及信道容量",
+      "weight": 1.1
+    },
+    "coding": {
+      "name": "信道编码",
+      "weight": 1.15
+    },
+    "spread": {
+      "name": "扩频及多载波通信",
+      "weight": 0.95
+    }
+  },
+  "kps": {
+    "确定信号与频谱分析": {
+      "l1": "sig_rand",
+      "scope": "傅里叶级数/变换、能量谱与功率谱、LTI系统",
+      "aliases": [
+        "傅里叶",
+        "频谱",
+        "功率谱",
+        "能量谱"
+      ],
+      "l3": [
+        {
+          "id": "comm.sig_rand.fourier.series",
+          "name": "傅里叶级数",
+          "aliases": [
+            "傅里叶级数",
+            "周期信号频谱"
+          ],
+          "rag_queries": [
+            "傅里叶级数",
+            "周期信号 频谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.fourier.transform",
+          "name": "傅里叶变换",
+          "aliases": [
+            "傅里叶变换",
+            "频谱"
+          ],
+          "rag_queries": [
+            "傅里叶变换",
+            "非周期信号 频谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.energy_psd",
+          "name": "能量谱与功率谱",
+          "aliases": [
+            "能量谱",
+            "功率谱",
+            "帕塞瓦尔"
+          ],
+          "rag_queries": [
+            "能量谱密度",
+            "功率谱密度"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.lti",
+          "name": "LTI系统与频域响应",
+          "aliases": [
+            "LTI",
+            "频率响应",
+            "冲激响应"
+          ],
+          "rag_queries": [
+            "LTI系统",
+            "频率响应"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.signal.props",
+          "name": "信号分类与基本运算",
+          "aliases": [
+            "能量信号",
+            "功率信号",
+            "卷积"
+          ],
+          "rag_queries": [
+            "能量信号 功率信号",
+            "信号卷积"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "带通信号与希尔伯特变换": {
+      "l1": "sig_rand",
+      "scope": "解析信号、带通信号/系统、无失真条件",
+      "aliases": [
+        "希尔伯特",
+        "解析信号",
+        "带通"
+      ],
+      "l3": [
+        {
+          "id": "comm.sig_rand.hilbert",
+          "name": "希尔伯特变换",
+          "aliases": [
+            "希尔伯特",
+            "Hilbert"
+          ],
+          "rag_queries": [
+            "希尔伯特变换",
+            "Hilbert变换"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.analytic",
+          "name": "解析信号与复包络",
+          "aliases": [
+            "解析信号",
+            "复包络"
+          ],
+          "rag_queries": [
+            "解析信号",
+            "复包络"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.bandpass.sig",
+          "name": "带通信号表示",
+          "aliases": [
+            "带通信号",
+            "等效基带"
+          ],
+          "rag_queries": [
+            "带通信号",
+            "等效低通表示"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.bandpass.sys",
+          "name": "带通系统",
+          "aliases": [
+            "带通系统",
+            "等效基带系统"
+          ],
+          "rag_queries": [
+            "带通系统",
+            "带通滤波"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.nodistortion",
+          "name": "无失真传输条件",
+          "aliases": [
+            "无失真",
+            "群时延"
+          ],
+          "rag_queries": [
+            "无失真传输条件",
+            "群时延"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        }
+      ]
+    },
+    "随机过程统计特性": {
+      "l1": "sig_rand",
+      "scope": "均值/方差/相关函数、平稳性、遍历性",
+      "aliases": [
+        "随机过程",
+        "自相关",
+        "平稳",
+        "遍历"
+      ],
+      "l3": [
+        {
+          "id": "comm.sig_rand.rp.mean_var",
+          "name": "均值方差与相关函数",
+          "aliases": [
+            "均值",
+            "自相关",
+            "互相关"
+          ],
+          "rag_queries": [
+            "随机过程 自相关函数",
+            "均值 方差"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.rp.stationary",
+          "name": "严平稳与宽平稳",
+          "aliases": [
+            "平稳",
+            "宽平稳",
+            "严平稳"
+          ],
+          "rag_queries": [
+            "宽平稳过程",
+            "严平稳"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.rp.ergodic",
+          "name": "遍历性",
+          "aliases": [
+            "遍历",
+            "各态历经"
+          ],
+          "rag_queries": [
+            "随机过程 遍历性",
+            "各态历经"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.rp.psd",
+          "name": "功率谱密度与维纳辛钦",
+          "aliases": [
+            "功率谱",
+            "维纳-辛钦"
+          ],
+          "rag_queries": [
+            "维纳-辛钦定理",
+            "功率谱密度 自相关"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.rp.through_lti",
+          "name": "随机过程通过线性系统",
+          "aliases": [
+            "通过线性系统",
+            "输出相关"
+          ],
+          "rag_queries": [
+            "随机过程 通过线性系统",
+            "输出功率谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "高斯过程与窄带噪声": {
+      "l1": "sig_rand",
+      "scope": "高斯过程、窄带平稳高斯噪声、包络相位",
+      "aliases": [
+        "高斯过程",
+        "窄带噪声"
+      ],
+      "l3": [
+        {
+          "id": "comm.sig_rand.gauss.process",
+          "name": "高斯过程性质",
+          "aliases": [
+            "高斯过程",
+            "高斯随机变量"
+          ],
+          "rag_queries": [
+            "高斯过程",
+            "高斯随机过程 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.nb.noise",
+          "name": "窄带平稳高斯噪声",
+          "aliases": [
+            "窄带噪声",
+            "带通噪声"
+          ],
+          "rag_queries": [
+            "窄带高斯噪声",
+            "窄带平稳噪声"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.nb.envelope",
+          "name": "包络与相位分布",
+          "aliases": [
+            "包络",
+            "相位",
+            "瑞利"
+          ],
+          "rag_queries": [
+            "窄带噪声 包络",
+            "瑞利分布 相位"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.nb.iq",
+          "name": "同相正交分量",
+          "aliases": [
+            "I/Q",
+            "同相分量",
+            "正交分量"
+          ],
+          "rag_queries": [
+            "窄带噪声 同相正交",
+            "I Q 分量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.nb.rice",
+          "name": "正弦加窄带噪声",
+          "aliases": [
+            "莱斯",
+            "Rice"
+          ],
+          "rag_queries": [
+            "正弦信号加窄带噪声",
+            "莱斯分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "AWGN与匹配滤波器": {
+      "l1": "sig_rand",
+      "scope": "高斯白噪声、通过滤波器、匹配滤波器输出SNR",
+      "aliases": [
+        "白噪声",
+        "匹配滤波器",
+        "AWGN"
+      ],
+      "l3": [
+        {
+          "id": "comm.sig_rand.awgn.def",
+          "name": "高斯白噪声模型",
+          "aliases": [
+            "AWGN",
+            "白噪声",
+            "双边功率谱"
+          ],
+          "rag_queries": [
+            "加性高斯白噪声",
+            "白噪声 功率谱密度"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.awgn.filter",
+          "name": "白噪声通过滤波器",
+          "aliases": [
+            "噪声带宽",
+            "输出噪声功率"
+          ],
+          "rag_queries": [
+            "白噪声 通过滤波器",
+            "等效噪声带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.mf.def",
+          "name": "匹配滤波器原理",
+          "aliases": [
+            "匹配滤波器"
+          ],
+          "rag_queries": [
+            "匹配滤波器 原理",
+            "匹配滤波"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.mf.snr",
+          "name": "匹配滤波器输出SNR",
+          "aliases": [
+            "最大信噪比",
+            "输出SNR"
+          ],
+          "rag_queries": [
+            "匹配滤波器 输出信噪比",
+            "最大SNR"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.sig_rand.mf.corr",
+          "name": "匹配滤波与相关接收等价",
+          "aliases": [
+            "相关接收",
+            "相关器"
+          ],
+          "rag_queries": [
+            "匹配滤波器 相关接收",
+            "相关器 等价"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "模拟线性调制": {
+      "l1": "analog_mod",
+      "scope": "DSB-SC、AM、SSB原理/框图/频谱/解调",
+      "aliases": [
+        "AM",
+        "DSB",
+        "SSB",
+        "包络检波"
+      ],
+      "l3": [
+        {
+          "id": "comm.analog_mod.dsb",
+          "name": "DSB-SC原理与频谱",
+          "aliases": [
+            "DSB",
+            "DSB-SC",
+            "抑制载波"
+          ],
+          "rag_queries": [
+            "DSB-SC",
+            "双边带调制"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.am",
+          "name": "AM调制与包络检波",
+          "aliases": [
+            "AM",
+            "常规调幅",
+            "包络检波"
+          ],
+          "rag_queries": [
+            "AM调制",
+            "包络检波"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.ssb",
+          "name": "SSB原理与实现",
+          "aliases": [
+            "SSB",
+            "单边带",
+            "希尔伯特法"
+          ],
+          "rag_queries": [
+            "SSB调制",
+            "单边带 产生方法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.linear.demod",
+          "name": "相干解调框图",
+          "aliases": [
+            "相干解调",
+            "同步检波"
+          ],
+          "rag_queries": [
+            "线性调制 相干解调",
+            "同步检波"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.linear.spectrum",
+          "name": "线性调制频谱与带宽",
+          "aliases": [
+            "调制频谱",
+            "带宽"
+          ],
+          "rag_queries": [
+            "AM DSB SSB 频谱",
+            "线性调制 带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "模拟角度调制": {
+      "l1": "analog_mod",
+      "scope": "PM/FM关系、卡松公式、FM频谱与带宽",
+      "aliases": [
+        "FM",
+        "PM",
+        "调频",
+        "卡松公式"
+      ],
+      "l3": [
+        {
+          "id": "comm.analog_mod.pm_fm.rel",
+          "name": "PM与FM关系",
+          "aliases": [
+            "PM",
+            "FM",
+            "调相调频"
+          ],
+          "rag_queries": [
+            "调频调相 关系",
+            "PM FM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.fm.carson",
+          "name": "卡松公式与带宽",
+          "aliases": [
+            "卡松公式",
+            "Carson",
+            "FM带宽"
+          ],
+          "rag_queries": [
+            "卡松公式",
+            "调频带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.fm.spectrum",
+          "name": "单音FM频谱",
+          "aliases": [
+            "贝塞尔",
+            "FM频谱"
+          ],
+          "rag_queries": [
+            "单音调频 频谱",
+            "贝塞尔函数 FM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.fm.gen_demod",
+          "name": "FM产生与鉴频解调",
+          "aliases": [
+            "鉴频",
+            "间接调频",
+            "直接调频"
+          ],
+          "rag_queries": [
+            "调频 产生方法",
+            "鉴频器"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.nbfm",
+          "name": "窄带调频",
+          "aliases": [
+            "NBFM",
+            "窄带FM"
+          ],
+          "rag_queries": [
+            "窄带调频",
+            "NBFM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "模拟调制抗噪声性能": {
+      "l1": "analog_mod",
+      "scope": "相干解调/包络检波/鉴频的输入输出SNR",
+      "aliases": [
+        "信噪比",
+        "抗噪声"
+      ],
+      "l3": [
+        {
+          "id": "comm.analog_mod.noise.coherent",
+          "name": "相干解调抗噪声",
+          "aliases": [
+            "相干解调信噪比",
+            "输出SNR"
+          ],
+          "rag_queries": [
+            "相干解调 抗噪声",
+            "DSB 信噪比"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.noise.envelope",
+          "name": "包络检波抗噪声与门限",
+          "aliases": [
+            "包络检波SNR",
+            "门限效应"
+          ],
+          "rag_queries": [
+            "包络检波 信噪比",
+            "AM 门限效应"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.noise.fm",
+          "name": "FM鉴频抗噪声",
+          "aliases": [
+            "FM信噪比",
+            "调频改善"
+          ],
+          "rag_queries": [
+            "调频 抗噪声性能",
+            "鉴频 输出信噪比"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.noise.compare",
+          "name": "各体制抗噪声比较",
+          "aliases": [
+            "抗噪声比较",
+            "制度增益"
+          ],
+          "rag_queries": [
+            "模拟调制 抗噪声比较",
+            "制度增益"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.noise.preemp",
+          "name": "预加重去加重概念",
+          "aliases": [
+            "预加重",
+            "去加重"
+          ],
+          "rag_queries": [
+            "预加重 去加重",
+            "FM 预加重"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "载波同步与频分复用": {
+      "l1": "analog_mod",
+      "scope": "载波同步方法、FDM概念",
+      "aliases": [
+        "载波同步",
+        "FDM"
+      ],
+      "l3": [
+        {
+          "id": "comm.analog_mod.carrier.sync",
+          "name": "载波同步方法",
+          "aliases": [
+            "载波提取",
+            "锁相",
+            "平方环"
+          ],
+          "rag_queries": [
+            "载波同步",
+            "载波提取"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.carrier.costas",
+          "name": "科斯塔斯环",
+          "aliases": [
+            "Costas",
+            "科斯塔斯"
+          ],
+          "rag_queries": [
+            "科斯塔斯环",
+            "Costas环"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.fdm.concept",
+          "name": "频分复用FDM",
+          "aliases": [
+            "FDM",
+            "频分复用"
+          ],
+          "rag_queries": [
+            "频分复用",
+            "FDM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.fdm.guard",
+          "name": "保护间隔与信道划分",
+          "aliases": [
+            "保护频带",
+            "信道划分"
+          ],
+          "rag_queries": [
+            "FDM 保护频带",
+            "频分复用 信道"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.analog_mod.sync.error",
+          "name": "同步误差影响",
+          "aliases": [
+            "相位误差",
+            "频率误差"
+          ],
+          "rag_queries": [
+            "载波同步 误差",
+            "相干解调 相位误差"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "数字基带波形与线路码型": {
+      "l1": "baseband",
+      "scope": "PAM波形、常用线路码、码型选择",
+      "aliases": [
+        "线路码",
+        "AMI",
+        "HDB3",
+        "PAM"
+      ],
+      "l3": [
+        {
+          "id": "comm.baseband.pam.wave",
+          "name": "PAM基带波形",
+          "aliases": [
+            "PAM",
+            "矩形波",
+            "成形"
+          ],
+          "rag_queries": [
+            "PAM波形",
+            "基带脉冲成形"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.line.ami",
+          "name": "AMI与HDB3码",
+          "aliases": [
+            "AMI",
+            "HDB3"
+          ],
+          "rag_queries": [
+            "AMI码",
+            "HDB3码"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.line.codes",
+          "name": "常用线路码型",
+          "aliases": [
+            "NRZ",
+            "RZ",
+            "曼彻斯特",
+            "线路码"
+          ],
+          "rag_queries": [
+            "线路码型",
+            "NRZ RZ 曼彻斯特"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.line.select",
+          "name": "码型选择原则",
+          "aliases": [
+            "码型选择",
+            "直流分量",
+            "定时信息"
+          ],
+          "rag_queries": [
+            "线路码 选择原则",
+            "基带传输 码型"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.line.psd_shape",
+          "name": "码型与频谱形状",
+          "aliases": [
+            "码型频谱"
+          ],
+          "rag_queries": [
+            "线路码 功率谱",
+            "AMI 频谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "基带信号功率谱密度": {
+      "l1": "baseband",
+      "scope": "随机序列PAM功率谱、主瓣带宽",
+      "aliases": [
+        "基带功率谱"
+      ],
+      "l3": [
+        {
+          "id": "comm.baseband.psd.random",
+          "name": "随机序列PAM功率谱",
+          "aliases": [
+            "基带功率谱",
+            "随机序列"
+          ],
+          "rag_queries": [
+            "基带信号 功率谱密度",
+            "随机PAM 功率谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.psd.formula",
+          "name": "功率谱公式与连续离散谱",
+          "aliases": [
+            "连续谱",
+            "离散谱"
+          ],
+          "rag_queries": [
+            "基带功率谱 公式",
+            "离散谱 连续谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.psd.mainlobe",
+          "name": "主瓣带宽",
+          "aliases": [
+            "主瓣",
+            "第一零点带宽"
+          ],
+          "rag_queries": [
+            "基带信号 主瓣带宽",
+            "第一零点带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.psd.nrz",
+          "name": "NRZ等码型功率谱",
+          "aliases": [
+            "NRZ功率谱"
+          ],
+          "rag_queries": [
+            "NRZ 功率谱密度",
+            "单极性双极性 功率谱"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.psd.app",
+          "name": "功率谱与带宽估计",
+          "aliases": [
+            "带宽估计"
+          ],
+          "rag_queries": [
+            "基带功率谱 带宽",
+            "数字基带 频谱宽度"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "基带最佳接收": {
+      "l1": "baseband",
+      "scope": "AWGN下匹配滤波接收、抽样判决、误码率基础",
+      "aliases": [
+        "最佳接收",
+        "抽样判决"
+      ],
+      "l3": [
+        {
+          "id": "comm.baseband.opt.mf",
+          "name": "AWGN下匹配滤波接收",
+          "aliases": [
+            "最佳接收",
+            "匹配滤波接收"
+          ],
+          "rag_queries": [
+            "基带 最佳接收",
+            "匹配滤波器 接收"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.opt.sample",
+          "name": "抽样判决",
+          "aliases": [
+            "抽样判决",
+            "判决门限"
+          ],
+          "rag_queries": [
+            "抽样判决",
+            "最佳判决门限"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.opt.ber",
+          "name": "误码率基础",
+          "aliases": [
+            "误码率",
+            "错误概率"
+          ],
+          "rag_queries": [
+            "基带传输 误码率",
+            "二进制 误比特率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.opt.corr",
+          "name": "相关接收机结构",
+          "aliases": [
+            "相关接收机"
+          ],
+          "rag_queries": [
+            "相关接收机",
+            "基带相关检测"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.opt.snr",
+          "name": "接收SNR与错误概率关系",
+          "aliases": [
+            "信噪比误码"
+          ],
+          "rag_queries": [
+            "信噪比 误码率 关系",
+            "Q函数 误码率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "ISI与奈奎斯特准则": {
+      "l1": "baseband",
+      "scope": "码间干扰、无ISI条件、升余弦、最佳基带系统",
+      "aliases": [
+        "ISI",
+        "码间干扰",
+        "奈奎斯特",
+        "升余弦"
+      ],
+      "l3": [
+        {
+          "id": "comm.baseband.isi.def",
+          "name": "码间干扰概念",
+          "aliases": [
+            "ISI",
+            "码间干扰"
+          ],
+          "rag_queries": [
+            "码间干扰",
+            "ISI"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.isi.nyquist",
+          "name": "奈奎斯特无ISI准则",
+          "aliases": [
+            "奈奎斯特准则",
+            "无ISI"
+          ],
+          "rag_queries": [
+            "奈奎斯特准则",
+            "无码间干扰条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.isi.rcos",
+          "name": "升余弦滚降",
+          "aliases": [
+            "升余弦",
+            "滚降系数"
+          ],
+          "rag_queries": [
+            "升余弦滚降",
+            "滚降系数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.isi.ideal",
+          "name": "理想基带系统",
+          "aliases": [
+            "理想低通",
+            "奈奎斯特速率"
+          ],
+          "rag_queries": [
+            "理想基带传输系统",
+            "奈奎斯特速率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.isi.best",
+          "name": "最佳基带系统",
+          "aliases": [
+            "最佳基带",
+            "综合"
+          ],
+          "rag_queries": [
+            "最佳基带系统",
+            "无ISI 最佳接收"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "眼图均衡与部分响应": {
+      "l1": "baseband",
+      "scope": "眼图判读、均衡、第I类部分响应",
+      "aliases": [
+        "眼图",
+        "均衡",
+        "部分响应"
+      ],
+      "l3": [
+        {
+          "id": "comm.baseband.eye.read",
+          "name": "眼图判读",
+          "aliases": [
+            "眼图",
+            "眼开度"
+          ],
+          "rag_queries": [
+            "眼图",
+            "眼图判读"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.baseband.eq.linear",
+          "name": "线性均衡",
+          "aliases": [
+            "均衡",
+            "迫零均衡",
+            "MMSE"
+          ],
+          "rag_queries": [
+            "均衡器",
+            "迫零均衡"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.pr.partial",
+          "name": "第I类部分响应",
+          "aliases": [
+            "部分响应",
+            "第I类",
+            "相关编码"
+          ],
+          "rag_queries": [
+            "部分响应系统",
+            "第I类部分响应"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.pr.duobinary",
+          "name": "双二进制与相关电平",
+          "aliases": [
+            "双二进制",
+            "相关电平编码"
+          ],
+          "rag_queries": [
+            "双二进制",
+            "相关电平编码"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.baseband.eq.adaptive",
+          "name": "自适应均衡概念",
+          "aliases": [
+            "自适应均衡"
+          ],
+          "rag_queries": [
+            "自适应均衡",
+            "均衡 自适应"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "二进制数字调制": {
+      "l1": "passband",
+      "scope": "OOK/2FSK/2PSK/DPSK原理、带宽与频带利用率",
+      "aliases": [
+        "2PSK",
+        "BPSK",
+        "DPSK",
+        "2FSK",
+        "OOK",
+        "误码率"
+      ],
+      "l3": [
+        {
+          "id": "comm.passband.bin.ook",
+          "name": "OOK原理与性能",
+          "aliases": [
+            "OOK",
+            "ASK",
+            "开关键控"
+          ],
+          "rag_queries": [
+            "OOK调制",
+            "2ASK"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.bin.fsk",
+          "name": "2FSK原理与带宽",
+          "aliases": [
+            "2FSK",
+            "频移键控"
+          ],
+          "rag_queries": [
+            "2FSK",
+            "二进制频移键控"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.bin.psk",
+          "name": "2PSK/BPSK原理",
+          "aliases": [
+            "2PSK",
+            "BPSK"
+          ],
+          "rag_queries": [
+            "2PSK",
+            "BPSK调制"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.bin.dpsk",
+          "name": "DPSK差分调制",
+          "aliases": [
+            "DPSK",
+            "差分相干"
+          ],
+          "rag_queries": [
+            "DPSK",
+            "差分相干解调"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.bin.bw_ber",
+          "name": "带宽频带利用率与误码率",
+          "aliases": [
+            "频带利用率",
+            "误码率比较"
+          ],
+          "rag_queries": [
+            "二进制调制 带宽",
+            "2PSK 2FSK 误码率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "QPSK与OQPSK": {
+      "l1": "passband",
+      "scope": "原理、功率谱、相干解调误比特率",
+      "aliases": [
+        "QPSK",
+        "OQPSK",
+        "四相"
+      ],
+      "l3": [
+        {
+          "id": "comm.passband.qpsk.principle",
+          "name": "QPSK原理与星座",
+          "aliases": [
+            "QPSK",
+            "四相相移"
+          ],
+          "rag_queries": [
+            "QPSK原理",
+            "QPSK星座图"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.qpsk.psd",
+          "name": "QPSK功率谱",
+          "aliases": [
+            "QPSK功率谱"
+          ],
+          "rag_queries": [
+            "QPSK 功率谱",
+            "QPSK 带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.qpsk.ber",
+          "name": "QPSK相干解调误比特率",
+          "aliases": [
+            "QPSK误码率",
+            "误比特率"
+          ],
+          "rag_queries": [
+            "QPSK 误比特率",
+            "QPSK 相干解调"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.oqpsk",
+          "name": "OQPSK原理",
+          "aliases": [
+            "OQPSK",
+            "偏移QPSK"
+          ],
+          "rag_queries": [
+            "OQPSK",
+            "偏移四相相移键控"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.qpsk.compare",
+          "name": "QPSK与OQPSK比较",
+          "aliases": [
+            "包络起伏",
+            "相位跳变"
+          ],
+          "rag_queries": [
+            "QPSK OQPSK 比较",
+            "OQPSK 包络"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "信号空间与统计判决": {
+      "l1": "passband",
+      "scope": "矢量表示、最佳接收机、似然比/MAP",
+      "aliases": [
+        "信号空间",
+        "MAP",
+        "似然比"
+      ],
+      "l3": [
+        {
+          "id": "comm.passband.space.vector",
+          "name": "信号矢量表示",
+          "aliases": [
+            "信号空间",
+            "正交基",
+            "矢量表示"
+          ],
+          "rag_queries": [
+            "信号空间 表示",
+            "信号矢量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.space.opt",
+          "name": "最佳接收机结构",
+          "aliases": [
+            "最佳接收机",
+            "相关器组"
+          ],
+          "rag_queries": [
+            "最佳接收机",
+            "信号空间 接收"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.space.ml",
+          "name": "最大似然判决",
+          "aliases": [
+            "最大似然",
+            "ML",
+            "最小距离"
+          ],
+          "rag_queries": [
+            "最大似然判决",
+            "最小欧氏距离"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.space.map",
+          "name": "MAP与似然比",
+          "aliases": [
+            "MAP",
+            "似然比",
+            "后验概率"
+          ],
+          "rag_queries": [
+            "MAP判决",
+            "似然比检验"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.space.error",
+          "name": "错误概率与判决域",
+          "aliases": [
+            "判决域",
+            "成对错误"
+          ],
+          "rag_queries": [
+            "信号空间 错误概率",
+            "判决区域"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "M进制调制MASK/MPSK/MQAM": {
+      "l1": "passband",
+      "scope": "星座图、调制解调框图、功率谱、频带利用率",
+      "aliases": [
+        "QAM",
+        "16QAM",
+        "星座图",
+        "MPSK",
+        "MASK"
+      ],
+      "l3": [
+        {
+          "id": "comm.passband.m.constellation",
+          "name": "星座图与符号映射",
+          "aliases": [
+            "星座图",
+            "符号映射"
+          ],
+          "rag_queries": [
+            "星座图",
+            "M进制 星座"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.m.mask",
+          "name": "MASK调制解调",
+          "aliases": [
+            "MASK",
+            "多进制ASK"
+          ],
+          "rag_queries": [
+            "MASK",
+            "多进制振幅键控"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.m.mpsk",
+          "name": "MPSK调制解调",
+          "aliases": [
+            "MPSK",
+            "多进制PSK"
+          ],
+          "rag_queries": [
+            "MPSK",
+            "多进制相移键控"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.m.mqam",
+          "name": "MQAM/16QAM",
+          "aliases": [
+            "QAM",
+            "16QAM",
+            "正交幅度调制"
+          ],
+          "rag_queries": [
+            "MQAM",
+            "16QAM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.m.seff",
+          "name": "功率谱与频带利用率",
+          "aliases": [
+            "频带利用率",
+            "频谱效率"
+          ],
+          "rag_queries": [
+            "M进制调制 频带利用率",
+            "QAM 频谱效率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "格雷映射与MFSK": {
+      "l1": "passband",
+      "scope": "格雷码映射、MFSK频谱与误符号率",
+      "aliases": [
+        "格雷码",
+        "MFSK"
+      ],
+      "l3": [
+        {
+          "id": "comm.passband.gray.map",
+          "name": "格雷码映射",
+          "aliases": [
+            "格雷码",
+            "Gray映射"
+          ],
+          "rag_queries": [
+            "格雷码映射",
+            "Gray coding 星座"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.passband.gray.ber_ser",
+          "name": "格雷映射下误比特与误符号",
+          "aliases": [
+            "误符号率",
+            "误比特近似"
+          ],
+          "rag_queries": [
+            "格雷映射 误比特率",
+            "误符号率 误比特率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.mfsk.spectrum",
+          "name": "MFSK频谱与带宽",
+          "aliases": [
+            "MFSK",
+            "多进制FSK"
+          ],
+          "rag_queries": [
+            "MFSK 频谱",
+            "MFSK 带宽"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.mfsk.ser",
+          "name": "MFSK误符号率",
+          "aliases": [
+            "MFSK误码",
+            "非相干MFSK"
+          ],
+          "rag_queries": [
+            "MFSK 误符号率",
+            "多进制FSK 错误概率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.passband.mfsk.compare",
+          "name": "MFSK与MPSK比较",
+          "aliases": [
+            "功率效率",
+            "带宽效率"
+          ],
+          "rag_queries": [
+            "MFSK MPSK 比较",
+            "功率效率 带宽效率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "信息熵与互信息": {
+      "l1": "source",
+      "scope": "H(X)、I(X;Y)、熵/联合熵/条件熵",
+      "aliases": [
+        "熵",
+        "互信息",
+        "信息论"
+      ],
+      "l3": [
+        {
+          "id": "comm.source.entropy.h",
+          "name": "信息熵H(X)",
+          "aliases": [
+            "熵",
+            "信息熵",
+            "H(X)"
+          ],
+          "rag_queries": [
+            "信息熵",
+            "离散信源熵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.source.entropy.joint",
+          "name": "联合熵与条件熵",
+          "aliases": [
+            "联合熵",
+            "条件熵"
+          ],
+          "rag_queries": [
+            "联合熵",
+            "条件熵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.mutual.info",
+          "name": "互信息I(X;Y)",
+          "aliases": [
+            "互信息",
+            "I(X;Y)"
+          ],
+          "rag_queries": [
+            "互信息",
+            "平均互信息"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.source.entropy.props",
+          "name": "熵与互信息性质",
+          "aliases": [
+            "熵的性质",
+            "数据处理不等式"
+          ],
+          "rag_queries": [
+            "熵的性质",
+            "互信息 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.entropy.chain",
+          "name": "熵的链式法则",
+          "aliases": [
+            "链式法则"
+          ],
+          "rag_queries": [
+            "熵的链式法则",
+            "联合熵 分解"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "采样与PCM量化编码": {
+      "l1": "source",
+      "scope": "低通/带通采样、均匀/非均匀量化、A律、时分复用",
+      "aliases": [
+        "采样",
+        "PCM",
+        "量化",
+        "A律"
+      ],
+      "l3": [
+        {
+          "id": "comm.source.sample.lowpass",
+          "name": "低通采样定理",
+          "aliases": [
+            "采样定理",
+            "奈奎斯特采样"
+          ],
+          "rag_queries": [
+            "低通采样定理",
+            "采样定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.source.sample.bandpass",
+          "name": "带通采样",
+          "aliases": [
+            "带通采样"
+          ],
+          "rag_queries": [
+            "带通采样",
+            "带通信号 抽样"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.pcm.uniform",
+          "name": "均匀量化",
+          "aliases": [
+            "均匀量化",
+            "量化噪声"
+          ],
+          "rag_queries": [
+            "均匀量化",
+            "量化信噪比"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.pcm.alaw",
+          "name": "非均匀量化与A律",
+          "aliases": [
+            "A律",
+            "μ律",
+            "压缩扩张"
+          ],
+          "rag_queries": [
+            "A律压缩",
+            "非均匀量化"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.pcm.tdm",
+          "name": "PCM编码与时分复用",
+          "aliases": [
+            "PCM",
+            "TDM",
+            "时分复用"
+          ],
+          "rag_queries": [
+            "PCM编码",
+            "时分复用 TDM"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "限失真信源编码概念": {
+      "l1": "source",
+      "scope": "率失真思想、无失真编码定理（概念级）",
+      "aliases": [
+        "率失真",
+        "信源编码定理"
+      ],
+      "l3": [
+        {
+          "id": "comm.source.rd.idea",
+          "name": "率失真思想",
+          "aliases": [
+            "率失真",
+            "失真测度"
+          ],
+          "rag_queries": [
+            "率失真函数",
+            "率失真理论"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.source.rd.noiseless",
+          "name": "无失真编码定理概念",
+          "aliases": [
+            "信源编码定理",
+            "无损压缩"
+          ],
+          "rag_queries": [
+            "无失真信源编码定理",
+            "香农第一定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.source.rd.limit",
+          "name": "限失真编码概念",
+          "aliases": [
+            "限失真",
+            "有损压缩"
+          ],
+          "rag_queries": [
+            "限失真信源编码",
+            "有损压缩 概念"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.rd.rstar",
+          "name": "率失真函数R(D)概念",
+          "aliases": [
+            "R(D)"
+          ],
+          "rag_queries": [
+            "率失真函数 R(D)",
+            "失真约束 最小速率"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.source.rd.vs_channel",
+          "name": "信源编码与信道编码分工",
+          "aliases": [
+            "信源信道分离"
+          ],
+          "rag_queries": [
+            "信源编码 信道编码",
+            "分离定理 概念"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "信道模型与衰落特性": {
+      "l1": "channel",
+      "scope": "无失真信道、衰落、相干带宽/时间、时延/多普勒",
+      "aliases": [
+        "衰落",
+        "多径",
+        "相干带宽",
+        "无线通信"
+      ],
+      "l3": [
+        {
+          "id": "comm.channel.model.ideal",
+          "name": "无失真与恒参信道",
+          "aliases": [
+            "无失真信道",
+            "恒参信道"
+          ],
+          "rag_queries": [
+            "无失真信道",
+            "恒参信道模型"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.channel.fade.multipath",
+          "name": "多径与衰落",
+          "aliases": [
+            "多径",
+            "衰落",
+            "瑞利衰落"
+          ],
+          "rag_queries": [
+            "多径衰落",
+            "无线信道 衰落"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.channel.fade.coh_bw",
+          "name": "相干带宽与时延扩展",
+          "aliases": [
+            "相干带宽",
+            "时延扩展"
+          ],
+          "rag_queries": [
+            "相干带宽",
+            "时延扩展"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.channel.fade.coh_time",
+          "name": "相干时间与多普勒",
+          "aliases": [
+            "相干时间",
+            "多普勒扩展"
+          ],
+          "rag_queries": [
+            "相干时间",
+            "多普勒频移"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.channel.fade.types",
+          "name": "平坦频率选择性快慢衰落",
+          "aliases": [
+            "频率选择性",
+            "时间选择性"
+          ],
+          "rag_queries": [
+            "平坦衰落 频率选择性衰落",
+            "快衰落 慢衰落"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "信道容量": {
+      "l1": "channel",
+      "scope": "BSC容量、AWGN容量公式及应用",
+      "aliases": [
+        "信道容量",
+        "香农公式"
+      ],
+      "l3": [
+        {
+          "id": "comm.channel.cap.bsc",
+          "name": "BSC信道容量",
+          "aliases": [
+            "BSC",
+            "二进制对称信道"
+          ],
+          "rag_queries": [
+            "BSC 信道容量",
+            "二进制对称信道 容量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.channel.cap.awgn",
+          "name": "AWGN信道容量公式",
+          "aliases": [
+            "香农公式",
+            "AWGN容量"
+          ],
+          "rag_queries": [
+            "香农公式",
+            "AWGN 信道容量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.channel.cap.bandwidth",
+          "name": "带宽与SNR折中",
+          "aliases": [
+            "带宽换功率",
+            "香农限"
+          ],
+          "rag_queries": [
+            "信道容量 带宽 信噪比",
+            "香农限"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.channel.cap.discrete",
+          "name": "离散信道容量概念",
+          "aliases": [
+            "离散无记忆信道",
+            "DMC"
+          ],
+          "rag_queries": [
+            "离散信道容量",
+            "互信息 最大化"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.channel.cap.app",
+          "name": "容量公式应用与估算",
+          "aliases": [
+            "容量计算",
+            "频谱效率界"
+          ],
+          "rag_queries": [
+            "信道容量 计算",
+            "香农公式 应用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "线性分组码与汉明码": {
+      "l1": "coding",
+      "scope": "汉明距/重量、生成/监督矩阵、伴随式译码、汉明码",
+      "aliases": [
+        "汉明码",
+        "生成矩阵",
+        "伴随式"
+      ],
+      "l3": [
+        {
+          "id": "comm.coding.block.distance",
+          "name": "汉明距与重量、检错纠错能力",
+          "aliases": [
+            "汉明距",
+            "最小距离",
+            "检错",
+            "纠错"
+          ],
+          "rag_queries": [
+            "汉明距离 检错 纠错",
+            "最小距离 d_min"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.block.matrix",
+          "name": "生成矩阵与监督矩阵",
+          "aliases": [
+            "生成矩阵",
+            "监督矩阵",
+            "G矩阵",
+            "H矩阵"
+          ],
+          "rag_queries": [
+            "生成矩阵 监督矩阵",
+            "系统码 生成矩阵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.block.syndrome",
+          "name": "伴随式译码",
+          "aliases": [
+            "伴随式",
+            "陪集译码"
+          ],
+          "rag_queries": [
+            "伴随式译码",
+            "校正子"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.hamming.code",
+          "name": "汉明码构造与参数",
+          "aliases": [
+            "汉明码",
+            "(7,4)汉明码"
+          ],
+          "rag_queries": [
+            "汉明码 构造",
+            "汉明码 监督矩阵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.block.capability",
+          "name": "线性码纠检错界与例题",
+          "aliases": [
+            "纠错能力",
+            "检错能力"
+          ],
+          "rag_queries": [
+            "线性分组码 纠错能力",
+            "d_min 与 t"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "循环码与CRC": {
+      "l1": "coding",
+      "scope": "生成多项式、系统码编码、CRC",
+      "aliases": [
+        "循环码",
+        "CRC"
+      ],
+      "l3": [
+        {
+          "id": "comm.coding.cyclic.poly",
+          "name": "生成多项式与循环性",
+          "aliases": [
+            "生成多项式",
+            "循环码"
+          ],
+          "rag_queries": [
+            "循环码 生成多项式",
+            "循环码 定义"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.coding.cyclic.sys",
+          "name": "系统码编码",
+          "aliases": [
+            "系统循环码",
+            "编码电路"
+          ],
+          "rag_queries": [
+            "循环码 系统码编码",
+            "循环码 编码"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.cyclic.syndrome",
+          "name": "循环码译码与伴随式",
+          "aliases": [
+            "循环码译码"
+          ],
+          "rag_queries": [
+            "循环码 译码",
+            "循环码 伴随式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.crc.principle",
+          "name": "CRC原理与检错",
+          "aliases": [
+            "CRC",
+            "循环冗余校验"
+          ],
+          "rag_queries": [
+            "CRC校验",
+            "循环冗余校验"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.crc.poly",
+          "name": "常用CRC生成多项式",
+          "aliases": [
+            "CRC多项式"
+          ],
+          "rag_queries": [
+            "CRC 生成多项式",
+            "CRC-16 CRC-32"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "卷积码与维特比译码": {
+      "l1": "coding",
+      "scope": "状态图/格图、编码、Viterbi、交织",
+      "aliases": [
+        "卷积码",
+        "维特比",
+        "格图",
+        "交织"
+      ],
+      "l3": [
+        {
+          "id": "comm.coding.conv.state",
+          "name": "卷积码状态图与格图",
+          "aliases": [
+            "状态图",
+            "格图",
+            "网格图"
+          ],
+          "rag_queries": [
+            "卷积码 状态图",
+            "卷积码 格图"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.coding.conv.encode",
+          "name": "卷积码编码",
+          "aliases": [
+            "约束长度",
+            "生成多项式卷积"
+          ],
+          "rag_queries": [
+            "卷积码 编码",
+            "卷积码 生成多项式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.conv.viterbi",
+          "name": "维特比译码",
+          "aliases": [
+            "维特比",
+            "Viterbi",
+            "最大似然译码"
+          ],
+          "rag_queries": [
+            "维特比译码",
+            "Viterbi算法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.coding.conv.free_dist",
+          "name": "自由距离与性能",
+          "aliases": [
+            "自由距离",
+            "编码增益"
+          ],
+          "rag_queries": [
+            "卷积码 自由距离",
+            "卷积码 性能"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.coding.interleave",
+          "name": "交织概念",
+          "aliases": [
+            "交织",
+            "解交织"
+          ],
+          "rag_queries": [
+            "交织器",
+            "交织编码"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "扩频与m序列": {
+      "l1": "spread",
+      "scope": "LFSR、m序列、直序扩频、正交码、CDMA",
+      "aliases": [
+        "扩频",
+        "m序列",
+        "CDMA"
+      ],
+      "l3": [
+        {
+          "id": "comm.spread.lfsr",
+          "name": "LFSR与线性反馈移位寄存器",
+          "aliases": [
+            "LFSR",
+            "移位寄存器"
+          ],
+          "rag_queries": [
+            "线性反馈移位寄存器",
+            "LFSR"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.spread.mseq",
+          "name": "m序列性质",
+          "aliases": [
+            "m序列",
+            "伪随机"
+          ],
+          "rag_queries": [
+            "m序列",
+            "m序列 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.dsss",
+          "name": "直序扩频DSSS",
+          "aliases": [
+            "直序扩频",
+            "DSSS",
+            "扩频增益"
+          ],
+          "rag_queries": [
+            "直接序列扩频",
+            "扩频增益"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.ortho",
+          "name": "正交码与沃尔什",
+          "aliases": [
+            "正交码",
+            "Walsh",
+            "沃尔什"
+          ],
+          "rag_queries": [
+            "正交码",
+            "Walsh码"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.cdma",
+          "name": "CDMA多址概念",
+          "aliases": [
+            "CDMA",
+            "码分多址"
+          ],
+          "rag_queries": [
+            "CDMA",
+            "码分多址"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "扰码与Rake概念": {
+      "l1": "spread",
+      "scope": "扰码/解扰、多径分集Rake",
+      "aliases": [
+        "扰码",
+        "Rake"
+      ],
+      "l3": [
+        {
+          "id": "comm.spread.scramble",
+          "name": "扰码与解扰",
+          "aliases": [
+            "扰码",
+            "解扰",
+            "加扰"
+          ],
+          "rag_queries": [
+            "扰码",
+            "解扰"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.spread.scramble.purpose",
+          "name": "扰码作用与频谱平坦化",
+          "aliases": [
+            "随机化",
+            "频谱平坦"
+          ],
+          "rag_queries": [
+            "扰码 作用",
+            "比特随机化"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.rake.idea",
+          "name": "Rake接收概念",
+          "aliases": [
+            "Rake",
+            "多径分集"
+          ],
+          "rag_queries": [
+            "Rake接收机",
+            "多径分集"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.spread.rake.finger",
+          "name": "Rake指纹与合并",
+          "aliases": [
+            "指纹",
+            "最大比合并"
+          ],
+          "rag_queries": [
+            "Rake 指纹",
+            "分集合并"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.rake.vs_eq",
+          "name": "Rake与均衡关系概念",
+          "aliases": [
+            "时域分辨",
+            "可分辨多径"
+          ],
+          "rag_queries": [
+            "Rake 可分辨多径",
+            "扩频 多径分离"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "OFDM基本原理": {
+      "l1": "spread",
+      "scope": "OFDM思想、循环前缀、峰均比、子载波间干扰",
+      "aliases": [
+        "OFDM",
+        "循环前缀",
+        "峰均比"
+      ],
+      "l3": [
+        {
+          "id": "comm.spread.ofdm.idea",
+          "name": "OFDM基本思想",
+          "aliases": [
+            "OFDM",
+            "正交频分复用"
+          ],
+          "rag_queries": [
+            "OFDM原理",
+            "正交频分复用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "comm.spread.ofdm.cp",
+          "name": "循环前缀",
+          "aliases": [
+            "循环前缀",
+            "CP",
+            "保护间隔"
+          ],
+          "rag_queries": [
+            "OFDM 循环前缀",
+            "循环前缀 作用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.ofdm.papr",
+          "name": "峰均比PAPR",
+          "aliases": [
+            "峰均比",
+            "PAPR"
+          ],
+          "rag_queries": [
+            "OFDM 峰均比",
+            "PAPR"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.ofdm.ici",
+          "name": "子载波间干扰",
+          "aliases": [
+            "ICI",
+            "子载波干扰",
+            "正交性破坏"
+          ],
+          "rag_queries": [
+            "OFDM 子载波间干扰",
+            "ICI"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "comm.spread.ofdm.fft",
+          "name": "IFFT/FFT实现",
+          "aliases": [
+            "IFFT",
+            "FFT",
+            "调制解调实现"
+          ],
+          "rag_queries": [
+            "OFDM IFFT",
+            "OFDM FFT实现"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,731 @@
+"""Teaching Harness Agent — ReAct loop + memory blocks + 结构化 transcript。
+
+原理（Claude Code 式 dumb loop + Letta-lite blocks）:
+  用户消息 → 组装 system(blocks+reminder) + transcript
+           → while tool_calls and step < MAX_STEPS:
+                 执行工具 → observation 回灌 → 刷新 reminder
+           → 纯文本回复 → 落盘 transcript / blocks
+"""
+from __future__ import annotations
+
+import json
+import logging
+from typing import Callable, Optional
+
+from config import DEEPSEEK_API_KEY, DEEPSEEK_API_BASE, MODEL_PRO
+from agent.tools import (
+    generate_question,
+    grade_answer,
+    show_solution,
+    adjust_difficulty,
+    build_report,
+    github_push,
+    find_record_entry,
+    list_recent_entries,
+    note_weak_point,
+    get_learner_snapshot,
+    list_exam_bank,
+    get_exam_paper,
+    submit_exam_answer_md,
+)
+from agent.memory_blocks import MemoryBlocks
+from agent.transcript import Transcript
+
+logger = logging.getLogger(__name__)
+
+MAX_TOOL_STEPS = 6
+ProgressCallback = Callable[[str], None]
+
+SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教学。
+
+你有以下工具可用。根据用户需求选最合适的工具，不需要工具就直接回复。
+同一次回复里可以连续多步调用工具（例如先 list_recent_entries 再 find_record_entry），
+直到信息足够再给用户最终自然语言答复。
+
+## 工具列表
+
+1. generate_question — 出一题。用户说"出题""来一题""数学""通信""换一道同类题""出一道数学题巩固""出一道通信题巩固"等时调用。
+   参数: subject(math/comm/review), kp_hint(可选,指定知识点)
+   工具返回原始题目内容，直接将其作为回复发给用户，开头加一句自然引导
+   「换一道同类题」→ 用当前 active_question 的 subject（缺省 math），kp_hint 尽量沿用当前知识点
+
+2. grade_answer — 批改用户的作答。用户看起来在回答问题或提交答案时调用。
+   参数: last_question(可传空), user_answer(用户的回答)
+
+2b. list_exam_bank / get_exam_paper / submit_exam_answer_md — 双周检测卷题库。
+   用户问「双周卷」「试卷库」「交卷」或间隔很久再讨论某份卷时：先 list_exam_bank，再 get_exam_paper。
+   用户粘贴整份答卷 md 时调用 submit_exam_answer_md。
+   **重要**：批改「最近推送」时 last_question 必须传空字符串 ""，服务端会自动读取完整题干；
+   禁止把系统提示里的摘要/片段当作 last_question 传入。只有用户明确在答更早一题、
+   且你已用 find_record_entry 取到全文时，才把该全文传入 last_question。
+
+3. show_solution — 读题库最新题目 → 调 LLM 现做解答。用户说"答案""解析""不会做""我不会做""要解析""这题咋解"等时调用。
+   返回格式:
+   - "题目：...\n\n解答：..." → 直接发给用户
+   - "NO_ENTRY" → 题库为空，让用户先出题
+   - "SOLUTION_FAILED|{题目}" → LLM 生成失败，可以重试
+
+4. adjust_difficulty — **仅**当用户说「太难」「太难了」「太简单」「简单点」「难点」时调用（调科目整体难度偏好）。
+   参数: subject(math/comm/review), level(basic/intermediate/challenge)
+   太难/太难了→basic, 太简单→challenge
+
+5. note_weak_point — 用户说某**知识点/章节**薄弱、要加强、不熟时调用（如「线性代数弱」）。
+   参数: subject(math/comm), kp(知识点名), reason(可选用户原话)
+   **不要**用 adjust_difficulty 代替本工具
+
+6. build_report — 生成学习报告。用户说"周报""报告"时调用。
+   参数: days(天数,默认7)
+
+7. github_push — 推送本地项目到 GitHub。用户说"推送到 GitHub""上传 Git""push"时调用。
+   参数: repo_path(仓库路径，空=推自身), commit_msg(提交信息，空=自动)
+
+8. list_recent_entries — 列出最近 N 天题目索引（不含正文）。用户问"最近出过什么题"时先调这个。
+   参数: days(天数,默认7)
+
+9. find_record_entry — 按日期取某条题目全文。先 list_recent_entries 看索引，再对本工具取正文。
+   参数: date(YYYY-MM-DD 必填), num(题号,可选,0=该日最后一条)
+
+10. get_learner_snapshot — 查看当前学习指标快照（权重/BKT/答题统计）。用户问「我现在什么水平」「指标怎么样」时调用。
+    参数: days(天数,默认7)
+
+## 示例
+
+用户: 来一道傅里叶的题
+→ generate_question(subject="math", kp_hint="傅里叶级数")
+
+用户: 答案是42
+→ 看起来在回答 → grade_answer(last_question="", user_answer="42")
+
+用户: 太难了
+→ adjust_difficulty(subject="math", level="basic")
+
+用户: 我不会做
+→ show_solution()
+
+用户: 要解析
+→ show_solution()
+
+用户: 换一道同类题
+→ generate_question(subject=当前科目, kp_hint=当前知识点或空)
+
+用户: 出一道数学题巩固
+→ generate_question(subject="math")
+
+用户: 出一道通信题巩固
+→ generate_question(subject="comm")
+
+用户: 我线性代数比较弱
+→ note_weak_point(subject="math", kp="线性代数", reason="用户自述线性代数薄弱")
+
+用户: 我现在水平怎么样
+→ get_learner_snapshot(days=7)
+
+用户: 答案是什么
+→ show_solution()
+
+用户: 最近出过什么题
+→ list_recent_entries(days=7)
+
+用户: 今天早上那道多元函数
+→ list_recent_entries(days=3) 再 find_record_entry(date="今天日期", num=对应题号)
+
+## 规则
+- **每次调用工具后，必须用自然语言告诉用户：做了什么、对用户意味着什么、接下来会怎样；禁止静默结束**
+- 工具返回里的数字/权重变化要用口语解释，不要暴露工具名称和参数
+- 回答要简短自然，像真人老师
+- 系统提示中的 Core Memory Blocks / 学习者摘要每轮已注入；工具执行后请据此确认结果
+- 跨时段讨论旧题时：先 list_recent_entries，再 find_record_entry，不要猜题目内容
+- 用户追问「结果呢」「查到了吗」「然后呢」：先看对话历史与 blocks；禁止只说「看不到之前对话」就结束
+- 调用查题/批改工具后，必须在同一条回复里给出完整结果，禁止只说「我来提取/马上查」而不输出正文
+- **书写格式（强制）**：行内公式只用 `$...$`；独立公式块单独成行用 `$$...$$`；禁止 \\(...\\)、\\[...\\]；选择题每选项单独一行 `(A)...`；段落之间空一行"""
+
+
+# 工具进度文案（钉钉中间态）
+_TOOL_PROGRESS = {
+    "list_recent_entries": "正在查题库索引…",
+    "find_record_entry": "正在提取题目全文…",
+    "grade_answer": "正在批改…",
+    "generate_question": "正在出题…",
+    "show_solution": "正在生成解答…",
+    "build_report": "正在生成报告…",
+    "get_learner_snapshot": "正在读取学习指标…",
+    "note_weak_point": "正在记录薄弱点…",
+    "adjust_difficulty": "正在调整难度…",
+    "github_push": "正在推送 GitHub…",
+}
+
+
+class TeachingAgent:
+    """Harness Agent：多步 tool loop + memory blocks + 结构化 transcript。"""
+
+    def __init__(self, bot=None):
+        self.bot = bot
+        self.blocks = MemoryBlocks()
+        self.transcript = Transcript()
+        self.last_tools_used: list[str] = []
+        # 兼容旧调用：_memory 指向 transcript 消息（只读视图）
+        self._tools = self._build_tool_schemas()
+        # 启动时若有 last_push 则同步 active_question
+        if not self.blocks._data["active_question"].get("preview"):
+            self.blocks.refresh_from_last_push()
+            self.blocks.refresh_learner_digest()
+            self.blocks.save()
+
+    @property
+    def _memory(self) -> list:
+        """兼容旧代码读取对话记忆。"""
+        return self.transcript.messages
+
+    def _build_tool_schemas(self) -> list:
+        return [
+            {
+                "type": "function",
+                "function": {
+                    "name": "generate_question",
+                    "description": "生成一道题目并推送给用户",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm", "review"],
+                                "description": "科目：math=数学一, comm=通信原理, review=错题复盘",
+                            },
+                            "kp_hint": {
+                                "type": "string",
+                                "description": "可选知识点提示，如傅里叶级数",
+                            },
+                        },
+                        "required": ["subject"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "grade_answer",
+                    "description": "批改用户对最近题目的作答",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "last_question": {
+                                "type": "string",
+                                "description": "最近推送的题目全文",
+                            },
+                            "user_answer": {
+                                "type": "string",
+                                "description": "用户的作答内容",
+                            },
+                        },
+                        "required": ["last_question", "user_answer"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "show_solution",
+                    "description": "显示最近题目的解答和解题思路",
+                    "parameters": {"type": "object", "properties": {}},
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "adjust_difficulty",
+                    "description": "仅当用户嫌题目太难或太简单时，调整科目整体出题难度偏好",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm", "review"],
+                                "description": "科目",
+                            },
+                            "level": {
+                                "type": "string",
+                                "enum": ["basic", "intermediate", "challenge"],
+                                "description": "难度级别：basic=基础, intermediate=中等, challenge=挑战",
+                            },
+                        },
+                        "required": ["subject", "level"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "note_weak_point",
+                    "description": "用户自述某知识点/章节薄弱、要加强时，提高该知识点出题权重并更新BKT",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm"],
+                                "description": "科目",
+                            },
+                            "kp": {
+                                "type": "string",
+                                "description": "知识点名称，如线性代数、极限与连续",
+                            },
+                            "reason": {
+                                "type": "string",
+                                "description": "用户原话或补充说明，可选",
+                            },
+                        },
+                        "required": ["subject", "kp"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "build_report",
+                    "description": "生成学习报告/周报",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "days": {
+                                "type": "integer",
+                                "description": "统计天数，默认7",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "github_push",
+                    "description": "推送本地项目到 GitHub。用户说推送到 GitHub、上传 GitHub、push、git push 时调用",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "repo_path": {
+                                "type": "string",
+                                "description": "仓库路径，空则推送 teaching-cultivator 自身",
+                            },
+                            "commit_msg": {
+                                "type": "string",
+                                "description": "提交信息，空则自动生成",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "list_recent_entries",
+                    "description": "列出最近N天题目索引（日期/题号/科目/知识点），不含正文。跨时段讨论前先调用",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "days": {
+                                "type": "integer",
+                                "description": "回溯天数，默认7",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "find_record_entry",
+                    "description": "按日期取某条题目全文（含解答）。先 list_recent_entries 再调用",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "date": {
+                                "type": "string",
+                                "description": "日期 YYYY-MM-DD",
+                            },
+                            "num": {
+                                "type": "integer",
+                                "description": "当天题号，0或不传=该日最后一条",
+                            },
+                        },
+                        "required": ["date"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_learner_snapshot",
+                    "description": "查看当前学习指标快照（权重、BKT掌握度、近7天答题统计）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "days": {
+                                "type": "integer",
+                                "description": "答题统计回溯天数，默认7",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "list_exam_bank",
+                    "description": "检索双周检测卷题库目录（跨记忆周期仍可查）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "可选关键词：科目、日期、paper_id",
+                            },
+                            "limit": {"type": "integer", "description": "最多条数，默认20"},
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_exam_paper",
+                    "description": "按 paper_id 取双周试卷 Markdown 全文",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "paper_id": {
+                                "type": "string",
+                                "description": "如 2026-08-03_math",
+                            },
+                        },
+                        "required": ["paper_id"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "submit_exam_answer_md",
+                    "description": "提交双周答卷 Markdown 全文并批改",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "md_text": {
+                                "type": "string",
+                                "description": "用户答卷 Markdown 全文",
+                            },
+                            "paper_id": {
+                                "type": "string",
+                                "description": "可选；答卷内已有 paper_id 时可空",
+                            },
+                        },
+                        "required": ["md_text"],
+                    },
+                },
+            },
+        ]
+
+    def _call_llm(self, messages: list) -> dict:
+        """调 DeepSeek V4 Pro + thinking（带工具定义）。
+
+        thinking 模式下若有 tool_calls，必须把 reasoning_content 回传，
+        否则后续请求会 400。
+        """
+        import requests
+
+        payload = {
+            "model": MODEL_PRO,
+            "messages": messages,
+            "tools": self._tools,
+            "tool_choice": "auto",
+            "stream": False,
+            "thinking": {"type": "enabled"},
+            "reasoning_effort": "max",
+        }
+        try:
+            resp = requests.post(
+                f"{DEEPSEEK_API_BASE}/chat/completions",
+                headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
+                json=payload,
+                timeout=300,
+                verify=False,
+            )
+            if not resp.ok:
+                detail = (resp.text or "")[:240].replace("\n", " ")
+                logger.error("DeepSeek %s: %s", resp.status_code, detail)
+                return {
+                    "choices": [{
+                        "message": {
+                            "content": (
+                                "刚才模型接口异常，我这边已记下。请再发一句，"
+                                "或直接说「重发今晚的题」。"
+                            )
+                        }
+                    }]
+                }
+            return resp.json()
+        except Exception as e:
+            logger.error("DeepSeek request failed: %s", e)
+            return {
+                "choices": [{
+                    "message": {
+                        "content": "网络或模型暂时不可用，请稍后再试一句。"
+                    }
+                }]
+            }
+
+    def clear_memory(self):
+        """兼容旧接口：清空 transcript（推送路径应改用 on_new_push）。"""
+        self.transcript.clear()
+
+    def on_new_push(self, content: str, *, subject: str = "", kp: str = "") -> None:
+        """新推送：更新 core blocks + 压缩旧对话，不清空记忆。"""
+        self.blocks.on_new_push(content, subject=subject, kp=kp)
+        self.transcript.condense(keep_recent=4)
+        logger.info(
+            "on_new_push: phase=%s transcript_msgs=%d",
+            self.blocks.phase,
+            len(self.transcript.messages),
+        )
+
+    def _build_system_content(self, *, reminder: str = "") -> str:
+        """system = 角色 + core blocks + 可选 reminder。"""
+        parts = [SYSTEM_PROMPT, "\n\n", self.blocks.format_blocks_for_system()]
+        # bot 内存中的近题全文（2h）仍注入，便于批改
+        if self.bot and getattr(self.bot, "_last_question", None):
+            import time as _time
+
+            elapsed = _time.time() - getattr(self.bot, "_last_question_time", 0)
+            if elapsed < 7200:
+                q = self.bot._last_question
+                parts.append(
+                    f"\n\n最近推送的题目（2小时内，全文 {len(q)} 字）：\n{q}\n\n"
+                    "用户可能是在回答这道题。"
+                    "批改时 grade_answer 的 last_question 请传空，由工具读服务端全文；"
+                    "不要声称题目被截断。"
+                )
+        if reminder:
+            parts.append("\n\n" + reminder)
+        return "".join(parts)
+
+    @staticmethod
+    def _fallback_after_tools(tool_results: list[str]) -> str:
+        if not tool_results:
+            return "好的，已经处理完了。有别的想问随时说。"
+        body = "\n".join(tool_results[:3])
+        return f"好的，帮你处理好了：\n\n{body}"
+
+    @staticmethod
+    def _looks_like_empty_promise(reply: str) -> bool:
+        if not reply or len(reply) > 120:
+            return False
+        markers = ("我来提取", "马上查", "我来查", "稍等", "让我查", "我去查", "提取完整")
+        return any(m in reply for m in markers)
+
+    def handle(
+        self,
+        user_text: str,
+        on_progress: Optional[ProgressCallback] = None,
+    ) -> str:
+        """处理一条用户消息；可选 on_progress 发钉钉中间态。"""
+        self.last_tools_used: list[str] = []
+
+        # 每轮刷新 digest（轻量）
+        try:
+            self.blocks.refresh_learner_digest()
+        except Exception:
+            pass
+
+        progress_count = [0]  # 可变计数，限 2 次
+
+        def _progress(text: str) -> None:
+            if not on_progress or progress_count[0] >= 2:
+                return
+            try:
+                on_progress(text)
+                progress_count[0] += 1
+            except Exception as e:
+                logger.warning("on_progress failed: %s", e)
+
+        turn_msgs: list[dict] = []  # 本 turn 写入 transcript 的消息
+        user_msg = {"role": "user", "content": user_text}
+        turn_msgs.append(user_msg)
+
+        messages: list[dict] = [
+            {"role": "system", "content": self._build_system_content(
+                reminder=self.blocks.format_reminder(step=0)
+            )},
+        ]
+        messages.extend(self.transcript.for_llm())
+        messages.append(user_msg)
+
+        tool_raw_results: list[str] = []
+        reply = ""
+        steps_used = 0
+
+        for step in range(1, MAX_TOOL_STEPS + 1):
+            steps_used = step
+            resp = self._call_llm(messages)
+            msg = resp["choices"][0]["message"]
+            tool_calls = msg.get("tool_calls")
+
+            if not tool_calls:
+                reply = (msg.get("content") or "").strip()
+                if reply:
+                    turn_msgs.append({"role": "assistant", "content": reply})
+                break
+
+            # 有 tool_calls → 执行
+            assistant_msg: dict = {
+                "role": "assistant",
+                "content": msg.get("content") or "",
+                "tool_calls": tool_calls,
+            }
+            if msg.get("reasoning_content"):
+                assistant_msg["reasoning_content"] = msg["reasoning_content"]
+            messages.append(assistant_msg)
+            turn_msgs.append({
+                "role": "assistant",
+                "content": assistant_msg["content"],
+                "tool_calls": tool_calls,
+            })
+
+            last_tool_names: list[str] = []
+            for tc in tool_calls:
+                name = tc["function"]["name"]
+                last_tool_names.append(name)
+                self.last_tools_used.append(name)
+                hint = _TOOL_PROGRESS.get(name)
+                if hint:
+                    _progress(hint)
+                try:
+                    args = json.loads(tc["function"]["arguments"] or "{}")
+                except json.JSONDecodeError:
+                    args = {}
+                result = self._run_tool(name, args)
+                tool_raw_results.append(result)
+                self.blocks.apply_tool_effects(name)
+                tool_msg = {
+                    "role": "tool",
+                    "tool_call_id": tc["id"],
+                    "content": result,
+                }
+                messages.append(tool_msg)
+                turn_msgs.append(tool_msg)
+
+            # 刷新 reminder（轻量，不整份重塞 snapshot）
+            reminder = self.blocks.format_reminder(
+                last_tools=last_tool_names, step=step
+            )
+            messages.append({"role": "system", "content": reminder})
+
+            # 若已是最后一步且还会再要工具，强制收束
+            if step == MAX_TOOL_STEPS:
+                # 再调一次但提示必须交付；若仍空则 fallback
+                messages.append({
+                    "role": "system",
+                    "content": "步骤已达上限。请立即用自然语言汇总已有工具结果交付用户，禁止再调工具。",
+                })
+                resp = self._call_llm(messages)
+                msg = resp["choices"][0]["message"]
+                reply = (msg.get("content") or "").strip()
+                if not reply or self._looks_like_empty_promise(reply):
+                    reply = self._fallback_after_tools(tool_raw_results)
+                else:
+                    # 若仍返回 tool_calls，忽略并 fallback
+                    if msg.get("tool_calls"):
+                        reply = self._fallback_after_tools(tool_raw_results)
+                turn_msgs.append({"role": "assistant", "content": reply})
+                break
+        else:
+            # for 正常结束且未 break（不应发生）
+            reply = self._fallback_after_tools(tool_raw_results)
+            turn_msgs.append({"role": "assistant", "content": reply})
+
+        # 空承诺 / 空回复兜底
+        if tool_raw_results:
+            if not reply:
+                reply = self._fallback_after_tools(tool_raw_results)
+                # 替换 turn 末尾 assistant
+                if turn_msgs and turn_msgs[-1].get("role") == "assistant" and not turn_msgs[-1].get("tool_calls"):
+                    turn_msgs[-1]["content"] = reply
+                else:
+                    turn_msgs.append({"role": "assistant", "content": reply})
+            elif self._looks_like_empty_promise(reply):
+                reply = self._fallback_after_tools(tool_raw_results)
+                if turn_msgs and turn_msgs[-1].get("role") == "assistant":
+                    turn_msgs[-1]["content"] = reply
+
+        # 落盘
+        if reply or tool_raw_results:
+            self.transcript.append_messages(turn_msgs)
+            self.blocks.save()
+
+        logger.info(
+            "handle done: steps=%d tools=%d reply_len=%d phase=%s",
+            steps_used,
+            len(tool_raw_results),
+            len(reply or ""),
+            self.blocks.phase,
+        )
+        return reply
+
+    def _run_tool(self, name: str, args: dict) -> str:
+        """执行工具调用，返回文本结果。"""
+        try:
+            if name == "generate_question":
+                content = generate_question(args.get("subject", "math"), args.get("kp_hint", ""))
+                if self.bot and content and not content.startswith("【"):
+                    self.bot._record_push(content)
+                    # 同步 blocks（subject 从参数）
+                    self.blocks.set_active_question(
+                        content,
+                        source="last_push",
+                        subject=args.get("subject", "math"),
+                        kp=args.get("kp_hint", ""),
+                    )
+                return content
+            elif name == "grade_answer":
+                return grade_answer(
+                    args.get("last_question", "") or "",
+                    args.get("user_answer", ""),
+                )
+            elif name == "show_solution":
+                ans = show_solution()
+                return ans or "当前题目暂无解答记录"
+            elif name == "adjust_difficulty":
+                return adjust_difficulty(
+                    args.get("subject", "math"),
+                    args.get("level", "intermediate"),
+                )
+            elif name == "build_report":
+                return build_report(args.get("days", 7))
+            elif name == "github_push":
+                return github_push(
+                    args.get("repo_path", ""),
+                    args.get("commit_msg", ""),
+                )
+            elif name == "list_recent_entries":
+                return list_recent_entries(args.get("days", 7))
+            elif name == "find_record_entry":
+                return find_record_entry(args.get("date", ""), args.get("num", 0))
+            elif name == "note_weak_point":
+                return note_weak_point(
+                    args.get("subject", "math"),
+                    args.get("kp", ""),
+                    args.get("reason", ""),
+                )
+            elif name == "get_learner_snapshot":
+                return get_learner_snapshot(args.get("days", 7))
+            elif name == "list_exam_bank":
+                return list_exam_bank(args.get("query", ""), args.get("limit", 20))
+            elif name == "get_exam_paper":
+                return get_exam_paper(args.get("paper_id", ""))
+            elif name == "submit_exam_answer_md":
+                return submit_exam_answer_md(
+                    args.get("md_text", ""),
+                    paper_id=args.get("paper_id", ""),
+                )
+            else:
+                return f"未知工具：{name}"
+        except Exception as e:
+            return f"工具执行失败：{e}"

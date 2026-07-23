@@ -1,0 +1,2835 @@
+{
+  "subject": "math",
+  "syllabus": "考研数学一-2026",
+  "l1": {
+    "calc": {
+      "name": "高等数学",
+      "weight": 0.6
+    },
+    "linalg": {
+      "name": "线性代数",
+      "weight": 0.2
+    },
+    "prob": {
+      "name": "概率论与数理统计",
+      "weight": 0.2
+    }
+  },
+  "kps": {
+    "函数极限与连续": {
+      "l1": "calc",
+      "scope": "极限定义与计算、无穷小比较、间断点、闭区间连续性质",
+      "aliases": [
+        "极限",
+        "连续",
+        "洛必达",
+        "等价无穷小"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.limit.def",
+          "name": "极限定义与ε语言",
+          "aliases": [
+            "极限定义",
+            "ε-N",
+            "ε-δ"
+          ],
+          "rag_queries": [
+            "极限定义 ε",
+            "数列极限 ε-N"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.limit.compute",
+          "name": "极限计算（通法）",
+          "aliases": [
+            "求极限",
+            "极限计算"
+          ],
+          "rag_queries": [
+            "求极限 方法",
+            "未定式 极限"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.limit.equiv",
+          "name": "等价无穷小与阶比较",
+          "aliases": [
+            "等价无穷小",
+            "无穷小比较"
+          ],
+          "rag_queries": [
+            "等价无穷小 替换",
+            "无穷小阶"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.limit.lhopital",
+          "name": "洛必达法则适用条件",
+          "aliases": [
+            "洛必达"
+          ],
+          "rag_queries": [
+            "洛必达法则 条件",
+            "0/0 ∞/∞"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.cont.discontinuity",
+          "name": "间断点分类",
+          "aliases": [
+            "间断点",
+            "可去间断",
+            "跳跃间断"
+          ],
+          "rag_queries": [
+            "间断点 分类",
+            "第一类间断点"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.cont.closed",
+          "name": "闭区间连续性质",
+          "aliases": [
+            "闭区间连续",
+            "最值定理",
+            "介值定理"
+          ],
+          "rag_queries": [
+            "闭区间上连续函数性质",
+            "介值定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "一元微分学（求导与作图）": {
+      "l1": "calc",
+      "scope": "导数/微分、各类求导法则、单调极值凹凸渐近线、最值应用",
+      "aliases": [
+        "导数",
+        "求导",
+        "极值",
+        "凹凸",
+        "作图"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.diff.def",
+          "name": "导数与微分定义",
+          "aliases": [
+            "导数定义",
+            "微分",
+            "可导性"
+          ],
+          "rag_queries": [
+            "导数定义",
+            "可导 连续"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.diff.rules",
+          "name": "求导法则与隐函数参数方程",
+          "aliases": [
+            "求导法则",
+            "隐函数求导",
+            "参数方程求导"
+          ],
+          "rag_queries": [
+            "复合函数求导",
+            "隐函数求导 参数方程"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.diff.mono_ext",
+          "name": "单调性与极值",
+          "aliases": [
+            "单调性",
+            "极值",
+            "驻点"
+          ],
+          "rag_queries": [
+            "函数单调性 导数",
+            "极值判定 一阶二阶"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.diff.concavity",
+          "name": "凹凸性与渐近线",
+          "aliases": [
+            "凹凸",
+            "拐点",
+            "渐近线"
+          ],
+          "rag_queries": [
+            "凹凸性 拐点",
+            "渐近线 求法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.diff.opt",
+          "name": "最值应用题",
+          "aliases": [
+            "最值",
+            "应用题"
+          ],
+          "rag_queries": [
+            "函数最值 应用",
+            "导数 实际问题最值"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "微分中值定理与泰勒": {
+      "l1": "calc",
+      "scope": "Rolle/Lagrange/Cauchy、Taylor公式、证明题",
+      "aliases": [
+        "中值定理",
+        "罗尔",
+        "拉格朗日",
+        "柯西",
+        "泰勒"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.mvt.rolle",
+          "name": "罗尔定理",
+          "aliases": [
+            "罗尔",
+            "Rolle"
+          ],
+          "rag_queries": [
+            "罗尔定理",
+            "Rolle 中值定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.mvt.lagrange",
+          "name": "拉格朗日中值定理",
+          "aliases": [
+            "拉格朗日",
+            "Lagrange"
+          ],
+          "rag_queries": [
+            "拉格朗日中值定理",
+            "微分中值定理 证明"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.mvt.cauchy",
+          "name": "柯西中值定理",
+          "aliases": [
+            "柯西中值",
+            "Cauchy"
+          ],
+          "rag_queries": [
+            "柯西中值定理",
+            "Cauchy 中值定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.taylor.formula",
+          "name": "泰勒公式与余项",
+          "aliases": [
+            "泰勒公式",
+            "佩亚诺余项",
+            "拉格朗日余项"
+          ],
+          "rag_queries": [
+            "泰勒公式 余项",
+            "麦克劳林展开"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.taylor.proof",
+          "name": "中值定理与泰勒证明题",
+          "aliases": [
+            "证明题",
+            "中值证明"
+          ],
+          "rag_queries": [
+            "中值定理 证明题",
+            "泰勒公式 证明"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "一元积分学（计算）": {
+      "l1": "calc",
+      "scope": "不定/定积分、换元分部、有理/三角/无理积分",
+      "aliases": [
+        "不定积分",
+        "定积分",
+        "换元",
+        "分部积分"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.int.indef",
+          "name": "不定积分基本计算",
+          "aliases": [
+            "不定积分",
+            "原函数"
+          ],
+          "rag_queries": [
+            "不定积分 计算",
+            "基本积分公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.int.def",
+          "name": "定积分定义与性质",
+          "aliases": [
+            "定积分",
+            "牛顿莱布尼茨"
+          ],
+          "rag_queries": [
+            "定积分 定义",
+            "牛顿-莱布尼茨公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.int.sub",
+          "name": "换元积分法",
+          "aliases": [
+            "换元",
+            "第一类换元",
+            "第二类换元"
+          ],
+          "rag_queries": [
+            "换元积分",
+            "定积分换元"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.int.parts",
+          "name": "分部积分法",
+          "aliases": [
+            "分部积分"
+          ],
+          "rag_queries": [
+            "分部积分",
+            "定积分分部积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.int.special",
+          "name": "有理三角无理积分",
+          "aliases": [
+            "有理函数积分",
+            "三角有理式",
+            "无理积分"
+          ],
+          "rag_queries": [
+            "有理函数积分",
+            "三角代换 积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "变限积分与积分应用": {
+      "l1": "calc",
+      "scope": "积分上限函数、几何/物理应用、平均值",
+      "aliases": [
+        "变限",
+        "积分上限",
+        "面积",
+        "体积"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.varlim.fund",
+          "name": "变限积分求导",
+          "aliases": [
+            "变限积分",
+            "积分上限函数"
+          ],
+          "rag_queries": [
+            "变上限积分求导",
+            "积分上限函数 导数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.varlim.eq",
+          "name": "变限积分方程与性质",
+          "aliases": [
+            "变限方程",
+            "积分方程"
+          ],
+          "rag_queries": [
+            "变限积分 方程",
+            "含参变限积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.app.area",
+          "name": "平面图形面积",
+          "aliases": [
+            "面积",
+            "平面图形"
+          ],
+          "rag_queries": [
+            "定积分 面积",
+            "曲线围成面积"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.app.volume",
+          "name": "旋转体体积与弧长",
+          "aliases": [
+            "体积",
+            "旋转体",
+            "弧长"
+          ],
+          "rag_queries": [
+            "旋转体体积",
+            "曲线弧长 定积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.app.phys",
+          "name": "物理应用与平均值",
+          "aliases": [
+            "平均值",
+            "物理应用",
+            "功"
+          ],
+          "rag_queries": [
+            "定积分 平均值",
+            "定积分 物理应用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "反常积分": {
+      "l1": "calc",
+      "scope": "反常积分定义、比较判别法、计算",
+      "aliases": [
+        "广义积分",
+        "敛散性"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.improp.def",
+          "name": "反常积分定义与类型",
+          "aliases": [
+            "广义积分",
+            "无穷限",
+            "瑕积分"
+          ],
+          "rag_queries": [
+            "反常积分 定义",
+            "瑕积分 无穷限"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.improp.compare",
+          "name": "比较判别法",
+          "aliases": [
+            "比较判别",
+            "敛散性"
+          ],
+          "rag_queries": [
+            "反常积分 比较判别法",
+            "反常积分 敛散性"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.improp.limit",
+          "name": "极限比较与柯西判别",
+          "aliases": [
+            "极限比较",
+            "柯西判别"
+          ],
+          "rag_queries": [
+            "反常积分 极限比较",
+            "柯西审敛法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.improp.compute",
+          "name": "反常积分计算",
+          "aliases": [
+            "反常积分计算"
+          ],
+          "rag_queries": [
+            "反常积分 计算",
+            "广义积分 求值"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.improp.abs",
+          "name": "绝对收敛与条件收敛",
+          "aliases": [
+            "绝对收敛",
+            "条件收敛"
+          ],
+          "rag_queries": [
+            "反常积分 绝对收敛",
+            "条件收敛 反常积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "向量代数与空间解析几何": {
+      "l1": "calc",
+      "scope": "向量运算、平面直线、曲面曲线、二次曲面",
+      "aliases": [
+        "空间几何",
+        "直线平面",
+        "二次曲面",
+        "空间解析几何"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.vec.ops",
+          "name": "向量运算与数量积向量积",
+          "aliases": [
+            "数量积",
+            "向量积",
+            "混合积"
+          ],
+          "rag_queries": [
+            "向量 数量积",
+            "向量积 混合积"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.geom.plane",
+          "name": "平面方程",
+          "aliases": [
+            "平面",
+            "法向量"
+          ],
+          "rag_queries": [
+            "平面方程",
+            "点法式 平面"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.geom.line",
+          "name": "空间直线",
+          "aliases": [
+            "直线",
+            "对称式",
+            "参数式"
+          ],
+          "rag_queries": [
+            "空间直线方程",
+            "直线与平面位置关系"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.geom.surf",
+          "name": "曲面与空间曲线",
+          "aliases": [
+            "曲面",
+            "空间曲线",
+            "投影"
+          ],
+          "rag_queries": [
+            "空间曲面方程",
+            "空间曲线 投影"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.geom.quadric",
+          "name": "二次曲面",
+          "aliases": [
+            "二次曲面",
+            "椭球面",
+            "柱面"
+          ],
+          "rag_queries": [
+            "二次曲面 标准方程",
+            "旋转曲面"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "多元函数微分学": {
+      "l1": "calc",
+      "scope": "偏导/全微分、复合与隐函数、方向导数梯度、极值",
+      "aliases": [
+        "偏导",
+        "全微分",
+        "梯度",
+        "多元极值",
+        "多元"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.multi.partial",
+          "name": "偏导数与全微分",
+          "aliases": [
+            "偏导",
+            "全微分",
+            "可微"
+          ],
+          "rag_queries": [
+            "偏导数 定义",
+            "全微分 可微条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.multi.chain",
+          "name": "复合函数与隐函数求导",
+          "aliases": [
+            "复合函数偏导",
+            "隐函数偏导"
+          ],
+          "rag_queries": [
+            "多元复合函数求导",
+            "隐函数存在定理 偏导"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.multi.dirgrad",
+          "name": "方向导数与梯度",
+          "aliases": [
+            "方向导数",
+            "梯度"
+          ],
+          "rag_queries": [
+            "方向导数 梯度",
+            "梯度方向"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.multi.ext",
+          "name": "无条件极值",
+          "aliases": [
+            "多元极值",
+            "海塞矩阵"
+          ],
+          "rag_queries": [
+            "多元函数极值",
+            "极值充分条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.multi.lagrange",
+          "name": "条件极值与拉格朗日乘数",
+          "aliases": [
+            "条件极值",
+            "拉格朗日乘数法"
+          ],
+          "rag_queries": [
+            "拉格朗日乘数法",
+            "条件极值"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "二重积分与三重积分": {
+      "l1": "calc",
+      "scope": "重积分概念与计算（直角/极/柱/球）、简单应用",
+      "aliases": [
+        "二重积分",
+        "三重积分",
+        "极坐标"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.dbl.concept",
+          "name": "二重积分概念与性质",
+          "aliases": [
+            "二重积分",
+            "积分区域"
+          ],
+          "rag_queries": [
+            "二重积分 定义",
+            "二重积分 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.dbl.cart",
+          "name": "直角坐标计算二重积分",
+          "aliases": [
+            "累次积分",
+            "交换次序"
+          ],
+          "rag_queries": [
+            "二重积分 直角坐标",
+            "交换积分次序"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.dbl.polar",
+          "name": "极坐标二重积分",
+          "aliases": [
+            "极坐标",
+            "雅可比"
+          ],
+          "rag_queries": [
+            "二重积分 极坐标",
+            "极坐标变换"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.tpl.compute",
+          "name": "三重积分柱坐标球坐标",
+          "aliases": [
+            "三重积分",
+            "柱坐标",
+            "球坐标"
+          ],
+          "rag_queries": [
+            "三重积分 柱坐标",
+            "三重积分 球坐标"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.multi.int.app",
+          "name": "重积分简单应用",
+          "aliases": [
+            "质心",
+            "转动惯量",
+            "体积"
+          ],
+          "rag_queries": [
+            "二重积分 应用",
+            "三重积分 体积"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "曲线积分与格林公式": {
+      "l1": "calc",
+      "scope": "两类曲线积分、格林公式、路径无关",
+      "aliases": [
+        "曲线积分",
+        "格林"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.line.first",
+          "name": "第一类曲线积分",
+          "aliases": [
+            "对弧长曲线积分"
+          ],
+          "rag_queries": [
+            "第一类曲线积分",
+            "对弧长的曲线积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.line.second",
+          "name": "第二类曲线积分",
+          "aliases": [
+            "对坐标曲线积分"
+          ],
+          "rag_queries": [
+            "第二类曲线积分",
+            "对坐标的曲线积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.green.formula",
+          "name": "格林公式",
+          "aliases": [
+            "格林"
+          ],
+          "rag_queries": [
+            "格林公式",
+            "Green 公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.line.pathindep",
+          "name": "路径无关与原函数",
+          "aliases": [
+            "路径无关",
+            "全微分条件"
+          ],
+          "rag_queries": [
+            "曲线积分 路径无关",
+            "全微分 原函数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.line.compute",
+          "name": "曲线积分计算技巧",
+          "aliases": [
+            "补线",
+            "分段计算"
+          ],
+          "rag_queries": [
+            "曲线积分 计算",
+            "格林公式 应用题"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "曲面积分与高斯斯托克斯": {
+      "l1": "calc",
+      "scope": "两类曲面积分、高斯/斯托克斯、散度旋度",
+      "aliases": [
+        "曲面积分",
+        "高斯公式",
+        "斯托克斯",
+        "散度",
+        "旋度"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.surf.first",
+          "name": "第一类曲面积分",
+          "aliases": [
+            "对面积曲面积分"
+          ],
+          "rag_queries": [
+            "第一类曲面积分",
+            "对面积的曲面积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.surf.second",
+          "name": "第二类曲面积分",
+          "aliases": [
+            "通量",
+            "对坐标曲面积分"
+          ],
+          "rag_queries": [
+            "第二类曲面积分",
+            "有向曲面 通量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.gauss.formula",
+          "name": "高斯公式与散度",
+          "aliases": [
+            "高斯公式",
+            "散度"
+          ],
+          "rag_queries": [
+            "高斯公式",
+            "散度 曲面积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.stokes.formula",
+          "name": "斯托克斯公式与旋度",
+          "aliases": [
+            "斯托克斯",
+            "旋度"
+          ],
+          "rag_queries": [
+            "斯托克斯公式",
+            "旋度 曲线积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.field.ops",
+          "name": "梯度散度旋度运算",
+          "aliases": [
+            "场论",
+            "哈密顿算子"
+          ],
+          "rag_queries": [
+            "梯度 散度 旋度",
+            "场论基本公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "常数项级数": {
+      "l1": "calc",
+      "scope": "敛散性判别、绝对/条件收敛",
+      "aliases": [
+        "级数",
+        "敛散性",
+        "绝对收敛"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.series.def",
+          "name": "级数收敛定义与必要条件",
+          "aliases": [
+            "级数收敛",
+            "通项趋向零"
+          ],
+          "rag_queries": [
+            "级数收敛 定义",
+            "级数收敛必要条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.series.positive",
+          "name": "正项级数判别法",
+          "aliases": [
+            "比较判别",
+            "比值根值",
+            "积分判别"
+          ],
+          "rag_queries": [
+            "正项级数 判别法",
+            "比值审敛法 根值审敛法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.series.alt",
+          "name": "交错级数与莱布尼茨",
+          "aliases": [
+            "交错级数",
+            "莱布尼茨"
+          ],
+          "rag_queries": [
+            "交错级数 莱布尼茨",
+            "交错级数 余项估计"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.series.abscond",
+          "name": "绝对收敛与条件收敛",
+          "aliases": [
+            "绝对收敛",
+            "条件收敛"
+          ],
+          "rag_queries": [
+            "级数 绝对收敛",
+            "条件收敛 判别"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.series.ops",
+          "name": "级数运算与求和",
+          "aliases": [
+            "级数求和",
+            "四则运算"
+          ],
+          "rag_queries": [
+            "常数项级数 求和",
+            "级数四则运算"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "幂级数与函数展开": {
+      "l1": "calc",
+      "scope": "收敛半径/域、和函数、泰勒展开",
+      "aliases": [
+        "幂级数",
+        "收敛半径",
+        "泰勒展开"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.power.radius",
+          "name": "收敛半径与收敛域",
+          "aliases": [
+            "收敛半径",
+            "收敛区间"
+          ],
+          "rag_queries": [
+            "幂级数 收敛半径",
+            "幂级数 收敛域"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.power.sum",
+          "name": "幂级数求和函数",
+          "aliases": [
+            "和函数",
+            "逐项微积分"
+          ],
+          "rag_queries": [
+            "幂级数 和函数",
+            "逐项求导 逐项积分"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.power.taylor",
+          "name": "泰勒展开与常用展开",
+          "aliases": [
+            "泰勒展开",
+            "麦克劳林"
+          ],
+          "rag_queries": [
+            "函数 泰勒展开",
+            "常用麦克劳林展开式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.power.expand",
+          "name": "间接展开与运算展开",
+          "aliases": [
+            "间接展开",
+            "幂级数运算"
+          ],
+          "rag_queries": [
+            "函数展开成幂级数",
+            "幂级数乘法除法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.power.app",
+          "name": "幂级数应用与近似",
+          "aliases": [
+            "近似计算",
+            "微分方程级数解"
+          ],
+          "rag_queries": [
+            "幂级数 近似计算",
+            "幂级数 应用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "傅里叶级数": {
+      "l1": "calc",
+      "scope": "傅里叶系数、正余弦展开、狄利克雷定理",
+      "aliases": [
+        "傅里叶"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.fourier.coeff",
+          "name": "傅里叶系数计算",
+          "aliases": [
+            "傅里叶系数",
+            "欧拉公式"
+          ],
+          "rag_queries": [
+            "傅里叶级数 系数",
+            "傅里叶系数 公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.fourier.sincos",
+          "name": "正弦余弦展开",
+          "aliases": [
+            "正弦级数",
+            "余弦级数",
+            "奇偶延拓"
+          ],
+          "rag_queries": [
+            "傅里叶正弦级数",
+            "傅里叶余弦级数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.fourier.dirichlet",
+          "name": "狄利克雷收敛定理",
+          "aliases": [
+            "狄利克雷",
+            "逐点收敛"
+          ],
+          "rag_queries": [
+            "狄利克雷定理",
+            "傅里叶级数 收敛"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.fourier.period",
+          "name": "周期延拓与任意周期",
+          "aliases": [
+            "周期延拓",
+            "任意周期"
+          ],
+          "rag_queries": [
+            "傅里叶级数 周期2l",
+            "周期延拓"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.fourier.app",
+          "name": "傅里叶级数求和与应用",
+          "aliases": [
+            "傅里叶求和"
+          ],
+          "rag_queries": [
+            "傅里叶级数 求和",
+            "傅里叶级数 应用"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "常微分方程": {
+      "l1": "calc",
+      "scope": "一阶各类、可降阶、二阶常系数线性与欧拉方程",
+      "aliases": [
+        "微分方程",
+        "ODE",
+        "欧拉方程"
+      ],
+      "l3": [
+        {
+          "id": "math.calc.ode.first",
+          "name": "一阶方程可分离齐次",
+          "aliases": [
+            "可分离变量",
+            "齐次方程"
+          ],
+          "rag_queries": [
+            "可分离变量微分方程",
+            "齐次微分方程"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.ode.linear1",
+          "name": "一阶线性与伯努利",
+          "aliases": [
+            "一阶线性",
+            "伯努利方程"
+          ],
+          "rag_queries": [
+            "一阶线性微分方程",
+            "伯努利方程"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.ode.reduce",
+          "name": "可降阶高阶方程",
+          "aliases": [
+            "可降阶",
+            "缺x缺y"
+          ],
+          "rag_queries": [
+            "可降阶微分方程",
+            "不显含自变量"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.calc.ode.const2",
+          "name": "二阶常系数线性方程",
+          "aliases": [
+            "常系数线性",
+            "特征方程"
+          ],
+          "rag_queries": [
+            "二阶常系数线性微分方程",
+            "特征方程 通解"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.calc.ode.euler",
+          "name": "欧拉方程与非齐次特解",
+          "aliases": [
+            "欧拉方程",
+            "待定系数",
+            "常数变易"
+          ],
+          "rag_queries": [
+            "欧拉方程",
+            "非齐次线性微分方程 特解"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "行列式": {
+      "l1": "linalg",
+      "scope": "性质、按行（列）展开、计算技巧",
+      "aliases": [
+        "行列式"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.det.def",
+          "name": "行列式定义与性质",
+          "aliases": [
+            "行列式性质",
+            "行列式定义"
+          ],
+          "rag_queries": [
+            "行列式 性质",
+            "行列式 定义"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.det.expand",
+          "name": "按行按列展开",
+          "aliases": [
+            "代数余子式",
+            "展开"
+          ],
+          "rag_queries": [
+            "行列式 按行展开",
+            "代数余子式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.det.compute",
+          "name": "行列式计算技巧",
+          "aliases": [
+            "行列式计算",
+            "化三角"
+          ],
+          "rag_queries": [
+            "行列式 计算技巧",
+            "行列式 化为三角形"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.det.vandermonde",
+          "name": "特殊行列式与范德蒙德",
+          "aliases": [
+            "范德蒙德",
+            "特殊行列式"
+          ],
+          "rag_queries": [
+            "范德蒙德行列式",
+            "特殊行列式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.det.cramer_link",
+          "name": "行列式与方程组关系",
+          "aliases": [
+            "克拉默",
+            "齐次非齐次"
+          ],
+          "rag_queries": [
+            "行列式 克拉默法则",
+            "齐次线性方程组 行列式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "矩阵与初等变换": {
+      "l1": "linalg",
+      "scope": "运算、逆矩阵、秩、初等变换、分块矩阵",
+      "aliases": [
+        "矩阵",
+        "初等变换",
+        "逆矩阵",
+        "线代",
+        "线性代数"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.mat.ops",
+          "name": "矩阵运算与乘法",
+          "aliases": [
+            "矩阵乘法",
+            "转置"
+          ],
+          "rag_queries": [
+            "矩阵运算",
+            "矩阵乘法"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.mat.inv",
+          "name": "逆矩阵",
+          "aliases": [
+            "逆矩阵",
+            "伴随矩阵"
+          ],
+          "rag_queries": [
+            "逆矩阵 求法",
+            "伴随矩阵 逆矩阵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.mat.rank",
+          "name": "矩阵的秩",
+          "aliases": [
+            "秩",
+            "子式"
+          ],
+          "rag_queries": [
+            "矩阵的秩",
+            "秩的性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.mat.elem",
+          "name": "初等变换与等价标准形",
+          "aliases": [
+            "初等变换",
+            "等价标准形"
+          ],
+          "rag_queries": [
+            "初等变换",
+            "矩阵等价标准形"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.mat.block",
+          "name": "分块矩阵",
+          "aliases": [
+            "分块矩阵",
+            "分块乘法"
+          ],
+          "rag_queries": [
+            "分块矩阵",
+            "分块求逆"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "向量与线性相关性": {
+      "l1": "linalg",
+      "scope": "线性表示/相关、极大无关组、秩、等价向量组",
+      "aliases": [
+        "线性相关",
+        "极大无关组",
+        "向量组"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.vec.span",
+          "name": "线性表示与线性组合",
+          "aliases": [
+            "线性表示",
+            "线性组合"
+          ],
+          "rag_queries": [
+            "向量线性表示",
+            "线性组合"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.vec.indep",
+          "name": "线性相关与无关判定",
+          "aliases": [
+            "线性相关",
+            "线性无关"
+          ],
+          "rag_queries": [
+            "线性相关 判定",
+            "线性无关 条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.vec.maxindep",
+          "name": "极大线性无关组",
+          "aliases": [
+            "极大无关组"
+          ],
+          "rag_queries": [
+            "极大线性无关组",
+            "向量组 极大无关组"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.vec.rank",
+          "name": "向量组的秩",
+          "aliases": [
+            "向量组秩"
+          ],
+          "rag_queries": [
+            "向量组的秩",
+            "矩阵秩与向量组秩"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.vec.equiv",
+          "name": "等价向量组",
+          "aliases": [
+            "等价向量组"
+          ],
+          "rag_queries": [
+            "等价向量组",
+            "向量组等价"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "向量空间与正交化": {
+      "l1": "linalg",
+      "scope": "基、维数、坐标、过渡矩阵、Schmidt正交化",
+      "aliases": [
+        "向量空间",
+        "基",
+        "过渡矩阵",
+        "施密特"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.space.basis",
+          "name": "基与维数",
+          "aliases": [
+            "基",
+            "维数",
+            "子空间"
+          ],
+          "rag_queries": [
+            "向量空间 基",
+            "维数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.space.coord",
+          "name": "坐标与过渡矩阵",
+          "aliases": [
+            "坐标",
+            "过渡矩阵",
+            "基变换"
+          ],
+          "rag_queries": [
+            "向量坐标",
+            "过渡矩阵"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.space.inner",
+          "name": "内积与正交",
+          "aliases": [
+            "内积",
+            "正交",
+            "正交向量组"
+          ],
+          "rag_queries": [
+            "内积空间",
+            "正交向量组"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.space.schmidt",
+          "name": "施密特正交化",
+          "aliases": [
+            "施密特",
+            "Schmidt",
+            "标准正交"
+          ],
+          "rag_queries": [
+            "施密特正交化",
+            "标准正交基"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.space.ortho_mat",
+          "name": "正交矩阵与正交变换",
+          "aliases": [
+            "正交矩阵",
+            "正交变换"
+          ],
+          "rag_queries": [
+            "正交矩阵",
+            "正交变换"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "线性方程组": {
+      "l1": "linalg",
+      "scope": "Cramer、解的判定、基础解系、通解",
+      "aliases": [
+        "方程组",
+        "基础解系",
+        "通解"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.sys.cramer",
+          "name": "克拉默法则",
+          "aliases": [
+            "Cramer",
+            "克拉默"
+          ],
+          "rag_queries": [
+            "克拉默法则",
+            "Cramer法则"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.sys.solvability",
+          "name": "解的判定与讨论",
+          "aliases": [
+            "有解条件",
+            "解的判定"
+          ],
+          "rag_queries": [
+            "线性方程组 有解判定",
+            "增广矩阵 秩"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.sys.fund",
+          "name": "基础解系与通解齐次",
+          "aliases": [
+            "基础解系",
+            "齐次通解"
+          ],
+          "rag_queries": [
+            "基础解系",
+            "齐次线性方程组 通解"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.sys.nonhom",
+          "name": "非齐次通解结构",
+          "aliases": [
+            "非齐次通解",
+            "特解"
+          ],
+          "rag_queries": [
+            "非齐次线性方程组 通解",
+            "特解加齐次通解"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.sys.param",
+          "name": "含参方程组讨论",
+          "aliases": [
+            "含参",
+            "参数讨论"
+          ],
+          "rag_queries": [
+            "含参数线性方程组",
+            "参数 解的讨论"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "特征值与特征向量": {
+      "l1": "linalg",
+      "scope": "特征值/向量、相似对角化、实对称矩阵",
+      "aliases": [
+        "特征值",
+        "特征向量",
+        "对角化",
+        "相似"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.eigen.def",
+          "name": "特征值与特征向量定义计算",
+          "aliases": [
+            "特征值",
+            "特征向量",
+            "特征多项式"
+          ],
+          "rag_queries": [
+            "特征值 特征向量 求法",
+            "特征方程"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.eigen.props",
+          "name": "特征值性质",
+          "aliases": [
+            "迹",
+            "行列式特征值"
+          ],
+          "rag_queries": [
+            "特征值 性质",
+            "矩阵多项式 特征值"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.eigen.diag",
+          "name": "相似对角化",
+          "aliases": [
+            "对角化",
+            "相似"
+          ],
+          "rag_queries": [
+            "矩阵对角化",
+            "相似对角化 条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.eigen.sym",
+          "name": "实对称矩阵正交对角化",
+          "aliases": [
+            "实对称",
+            "正交对角化"
+          ],
+          "rag_queries": [
+            "实对称矩阵 对角化",
+            "正交矩阵对角化"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.eigen.app",
+          "name": "特征值应用与证明",
+          "aliases": [
+            "特征值证明",
+            "相似不变量"
+          ],
+          "rag_queries": [
+            "特征值 证明题",
+            "相似矩阵 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "二次型": {
+      "l1": "linalg",
+      "scope": "标准形/规范形、正交变换与配方法、正定性",
+      "aliases": [
+        "二次型",
+        "正定",
+        "规范形"
+      ],
+      "l3": [
+        {
+          "id": "math.linalg.quad.std",
+          "name": "二次型标准形",
+          "aliases": [
+            "标准形",
+            "合同"
+          ],
+          "rag_queries": [
+            "二次型 标准形",
+            "合同变换"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.linalg.quad.norm",
+          "name": "规范形与惯性定理",
+          "aliases": [
+            "规范形",
+            "惯性定理"
+          ],
+          "rag_queries": [
+            "二次型 规范形",
+            "惯性定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.quad.ortho",
+          "name": "正交变换化二次型",
+          "aliases": [
+            "正交变换",
+            "主轴"
+          ],
+          "rag_queries": [
+            "正交变换化二次型",
+            "二次型 主轴问题"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.quad.complete",
+          "name": "配方法化二次型",
+          "aliases": [
+            "配方法"
+          ],
+          "rag_queries": [
+            "配方法 二次型",
+            "配方化标准形"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.linalg.quad.posdef",
+          "name": "正定性判定",
+          "aliases": [
+            "正定",
+            "负定",
+            "顺序主子式"
+          ],
+          "rag_queries": [
+            "二次型 正定",
+            "正定矩阵 判定"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "随机事件与概率": {
+      "l1": "prob",
+      "scope": "事件运算、古典/几何概型、公式、独立性",
+      "aliases": [
+        "概率",
+        "全概率",
+        "贝叶斯",
+        "古典概型"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.event.ops",
+          "name": "事件运算与关系",
+          "aliases": [
+            "事件运算",
+            "对立",
+            "互斥"
+          ],
+          "rag_queries": [
+            "随机事件 运算",
+            "事件关系"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.classical",
+          "name": "古典概型与几何概型",
+          "aliases": [
+            "古典概型",
+            "几何概型"
+          ],
+          "rag_queries": [
+            "古典概型",
+            "几何概型"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.cond",
+          "name": "条件概率与乘法公式",
+          "aliases": [
+            "条件概率",
+            "乘法公式"
+          ],
+          "rag_queries": [
+            "条件概率",
+            "概率乘法公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.total_bayes",
+          "name": "全概率与贝叶斯公式",
+          "aliases": [
+            "全概率",
+            "贝叶斯"
+          ],
+          "rag_queries": [
+            "全概率公式",
+            "贝叶斯公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.indep",
+          "name": "事件独立性",
+          "aliases": [
+            "独立性",
+            "相互独立"
+          ],
+          "rag_queries": [
+            "事件独立",
+            "两两独立 相互独立"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "一维随机变量及分布": {
+      "l1": "prob",
+      "scope": "分布函数、离散/连续型、常见分布、变量函数分布",
+      "aliases": [
+        "分布",
+        "正态分布",
+        "二项分布",
+        "随机变量"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.rv.cdf",
+          "name": "分布函数性质",
+          "aliases": [
+            "分布函数",
+            "CDF"
+          ],
+          "rag_queries": [
+            "分布函数 性质",
+            "随机变量 分布函数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.rv.discrete",
+          "name": "离散型分布列",
+          "aliases": [
+            "分布列",
+            "离散型"
+          ],
+          "rag_queries": [
+            "离散型随机变量 分布列",
+            "概率分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.rv.cont",
+          "name": "连续型密度与概率",
+          "aliases": [
+            "密度函数",
+            "连续型"
+          ],
+          "rag_queries": [
+            "连续型随机变量 密度",
+            "概率密度函数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.rv.common",
+          "name": "常见分布",
+          "aliases": [
+            "二项分布",
+            "泊松",
+            "正态",
+            "均匀",
+            "指数"
+          ],
+          "rag_queries": [
+            "常见分布 正态 二项 泊松",
+            "指数分布 均匀分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.rv.transform",
+          "name": "随机变量函数的分布",
+          "aliases": [
+            "函数分布",
+            "变换法"
+          ],
+          "rag_queries": [
+            "随机变量函数的分布",
+            "密度变换公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "多维随机变量及分布": {
+      "l1": "prob",
+      "scope": "联合/边缘/条件分布、独立性、二维常见分布",
+      "aliases": [
+        "二维",
+        "联合分布",
+        "边缘分布",
+        "条件分布"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.multi.joint",
+          "name": "联合分布与联合密度",
+          "aliases": [
+            "联合分布",
+            "联合密度"
+          ],
+          "rag_queries": [
+            "二维随机变量 联合分布",
+            "联合概率密度"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.multi.marginal",
+          "name": "边缘分布",
+          "aliases": [
+            "边缘分布",
+            "边缘密度"
+          ],
+          "rag_queries": [
+            "边缘分布",
+            "边缘密度函数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.multi.cond",
+          "name": "条件分布",
+          "aliases": [
+            "条件分布",
+            "条件密度"
+          ],
+          "rag_queries": [
+            "条件分布",
+            "条件密度"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.multi.indep",
+          "name": "随机变量独立性",
+          "aliases": [
+            "独立",
+            "联合等于边缘乘积"
+          ],
+          "rag_queries": [
+            "二维随机变量 独立",
+            "独立性 判定"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.multi.common2",
+          "name": "二维常见分布与函数",
+          "aliases": [
+            "二维正态",
+            "函数分布"
+          ],
+          "rag_queries": [
+            "二维正态分布",
+            "多维随机变量函数分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "数字特征": {
+      "l1": "prob",
+      "scope": "期望、方差、协方差、相关系数、函数期望",
+      "aliases": [
+        "期望",
+        "方差",
+        "协方差",
+        "相关系数"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.num.expect",
+          "name": "期望定义与性质",
+          "aliases": [
+            "期望",
+            "数学期望"
+          ],
+          "rag_queries": [
+            "数学期望 性质",
+            "期望计算"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.num.var",
+          "name": "方差与标准差",
+          "aliases": [
+            "方差",
+            "标准差"
+          ],
+          "rag_queries": [
+            "方差 性质",
+            "方差计算公式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.num.cov",
+          "name": "协方差",
+          "aliases": [
+            "协方差"
+          ],
+          "rag_queries": [
+            "协方差 性质",
+            "协方差计算"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.num.corr",
+          "name": "相关系数",
+          "aliases": [
+            "相关系数",
+            "不相关"
+          ],
+          "rag_queries": [
+            "相关系数",
+            "不相关与独立"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.num.func",
+          "name": "函数期望与常见分布数字特征",
+          "aliases": [
+            "函数期望",
+            "常见分布期望方差"
+          ],
+          "rag_queries": [
+            "随机变量函数期望",
+            "常见分布 期望方差"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "大数定律与中心极限定理": {
+      "l1": "prob",
+      "scope": "Chebyshev不等式、大数定律、CLT应用",
+      "aliases": [
+        "大数定律",
+        "中心极限"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.lim.chebyshev",
+          "name": "切比雪夫不等式",
+          "aliases": [
+            "切比雪夫",
+            "Chebyshev"
+          ],
+          "rag_queries": [
+            "切比雪夫不等式",
+            "Chebyshev不等式"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.lim.wlln",
+          "name": "大数定律",
+          "aliases": [
+            "大数定律",
+            "伯努利大数定律",
+            "辛钦"
+          ],
+          "rag_queries": [
+            "大数定律",
+            "切比雪夫大数定律"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.lim.clt",
+          "name": "中心极限定理",
+          "aliases": [
+            "中心极限定理",
+            "CLT",
+            "棣莫弗拉普拉斯"
+          ],
+          "rag_queries": [
+            "中心极限定理",
+            "棣莫弗-拉普拉斯定理"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.lim.app",
+          "name": "极限定理应用与近似",
+          "aliases": [
+            "正态近似",
+            "频率稳定"
+          ],
+          "rag_queries": [
+            "中心极限定理 应用",
+            "二项分布 正态近似"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.lim.compare",
+          "name": "大数定律与CLT辨析",
+          "aliases": [
+            "极限定理辨析"
+          ],
+          "rag_queries": [
+            "大数定律与中心极限定理 区别",
+            "极限定理 条件"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "数理统计基本概念": {
+      "l1": "prob",
+      "scope": "总体/样本、统计量、χ²/t/F分布、抽样分布",
+      "aliases": [
+        "抽样分布",
+        "卡方",
+        "t分布",
+        "F分布"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.stat.pop",
+          "name": "总体样本与统计量",
+          "aliases": [
+            "总体",
+            "样本",
+            "统计量"
+          ],
+          "rag_queries": [
+            "总体与样本",
+            "统计量 定义"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.stat.sample",
+          "name": "样本均值与样本方差",
+          "aliases": [
+            "样本均值",
+            "样本方差"
+          ],
+          "rag_queries": [
+            "样本均值",
+            "样本方差 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.stat.chi2",
+          "name": "卡方分布",
+          "aliases": [
+            "χ²",
+            "卡方"
+          ],
+          "rag_queries": [
+            "卡方分布",
+            "χ²分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.stat.t",
+          "name": "t分布",
+          "aliases": [
+            "t分布",
+            "学生分布"
+          ],
+          "rag_queries": [
+            "t分布",
+            "t分布 性质"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.stat.f",
+          "name": "F分布与抽样分布",
+          "aliases": [
+            "F分布",
+            "抽样分布"
+          ],
+          "rag_queries": [
+            "F分布",
+            "正态总体 抽样分布"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "参数估计": {
+      "l1": "prob",
+      "scope": "矩估计、MLE、无偏性/有效性、置信区间",
+      "aliases": [
+        "矩估计",
+        "最大似然",
+        "置信区间"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.est.moment",
+          "name": "矩估计",
+          "aliases": [
+            "矩估计",
+            "矩法"
+          ],
+          "rag_queries": [
+            "矩估计法",
+            "矩估计"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.est.mle",
+          "name": "最大似然估计",
+          "aliases": [
+            "最大似然",
+            "MLE"
+          ],
+          "rag_queries": [
+            "最大似然估计",
+            "似然函数"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.est.unbiased",
+          "name": "无偏性与有效性",
+          "aliases": [
+            "无偏",
+            "有效",
+            "均方误差"
+          ],
+          "rag_queries": [
+            "无偏估计",
+            "有效估计"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.est.ci_mean",
+          "name": "均值置信区间",
+          "aliases": [
+            "置信区间",
+            "均值区间估计"
+          ],
+          "rag_queries": [
+            "正态总体 均值置信区间",
+            "t区间估计"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.est.ci_var",
+          "name": "方差置信区间",
+          "aliases": [
+            "方差区间估计"
+          ],
+          "rag_queries": [
+            "方差 置信区间",
+            "卡方 区间估计"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    },
+    "假设检验": {
+      "l1": "prob",
+      "scope": "两类错误、正态总体均值/方差检验",
+      "aliases": [
+        "假设检验",
+        "显著性"
+      ],
+      "l3": [
+        {
+          "id": "math.prob.ht.errors",
+          "name": "两类错误与显著性水平",
+          "aliases": [
+            "两类错误",
+            "显著性水平",
+            "拒绝域"
+          ],
+          "rag_queries": [
+            "假设检验 两类错误",
+            "显著性水平"
+          ],
+          "source_allow": [
+            "教材",
+            "真题",
+            "讲义"
+          ]
+        },
+        {
+          "id": "math.prob.ht.mean_known",
+          "name": "均值检验方差已知",
+          "aliases": [
+            "u检验",
+            "Z检验"
+          ],
+          "rag_queries": [
+            "正态总体 均值检验",
+            "u检验"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.ht.mean_unknown",
+          "name": "均值检验方差未知",
+          "aliases": [
+            "t检验"
+          ],
+          "rag_queries": [
+            "t检验 均值",
+            "方差未知 假设检验"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.ht.var",
+          "name": "方差检验",
+          "aliases": [
+            "卡方检验",
+            "方差检验"
+          ],
+          "rag_queries": [
+            "方差 假设检验",
+            "χ²检验 方差"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        },
+        {
+          "id": "math.prob.ht.proc",
+          "name": "检验步骤与双侧单侧",
+          "aliases": [
+            "单侧检验",
+            "双侧检验"
+          ],
+          "rag_queries": [
+            "假设检验 步骤",
+            "单侧双侧检验"
+          ],
+          "source_allow": [
+            "教材",
+            "真题"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+# Secrets & local env
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+
+# Runtime learner / session state (keep syllabus seeds tracked)
+data/answer-log.jsonl
+data/chat_id.json
+data/conversation_id.json
+data/difficulty.json
+data/last_push.json
+data/learning-progress.json
+data/weights.json
+data/recent_kp_picks.json
+data/recent_ability_picks.json
+data/refine-queue.jsonl
+data/rag_audit.jsonl
+data/used-refs.jsonl
+data/kb_request_queue.jsonl
+data/run.lock
+data/kb_cache/
+data/exam_bank/
+data/learner-profile/
+data/logs/
+data/x_digest/
+data/daily_records/
+data/daily_export/
+data/memory_blocks.json
+data/agent_transcript.json
+data/agent_memory.json
+data/dingtalk_discuss_user.json
+data/rag-contract-check.json
+data/ability-cycle-check.json
+data/l3-gate-check.json
+data/l3-fill-check.json
+data/phase-c-check.json
+
+# Private ops / session notes (not for public tree)
+logs/SESSION_*.md
+logs/HANDOFF_*.md
+logs/MERGE_*.md
+
+# Host-specific ops helpers (local only)
+scripts/_cloud_*.py
+scripts/_cloud_*.sh
+scripts/_pin_*.py
+scripts/_patch_*.py
+scripts/_probe_dingtalk_*.py
+scripts/_install_cloud_proxy.sh
+scripts/cloud-proxy.service

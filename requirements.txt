@@ -1,0 +1,2 @@
+requests>=2.31
+# 其余依赖复用 knowledge-system 的已有环境
