@@ -463,12 +463,18 @@ def submit_answer_md(md_text: str, *, paper_id: str = "") -> str:
             report = grade_one(q_full, ua)
         except Exception as e:
             report = f"批改异常（已跳过本题，不影响其它题）：{e}"
-        head = (report or "")[:80]
-        if ("正确" in head or "对的" in head) and not any(
-            bad in head for bad in ("不正确", "错误", "不对", "未掌握")
-        ):
-            correct_n += 1
-        results.append(f"### 第{i}题\n{report}")
+        # structured verdict (BIG-TEACH-012c #13): 优先用 GradeResult 字段
+        if isinstance(report, str):
+            # exception fallback
+            results.append(f"### 第{i}题\n{report}")
+        else:
+            is_correct = report.is_correct
+            credit = report.credit
+            if is_correct:
+                correct_n += 1
+            elif credit is not None and credit > 0:
+                correct_n += 0.5
+            results.append(f"### 第{i}题\n{report.feedback}")
 
     total = len(key.get("items") or [])
     summary = (

@@ -80,45 +80,88 @@ def main():
         check(mock_llm.call_count == 0, "ws a no LLM")
 
     sep("4. mock LLM 正确 / 部分 / 错误 + BKT 隔离目录")
+
+    def _structured_llm(verdict: str, *, grade_conf: float = 0.95, agrees: bool = True):
+        def _side(system, user, task_type="grade", *a, **kw):
+            if task_type == "verify_grade":
+                return json.dumps(
+                    {"agrees": agrees, "confidence": 0.9, "reasoning": "ok"},
+                    ensure_ascii=False,
+                )
+            return json.dumps(
+                {
+                    "verdict": verdict,
+                    "confidence": grade_conf,
+                    "explanation": f"verdict={verdict}",
+                },
+                ensure_ascii=False,
+            )
+
+        return _side
+
     with tempfile.TemporaryDirectory() as td:
+        with patch.object(grade_mod, "DATA_DIR", td), patch(
+            "grade.call_llm",
+            side_effect=_structured_llm("correct"),
+        ), patch(
+            "learner.kp_registry.normalize_kp_for_grade",
+            return_value="函数极限与连续",
+        ), patch(
+            "learner.weights_ops.bump_kp_weight"
+        ) as bump, patch(
+            "learner.weights_ops.decay_kp_weight"
+        ) as decay:
+            r = grade_answer(mcq, "A", kp_name="函数极限与连续", subject="math")
+            check(r.is_correct is True, f"correct flag {r.is_correct}")
+            check(r.status == "applied", f"status={r.status}")
+            check(r.credit is None, "no partial credit")
+            check(r.item_type == "mcq", f"item_type={r.item_type}")
+            check(r.kp_name == "函数极限与连续", f"kp={r.kp_name}")
+            check(bump.call_count == 0, "no weight bump on correct")
+            check(decay.call_count == 1, "decay on correct")
+
+        with patch.object(grade_mod, "DATA_DIR", td), patch(
+            "grade.call_llm",
+            side_effect=_structured_llm("partial"),
+        ), patch(
+            "learner.kp_registry.normalize_kp_for_grade",
+            return_value="函数极限与连续",
+        ), patch("learner.weights_ops.bump_kp_weight") as bump, patch(
+            "learner.weights_ops.decay_kp_weight"
+        ) as decay:
+            r = grade_answer("求 lim ____", "0.5", kp_name="函数极限与连续", subject="math")
+            check(r.is_correct is False and r.credit == 0.5, f"partial {r.is_correct}/{r.credit}")
+            check(r.status == "applied", f"partial status={r.status}")
+            check(r.item_type == "blank", f"blank type {r.item_type}")
+            check(bump.call_count == 0, "no bump on partial")
+            check(decay.call_count == 1, "decay on partial")
+
+        with patch.object(grade_mod, "DATA_DIR", td), patch(
+            "grade.call_llm",
+            side_effect=_structured_llm("incorrect"),
+        ), patch(
+            "learner.kp_registry.normalize_kp_for_grade",
+            return_value="函数极限与连续",
+        ), patch("learner.weights_ops.bump_kp_weight") as bump, patch(
+            "learner.weights_ops.decay_kp_weight"
+        ) as decay:
+            r = grade_answer(mcq, "Z", kp_name="函数极限与连续", subject="math")
+            check(r.is_correct is False and r.credit is None, "incorrect")
+            check(r.status == "applied", f"incorrect status={r.status}")
+            check(bump.call_count == 1, "bump on incorrect")
+            check(decay.call_count == 0, "no decay on incorrect")
+
+        # text-only fallback must be pending / no BKT write
         with patch.object(grade_mod, "DATA_DIR", td), patch(
             "grade.call_llm",
             return_value="正确与否：正确\n评语：选 A\n涉及知识点：函数极限与连续",
         ), patch(
             "learner.kp_registry.normalize_kp_for_grade",
             return_value="函数极限与连续",
-        ), patch(
-            "learner.weights_ops.bump_kp_weight"
-        ) as bump:
+        ), patch("learner.weights_ops.bump_kp_weight") as bump:
             r = grade_answer(mcq, "A", kp_name="函数极限与连续", subject="math")
-            check(r.is_correct is True, f"correct flag {r.is_correct}")
-            check(r.credit is None, "no partial credit")
-            check(r.item_type == "mcq", f"item_type={r.item_type}")
-            check(r.kp_name == "函数极限与连续", f"kp={r.kp_name}")
-            check(bump.call_count == 0, "no weight bump on correct")
-
-        with patch.object(grade_mod, "DATA_DIR", td), patch(
-            "grade.call_llm",
-            return_value="正确与否：部分正确\n评语：思路对答案错\n涉及知识点：极限",
-        ), patch(
-            "learner.kp_registry.normalize_kp_for_grade",
-            return_value="函数极限与连续",
-        ), patch("learner.weights_ops.bump_kp_weight") as bump:
-            r = grade_answer("求 lim ____", "0.5", kp_name="函数极限与连续", subject="math")
-            check(r.is_correct is False and r.credit == 0.5, f"partial {r.is_correct}/{r.credit}")
-            check(r.item_type == "blank", f"blank type {r.item_type}")
-            check(bump.call_count == 0, "no bump on partial")
-
-        with patch.object(grade_mod, "DATA_DIR", td), patch(
-            "grade.call_llm",
-            return_value="正确与否：不正确\n评语：错\n涉及知识点：极限",
-        ), patch(
-            "learner.kp_registry.normalize_kp_for_grade",
-            return_value="函数极限与连续",
-        ), patch("learner.weights_ops.bump_kp_weight") as bump:
-            r = grade_answer(mcq, "Z", kp_name="函数极限与连续", subject="math")
-            check(r.is_correct is False and r.credit is None, "incorrect")
-            check(bump.call_count == 1, "bump on incorrect")
+            check(r.status == "pending", f"text fallback status={r.status}")
+            check(bump.call_count == 0, "text fallback no bump")
 
         with patch.object(grade_mod, "DATA_DIR", td), patch(
             "grade.call_llm", side_effect=RuntimeError("llm down")

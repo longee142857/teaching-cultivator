@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from config import DATA_DIR
+from config import DATA_DIR, RAG_FALLBACK
 
 DEFAULT_N = 2
 AUDIT_PATH = os.path.join(DATA_DIR, "rag_audit.jsonl")
@@ -381,4 +381,7 @@ def rag_retrieve(
 
 
 def rag_strict_enabled() -> bool:
+    """RAG strict 检查。当 RAG_FALLBACK=abort（默认）或 RAG_STRICT=1 时开启。"""
+    if RAG_FALLBACK == "abort":
+        return True
     return _strict_default()

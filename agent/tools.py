@@ -6,7 +6,7 @@
 题目上下文优先从按月记录 + 侧车索引读取（非内存），保证重启后不丢。
 """
 import re, os, json
-from config import DAILY_RECORD_DIR, DATA_DIR
+from config import DAILY_RECORD_DIR, DATA_DIR, LEARNER_USER_ID
 
 
 def _read_latest_entry() -> dict | None:
@@ -252,43 +252,42 @@ def show_solution() -> str:
 
 
 def adjust_difficulty(subject: str, level: str) -> str:
-    """调整科目难度偏好，同时在 BKT 中记录为答错（降低掌握度）。"""
+    """调整科目难度偏好（只改偏好，不改变掌握度 — BIG-TEACH-012a #5）。"""
     from cultivate import set_difficulty_pref
     ok = set_difficulty_pref(subject, level)
     result = f"{subject} 难度已调整为 {level}" if ok else "调整失败"
-
-    # 同时从题库最新题目提取知识点 → 在 BKT 中记一条"答错"
-    entry = _read_latest_entry()
-    if entry and entry.get("raw"):
-        m = re.search(r"决策原因：(.+)", entry["raw"])
-        if m:
-            reason = m.group(1)
-            kp = reason.split(":")[0].strip() if ":" in reason else reason.strip()
-            if kp:
-                try:
-                    from bkt import BKTLogger, KCState
-                    from config import DATA_DIR
-                    import os
-                    bkt = BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl"))
-                    kc = bkt.get_kp_mastery("wx_123", kp)
-                    if kc is None:
-                        kc = KCState()
-                    else:
-                        kc = KCState.from_dict(kc.to_dict())
-                    meta = bkt.record(
-                        "wx_123",
-                        kp,
-                        False,
-                        kc,
-                        conv_tag="adjust_difficulty",
-                        item_type="unknown",
-                    )
-                    if meta.get("applied"):
-                        result += f"\n（已记录 '{kp}' 掌握度 {meta.get('p_mastery', kc.p_mastery):.0%}）"
-                    else:
-                        result += f"\n（'{kp}' BKT 未更新：{meta.get('reason')}）"
-                except Exception as e:
-                    result += f"\n（BKT 记录失败：{e}）"
+    # 可选审计日志（不影响 mastery）
+    try:
+        from config import DATA_DIR
+        from datetime import datetime, timezone
+        import json, os
+        entry = _read_latest_entry()
+        kp = ""
+        if entry:
+            kp = (entry.get("kp") or "").strip()
+            if not kp and entry.get("raw"):
+                m = re.search(r"决策原因：(.+)", entry["raw"])
+                if m:
+                    kp = m.group(1).split(":")[0].strip()
+        if kp:
+            log_path = os.path.join(DATA_DIR, "answer-log.jsonl")
+            audit = {
+                "ts": datetime.now(timezone.utc).isoformat(),
+                "user_id": LEARNER_USER_ID,
+                "knowledge_point": kp,
+                "correct": None,
+                "conv_tag": "adjust_difficulty",
+                "mastery_before": None,
+                "mastery_after": None,
+                "update_applied": False,
+                "update_reason": "audit_only",
+                "status": "audit",
+            }
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(audit, ensure_ascii=False) + "\n")
+            result += f"\n（已记录 '{kp}' 审计日志，不影响掌握度）"
+    except Exception:
+        pass
     return result
 
 
@@ -298,6 +297,114 @@ def build_report(days: int = 7) -> str:
     from learner.reporter import format_detailed
     profile = build_weekly(weeks=max(1, days // 7))
     return format_detailed(profile)
+
+
+def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.0) -> str:
+    """覆盖最近一条批改记录并重算掌握度（BIG-TEACH-012a #7a）。"""
+    from config import DATA_DIR
+    from bkt import KCState
+    from datetime import datetime, timezone
+    import os, json
+
+    log_path = os.path.join(DATA_DIR, "answer-log.jsonl")
+    if not os.path.exists(log_path):
+        return f"'{kp}' 无批改记录可覆盖"
+
+    entries: list[dict] = []
+    try:
+        with open(log_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line_s = line.strip()
+                if not line_s:
+                    continue
+                try:
+                    e = json.loads(line_s)
+                    if e.get("knowledge_point") == kp:
+                        entries.append(e)
+                except json.JSONDecodeError:
+                    continue
+    except Exception as e:
+        return f"读取 answer-log 失败：{e}"
+
+    if not entries:
+        return f"'{kp}' 无历史记录"
+
+    skip_status = {"pending", "audit"}
+    # 最近一条仍有效的已应用作答 → 被本次 override 取代
+    supersedes_ts = ""
+    already_superseded: set[str] = set()
+    for entry in entries:
+        if entry.get("supersedes_ts"):
+            already_superseded.add(str(entry["supersedes_ts"]))
+    for entry in reversed(entries):
+        if entry.get("status") in skip_status:
+            continue
+        ts = str(entry.get("ts") or "")
+        if ts in already_superseded:
+            continue
+        if entry.get("update_applied") and isinstance(entry.get("correct"), bool):
+            supersedes_ts = ts
+            break
+
+    superseded = set(already_superseded)
+    if supersedes_ts:
+        superseded.add(supersedes_ts)
+
+    kc = KCState()
+    replayed = 0
+    for entry in entries:
+        if entry.get("status") in skip_status:
+            continue
+        if str(entry.get("ts") or "") in superseded:
+            continue
+        if not entry.get("update_applied"):
+            continue
+        ec = entry.get("correct")
+        if not isinstance(ec, bool):
+            continue
+        try:
+            kc.update(
+                ec,
+                item_type=str(entry.get("item_type", "unknown")),
+                credit=entry.get("credit"),
+                force=True,
+            )
+            replayed += 1
+        except Exception:
+            pass
+
+    # 应用覆盖判定（一次）
+    if isinstance(correct, bool):
+        cr = float(credit) if credit else None
+        kc.update(correct, item_type="unknown", credit=cr, force=True)
+        replayed += 1
+
+    override_entry = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "user_id": LEARNER_USER_ID,
+        "knowledge_point": kp,
+        "correct": correct,
+        "credit": float(credit) if credit else None,
+        "item_type": "unknown",
+        "update_applied": True,
+        "update_reason": "user_override",
+        "status": "overridden",
+        "supersedes_ts": supersedes_ts,
+        "state": kc.to_dict(),
+        "mastery_after": round(kc.p_mastery, 4),
+    }
+    if subject:
+        override_entry["subject"] = subject
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(override_entry, ensure_ascii=False) + "\n")
+    except Exception as e:
+        return f"写入 override 失败：{e}"
+
+    return (
+        f"'{kp}' 已覆盖（correct={correct}）。"
+        f"当前掌握度 {kc.p_mastery:.0%}（重放 {replayed} 条，opportunity={kc.opportunity_count}）"
+    )
 
 
 def github_push(repo_path: str = "", commit_msg: str = "") -> str:

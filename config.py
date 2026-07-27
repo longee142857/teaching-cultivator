@@ -37,10 +37,22 @@ if KB_PATH:
     _kb_lib = os.path.join(KB_PATH, "lib")
     if os.path.isdir(_kb_lib):
         sys.path.insert(0, _kb_lib)
+else:
+    # BIG-TEACH-012a #6: 相对 monorepo 路径 fallback
+    _rel_lib = os.path.normpath(
+        os.path.join(os.path.dirname(__file__), "../knowledge-system/lib")
+    )
+    if os.path.isdir(_rel_lib):
+        sys.path.insert(0, _rel_lib)
+
+# ── SSL 证书校验（BIG-TEACH-012d #15）──
+# 默认启用；企业代理或自签名证书需关闭时设 SSL_VERIFY=0
+SSL_VERIFY = os.environ.get("SSL_VERIFY", "1") == "1"
 
 # ── 数据文件 ──
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-LP_PATH = os.path.join(DATA_DIR, "learning-progress.json")
+BKT_OVERRIDES_PATH = os.path.join(DATA_DIR, "bkt_overrides.json")  # BIG-TEACH-012b #2
+LP_PATH = os.path.join(DATA_DIR, "learning-progress.json")  # DEPRECATED (BIG-TEACH-012d #16)
 # 每日记录目录：默认仓库内 data/daily_export；可用环境变量覆盖
 DAILY_RECORD_DIR = os.environ.get(
     "DAILY_RECORD_DIR",
@@ -94,3 +106,9 @@ X_DIGEST_HANDLES_AI: list[str] = []
 X_DIGEST_HANDLES_COMM: list[str] = []
 X_DIGEST_HANDLES_MATH: list[str] = []
 X_DIGEST_SEEN_DAYS = 14
+
+# ── RAG Fallback 策略（BIG-TEACH-012c #10）──
+RAG_FALLBACK = os.environ.get("RAG_FALLBACK", "abort")
+
+# ── 学习者用户 ID（BIG-TEACH-012c #14）──
+LEARNER_USER_ID = os.environ.get("LEARNER_USER_ID", "wx_123")

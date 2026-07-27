@@ -5,13 +5,21 @@
     result = grade_answer("通信原理题目...", "用户的解答...", subject="math", kp_name="矩阵与初等变换")
 """
 from __future__ import annotations
-import os, json
+import os, json, re
 from dataclasses import dataclass
 
-from config import DATA_DIR, DAILY_RECORD_DIR
+from config import DATA_DIR, DAILY_RECORD_DIR, LEARNER_USER_ID
 from decide.router import call_llm
 
 from bkt import BKTLogger, KCState
+import bkt as _bkt_module
+
+# BIG-TEACH-012a #7a
+CONFIDENCE_THRESHOLD = 0.8
+
+# 设置 BKT overrides 路径（BIG-TEACH-012b #2）
+from config import BKT_OVERRIDES_PATH as _bkt_ov_path
+_bkt_module.BKT_OVERRIDES_PATH = _bkt_ov_path
 
 
 @dataclass
@@ -24,6 +32,8 @@ class GradeResult:
     p_mastery_after: float = 0.0
     credit: float | None = None
     item_type: str = "unknown"
+    status: str = "applied"
+    confidence: float = 0.0
 
 
 def _get_bkt_log():
@@ -149,6 +159,132 @@ def _parse_grade_verdict(raw: str) -> tuple[bool, float | None]:
     return False, None
 
 
+# ── BIG-TEACH-012a #7a: Structured grading + verifier ──
+
+
+def _parse_grade_json(raw: str) -> dict | None:
+    """从 grade LLM 回复中提取结构化 JSON。"""
+    m = re.search(r"\{[\s\S]*\}", raw)
+    if not m:
+        return None
+    try:
+        result = json.loads(m.group())
+        if result.get("verdict") in ("correct", "partial", "incorrect"):
+            return result
+    except (json.JSONDecodeError, TypeError, ValueError):
+        pass
+    return None
+
+
+def _call_grade_llm(question: str, user_answer: str, ref_answer: str = "") -> dict:
+    """Grade LLM 返回结构化 verdict。"""
+    ref_block = f"\n参考答案：{ref_answer}" if ref_answer else ""
+    system = (
+        "你是一个严格的考研批卷老师。判断用户解答是否正确。\n"
+        "以 JSON 格式输出，不要包含其他内容：\n"
+        '{"verdict": "correct|partial|incorrect", "confidence": 0.0-1.0, '
+        '"explanation": "..."}\n\n'
+        "置信度说明：\n"
+        "- 1.0: 完全确定，答案明确正确或错误\n"
+        "- 0.8-0.9: 很确定\n"
+        "- 0.5-0.7: 有些不确定，解答模糊\n"
+        "- <0.5: 很不确定\n"
+        "书写格式：行内公式只用 $...$；块公式用 $$...$$；禁止 \\(...\\)。"
+    )
+    prompt = f"题目：{question}\n\n用户解答：{user_answer}{ref_block}"
+    raw = call_llm(system, prompt, "grade")
+    from math_format import normalize_markdown_body
+    raw = normalize_markdown_body(raw)
+
+    parsed = _parse_grade_json(raw)
+    if parsed:
+        return {
+            "verdict": parsed["verdict"],
+            "confidence": float(parsed.get("confidence", 0.6)),
+            "raw": raw,
+            "from_fallback": False,
+        }
+
+    # Fallback: old text parser — uncertain only, never high enough to write BKT
+    is_correct, credit = _parse_grade_verdict(raw)
+    if is_correct and credit is None:
+        verdict = "correct"
+    elif credit == 0.5:
+        verdict = "partial"
+    else:
+        verdict = "incorrect"
+    return {
+        "verdict": verdict,
+        "confidence": 0.4,
+        "raw": raw,
+        "from_fallback": True,
+    }
+
+
+def _parse_verify_json(raw: str) -> dict | None:
+    """从 verify LLM 回复中提取结构化 JSON。"""
+    m = re.search(r"\{[\s\S]*\}", raw)
+    if not m:
+        return None
+    try:
+        result = json.loads(m.group())
+        if "agrees" in result and "confidence" in result:
+            return result
+    except (json.JSONDecodeError, TypeError, ValueError):
+        pass
+    return None
+
+
+def _call_verify_llm(question: str, user_answer: str, grade_json: dict) -> dict:
+    """Verifier LLM：检查批改是否存在误判。返回 {'agrees', 'confidence', 'reasoning'}。"""
+    system = (
+        "你是一个批改质量审查员。另一位老师已批改了一份学生解答，你需要检查是否存在误判。\n"
+        "重点关注：是否过于严格？是否过于宽松？是否忽略了关键错误？\n\n"
+        "以 JSON 格式输出，不要包含其他内容：\n"
+        '{"agrees": true|false, "confidence": 0.0-1.0, "reasoning": "..."}\n\n'
+        "agrees: 是否同意原批改的判定\n"
+        "confidence: 你对自身判断的把握度"
+    )
+    prompt = (
+        f"题目：{question}\n\n"
+        f"用户解答：{user_answer}\n\n"
+        f"原批改判定：{grade_json.get('verdict', '?')}\n"
+        f"原批改解释：{grade_json.get('raw', '')[:500]}\n\n"
+        "请检查原批改是否正确，输出 JSON。"
+    )
+    raw = call_llm(system, prompt, "verify_grade")
+
+    parsed = _parse_verify_json(raw)
+    if parsed:
+        return {
+            "agrees": bool(parsed["agrees"]),
+            "confidence": float(parsed.get("confidence", 0.5)),
+            "reasoning": parsed.get("reasoning", ""),
+            "from_fallback": False,
+        }
+    # Fallback: uncertain — do not auto-agree into BKT writes
+    return {
+        "agrees": False,
+        "confidence": 0.0,
+        "reasoning": "parse fallback",
+        "from_fallback": True,
+    }
+
+
+def _compute_effective_confidence(
+    grade_conf: float,
+    verify: dict,
+    *,
+    grade_fallback: bool = False,
+) -> float:
+    """合并 grade 与 verify 置信度。不一致 / 任一侧 fallback → 0。"""
+    if grade_fallback or verify.get("from_fallback"):
+        return 0.0
+    if verify.get("agrees"):
+        return min(grade_conf, verify.get("confidence", 0.0))
+    return 0.0
+
+
 def grade_answer(
     question: str,
     user_answer: str,
@@ -176,23 +312,28 @@ def grade_answer(
         )
 
     ref_answer = _find_reference_answer(kp_name)
-    ref_block = f"\n参考答案：{ref_answer}" if ref_answer else ""
 
-    system = (
-        "你是一个严格的考研批卷老师。判断用户解答是否正确（含部分正确）。\n"
-        "输出格式：\n正确与否：正确/部分正确/错误\n评语：...\n涉及知识点：...\n\n"
-        "书写格式：行内公式只用 $...$；块公式用 $$...$$；禁止 \\(...\\)。\n"
-        "「涉及知识点」请尽量写考纲条目名（短），不要罗列一长串并列概念。"
+    # ── Structured grade LLM → verifier → apply/pending (BIG-TEACH-012a #7a) ──
+    grade_json = _call_grade_llm(q, ua, ref_answer)
+    verify_json = _call_verify_llm(q, ua, grade_json)
+    effective_conf = _compute_effective_confidence(
+        grade_json.get("confidence", 0.0),
+        verify_json,
+        grade_fallback=bool(grade_json.get("from_fallback")),
     )
-    prompt = f"题目：{q}\n\n用户解答：{ua}{ref_block}"
-    raw = call_llm(system, prompt, "grade")
-    from math_format import normalize_markdown_body
-    raw = normalize_markdown_body(raw)
 
-    # 解析结果
-    is_correct, credit = _parse_grade_verdict(raw)
+    raw = grade_json.get("raw", "")
+    verdict = grade_json.get("verdict", "incorrect")
+    if verdict == "correct":
+        is_correct, credit = True, None
+    elif verdict == "partial":
+        is_correct, credit = False, 0.5
+    else:
+        is_correct, credit = False, None
 
-    # LLM 抽出的自由知识点（仅作 hint）
+    status = "applied" if effective_conf >= CONFIDENCE_THRESHOLD else "pending"
+
+    # ── KP extraction from raw (backward compat: old text format) ──
     extracted_hint = ""
     for line in raw.split("\n"):
         if "知识点" in line or "涉及" in line:
@@ -204,59 +345,82 @@ def grade_answer(
     subj = _infer_subject(subject, kp_name or extracted_hint)
     try:
         from learner.kp_registry import normalize_kp_for_grade
-        extracted_kp = normalize_kp_for_grade(
-            subj,
-            extracted_hint,
-            preferred=kp_name,
-        )
+        extracted_kp = normalize_kp_for_grade(subj, extracted_hint, preferred=kp_name)
     except Exception:
         extracted_kp = (kp_name or extracted_hint or "").strip() or None
-
     if not extracted_kp:
         extracted_kp = kp_name or "未分类"
 
     item_type = _detect_item_type(q)
 
-    # BKT 更新：必须恢复完整 state（opportunity/streak/due），禁止只灌 float
+    # ── BKT update（仅 applied 时更新 mastery；pending 直写日志不更新 state）──
     bkt = _get_bkt_log()
     mastery_before = 0.2
     mastery_after = 0.2
     try:
-        kc = bkt.get_kp_mastery("wx_123", extracted_kp)
+        kc = bkt.get_kp_mastery(LEARNER_USER_ID, extracted_kp)
         if kc is None:
             kc = KCState()
         else:
             kc = KCState.from_dict(kc.to_dict())
         mastery_before = kc.p_mastery
-        # 部分正确：correct=True + credit=0.5（update 内缩 Δ⁺）；全对/全错走 boolean
-        rec_correct = True if credit is not None else is_correct
-        try:
-            bkt.record(
-                "wx_123",
-                extracted_kp,
-                rec_correct,
-                kc,
-                subject=subj,
-                item_type=item_type,
-                credit=credit,
-            )
-        except TypeError:
-            bkt.record("wx_123", extracted_kp, is_correct, kc)
-        mastery_after = kc.p_mastery
+
+        if status == "applied":
+            rec_correct = True if credit is not None else is_correct
+            _kp_overrides = _bkt_module._load_bkt_overrides().get(extracted_kp, {})
+            try:
+                bkt.record(
+                    LEARNER_USER_ID, extracted_kp, rec_correct, kc,
+                    subject=subj, item_type=item_type, credit=credit,
+                    status="applied", overrides=_kp_overrides,
+                )
+            except TypeError:
+                bkt.record(LEARNER_USER_ID, extracted_kp, is_correct, kc)
+            mastery_after = kc.p_mastery
+
+            # 答错（非部分正确）→ 轻微提高出题权重
+            if credit is None and not is_correct and extracted_kp and extracted_kp != "未分类":
+                try:
+                    from learner.weights_ops import bump_kp_weight
+                    bump_kp_weight(subj, extracted_kp, reason=f"grade_incorrect:{extracted_kp}")
+                except Exception as e:
+                    print(f"[grade] weight bump skipped: {e}")
+
+            # 答对（含部分正确按 credit）→ 衰减出题权重（不低于 baseline，BIG-TEACH-012b #1）
+            if (is_correct or (credit is not None and credit > 0)) and extracted_kp and extracted_kp != "未分类":
+                try:
+                    from learner.weights_ops import decay_kp_weight
+                    decay_kp_weight(subj, extracted_kp, reason=f"grade_correct:{extracted_kp}")
+                except Exception as e:
+                    print(f"[grade] weight decay skipped: {e}")
+        else:
+            # pending: 直写 answer-log，不更新 state；带 state 快照避免 get_kp_mastery 误回放
+            import os
+            from config import DATA_DIR
+            from datetime import datetime, timezone
+            pending_entry = {
+                "ts": datetime.now(timezone.utc).isoformat(),
+                "user_id": LEARNER_USER_ID,
+                "knowledge_point": extracted_kp,
+                "correct": is_correct,
+                "item_type": item_type,
+                "mastery_before": round(mastery_before, 4),
+                "mastery_after": round(mastery_before, 4),
+                "update_applied": False,
+                "update_reason": f"confidence {effective_conf:.2f} < threshold {CONFIDENCE_THRESHOLD}",
+                "status": "pending",
+                "confidence": round(effective_conf, 4),
+                "state": kc.to_dict(),
+            }
+            if credit is not None:
+                pending_entry["credit"] = credit
+            if subj:
+                pending_entry["subject"] = subj
+            with open(os.path.join(DATA_DIR, "answer-log.jsonl"), "a", encoding="utf-8") as f:
+                f.write(json.dumps(pending_entry, ensure_ascii=False) + "\n")
+            mastery_after = mastery_before
     except Exception as e:
         print(f"[grade] BKT update failed: {e}")
-
-    # 答错（非部分正确）→ 轻微提高出题权重
-    if credit is None and not is_correct and extracted_kp and extracted_kp != "未分类":
-        try:
-            from learner.weights_ops import bump_kp_weight
-            bump_kp_weight(
-                subj,
-                extracted_kp,
-                reason=f"grade_incorrect:{extracted_kp}",
-            )
-        except Exception as e:
-            print(f"[grade] weight bump skipped: {e}")
 
     return GradeResult(
         is_correct=is_correct,
@@ -267,4 +431,6 @@ def grade_answer(
         p_mastery_after=mastery_after,
         credit=credit,
         item_type=item_type,
+        status=status,
+        confidence=round(effective_conf, 4),
     )

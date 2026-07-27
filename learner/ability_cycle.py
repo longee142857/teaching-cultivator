@@ -147,9 +147,48 @@ def decide_ability(
 # ── item_form 映射 ──
 
 
-def ability_to_item_form(ability_goal: str, last_form: str = "") -> str:
-    """ability_goal → item_form。transfer 继承上次 form。"""
+def _get_last_push_meta() -> dict:
+    """读取 last_push.json 元信息（subject, timestamp, item_form）。"""
+    last_push_path = os.path.join(DATA_DIR, "last_push.json")
+    try:
+        if os.path.isfile(last_push_path):
+            with open(last_push_path, encoding="utf-8") as f:
+                return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        pass
+    return {}
+
+
+def ability_to_item_form(ability_goal: str, last_form: str = "", subject: str = "") -> str:
+    """ability_goal → item_form。transfer 继承上次 form（BIG-TEACH-012c #9）。
+
+    继承条件（全满足）：
+    - last_push 存在且 age ≤ 36h
+    - 同一 subject
+    - item_form ∈ {mcq, blank, proof_outline}
+    """
     if ability_goal == "transfer" and last_form in ("mcq", "blank", "proof_outline"):
+        push_meta = _get_last_push_meta()
+        if push_meta:
+            push_subject = (push_meta.get("subject") or "").strip()
+            push_item_form = (push_meta.get("item_form") or "").strip()
+            push_ts = (push_meta.get("timestamp") or "").strip()
+            # 同一 subject
+            if subject and push_subject and push_subject != subject:
+                return ITEM_FORM_MAP.get(ability_goal, "mcq")
+            # age ≤ 36h
+            if push_ts:
+                try:
+                    from datetime import datetime
+                    push_dt = datetime.fromisoformat(push_ts)
+                    age_hours = (datetime.now() - push_dt).total_seconds() / 3600
+                    if age_hours > 36:
+                        return ITEM_FORM_MAP.get(ability_goal, "mcq")
+                except (ValueError, TypeError):
+                    return ITEM_FORM_MAP.get(ability_goal, "mcq")
+            # item_form 合法
+            if push_item_form and push_item_form not in ("mcq", "blank", "proof_outline"):
+                return ITEM_FORM_MAP.get(ability_goal, "mcq")
         return last_form
     return ITEM_FORM_MAP.get(ability_goal, "mcq")
 

@@ -16,6 +16,7 @@ logging.basicConfig(
 )
 
 from config import DATA_DIR, DINGTALK_CLIENT_ID, DINGTALK_CLIENT_SECRET
+from deliver.push_retry_queue import enqueue_retry, process_retry_queue
 from deliver.dingtalk_bot import DingTalkBot, DingTalkPushBridge
 from deliver.bridge import WecomWebhookBridge, StdoutBridge
 from agent.agent import TeachingAgent
@@ -176,7 +177,10 @@ class TeachingBot:
     # ── 推送 ────────────────────────────────────────
 
     def push_cultivate(self, subject: str):
-        """执行一次培养推送（钉钉 OpenAPI → webhook 回退 → 日志兜底）。"""
+        """执行一次培养推送（钉钉 OpenAPI → webhook 回退 → 日志兜底）。
+
+        失败时写入重试队列（BIG-TEACH-012c #8）。
+        """
         from cultivate import cultivate as run
         import cultivate as _cultivate
         import deliver.bridge as db
@@ -186,6 +190,8 @@ class TeachingBot:
         bridge = self._make_push_bridge()
         db.get_bridge = lambda: bridge
         _cultivate.get_bridge = lambda: bridge
+        saved_content = ""
+        delivery_ok = True
         try:
             run(subject)
             # 新推送：更新 core blocks + 压缩旧对话（不清空记忆）
@@ -199,9 +205,14 @@ class TeachingBot:
             log(f"[OK] {subject} 推送执行完毕")
         except Exception as e:
             log(f"[失败] {subject} 推送异常: {e}")
+            saved_content = self._last_question
+            delivery_ok = False
         finally:
             db.get_bridge = orig_db
             _cultivate.get_bridge = orig_cult
+
+        if not delivery_ok:
+            enqueue_retry(subject, content=saved_content)
 
     def push_weekly_report(self):
         """生成并推送学习周报 ActionCard。"""
@@ -444,6 +455,13 @@ def scheduler_loop(bot: TeachingBot):
                     bot.push_biweekly_exams()
             except Exception as e:
                 log(f"[失败] {label} 失败: {e}")
+        # 消费推送重试队列（BIG-TEACH-012c #8）
+        try:
+            retried = process_retry_queue(bot)
+            if retried:
+                log(f"[retry-queue] 本轮重试 {retried} 条")
+        except Exception as e:
+            log(f"[retry-queue] 处理异常: {e}")
         time.sleep(30)
 
 

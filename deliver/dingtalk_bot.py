@@ -9,7 +9,7 @@
   DingTalkPushBridge — 主动推送桥（OpenAPI），给 scheduler 用
 """
 from __future__ import annotations
-import asyncio, json, os, socket, threading, logging
+import asyncio, json, os, socket, threading, time, logging
 from typing import Callable, Optional
 
 # Fix: 钉钉 IPv6 不可达，强制 Python 全栈只用 IPv4
@@ -22,6 +22,55 @@ import dingtalk_stream
 from dingtalk_stream import AckMessage
 
 logger = logging.getLogger(__name__)
+
+# ── 消息去重（BIG-TEACH-012c #8b）──
+_INBOUND_DEDUP_TTL = 600  # 秒
+_INBOUND_DEDUP_MAX = 4096
+
+
+class _InboundDedup:
+    """钉钉 Stream 重投去重（inbound msgId TTL cache）。
+
+    Stream 长耗时未及时 ACK 会重投同一 msgId；超过 TTL 自动过期。
+    """
+    def __init__(self, ttl: int = _INBOUND_DEDUP_TTL, max_size: int = _INBOUND_DEDUP_MAX):
+        self._ttl = ttl
+        self._max_size = max_size
+        self._seen: dict[str, float] = {}
+
+    def claim(self, msg_id: str) -> bool:
+        """尝试认领 msgId。若已存在且未过期则返回 False（重复），否则 True（新消息）。"""
+        if not msg_id:
+            return True
+        now = time.time()
+        # 惰性清理过期
+        stale = [k for k, ts in self._seen.items() if now - ts > self._ttl]
+        for k in stale:
+            self._seen.pop(k, None)
+        # 容量保护（超过上限时清一半最旧的）
+        if len(self._seen) >= self._max_size:
+            sorted_by_ts = sorted(self._seen.items(), key=lambda x: x[1])
+            for k, _ in sorted_by_ts[:len(sorted_by_ts) // 2]:
+                self._seen.pop(k, None)
+        if msg_id in self._seen:
+            return False
+        self._seen[msg_id] = now
+        return True
+
+    def make_fingerprint(self, conversation_id: str, text: str) -> str:
+        """无 msgId 时的 fallback：会话+文本简短指纹。"""
+        import hashlib
+        raw = f"{conversation_id}|{text}"
+        return hashlib.md5(raw.encode("utf-8")).hexdigest()[:16]
+
+    def claim_by_fingerprint(self, conversation_id: str, text: str) -> bool:
+        """用指纹去重。"""
+        fp = self.make_fingerprint(conversation_id, text)
+        return self.claim(fp)
+
+
+# 全局去重实例（单 bot 进程内有效）
+_INBOUND_DEDUP = _InboundDedup()
 
 # 单条回复最多跟发公式图数量（防刷屏）
 MAX_FORMULA_IMAGES = 6
@@ -148,6 +197,12 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
         msg = dingtalk_stream.ChatbotMessage.from_dict(callback.data)
         raw = callback.data if isinstance(callback.data, dict) else {}
 
+        # ── inbound 去重（BIG-TEACH-012c #8b）：重投直接 ACK ──
+        global _INBOUND_DEDUP
+        msg_id = raw.get("msgId", "") or ""
+        if msg_id and not _INBOUND_DEDUP.claim(msg_id):
+            logger.info("dedup: skip duplicate msgId=%s", msg_id[:20])
+            return AckMessage.STATUS_OK, "OK"
         text = " ".join(msg.get_text_list() or [])
         sw = getattr(msg, "session_webhook", None)
         robot_code = raw.get("robotCode", "") or ""

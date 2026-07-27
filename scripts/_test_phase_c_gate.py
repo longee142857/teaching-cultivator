@@ -82,6 +82,7 @@ def test_clean_mcq_accept_without_llm(monkey=None):
         return draft_body
 
     orch._polish_or_orchestrate = fake_polish  # type: ignore
+    orch._review_item = lambda *a, **kw: {"decision": "accept", "issues": [], "suggestion": ""}
     r = orch.orchestrate_push(
         {"draft": draft, "answer": answer, "kp": "函数极限与连续"},
         subject="math",

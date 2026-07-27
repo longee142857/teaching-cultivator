@@ -3,10 +3,13 @@ from __future__ import annotations
 import json, time, uuid, threading, requests, urllib3, sys, io, os
 from websocket import create_connection
 
+from config import SSL_VERIFY
+
 # Windows GBK 终端兼容：print 遇到 emoji 不炸
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+if not SSL_VERIFY:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _WX_LOG = None  # 外部设置的日志文件路径
 _CHAT_ID_FILE = None  # 持久化 chat_id 的文件路径
@@ -70,7 +73,7 @@ class WecomBot:
         try:
             resp = requests.post(self._response_url,
                 json={"msgtype": "markdown", "markdown": {"content": text}},
-                timeout=10, verify=False)
+                timeout=10, verify=SSL_VERIFY)
             return resp.ok and resp.json().get("errcode") == 0
         except:
             return False

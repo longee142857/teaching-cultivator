@@ -8,14 +8,14 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 
-from config import DATA_DIR
+from config import DATA_DIR, LEARNER_USER_ID
 from learner.kp_registry import get_l1, get_l1_name, load_syllabus
 
 WEIGHTS_PATH = os.path.join(DATA_DIR, "weights.json")
 DIFFICULTY_PATH = os.path.join(DATA_DIR, "difficulty.json")
 ANSWER_LOG = os.path.join(DATA_DIR, "answer-log.jsonl")
 LAST_PUSH_PATH = os.path.join(DATA_DIR, "last_push.json")
-USER_ID = "wx_123"
+USER_ID = LEARNER_USER_ID
 
 _SUBJECT_CN = {"math": "数学一", "comm": "通信原理", "review": "错题复盘"}
 

@@ -9,6 +9,50 @@ from typing import Any
 
 from quality_gate import check_draft_answer, extract_answer_letter
 
+# BIG-TEACH-012a #7b: review_item (LLM reviewer for generated questions)
+
+
+def _review_item(
+    draft: str, answer: str, *,
+    kp: str = "", subject: str = "",
+    difficulty: str = "intermediate", item_form: str = "mcq",
+) -> dict:
+    """LLM 审查：找题目歧义、多解、知识点不符等问题。返回 {"decision", "issues", "suggestion"}。"""
+    from decide.router import call_llm
+    import re as _re, json as _json
+
+    type_hint = {"mcq": "选择题", "blank": "填空题", "proof_outline": "证明/推导题"}.get(item_form, "题目")
+    system = (
+        "你是一个题目质量审查员。检查以下题目是否存在问题。\n"
+        "检查要点：\n"
+        "1. 题干是否有歧义或存在多解\n"
+        "2. 难度与知识点是否匹配\n"
+        "3. 答案与题干是否矛盾\n"
+        "4. 题目表述是否清晰完整\n"
+        "5. 选择题选项是否互斥且恰有一解\n\n"
+        "以 JSON 格式输出，不要包含其他内容：\n"
+        '{"decision": "accept|reject", "issues": ["问题1", ...], "suggestion": "改进建议"}'
+    )
+    prompt = (
+        f"知识点：{kp}\n难度：{difficulty}\n题型：{type_hint}\n"
+        f"题目：\n{draft}\n\n答案：\n{answer}\n\n请审查并输出 JSON。"
+    )
+    raw = call_llm(system, prompt, "review_item", difficulty)
+
+    m = _re.search(r'\{[\s\S]*\}', raw)
+    if m:
+        try:
+            result = _json.loads(m.group())
+            dec = result.get("decision", "accept")
+            return {
+                "decision": dec if dec in ("accept", "reject") else "accept",
+                "issues": result.get("issues", []) if isinstance(result.get("issues"), list) else [],
+                "suggestion": result.get("suggestion", ""),
+            }
+        except (_json.JSONDecodeError, TypeError):
+            pass
+    return {"decision": "accept", "issues": [], "suggestion": ""}
+
 
 def _memory_digest(max_chars: int = 600) -> str:
     try:
@@ -123,6 +167,30 @@ def orchestrate_push(
             }
 
         kp = str(art.get("kp") or "")
+
+        # BIG-TEACH-012a #7b: review_item (LLM reviewer)
+        review = _review_item(
+            draft, answer, kp=kp, subject=subject,
+            difficulty=difficulty, item_form=item_form,
+        )
+        if review.get("decision") == "reject":
+            print(f"[orchestrate] review_item reject: {review.get('issues')}")
+            if attempts < max_author_retries and callable(reauthor_fn):
+                attempts += 1
+                print(f"[orchestrate] re-author attempt {attempts} (after review)")
+                new_art = reauthor_fn()
+                if isinstance(new_art, dict) and (new_art.get("draft") or "").strip():
+                    art.update(new_art)
+                    continue
+            return {
+                "status": "reject",
+                "content": "",
+                "answer": answer,
+                "reason": "review_item: " + ";".join(review.get("issues", [])),
+                "issues": review.get("issues", []),
+                "artifact": art,
+            }
+
         content = _polish_or_orchestrate(
             draft,
             answer,

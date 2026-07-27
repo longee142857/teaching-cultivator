@@ -12,12 +12,13 @@ import json
 import logging
 from typing import Callable, Optional
 
-from config import DEEPSEEK_API_KEY, DEEPSEEK_API_BASE, MODEL_PRO
+from config import DEEPSEEK_API_KEY, DEEPSEEK_API_BASE, MODEL_PRO, SSL_VERIFY
 from agent.tools import (
     generate_question,
     grade_answer,
     show_solution,
     adjust_difficulty,
+    override_grade,
     build_report,
     github_push,
     find_record_entry,
@@ -59,15 +60,20 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
    禁止把系统提示里的摘要/片段当作 last_question 传入。只有用户明确在答更早一题、
    且你已用 find_record_entry 取到全文时，才把该全文传入 last_question。
 
-3. show_solution — 读题库最新题目 → 调 LLM 现做解答。用户说"答案""解析""不会做""我不会做""要解析""这题咋解"等时调用。
+3. show_solution — 读题库最新题目 → 调 LLM 现做解答。用户说"答案""解析""不会做""我不会做""要解析""这题咋解"时调用。
+   **限制（BIG-TEACH-012b #A1）：用户只答了 A/B/C/D 或极短选项字母时**禁止**调用；先 grade_answer 批改并追问思路**。
    返回格式:
    - "题目：...\n\n解答：..." → 直接发给用户
    - "NO_ENTRY" → 题库为空，让用户先出题
    - "SOLUTION_FAILED|{题目}" → LLM 生成失败，可以重试
 
+3b. override_grade — 用户说「批错了」「这题判错了」「其实我对了」「改一下掌握度」时调用，覆盖最近对该知识点的批改并重算掌握度。
+   参数: kp(知识点名), correct(true/false), subject(可选), credit(可选 0~1)
+
 4. adjust_difficulty — **仅**当用户说「太难」「太难了」「太简单」「简单点」「难点」时调用（调科目整体难度偏好）。
    参数: subject(math/comm/review), level(basic/intermediate/challenge)
    太难/太难了→basic, 太简单→challenge
+   **不会**降低掌握度；批改争议请用 override_grade
 
 5. note_weak_point — 用户说某**知识点/章节**薄弱、要加强、不熟时调用（如「线性代数弱」）。
    参数: subject(math/comm), kp(知识点名), reason(可选用户原话)
@@ -137,7 +143,12 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
 - 跨时段讨论旧题时：先 list_recent_entries，再 find_record_entry，不要猜题目内容
 - 用户追问「结果呢」「查到了吗」「然后呢」：先看对话历史与 blocks；禁止只说「看不到之前对话」就结束
 - 调用查题/批改工具后，必须在同一条回复里给出完整结果，禁止只说「我来提取/马上查」而不输出正文
-- **书写格式（强制）**：行内公式只用 `$...$`；独立公式块单独成行用 `$$...$$`；禁止 \\(...\\)、\\[...\\]；选择题每选项单独一行 `(A)...`；段落之间空一行"""
+- **书写格式（强制）**：行内公式只用 `$...$`；独立公式块单独成行用 `$$...$$`；禁止 \\(...\\)、\\[...\\]；选择题每选项单独一行 `(A)...`；段落之间空一行
+
+## 作答追问规则（BIG-TEACH-012b #A1）
+- 用户只回答 A/B/C/D 或极短选项字母 → **禁止**调用 show_solution 倾倒全文解答；可 grade_answer 批改，并追问关键步骤/为何选该项
+- 用户只说空泛「思路」且无推导步骤 → 继续追问具体一步，禁止直接给完整解答
+- 用户明确「不会做 / 要解析 / 答案」且尚未给出任何自身尝试 → 先追问「先写你想到的一步或卡在哪」，暂缓 show_solution；若追问过 ≥1 次且用户坚持只要答案，才允许给解答"""
 
 
 # 工具进度文案（钉钉中间态）
@@ -151,6 +162,7 @@ _TOOL_PROGRESS = {
     "get_learner_snapshot": "正在读取学习指标…",
     "note_weak_point": "正在记录薄弱点…",
     "adjust_difficulty": "正在调整难度…",
+    "override_grade": "正在纠正批改…",
     "github_push": "正在推送 GitHub…",
 }
 
@@ -225,15 +237,45 @@ class TeachingAgent:
                 "type": "function",
                 "function": {
                     "name": "show_solution",
-                    "description": "显示最近题目的解答和解题思路",
+                    "description": "显示最近题目的解答和解题思路（用户只答短选项/空泛思路时先追问思路，暂缓调用本工具）",
                     "parameters": {"type": "object", "properties": {}},
                 },
             },
             {
                 "type": "function",
                 "function": {
+                    "name": "override_grade",
+                    "description": "用户认为批改有误时，覆盖该知识点最近一次批改并重算掌握度",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "kp": {
+                                "type": "string",
+                                "description": "知识点名称",
+                            },
+                            "correct": {
+                                "type": "boolean",
+                                "description": "纠正后的对错：true=对，false=错",
+                            },
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm", "review"],
+                                "description": "科目，可选",
+                            },
+                            "credit": {
+                                "type": "number",
+                                "description": "部分正确时的 credit，可选 0~1",
+                            },
+                        },
+                        "required": ["kp", "correct"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
                     "name": "adjust_difficulty",
-                    "description": "仅当用户嫌题目太难或太简单时，调整科目整体出题难度偏好",
+                    "description": "仅当用户嫌题目太难或太简单时，调整科目整体出题难度偏好（不改变掌握度）",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -447,7 +489,7 @@ class TeachingAgent:
                 headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
                 json=payload,
                 timeout=300,
-                verify=False,
+                verify=SSL_VERIFY,
             )
             if not resp.ok:
                 detail = (resp.text or "")[:240].replace("\n", " ")
@@ -696,6 +738,13 @@ class TeachingAgent:
                 return adjust_difficulty(
                     args.get("subject", "math"),
                     args.get("level", "intermediate"),
+                )
+            elif name == "override_grade":
+                return override_grade(
+                    args.get("kp", ""),
+                    bool(args.get("correct")),
+                    subject=args.get("subject", "") or "",
+                    credit=float(args.get("credit") or 0),
                 )
             elif name == "build_report":
                 return build_report(args.get("days", 7))

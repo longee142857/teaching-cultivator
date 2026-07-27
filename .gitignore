@@ -38,6 +38,12 @@ data/ability-cycle-check.json
 data/l3-gate-check.json
 data/l3-fill-check.json
 data/phase-c-check.json
+data/bkt_overrides.json
+data/push-retry-queue.jsonl
+data/push-retry-dead.jsonl
+
+# Refine-queue archive (BIG-TEACH-012d #17)
+data/refine-queue-archive/
 
 # Private ops / session notes (not for public tree)
 logs/SESSION_*.md

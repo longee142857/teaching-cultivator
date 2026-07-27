@@ -86,30 +86,38 @@ def _git(*args: str, cwd: str, proxy_url: str = "") -> subprocess.CompletedProce
 
 
 def _ensure_proxy_sidecar() -> bool:
-    """尝试拉起 Agent 旁路 17890。"""
-    script = os.path.join(
+    """尝试拉起 Agent 旁路 17890。
+
+    Windows → agent-proxy.bat；POSIX → agent-proxy.sh；
+    失败时非静默警告（BIG-TEACH-012c #12）。
+    """
+    base = os.path.normpath(os.path.join(
         os.path.dirname(__file__),
         "..", "..", "..",
-        "tool-scripts", "tools", "agent-proxy.bat",
-    )
-    script = os.path.normpath(script)
+        "tool-scripts", "tools",
+    ))
+    import sys
+    is_win = sys.platform == "win32"
+    script_name = "agent-proxy.bat" if is_win else "agent-proxy.sh"
+    script = os.path.join(base, script_name)
     if not os.path.exists(script):
+        print(f"[github_pusher] WARNING: proxy sidecar not found at {script} "
+              f"(platform={sys.platform})")
         return False
     try:
-        # 在 Git Bash 下，用 cmd.exe 调用 .bat
-        import sys
-        if sys.platform == "win32":
-            subprocess.run(
-                ["cmd.exe", "/c", script, "ensure"],
-                capture_output=True, timeout=30,
-            )
+        if is_win:
+            runner = ["cmd.exe", "/c", script, "ensure"]
         else:
-            subprocess.run(
-                ["bash", script, "ensure"],
-                capture_output=True, timeout=30,
-            )
-        return _probe_port(17890)
-    except Exception:
+            runner = ["bash", script, "ensure"]
+        subprocess.run(runner, capture_output=True, timeout=30)
+        ok = _probe_port(17890)
+        if not ok:
+            print(f"[github_pusher] WARNING: proxy sidecar script ran but port 17890 "
+                  f"not reachable (platform={sys.platform}, script={script})")
+        return ok
+    except Exception as e:
+        print(f"[github_pusher] WARNING: proxy sidecar failed: {e} "
+              f"(platform={sys.platform}, script={script})")
         return False
 
 

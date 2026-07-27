@@ -6,9 +6,12 @@ from __future__ import annotations
 import json, os, uuid, time, tempfile
 import requests, urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from config import SSL_VERIFY
+
+if not SSL_VERIFY:
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 _session = requests.Session()
-_session.verify = False
+_session.verify = SSL_VERIFY
 
 DEFAULT_BASE_URL = "https://ilinkai.weixin.qq.com"
 BOT_TYPE = "3"

@@ -2,7 +2,7 @@
 from __future__ import annotations
 import logging
 from dataclasses import dataclass
-from config import MODEL_FLASH, MODEL_PRO
+from config import MODEL_FLASH, MODEL_PRO, SSL_VERIFY
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,13 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
     """
     if task_type in ("grade", "generate", "explain", "author", "polish", "orchestrate"):
         return ModelConfig(MODEL_PRO, thinking=True, effort=REASONING_EFFORT_MAX)
+
+    # BIG-TEACH-012a #7a: verify_grade 与 grade 分档（flash 亦可，对抗 prompt）
+    if task_type == "verify_grade":
+        return ModelConfig(MODEL_FLASH, thinking=False, effort=REASONING_EFFORT_DEFAULT)
+    # BIG-TEACH-012a #7b: review_item 与 author 分档
+    if task_type == "review_item":
+        return ModelConfig(MODEL_FLASH, thinking=False, effort=REASONING_EFFORT_DEFAULT)
 
     return ModelConfig(MODEL_FLASH, thinking=False, effort=REASONING_EFFORT_DEFAULT)
 
@@ -78,7 +85,7 @@ def call_llm(
         headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
         json=payload,
         timeout=300,
-        verify=False,
+        verify=SSL_VERIFY,
     )
     resp.raise_for_status()
     msg = resp.json()["choices"][0]["message"]

@@ -8,14 +8,22 @@
 from __future__ import annotations
 import sys, os, json, datetime
 
-from config import LP_PATH, DAILY_RECORD_DIR, DATA_DIR
+from config import DAILY_RECORD_DIR, DATA_DIR, RAG_FALLBACK, LEARNER_USER_ID
 from decide.router import call_llm
 from deliver.bridge import get_bridge
 from prompts.prompt_builder import PromptBuilder
 from prompts.ref_picker import RefPicker
 
 # ── 基建模块（复用 knowledge-system/lib/） ──
-from bkt import BKTLogger, KCState
+try:
+    from bkt import BKTLogger, KCState
+    _bkt_available = True
+except ImportError as _bkt_err:
+    print(f"[cultivate] WARNING: cannot import bkt: {_bkt_err}")
+    print("[cultivate] Set KB_PATH or ensure knowledge-system/lib is accessible")
+    BKTLogger = None  # type: ignore[assignment]
+    KCState = None  # type: ignore[assignment]
+    _bkt_available = False
 from intervention import decide_intervention, InterventionDecision
 from heartbeat_summary import extract as get_heartbeat_summary
 
@@ -209,7 +217,7 @@ def _remap_dead_escalate(decision: InterventionDecision) -> InterventionDecision
 
 def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
     """从 answer-log 取最近一条答错记录，拼成 review 用的摘要。"""
-    history = bkt_log.get_user_history("wx_123") if hasattr(bkt_log, "get_user_history") else []
+    history = bkt_log.get_user_history(LEARNER_USER_ID) if hasattr(bkt_log, "get_user_history") else []
     if not history:
         return ""
     for entry in reversed(history):
@@ -233,8 +241,13 @@ def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
 
 
 def _dynamic_style_pcts(consecutive_failures: int, subject: str) -> tuple[int, int]:
-    """连续答错越多越偏向真题套路；简单 clamp。"""
-    exam_pct = max(60, min(90, 50 + consecutive_failures * 10))
+    """连续答错越多越偏向真题套路；分科基线+斜率（BIG-TEACH-012c #11）。"""
+    style_table = {
+        "math": {"base_exam": 70, "per_fail": 8, "floor": 60, "ceil": 90},
+        "comm": {"base_exam": 55, "per_fail": 5, "floor": 50, "ceil": 85},
+    }
+    cfg = style_table.get(subject, {"base_exam": 60, "per_fail": 8, "floor": 60, "ceil": 80})
+    exam_pct = max(cfg["floor"], min(cfg["ceil"], cfg["base_exam"] + consecutive_failures * cfg["per_fail"]))
     return exam_pct, 100 - exam_pct
 
 
@@ -259,21 +272,21 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
     mastery: dict[str, float] = {}
     try:
         if hasattr(bkt_log, "get_all_kp_mastery"):
-            mastery = bkt_log.get_all_kp_mastery("wx_123") or {}
+            mastery = bkt_log.get_all_kp_mastery(LEARNER_USER_ID) or {}
         for kp in kp_w:
             if kp in mastery:
                 continue
             if hasattr(bkt_log, "get_kp_mastery"):
-                kc = bkt_log.get_kp_mastery("wx_123", kp)
-                if kc and hasattr(kc, "p_mastery"):
-                    mastery[kp] = kc.p_mastery
+                kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp)
+                if kc and hasattr(kc, "p_effective"):
+                    mastery[kp] = kc.p_effective
     except Exception:
         pass
     from learner.kp_registry import pick_kp_weighted
     due_kps = set()
     try:
         if hasattr(bkt_log, "get_due_kps"):
-            due_kps = bkt_log.get_due_kps("wx_123") or set()
+            due_kps = bkt_log.get_due_kps(LEARNER_USER_ID) or set()
     except Exception:
         due_kps = set()
     return pick_kp_weighted(subject, kp_w, mastery, due_kps=due_kps)
@@ -301,16 +314,16 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         kp_from_w = _pick_kp_from_weights(weights, weight_subj, bkt_log)
         if kp_from_w:
             target_kp = kp_from_w
-            kc = bkt_log.get_kp_mastery("wx_123", kp_from_w) \
+            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp_from_w) \
                 if hasattr(bkt_log, 'get_kp_mastery') else None
-            if kc and hasattr(kc, 'p_mastery'):
-                target_val = kc.p_mastery
+            if kc and hasattr(kc, 'p_effective'):
+                target_val = kc.p_effective
             else:
                 target_val = 0.2  # 新知识点默认初始掌握度
 
     # ── 回退：BKT 全局最低掌握度（需 resolve 到正式 L2）──
     if target_kp is None:
-        mastery = bkt_log.get_all_kp_mastery("wx_123") \
+        mastery = bkt_log.get_all_kp_mastery(LEARNER_USER_ID) \
             if hasattr(bkt_log, 'get_all_kp_mastery') else {}
         if mastery:
             raw_kp = min(mastery, key=mastery.get)
@@ -327,10 +340,10 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
             target_kp = resolved_l2
 
         days_since_last_push = _get_days_since_last_push(subject)
-        consecutive_failures = _get_consecutive_failures("wx_123", bkt_log, target_kp)
+        consecutive_failures = _get_consecutive_failures(LEARNER_USER_ID, bkt_log, target_kp)
         opportunity_count = 0
         if kc is None:
-            kc = bkt_log.get_kp_mastery("wx_123", target_kp) \
+            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, target_kp) \
                 if hasattr(bkt_log, 'get_kp_mastery') else None
         if kc and hasattr(kc, 'opportunity_count'):
             opportunity_count = kc.opportunity_count
@@ -339,7 +352,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         recent_correct = None
         if hasattr(bkt_log, "get_recent_correct"):
             try:
-                recent_correct = bkt_log.get_recent_correct("wx_123", target_kp)
+                recent_correct = bkt_log.get_recent_correct(LEARNER_USER_ID, target_kp)
             except Exception:
                 recent_correct = None
 
@@ -578,7 +591,7 @@ def generate(subject: str, decision: InterventionDecision, *,
     global _last_item_form
     last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
     _last_item_form = (
-        ability_to_item_form(ability_goal, last_form=last_form or None)
+        ability_to_item_form(ability_goal, last_form=last_form or None, subject=subject)
         if ability_goal else "mcq"
     )
 
@@ -634,7 +647,7 @@ def generate(subject: str, decision: InterventionDecision, *,
         subject=subject,
         difficulty=decision.difficulty,
         source=source,
-        max_author_retries=1,
+        max_author_retries=2,
         reauthor_fn=_reauthor,
     )
     _last_answer = result.get("answer") or answer
@@ -733,6 +746,9 @@ def record(subject: str, content: str, decision: InterventionDecision, answer: s
 
 def cultivate(subject: str):
     """一次完整的培养循环。"""
+    if not _bkt_available:
+        print(f"[cultivate] bkt unavailable, cannot cultivate ({subject})")
+        return
     state = assess_state(subject)
     bkt_log = state["bkt_log"]
     decision = decide(subject, bkt_log)
@@ -746,14 +762,14 @@ def cultivate(subject: str):
     opportunity_count = 0
     try:
         if hasattr(bkt_log, 'get_kp_mastery'):
-            kc = bkt_log.get_kp_mastery("wx_123", kp)
-            if kc and hasattr(kc, 'p_mastery'):
-                mastery = kc.p_mastery
+            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp)
+            if kc and hasattr(kc, 'p_effective'):
+                mastery = kc.p_effective
             if kc and hasattr(kc, 'opportunity_count'):
                 opportunity_count = kc.opportunity_count
     except Exception:
         pass
-    consecutive_failures = _get_consecutive_failures("wx_123", bkt_log, kp)
+    consecutive_failures = _get_consecutive_failures(LEARNER_USER_ID, bkt_log, kp)
 
     content = generate(
         subject,
@@ -768,10 +784,12 @@ def cultivate(subject: str):
         return
     answer = _last_answer
     ref_source = _last_ref_source
-    deliver(content)
-    record(subject, content, decision, answer, ref_source)
-    _save_last_push(subject, decision, content, answer, ref_source, kp=kp)
-    print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
+    if deliver(content):
+        record(subject, content, decision, answer, ref_source)
+        _save_last_push(subject, decision, content, answer, ref_source, kp=kp)
+        print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
+    else:
+        print(f"[cultivate] {subject}: deliver failed, skipped record/last_push ({decision.type}/{kp})")
 
 
 if __name__ == "__main__":

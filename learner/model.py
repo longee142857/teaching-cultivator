@@ -13,10 +13,12 @@ from collections import defaultdict
 from typing import Optional
 from dataclasses import dataclass, field
 
-from config import DATA_DIR, KB_PATH, LP_PATH, DAILY_RECORD_DIR
+from config import DATA_DIR, KB_PATH, DAILY_RECORD_DIR
 
 # ── 数据源 ──
 ANSWER_LOG = os.path.join(DATA_DIR, "answer-log.jsonl")
+
+# BIG-TEACH-012d #16: learning-progress.json 已退役。所有分析基于 answer-log。
 
 
 @dataclass
@@ -50,14 +52,6 @@ class WeeklyProfile:
 
 # ── 数据加载 ──
 
-def load_learning_progress() -> dict:
-    try:
-        with open(LP_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return {}
-
-
 def load_bkt_log() -> list[dict]:
     try:
         with open(ANSWER_LOG, "r", encoding="utf-8") as f:
@@ -86,9 +80,8 @@ def load_daily_records(days: int = 7) -> str:
 
 # ── 分析函数 ──
 
-def analyze_kp_trends(bkt_log: list[dict], lp: dict) -> list[KPTrend]:
-    """BKT 掌握度变化趋势。"""
-    # 从 answer-log.jsonl
+def analyze_kp_trends(bkt_log: list[dict]) -> list[KPTrend]:
+    """BKT 掌握度变化趋势（仅基于 answer-log）。"""
     latest = {}
     first = {}
     for r in bkt_log:
@@ -96,111 +89,133 @@ def analyze_kp_trends(bkt_log: list[dict], lp: dict) -> list[KPTrend]:
         if not kp:
             continue
         if kp not in first:
-            first[kp] = r.get("mastery_after", 0)
+            first[kp] = r.get("mastery_before", 0)
         latest[kp] = r.get("mastery_after", 0)
 
-    # 补充 learning-progress.json 中 problemsDone 的掌握度标记
-    done_mastery = defaultdict(list)
-    for pd in lp.get("problemsDone", []):
-        for kp, label in pd.get("mastery", {}).items():
-            score = {"passed": 0.85, "weak-path": 0.4, "weak-usage": 0.35, "failed": 0.15}.get(label, 0.5)
-            done_mastery[kp].append(score)
+    kp_occurrences: dict[str, int] = defaultdict(int)
+    kp_last_seen: dict[str, str] = {}
+    for r in bkt_log:
+        kp = r.get("knowledge_point")
+        if not kp:
+            continue
+        kp_occurrences[kp] += 1
+        ts = r.get("ts", "")
+        if ts and (kp not in kp_last_seen or ts > kp_last_seen[kp]):
+            kp_last_seen[kp] = ts[:10]
 
     trends = []
-    all_kps = set(latest.keys()) | set(done_mastery.keys())
-    for kp in sorted(all_kps):
+    for kp in sorted(set(latest.keys()) | set(first.keys())):
         trends.append(KPTrend(
             name=kp,
             mastery_before=first.get(kp, 0),
-            mastery_after=latest.get(kp, max(done_mastery.get(kp, [0]))),
-            opportunity_count=sum(1 for r in bkt_log if r.get("knowledge_point") == kp),
-            last_seen=bkt_log[-1].get("ts", "")[:10] if bkt_log else "",
+            mastery_after=latest.get(kp, 0),
+            opportunity_count=kp_occurrences.get(kp, 0),
+            last_seen=kp_last_seen.get(kp, ""),
         ))
     return trends
 
 
-def analyze_error_patterns(lp: dict) -> list[ErrorPattern]:
-    """从 problemsDone 中提取错误模式。"""
+def analyze_error_patterns(bkt_log: list[dict]) -> list[ErrorPattern]:
+    """从 answer-log 中提取薄弱知识点（近 7 天多次答错或掌握度低）。"""
+    from collections import defaultdict
+    now = datetime.datetime.now()
+    cutoff = (now - datetime.timedelta(days=7)).isoformat()
+
+    fail_by_kp: dict[str, list[str]] = defaultdict(list)
+    for r in bkt_log:
+        ts = r.get("ts", "")
+        if ts and ts < cutoff:
+            continue
+        kp = r.get("knowledge_point")
+        if not kp:
+            continue
+        if r.get("correct") is False:
+            fail_by_kp[kp].append(r.get("conv_tag", ""))
+
     patterns = []
-    weak_by_kp = defaultdict(list)
+    for kp, examples in sorted(fail_by_kp.items(), key=lambda x: -len(x[1])):
+        if len(examples) >= 2:
+            patterns.append(ErrorPattern(
+                pattern=f"{kp} 近期答错 {len(examples)} 次",
+                kps=[kp],
+                count=len(examples),
+                examples=examples[:3],
+            ))
 
-    for pd in lp.get("problemsDone", []):
-        mastery = pd.get("mastery", {})
-        for kp, label in mastery.items():
-            if label in ("weak-path", "weak-usage", "failed"):
-                weak_by_kp[kp].append(pd.get("topic", ""))
-
-    for kp, examples in weak_by_kp.items():
-        patterns.append(ErrorPattern(
-            pattern=f"{kp} 需要加强",
-            kps=[kp],
-            count=len(examples),
-            examples=examples[:3],
-        ))
+    # 若有 BKT mastery 数据，补充掌握度极低的知识点
+    try:
+        bkt_logger = _get_bkt_logger()
+        if bkt_logger and hasattr(bkt_logger, 'get_all_kp_mastery'):
+            from config import LEARNER_USER_ID
+            mastery = bkt_logger.get_all_kp_mastery(LEARNER_USER_ID) or {}
+            for kp, val in sorted(mastery.items(), key=lambda x: x[1]):
+                if val < 0.3 and not any(kp in p.kps for p in patterns):
+                    patterns.append(ErrorPattern(
+                        pattern=f"{kp} 掌握度仅 {val:.0%}",
+                        kps=[kp],
+                        count=1,
+                    ))
+    except Exception:
+        pass
 
     return patterns
 
 
-def analyze_weak_chains(lp: dict) -> list[dict]:
-    """从 subject 章节进度的 🔄 状态推断薄弱链路。"""
-    chains = []
-    for subj, info in lp.get("subjects", {}).items():
-        in_progress = [ch for ch, st in info.get("chapters", {}).items() if "🔄" in st]
-        if len(in_progress) >= 2:
-            chains.append({
-                "chain": " → ".join(in_progress[:3]),
-                "subject": subj,
-            })
-    return chains
+def _get_bkt_logger():
+    """Lazy-init BKTLogger for mastery queries."""
+    try:
+        from bkt import BKTLogger
+        return BKTLogger(ANSWER_LOG)
+    except Exception:
+        return None
 
 
-def analyze_engagement(lp: dict) -> dict:
-    """近 7 天交互统计。"""
-    sent = lp.get("problemsSent", [])
+def analyze_weak_chains(lp_retired: bool = True) -> list[dict]:
+    """learning-progress.json 已退役（BIG-TEACH-012d #16），章节级进度不可用。"""
+    return []
+
+
+def analyze_engagement(bkt_log: list[dict]) -> dict:
+    """近 7 天交互统计（基于 answer-log）。"""
     now = datetime.datetime.now()
     week_ago = now - datetime.timedelta(days=7)
 
-    recent = [p for p in sent if p.get("date", "").startswith(week_ago.strftime("%Y-%m-%d"))]
+    recent = [r for r in bkt_log if r.get("ts", "") >= week_ago.strftime("%Y-%m-%d")]
     total = len(recent)
-    replied = sum(1 for p in recent if p.get("response", "").strip())
+    correct = sum(1 for r in recent if r.get("correct") is True)
+    incorrect = sum(1 for r in recent if r.get("correct") is False)
 
     return {
         "total_pushes": total,
-        "reply_rate": round(replied / total, 2) if total else 0,
-        "silent_days": 0,  # TODO: 计算连续无回复天数
+        "reply_rate": round(correct / total, 2) if total else 0,
+        "correct": correct,
+        "incorrect": incorrect,
+        "silent_days": 0,
+        "note": "基于 answer-log（learning-progress 已退役）",
     }
 
 
-def analyze_subjects_progress(lp: dict) -> dict:
-    """各科目章节进展。"""
-    result = {}
-    for subj, info in lp.get("subjects", {}).items():
-        chapters = info.get("chapters", {})
-        done = sum(1 for s in chapters.values() if "✅" in s or "掌握" in s)
-        pend = sum(1 for s in chapters.values() if "🔄" in s)
-        total = len(chapters)
-        result[subj] = {
-            "progress": f"{done}/{total}",
-            "in_progress": pend,
-            "level": info.get("level", ""),
-        }
-    return result
+def analyze_subjects_progress(lp_retired: bool = True) -> dict:
+    """learning-progress.json 已退役（BIG-TEACH-012d #16），科目章节进展不可用。"""
+    return {}
 
 
 # ── 主入口 ──
 
 def analyze(weeks: int = 1) -> WeeklyProfile:
-    """执行一次完整分析，返回周报。"""
-    lp = load_learning_progress()
+    """执行一次完整分析，返回周报。
+
+    所有分析基于 answer-log（BIG-TEACH-012d #16: learning-progress.json 已退役）。
+    """
     bkt_log = load_bkt_log()
     now = datetime.datetime.now()
     start = (now - datetime.timedelta(days=7 * weeks)).strftime("%Y-%m-%d")
 
-    kp_trends = analyze_kp_trends(bkt_log, lp)
-    error_patterns = analyze_error_patterns(lp)
-    weak_chains = analyze_weak_chains(lp)
-    engagement = analyze_engagement(lp)
-    subjects_progress = analyze_subjects_progress(lp)
+    kp_trends = analyze_kp_trends(bkt_log)
+    error_patterns = analyze_error_patterns(bkt_log)
+    weak_chains = analyze_weak_chains()
+    engagement = analyze_engagement(bkt_log)
+    subjects_progress = analyze_subjects_progress()
 
     # LLM 总结（pro+thinking，一周一次）
     summary = ""
@@ -247,10 +262,14 @@ def _build_llm_context(kp_trends, error_patterns, weak_chains, engagement, subje
             lines.append(f"- {c['chain']}")
 
     lines.append(f"\n## 交互")
-    lines.append(f"推送{engagement['total_pushes']}次，回复率{engagement['reply_rate']:.0%}")
+    lines.append(f"推送{engagement['total_pushes']}次，正确{engagement.get('correct', 0)}次，错误{engagement.get('incorrect', 0)}次")
 
-    lines.append("\n## 科目进展")
-    for subj, info in subjects_progress.items():
-        lines.append(f"- {subj}: {info['progress']} (进行中{info['in_progress']}章)")
+    if subjects_progress:
+        lines.append("\n## 科目进展")
+        for subj, info in subjects_progress.items():
+            lines.append(f"- {subj}: {info['progress']} (进行中{info['in_progress']}章)")
+    else:
+        lines.append("\n## 科目进展")
+        lines.append("（learning-progress 已退役，章节级进度暂不可用）")
 
     return "\n".join(lines)
