@@ -8,16 +8,15 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 
-from config import DATA_DIR, LEARNER_USER_ID
+from learner.context import current_user_id
+from learner import paths as P
 from learner.kp_registry import get_l1, get_l1_name, load_syllabus
 
-WEIGHTS_PATH = os.path.join(DATA_DIR, "weights.json")
-DIFFICULTY_PATH = os.path.join(DATA_DIR, "difficulty.json")
-ANSWER_LOG = os.path.join(DATA_DIR, "answer-log.jsonl")
-LAST_PUSH_PATH = os.path.join(DATA_DIR, "last_push.json")
-USER_ID = LEARNER_USER_ID
-
 _SUBJECT_CN = {"math": "数学一", "comm": "通信原理", "review": "错题复盘"}
+
+
+def _user_id() -> str:
+    return current_user_id()
 
 
 def _load_json(path: str) -> dict:
@@ -33,12 +32,14 @@ def _load_json(path: str) -> dict:
 
 
 def _load_answer_log(days: int = 7) -> list[dict]:
+    uid = _user_id()
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     rows: list[dict] = []
+    log_path = P.answer_log_path()
     try:
-        if not os.path.isfile(ANSWER_LOG):
+        if not os.path.isfile(log_path):
             return rows
-        with open(ANSWER_LOG, encoding="utf-8") as f:
+        with open(log_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -47,7 +48,7 @@ def _load_answer_log(days: int = 7) -> list[dict]:
                     e = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if e.get("user_id") not in (USER_ID, None, ""):
+                if e.get("user_id") not in (uid, None, ""):
                     continue
                 ts = e.get("ts", "")
                 if ts:
@@ -66,10 +67,18 @@ def _load_answer_log(days: int = 7) -> list[dict]:
 def _bkt_mastery_map() -> dict[str, float]:
     try:
         from bkt import BKTLogger
-        bkt = BKTLogger(ANSWER_LOG)
-        return bkt.get_all_kp_mastery(USER_ID) or {}
+        bkt = BKTLogger(P.answer_log_path())
+        return bkt.get_all_kp_mastery(_user_id()) or {}
     except Exception:
         return {}
+
+
+def _last_push_meta() -> dict:
+    for path in (P.last_push_path(), P.public_last_class_path()):
+        data = _load_json(path)
+        if data.get("question"):
+            return data
+    return {}
 
 
 def _format_subject_by_l1(
@@ -84,7 +93,6 @@ def _format_subject_by_l1(
         by_l1.setdefault(l1, []).append((kp, float(w)))
 
     lines: list[str] = []
-    # L1 汇总：按该 L1 下最低掌握度 / 平均权重粗看薄弱
     l1_summaries = []
     for l1_id in l1_order:
         items = by_l1.get(l1_id) or []
@@ -118,11 +126,11 @@ def _format_subject_by_l1(
 
 def build_learner_snapshot(days: int = 7) -> str:
     """生成注入 Agent system 的 Markdown 快照（尽量控制在 ~1.5k 字符）。"""
-    weights = _load_json(WEIGHTS_PATH)
-    difficulty = _load_json(DIFFICULTY_PATH)
+    weights = _load_json(P.weights_path())
+    difficulty = _load_json(P.difficulty_path())
     mastery = _bkt_mastery_map()
     recent = _load_answer_log(days)
-    last_push = _load_json(LAST_PUSH_PATH)
+    last_push = _last_push_meta()
 
     lines = ["## 学习者快照（只读，每轮自动更新）"]
 

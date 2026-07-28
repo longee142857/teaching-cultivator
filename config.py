@@ -110,5 +110,8 @@ X_DIGEST_SEEN_DAYS = 14
 # ── RAG Fallback 策略（BIG-TEACH-012c #10）──
 RAG_FALLBACK = os.environ.get("RAG_FALLBACK", "abort")
 
-# ── 学习者用户 ID（BIG-TEACH-012c #14）──
+# ── 学习者身份（BIG-TEACH-012c #14 → 多人花名册补正）──
+# LEARNER_USER_ID：仅兼容旧单人/测试；运行时请用 learner.context.current_user_id()
 LEARNER_USER_ID = os.environ.get("LEARNER_USER_ID", "wx_123")
+# 课表/公共课策略账户（钉钉 senderStaffId）；多人模式生产必填
+OWNER_STAFF_ID = os.environ.get("OWNER_STAFF_ID", "") or os.environ.get("LEARNER_USER_ID", "")

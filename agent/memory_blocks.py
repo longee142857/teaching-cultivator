@@ -17,6 +17,50 @@ from config import DATA_DIR
 BLOCKS_PATH = os.path.join(DATA_DIR, "memory_blocks.json")
 LAST_PUSH_PATH = os.path.join(DATA_DIR, "last_push.json")
 
+
+def _resolve_blocks_path(staff_id: str | None, base_dir: str | None) -> str:
+    if base_dir:
+        return os.path.join(base_dir, "memory_blocks.json")
+    if staff_id:
+        from learner import paths as P
+        return P.memory_blocks_path(staff_id)
+    try:
+        from learner import paths as P
+        return P.memory_blocks_path()
+    except Exception:
+        return BLOCKS_PATH
+
+
+def _resolve_last_push_path(staff_id: str | None, base_dir: str | None) -> str:
+    if base_dir:
+        personal = os.path.join(base_dir, "last_push.json")
+        if os.path.isfile(personal):
+            return personal
+        try:
+            from learner import paths as P
+            pub = P.public_last_class_path()
+            if os.path.isfile(pub):
+                return pub
+        except Exception:
+            pass
+        return personal
+    try:
+        from learner import paths as P
+        if staff_id:
+            personal = P.last_push_path(staff_id)
+            if os.path.isfile(personal):
+                return personal
+            pub = P.public_last_class_path()
+            if os.path.isfile(pub):
+                return pub
+            return personal
+        for path in (P.last_push_path(), P.public_last_class_path()):
+            if os.path.isfile(path):
+                return path
+        return P.last_push_path()
+    except Exception:
+        return LAST_PUSH_PATH
+
 PHASE_IDLE = "idle"
 PHASE_AWAITING = "awaiting_answer"
 PHASE_REVIEWING = "reviewing"
@@ -45,17 +89,28 @@ def _default_blocks() -> dict[str, Any]:
 
 
 class MemoryBlocks:
-    """读写 data/memory_blocks.json。"""
+    """读写 memory_blocks.json（默认当前学员目录）。"""
 
-    def __init__(self) -> None:
+    def __init__(self, staff_id: str | None = None, base_dir: str | None = None) -> None:
+        self._staff_id = staff_id
+        self._base_dir = base_dir
         self._data = _default_blocks()
         self.load()
 
+    @property
+    def _blocks_path(self) -> str:
+        return _resolve_blocks_path(self._staff_id, self._base_dir)
+
+    @property
+    def _last_push_path(self) -> str:
+        return _resolve_last_push_path(self._staff_id, self._base_dir)
+
     def load(self) -> None:
+        path = self._blocks_path
         try:
-            if not os.path.isfile(BLOCKS_PATH):
+            if not os.path.isfile(path):
                 return
-            with open(BLOCKS_PATH, encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 raw = json.load(f)
             if not isinstance(raw, dict):
                 return
@@ -75,12 +130,13 @@ class MemoryBlocks:
 
     def save(self) -> None:
         try:
-            os.makedirs(DATA_DIR, exist_ok=True)
+            path = self._blocks_path
+            os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
             self._data["session"]["updated_at"] = time.time()
-            tmp = BLOCKS_PATH + ".tmp"
+            tmp = path + ".tmp"
             with open(tmp, "w", encoding="utf-8") as f:
                 json.dump(self._data, f, ensure_ascii=False, indent=2)
-            os.replace(tmp, BLOCKS_PATH)
+            os.replace(tmp, path)
         except Exception:
             pass
 
@@ -131,11 +187,17 @@ class MemoryBlocks:
         }
 
     def refresh_from_last_push(self) -> None:
-        """从 last_push.json 同步 active_question。"""
+        """从 last_push / last_class 同步 active_question。"""
         try:
-            if not os.path.isfile(LAST_PUSH_PATH):
-                return
-            with open(LAST_PUSH_PATH, encoding="utf-8") as f:
+            lp = self._last_push_path
+            if not os.path.isfile(lp):
+                from learner import paths as P
+                pub = P.public_last_class_path()
+                if os.path.isfile(pub):
+                    lp = pub
+                else:
+                    return
+            with open(lp, encoding="utf-8") as f:
                 data = json.load(f)
             q = data.get("question") or ""
             if q:
@@ -171,14 +233,20 @@ class MemoryBlocks:
         """定时/主动出题后：更新当前题与 phase，todos 改为等待作答。"""
         if not subject:
             try:
-                if os.path.isfile(LAST_PUSH_PATH):
-                    with open(LAST_PUSH_PATH, encoding="utf-8") as f:
+                lp = self._last_push_path
+                if os.path.isfile(lp):
+                    with open(lp, encoding="utf-8") as f:
                         data = json.load(f)
                     subject = str(data.get("subject") or "")
                     kp = kp or str(data.get("kp") or "")
             except Exception:
                 pass
-        self.set_active_question(content, source="last_push", subject=subject, kp=kp)
+        self.set_active_question(
+            content,
+            source="public_class" if "public" in (self._last_push_path.replace("\\", "/")) else "last_push",
+            subject=subject,
+            kp=kp,
+        )
         self.set_phase(PHASE_AWAITING)
         self.set_todos([
             {"id": "await_answer", "content": "等待用户作答当前题", "status": "pending"},

@@ -14,9 +14,15 @@ from typing import Optional
 from dataclasses import dataclass, field
 
 from config import DATA_DIR, KB_PATH, DAILY_RECORD_DIR
+from learner.context import current_user_id
+from learner import paths as P
 
 # ── 数据源 ──
-ANSWER_LOG = os.path.join(DATA_DIR, "answer-log.jsonl")
+def _answer_log_path() -> str:
+    try:
+        return P.answer_log_path()
+    except Exception:
+        return os.path.join(DATA_DIR, "answer-log.jsonl")
 
 # BIG-TEACH-012d #16: learning-progress.json 已退役。所有分析基于 answer-log。
 
@@ -54,7 +60,7 @@ class WeeklyProfile:
 
 def load_bkt_log() -> list[dict]:
     try:
-        with open(ANSWER_LOG, "r", encoding="utf-8") as f:
+        with open(_answer_log_path(), "r", encoding="utf-8") as f:
             return [json.loads(l) for l in f if l.strip()]
     except Exception:
         return []
@@ -146,8 +152,7 @@ def analyze_error_patterns(bkt_log: list[dict]) -> list[ErrorPattern]:
     try:
         bkt_logger = _get_bkt_logger()
         if bkt_logger and hasattr(bkt_logger, 'get_all_kp_mastery'):
-            from config import LEARNER_USER_ID
-            mastery = bkt_logger.get_all_kp_mastery(LEARNER_USER_ID) or {}
+            mastery = bkt_logger.get_all_kp_mastery(current_user_id()) or {}
             for kp, val in sorted(mastery.items(), key=lambda x: x[1]):
                 if val < 0.3 and not any(kp in p.kps for p in patterns):
                     patterns.append(ErrorPattern(
@@ -165,7 +170,7 @@ def _get_bkt_logger():
     """Lazy-init BKTLogger for mastery queries."""
     try:
         from bkt import BKTLogger
-        return BKTLogger(ANSWER_LOG)
+        return BKTLogger(_answer_log_path())
     except Exception:
         return None
 

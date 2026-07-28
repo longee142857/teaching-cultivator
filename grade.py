@@ -8,7 +8,9 @@ from __future__ import annotations
 import os, json, re
 from dataclasses import dataclass
 
-from config import DATA_DIR, DAILY_RECORD_DIR, LEARNER_USER_ID
+from config import DATA_DIR, DAILY_RECORD_DIR
+from learner.context import current_user_id
+from learner import paths as P
 from decide.router import call_llm
 
 from bkt import BKTLogger, KCState
@@ -37,7 +39,11 @@ class GradeResult:
 
 
 def _get_bkt_log():
-    return BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl"))
+    return BKTLogger(P.answer_log_path())
+
+
+def _uid() -> str:
+    return current_user_id()
 
 
 def _detect_item_type(question: str) -> str:
@@ -108,17 +114,17 @@ def _find_reference_answer(kp_name: str) -> str:
 def _infer_subject(explicit: str, kp_name: str) -> str:
     if explicit in ("math", "comm", "review"):
         return "math" if explicit == "review" else explicit
-    try:
-        path = os.path.join(DATA_DIR, "last_push.json")
-        if os.path.isfile(path):
-            with open(path, encoding="utf-8") as f:
-                subj = (json.load(f).get("subject") or "").strip()
-            if subj in ("math", "comm"):
-                return subj
-            if subj == "review":
-                return "math"
-    except Exception:
-        pass
+    for path in (P.last_push_path(), P.public_last_class_path()):
+        try:
+            if os.path.isfile(path):
+                with open(path, encoding="utf-8") as f:
+                    subj = (json.load(f).get("subject") or "").strip()
+                if subj in ("math", "comm"):
+                    return subj
+                if subj == "review":
+                    return "math"
+        except Exception:
+            pass
     # 按能 resolve 到哪边猜
     try:
         from learner.kp_registry import resolve_kp
@@ -358,7 +364,7 @@ def grade_answer(
     mastery_before = 0.2
     mastery_after = 0.2
     try:
-        kc = bkt.get_kp_mastery(LEARNER_USER_ID, extracted_kp)
+        kc = bkt.get_kp_mastery(_uid(), extracted_kp)
         if kc is None:
             kc = KCState()
         else:
@@ -370,12 +376,12 @@ def grade_answer(
             _kp_overrides = _bkt_module._load_bkt_overrides().get(extracted_kp, {})
             try:
                 bkt.record(
-                    LEARNER_USER_ID, extracted_kp, rec_correct, kc,
+                    _uid(), extracted_kp, rec_correct, kc,
                     subject=subj, item_type=item_type, credit=credit,
                     status="applied", overrides=_kp_overrides,
                 )
             except TypeError:
-                bkt.record(LEARNER_USER_ID, extracted_kp, is_correct, kc)
+                bkt.record(_uid(), extracted_kp, is_correct, kc)
             mastery_after = kc.p_mastery
 
             # 答错（非部分正确）→ 轻微提高出题权重
@@ -395,12 +401,10 @@ def grade_answer(
                     print(f"[grade] weight decay skipped: {e}")
         else:
             # pending: 直写 answer-log，不更新 state；带 state 快照避免 get_kp_mastery 误回放
-            import os
-            from config import DATA_DIR
             from datetime import datetime, timezone
             pending_entry = {
                 "ts": datetime.now(timezone.utc).isoformat(),
-                "user_id": LEARNER_USER_ID,
+                "user_id": _uid(),
                 "knowledge_point": extracted_kp,
                 "correct": is_correct,
                 "item_type": item_type,
@@ -416,7 +420,7 @@ def grade_answer(
                 pending_entry["credit"] = credit
             if subj:
                 pending_entry["subject"] = subj
-            with open(os.path.join(DATA_DIR, "answer-log.jsonl"), "a", encoding="utf-8") as f:
+            with open(P.answer_log_path(), "a", encoding="utf-8") as f:
                 f.write(json.dumps(pending_entry, ensure_ascii=False) + "\n")
             mastery_after = mastery_before
     except Exception as e:

@@ -14,6 +14,28 @@ from config import DATA_DIR
 TRANSCRIPT_PATH = os.path.join(DATA_DIR, "agent_transcript.json")
 LEGACY_MEMORY_PATH = os.path.join(DATA_DIR, "agent_memory.json")
 
+
+def _resolve_transcript_path(staff_id: str | None, base_dir: str | None) -> str:
+    if base_dir:
+        return os.path.join(base_dir, "agent_transcript.json")
+    if staff_id:
+        from learner import paths as P
+        return P.transcript_path(staff_id)
+    try:
+        from learner import paths as P
+        return P.transcript_path()
+    except Exception:
+        return TRANSCRIPT_PATH
+
+
+def _resolve_legacy_memory_path(staff_id: str | None, base_dir: str | None) -> str:
+    if base_dir:
+        return os.path.join(base_dir, "agent_memory.json")
+    if staff_id:
+        d = os.path.dirname(_resolve_transcript_path(staff_id, None))
+        return os.path.join(d, "agent_memory.json")
+    return LEGACY_MEMORY_PATH
+
 TRANSCRIPT_MAX_MSGS = 40
 TOOL_CONTENT_MAX = 4000
 TRANSCRIPT_TTL_SEC = 24 * 3600
@@ -155,14 +177,25 @@ def _summarize_for_condense(msgs: list[dict]) -> str:
 class Transcript:
     """落盘结构化对话历史。"""
 
-    def __init__(self) -> None:
+    def __init__(self, staff_id: str | None = None, base_dir: str | None = None) -> None:
+        self._staff_id = staff_id
+        self._base_dir = base_dir
         self.messages: list[dict] = []
         self.load()
 
+    @property
+    def _transcript_path(self) -> str:
+        return _resolve_transcript_path(self._staff_id, self._base_dir)
+
+    @property
+    def _legacy_memory_path(self) -> str:
+        return _resolve_legacy_memory_path(self._staff_id, self._base_dir)
+
     def load(self) -> None:
+        tpath = self._transcript_path
         try:
-            if os.path.isfile(TRANSCRIPT_PATH):
-                with open(TRANSCRIPT_PATH, encoding="utf-8") as f:
+            if os.path.isfile(tpath):
+                with open(tpath, encoding="utf-8") as f:
                     data = json.load(f)
                 ts = float(data.get("updated_at") or 0)
                 if ts and (time.time() - ts) > TRANSCRIPT_TTL_SEC:
@@ -177,8 +210,8 @@ class Transcript:
                 return
 
             # 迁移旧扁平 memory
-            if os.path.isfile(LEGACY_MEMORY_PATH):
-                with open(LEGACY_MEMORY_PATH, encoding="utf-8") as f:
+            if os.path.isfile(self._legacy_memory_path):
+                with open(self._legacy_memory_path, encoding="utf-8") as f:
                     data = json.load(f)
                 ts = float(data.get("updated_at") or 0)
                 if ts and (time.time() - ts) > TRANSCRIPT_TTL_SEC:
@@ -200,7 +233,8 @@ class Transcript:
 
     def persist(self) -> None:
         try:
-            os.makedirs(DATA_DIR, exist_ok=True)
+            tpath = self._transcript_path
+            os.makedirs(os.path.dirname(tpath) or ".", exist_ok=True)
             # 落盘前截断 tool content + 修复 tool 链
             stored = []
             for m in self.messages[-TRANSCRIPT_MAX_MSGS:]:
@@ -210,14 +244,14 @@ class Transcript:
             stored = repair_tool_chain(stored)
             self.messages = stored
             if not stored:
-                if os.path.isfile(TRANSCRIPT_PATH):
-                    os.remove(TRANSCRIPT_PATH)
+                if os.path.isfile(tpath):
+                    os.remove(tpath)
                 return
             payload = {"updated_at": time.time(), "messages": stored}
-            tmp = TRANSCRIPT_PATH + ".tmp"
+            tmp = tpath + ".tmp"
             with open(tmp, "w", encoding="utf-8") as f:
                 json.dump(payload, f, ensure_ascii=False)
-            os.replace(tmp, TRANSCRIPT_PATH)
+            os.replace(tmp, tpath)
         except Exception:
             pass
 

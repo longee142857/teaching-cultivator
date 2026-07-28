@@ -6,7 +6,13 @@
 题目上下文优先从按月记录 + 侧车索引读取（非内存），保证重启后不丢。
 """
 import re, os, json
-from config import DAILY_RECORD_DIR, DATA_DIR, LEARNER_USER_ID
+from config import DAILY_RECORD_DIR
+from learner.context import current_user_id
+from learner import paths as P
+
+
+def _uid() -> str:
+    return current_user_id()
 
 
 def _read_latest_entry() -> dict | None:
@@ -130,21 +136,30 @@ def generate_question(subject: str, kp_hint: str = "") -> str:
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
     # 去掉 [l3=]/[ability=] 后缀再存 kp
     kp = kp.split("[")[0].strip()
-    _save_last_push(subject, decision, content, answer, _last_ref_source, kp=kp)
+    _save_last_push(
+        subject, decision, content, answer, _last_ref_source, kp=kp, source="personal",
+    )
     return content
 
 
+def _load_last_push_record() -> dict:
+    """个人 last_push 或公共 last_class。"""
+    for path in (P.last_push_path(), P.public_last_class_path()):
+        try:
+            if os.path.exists(path):
+                with open(path, encoding="utf-8") as f:
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+        except Exception:
+            pass
+    return {}
+
+
 def _load_last_push_question() -> str:
-    """从 last_push.json 取完整题干（推送后权威源）。"""
-    path = os.path.join(DATA_DIR, "last_push.json")
-    try:
-        if not os.path.exists(path):
-            return ""
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-        return (data.get("question") or "").strip()
-    except Exception:
-        return ""
+    """从 last_push / last_class 取完整题干（推送后权威源）。"""
+    data = _load_last_push_record()
+    return (data.get("question") or "").strip()
 
 
 def _looks_truncated(provided: str, stored: str) -> bool:
@@ -188,17 +203,14 @@ def grade_answer(last_question: str, user_answer: str) -> str:
         return "批改失败：找不到完整题目，请先确认今日推送是否已记录"
     kp_name = ""
     subject = ""
+    lp = _load_last_push_record()
     try:
-        path = os.path.join(DATA_DIR, "last_push.json")
-        if os.path.exists(path):
-            with open(path, encoding="utf-8") as f:
-                lp = json.load(f)
+        if lp:
             # 批改最近推送：始终带上 last_push 的 subject/kp（权威考点）
             if (lp.get("question") or "").strip() == question or not provided:
                 kp_name = (lp.get("kp") or "").strip()
                 subject = (lp.get("subject") or "").strip()
             elif not kp_name:
-                # 题干不一致时仍尽量带科目
                 subject = (lp.get("subject") or "").strip()
     except Exception:
         pass
@@ -258,9 +270,7 @@ def adjust_difficulty(subject: str, level: str) -> str:
     result = f"{subject} 难度已调整为 {level}" if ok else "调整失败"
     # 可选审计日志（不影响 mastery）
     try:
-        from config import DATA_DIR
         from datetime import datetime, timezone
-        import json, os
         entry = _read_latest_entry()
         kp = ""
         if entry:
@@ -270,10 +280,10 @@ def adjust_difficulty(subject: str, level: str) -> str:
                 if m:
                     kp = m.group(1).split(":")[0].strip()
         if kp:
-            log_path = os.path.join(DATA_DIR, "answer-log.jsonl")
+            log_path = P.answer_log_path()
             audit = {
                 "ts": datetime.now(timezone.utc).isoformat(),
-                "user_id": LEARNER_USER_ID,
+                "user_id": _uid(),
                 "knowledge_point": kp,
                 "correct": None,
                 "conv_tag": "adjust_difficulty",
@@ -301,12 +311,10 @@ def build_report(days: int = 7) -> str:
 
 def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.0) -> str:
     """覆盖最近一条批改记录并重算掌握度（BIG-TEACH-012a #7a）。"""
-    from config import DATA_DIR
     from bkt import KCState
     from datetime import datetime, timezone
-    import os, json
 
-    log_path = os.path.join(DATA_DIR, "answer-log.jsonl")
+    log_path = P.answer_log_path()
     if not os.path.exists(log_path):
         return f"'{kp}' 无批改记录可覆盖"
 
@@ -381,7 +389,7 @@ def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.
 
     override_entry = {
         "ts": datetime.now(timezone.utc).isoformat(),
-        "user_id": LEARNER_USER_ID,
+        "user_id": _uid(),
         "knowledge_point": kp,
         "correct": correct,
         "credit": float(credit) if credit else None,

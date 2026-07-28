@@ -293,8 +293,16 @@ def normalize_kp_for_grade(
     return resolve_kp(subject, hint, kp_weights)
 
 
+def _recent_picks_path() -> str:
+    try:
+        from learner import paths as P
+        return P.recent_kp_picks_path()
+    except Exception:
+        return RECENT_PICKS_PATH
+
+
 def load_recent_picks(subject: str) -> list[str]:
-    data = _load_json(RECENT_PICKS_PATH)
+    data = _load_json(_recent_picks_path())
     picks = data.get(subject) or []
     return [p for p in picks if isinstance(p, str)]
 
@@ -302,13 +310,14 @@ def load_recent_picks(subject: str) -> list[str]:
 def append_recent_pick(subject: str, kp: str, *, maxlen: int = 12) -> None:
     if not kp or subject not in ("math", "comm"):
         return
-    data = _load_json(RECENT_PICKS_PATH)
+    data = _load_json(_recent_picks_path())
     picks = [p for p in (data.get(subject) or []) if isinstance(p, str)]
     picks = [kp] + [p for p in picks if p != kp]
     data[subject] = picks[:maxlen]
+    rpath = _recent_picks_path()
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        with open(RECENT_PICKS_PATH, "w", encoding="utf-8") as f:
+        os.makedirs(os.path.dirname(rpath) or ".", exist_ok=True)
+        with open(rpath, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             f.write("\n")
     except OSError:

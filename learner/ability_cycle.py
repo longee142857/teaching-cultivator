@@ -35,10 +35,33 @@ ITEM_FORM_MAP: dict[str, str] = {
 # ── Recent picks 持久化 ──
 
 
-def _load_recent_picks() -> dict[str, list[str]]:
+def _recent_ability_path() -> str:
     try:
-        if os.path.isfile(RECENT_ABILITY_PATH):
-            with open(RECENT_ABILITY_PATH, encoding="utf-8") as f:
+        from learner import paths as P
+        return P.recent_ability_path()
+    except Exception:
+        return RECENT_ABILITY_PATH
+
+
+def _last_push_meta_path() -> str:
+    try:
+        from learner.context import get_binding
+        from learner import paths as P
+        if get_binding() == "schedule":
+            return P.public_last_class_path()
+        personal = P.last_push_path()
+        if os.path.isfile(personal):
+            return personal
+        return P.public_last_class_path()
+    except Exception:
+        return os.path.join(DATA_DIR, "last_push.json")
+
+
+def _load_recent_picks() -> dict[str, list[str]]:
+    path = _recent_ability_path()
+    try:
+        if os.path.isfile(path):
+            with open(path, encoding="utf-8") as f:
                 return json.load(f)
     except (OSError, json.JSONDecodeError):
         pass
@@ -46,9 +69,10 @@ def _load_recent_picks() -> dict[str, list[str]]:
 
 
 def _save_recent_picks(data: dict[str, list[str]]) -> None:
+    path = _recent_ability_path()
     try:
-        os.makedirs(os.path.dirname(RECENT_ABILITY_PATH) or ".", exist_ok=True)
-        with open(RECENT_ABILITY_PATH, "w", encoding="utf-8") as f:
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
             f.write("\n")
     except OSError:
@@ -148,8 +172,8 @@ def decide_ability(
 
 
 def _get_last_push_meta() -> dict:
-    """读取 last_push.json 元信息（subject, timestamp, item_form）。"""
-    last_push_path = os.path.join(DATA_DIR, "last_push.json")
+    """读取 last_push / last_class 元信息（subject, timestamp, item_form）。"""
+    last_push_path = _last_push_meta_path()
     try:
         if os.path.isfile(last_push_path):
             with open(last_push_path, encoding="utf-8") as f:
@@ -205,8 +229,8 @@ def parse_ability_from_reason(reason: str) -> str | None:
 
 
 def _load_last_push_item_form() -> str:
-    """从 last_push.json 读上次 item_form（供 transfer 继承）。"""
-    last_push_path = os.path.join(DATA_DIR, "last_push.json")
+    """从 last_push / last_class 读上次 item_form（供 transfer 继承）。"""
+    last_push_path = _last_push_meta_path()
     try:
         if os.path.isfile(last_push_path):
             with open(last_push_path, encoding="utf-8") as f:

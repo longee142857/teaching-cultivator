@@ -16,6 +16,8 @@ logging.basicConfig(
 )
 
 from config import DATA_DIR, DINGTALK_CLIENT_ID, DINGTALK_CLIENT_SECRET
+from learner import paths as P
+from learner.context import bind_owner_schedule
 from deliver.push_retry_queue import enqueue_retry, process_retry_queue
 from deliver.dingtalk_bot import DingTalkBot, DingTalkPushBridge
 from deliver.bridge import WecomWebhookBridge, StdoutBridge
@@ -141,7 +143,9 @@ class TeachingBot:
     # ── 上下文恢复 ──────────────────────────────────
 
     def _restore_last_question(self):
-        path = os.path.join(DATA_DIR, "last_push.json")
+        path = P.public_last_class_path()
+        if not os.path.exists(path):
+            path = P.last_push_path()
         try:
             if not os.path.exists(path):
                 return
@@ -156,19 +160,8 @@ class TeachingBot:
             log(f"恢复 last_push 失败: {e}")
 
     def _save_last_push(self, subject, decision, content, answer=""):
-        import datetime
-        path = os.path.join(DATA_DIR, "last_push.json")
-        try:
-            with open(path, "w") as f:
-                json.dump({
-                    "subject": subject,
-                    "difficulty": decision.difficulty,
-                    "question": content,
-                    "answer": answer,
-                    "timestamp": datetime.datetime.now().isoformat(),
-                }, f)
-        except Exception as e:
-            log(f"保存 last_push 失败: {e}")
+        """Deprecated：推送正文由 cultivate._save_last_push 写入 public/last_class。"""
+        pass
 
     def _record_push(self, question: str):
         self._last_question = question
@@ -193,10 +186,17 @@ class TeachingBot:
         saved_content = ""
         delivery_ok = True
         try:
+            from learner.context import bind_owner_schedule, owner_staff_id
+
             run(subject)
-            # 新推送：更新 core blocks + 压缩旧对话（不清空记忆）
             if self._last_question:
-                self.agent.on_new_push(self._last_question, subject=subject)
+                oid = owner_staff_id()
+                if oid:
+                    with bind_owner_schedule():
+                        self.agent.bind_for_learner(oid)
+                        self.agent.on_new_push(
+                            self._last_question, subject=subject, public_class=True,
+                        )
                 # 出题后跟发快捷按钮 ActionCard
                 try:
                     self.dingtalk.send_question_action_card(subject)

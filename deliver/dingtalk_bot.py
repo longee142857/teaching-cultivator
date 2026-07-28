@@ -57,15 +57,15 @@ class _InboundDedup:
         self._seen[msg_id] = now
         return True
 
-    def make_fingerprint(self, conversation_id: str, text: str) -> str:
-        """无 msgId 时的 fallback：会话+文本简短指纹。"""
+    def make_fingerprint(self, conversation_id: str, text: str, staff_id: str = "") -> str:
+        """无 msgId 时的 fallback：学员+会话+文本简短指纹。"""
         import hashlib
-        raw = f"{conversation_id}|{text}"
+        raw = f"{staff_id}|{conversation_id}|{text}"
         return hashlib.md5(raw.encode("utf-8")).hexdigest()[:16]
 
-    def claim_by_fingerprint(self, conversation_id: str, text: str) -> bool:
+    def claim_by_fingerprint(self, conversation_id: str, text: str, staff_id: str = "") -> bool:
         """用指纹去重。"""
-        fp = self.make_fingerprint(conversation_id, text)
+        fp = self.make_fingerprint(conversation_id, text, staff_id)
         return self.claim(fp)
 
 
@@ -200,17 +200,36 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
         # ── inbound 去重（BIG-TEACH-012c #8b）：重投直接 ACK ──
         global _INBOUND_DEDUP
         msg_id = raw.get("msgId", "") or ""
-        if msg_id and not _INBOUND_DEDUP.claim(msg_id):
-            logger.info("dedup: skip duplicate msgId=%s", msg_id[:20])
-            return AckMessage.STATUS_OK, "OK"
-        text = " ".join(msg.get_text_list() or [])
-        sw = getattr(msg, "session_webhook", None)
-        robot_code = raw.get("robotCode", "") or ""
-        sender_staff = (
+        text_early = " ".join(msg.get_text_list() or [])
+        sender_staff_early = (
             getattr(msg, "sender_staff_id", None)
             or raw.get("senderStaffId", "")
             or ""
         )
+        conv_early = (
+            raw.get("openConversationId", "")
+            or raw.get("conversationId", "")
+            or getattr(msg, "conversation_id", "")
+            or ""
+        )
+        if msg_id:
+            if not _INBOUND_DEDUP.claim(msg_id):
+                logger.info("dedup: skip duplicate msgId=%s", msg_id[:20])
+                return AckMessage.STATUS_OK, "OK"
+        elif text_early.strip():
+            if not _INBOUND_DEDUP.claim_by_fingerprint(
+                conv_early, text_early.strip(), sender_staff_early
+            ):
+                logger.info(
+                    "dedup: skip duplicate fingerprint staff=%s text=%s",
+                    (sender_staff_early[:8] + "…") if sender_staff_early else "-",
+                    text_early[:40],
+                )
+                return AckMessage.STATUS_OK, "OK"
+        text = text_early
+        sw = getattr(msg, "session_webhook", None)
+        robot_code = raw.get("robotCode", "") or ""
+        sender_staff = sender_staff_early
         sender_nick = getattr(msg, "sender_nick", None) or raw.get("senderNick", "") or ""
         # 主动推送必须用【群】openConversationId。私聊/错误会话会覆盖后导致
         # groupMessages/send → robot 不存在（2026-07-16~17 事故）。
@@ -248,7 +267,32 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
         if not text:
             return AckMessage.STATUS_OK, "OK"
 
-        # 文本交卷：以「交卷」开头的长 md
+        if not sender_staff:
+            if sw:
+                self.reply_markdown(
+                    "瑞贝卡",
+                    "未能识别你的钉钉身份（staffId），暂无法记录个人学习进度。"
+                    "请用钉钉私聊或群内 @ 瑞贝卡 再试。",
+                    msg,
+                )
+            return AckMessage.STATUS_OK, "OK"
+
+        # 报名 / 首次开通（口令或懒开户）
+        try:
+            from learner.roster import is_enroll_utterance, ensure_learner, resolve_learner
+
+            if is_enroll_utterance(text):
+                ensure_learner(sender_staff, nick=sender_nick, source="enroll")
+                nick = sender_nick or sender_staff[:8]
+                reply = f"已为你开通培养账户（{nick}）。可以说「来一题」或「出题」开始。"
+                self.reply_markdown("瑞贝卡", reply, msg)
+                return AckMessage.STATUS_OK, "OK"
+            if resolve_learner(sender_staff) is None:
+                ensure_learner(sender_staff, nick=sender_nick, source="auto")
+        except Exception as e:
+            logger.warning("enroll handle: %s", e)
+
+        # 记下讨论用户（花名册 upsert）；群会话 ID 仅群聊可写
         stripped = text.strip()
         if stripped.startswith("交卷") or stripped.startswith("提交答卷"):
             try:
@@ -309,7 +353,7 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
         except Exception:
             discuss_in_dm = is_group
 
-        lock = await self._lock_for(conv_id or "_default")
+        lock = await self._lock_for(f"{conv_id or '_default'}|{sender_staff}")
 
         async with lock:
             def _on_progress(progress_text: str) -> None:
@@ -319,18 +363,20 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 tip = progress_text if not discuss_in_dm else "正在私聊里处理…"
                 _send_session_webhook(sw, tip)
 
+            def _handle_bound() -> str:
+                from learner.context import bind_learner
+
+                with bind_learner(sender_staff, binding="personal"):
+                    agent = self._get_agent()
+                    agent.bind_for_learner(sender_staff)
+                    try:
+                        return agent.handle(text, _on_progress)
+                    except TypeError:
+                        return agent.handle(text)
+
             try:
-                reply = await asyncio.to_thread(
-                    self._get_agent().handle, text, _on_progress
-                )
+                reply = await asyncio.to_thread(_handle_bound)
                 logger.info("agent reply: %s chars", len(reply) if reply else 0)
-            except TypeError:
-                try:
-                    reply = await asyncio.to_thread(self._get_agent().handle, text)
-                    logger.info("agent reply: %s chars", len(reply) if reply else 0)
-                except Exception as e:
-                    logger.error("agent error: %s", e)
-                    return AckMessage.STATUS_OK, "OK"
             except Exception as e:
                 logger.error("agent error: %s", e)
                 return AckMessage.STATUS_OK, "OK"

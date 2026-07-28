@@ -7,9 +7,12 @@ import shutil
 from datetime import datetime, timezone
 from typing import Optional
 
-from config import DATA_DIR, LEARNER_USER_ID
+from config import DATA_DIR
 from learner.kp_registry import resolve_kp as registry_resolve_kp
+from learner.context import current_user_id
+from learner import paths as P
 
+# 兼容旧测试 patch 的模块级名（动态解析优先走函数）
 WEIGHTS_PATH = os.path.join(DATA_DIR, "weights.json")
 REFINE_QUEUE = os.path.join(DATA_DIR, "refine-queue.jsonl")
 REFINE_QUEUE_ARCHIVE_DIR = os.path.join(DATA_DIR, "refine-queue-archive")
@@ -27,10 +30,43 @@ REFINE_QUEUE_MAX_ENTRIES = 500
 REFINE_QUEUE_MAX_AGE_DAYS = 30
 
 
-def load_weights() -> dict:
+def _weights_path() -> str:
     try:
-        if os.path.isfile(WEIGHTS_PATH):
-            with open(WEIGHTS_PATH, encoding="utf-8") as f:
+        return P.weights_path()
+    except Exception:
+        return WEIGHTS_PATH
+
+
+def _refine_queue() -> str:
+    try:
+        return P.refine_queue_path()
+    except Exception:
+        return REFINE_QUEUE
+
+
+def _refine_archive_dir() -> str:
+    try:
+        return P.refine_archive_dir()
+    except Exception:
+        return REFINE_QUEUE_ARCHIVE_DIR
+
+
+def _answer_log() -> str:
+    try:
+        return P.answer_log_path()
+    except Exception:
+        return os.path.join(DATA_DIR, "answer-log.jsonl")
+
+
+def _uid() -> str:
+    return current_user_id()
+
+
+def load_weights() -> dict:
+    path = _weights_path()
+    try:
+        if os.path.isfile(path):
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
                     return data
@@ -41,8 +77,9 @@ def load_weights() -> dict:
 
 def save_weights(weights: dict) -> bool:
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        with open(WEIGHTS_PATH, "w", encoding="utf-8") as f:
+        path = _weights_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(weights, f, ensure_ascii=False, indent=2)
             f.write("\n")
         return True
@@ -92,15 +129,15 @@ def bump_kp_weight(subject: str, kp_hint: str, *, reason: str = "") -> dict:
     bkt_msg = ""
     try:
         from bkt import BKTLogger, KCState
-        bkt = BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl"))
-        kc = bkt.get_kp_mastery(LEARNER_USER_ID, kp_key)
+        bkt = BKTLogger(_answer_log())
+        kc = bkt.get_kp_mastery(_uid(), kp_key)
         if kc is None:
             kc = KCState(p_mastery=0.25)
         else:
             kc = KCState.from_dict(kc.to_dict())
         before = kc.p_mastery
         meta = bkt.record(
-            LEARNER_USER_ID,
+            _uid(),
             kp_key,
             False,
             kc,
@@ -135,11 +172,12 @@ def archive_refine_queue(max_entries: int = REFINE_QUEUE_MAX_ENTRIES,
     Returns:
         {"ok": True, "archived": N, "remaining": M} 或 {"ok": False, "error": ...}
     """
-    if not os.path.isfile(REFINE_QUEUE):
+    rq = _refine_queue()
+    if not os.path.isfile(rq):
         return {"ok": True, "archived": 0, "remaining": 0}
 
     try:
-        with open(REFINE_QUEUE, "r", encoding="utf-8") as f:
+        with open(rq, "r", encoding="utf-8") as f:
             lines = f.readlines()
     except OSError as e:
         return {"ok": False, "error": str(e)}
@@ -216,16 +254,17 @@ def archive_refine_queue(max_entries: int = REFINE_QUEUE_MAX_ENTRIES,
     if archive_lines:
         now = datetime.now(timezone.utc)
         archive_name = f"refine-queue-{now.strftime('%Y-%m')}.jsonl"
-        archive_path = os.path.join(REFINE_QUEUE_ARCHIVE_DIR, archive_name)
+        adir = _refine_archive_dir()
+        archive_path = os.path.join(adir, archive_name)
         try:
-            os.makedirs(REFINE_QUEUE_ARCHIVE_DIR, exist_ok=True)
+            os.makedirs(adir, exist_ok=True)
             with open(archive_path, "a", encoding="utf-8") as f:
                 f.writelines(archive_lines)
         except OSError as e:
             return {"ok": False, "error": f"write archive failed: {e}"}
 
     try:
-        with open(REFINE_QUEUE, "w", encoding="utf-8") as f:
+        with open(rq, "w", encoding="utf-8") as f:
             f.writelines(keep)
     except OSError as e:
         return {"ok": False, "error": f"rewrite queue failed: {e}"}
@@ -239,7 +278,8 @@ def archive_refine_queue(max_entries: int = REFINE_QUEUE_MAX_ENTRIES,
 
 def _append_refine_signal(subject: str, kp: str, reason: str, old: float, new: float) -> None:
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
+        rq = _refine_queue()
+        os.makedirs(os.path.dirname(rq) or ".", exist_ok=True)
         entry = {
             "ts": datetime.now(timezone.utc).isoformat(),
             "type": "weak_self_report",
@@ -249,7 +289,7 @@ def _append_refine_signal(subject: str, kp: str, reason: str, old: float, new: f
             "weight_before": old,
             "weight_after": new,
         }
-        with open(REFINE_QUEUE, "a", encoding="utf-8") as f:
+        with open(rq, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         # 惰性归档（BIG-TEACH-012d #17）
         archive_refine_queue()
@@ -259,7 +299,7 @@ def _append_refine_signal(subject: str, kp: str, reason: str, old: float, new: f
 
 def _load_baseline(subject: str, kp: str) -> float:
     """从 weights.example.json 读取基线权重（decay 地板）。"""
-    example_path = os.path.join(DATA_DIR, "weights.example.json")
+    example_path = P.weights_example_path()
     try:
         if os.path.isfile(example_path):
             with open(example_path, encoding="utf-8") as f:
@@ -323,7 +363,8 @@ def decay_kp_weight(subject: str, kp_hint: str, *, reason: str = "") -> dict:
 def _append_decay_signal(subject: str, kp: str, reason: str,
                          old: float, new: float, baseline: float) -> None:
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
+        rq = _refine_queue()
+        os.makedirs(os.path.dirname(rq) or ".", exist_ok=True)
         entry = {
             "ts": datetime.now(timezone.utc).isoformat(),
             "type": "decay",
@@ -334,7 +375,7 @@ def _append_decay_signal(subject: str, kp: str, reason: str,
             "weight_after": new,
             "baseline": baseline,
         }
-        with open(REFINE_QUEUE, "a", encoding="utf-8") as f:
+        with open(rq, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         # 惰性归档（BIG-TEACH-012d #17）
         archive_refine_queue()

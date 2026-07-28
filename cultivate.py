@@ -8,7 +8,9 @@
 from __future__ import annotations
 import sys, os, json, datetime
 
-from config import DAILY_RECORD_DIR, DATA_DIR, RAG_FALLBACK, LEARNER_USER_ID
+from config import DATA_DIR, RAG_FALLBACK
+from learner import paths as P
+from learner.context import current_user_id, get_binding, bind_owner_schedule
 from decide.router import call_llm
 from deliver.bridge import get_bridge
 from prompts.prompt_builder import PromptBuilder
@@ -33,14 +35,37 @@ _last_answer = ""
 _last_ref_source = ""
 _last_item_form = ""  # BIG-TEACH-011d
 _rag_strict_blocked = False  # BIG-TEACH-011c: agent 区分 RAG miss vs 质检失败
-DIFFICULTY_PREF_PATH = os.path.join(DATA_DIR, "difficulty.json")
-LAST_PUSH_PATH = os.path.join(DATA_DIR, "last_push.json")
+
+
+def _uid() -> str:
+    return current_user_id()
+
+
+def _difficulty_path() -> str:
+    return P.difficulty_path()
+
+
+def _last_push_write_path(*, source: str = "") -> str:
+    """定时公共课写 public/last_class；私聊自出题写个人 last_push。"""
+    binding = get_binding()
+    if binding == "schedule" or source == "schedule":
+        return P.public_last_class_path()
+    return P.last_push_path()
+
+
+def _last_push_read_path() -> str:
+    """读取最近推送元信息：公共课优先 public，否则个人。"""
+    pub = P.public_last_class_path()
+    if os.path.isfile(pub):
+        return pub
+    return P.last_push_path()
 
 
 def _load_difficulty_pref() -> dict:
     try:
-        if os.path.exists(DIFFICULTY_PREF_PATH):
-            with open(DIFFICULTY_PREF_PATH) as f:
+        path = _difficulty_path()
+        if os.path.exists(path):
+            with open(path) as f:
                 return json.load(f)
     except Exception:
         pass
@@ -54,7 +79,9 @@ def set_difficulty_pref(subject: str, level: str) -> bool:
     pref = _load_difficulty_pref()
     pref[subject] = level
     try:
-        with open(DIFFICULTY_PREF_PATH, "w") as f:
+        path = _difficulty_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
             json.dump(pref, f)
         return True
     except Exception:
@@ -70,7 +97,8 @@ def get_last_answer() -> str:
 
 
 def _save_last_push(subject: str, decision: InterventionDecision, content: str,
-                    answer: str = "", ref_source: str = "", kp: str = ""):
+                    answer: str = "", ref_source: str = "", kp: str = "",
+                    *, source: str = ""):
     try:
         record = {
             "subject": subject,
@@ -93,7 +121,9 @@ def _save_last_push(subject: str, decision: InterventionDecision, content: str,
         l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
         if l3_id:
             record["l3_id"] = l3_id
-        with open(LAST_PUSH_PATH, "w", encoding="utf-8") as f:
+        path = _last_push_write_path(source=source)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(record, f, ensure_ascii=False)
         if kp and subject in ("math", "comm", "review"):
             from learner.kp_registry import append_recent_pick
@@ -116,7 +146,7 @@ def assess_state(subject: str) -> dict:
     return {
         "heartbeat": summary,
         "subject": subject,
-        "bkt_log": BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl")),
+        "bkt_log": BKTLogger(P.answer_log_path()),
     }
 
 
@@ -124,15 +154,19 @@ def assess_state(subject: str) -> dict:
 # 2. DECIDE — 干预决策
 # ═══════════════════════════════════════════
 
-WEIGHTS_PATH = os.path.join(DATA_DIR, "weights.json")
+
+def _load_weights() -> dict:
+    """加载当前学员 weights.json。"""
+    from learner.weights_ops import load_weights
+    return load_weights()
 
 
 def _get_days_since_last_push(subject: str) -> float | None:
-    """从 last_push.json 读取该科目距上次推送天数。
+    """从 last_push / last_class 读取该科目距上次推送天数。
 
     若 subject != "all" 且 last_push 科目不匹配，视为未知返回 None。
     """
-    path = os.path.join(DATA_DIR, "last_push.json")
+    path = _last_push_read_path()
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -217,7 +251,7 @@ def _remap_dead_escalate(decision: InterventionDecision) -> InterventionDecision
 
 def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
     """从 answer-log 取最近一条答错记录，拼成 review 用的摘要。"""
-    history = bkt_log.get_user_history(LEARNER_USER_ID) if hasattr(bkt_log, "get_user_history") else []
+    history = bkt_log.get_user_history(_uid()) if hasattr(bkt_log, "get_user_history") else []
     if not history:
         return ""
     for entry in reversed(history):
@@ -228,8 +262,9 @@ def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
             continue
         parts = [f"知识点：{entry_kp or kp or '未知'}", "结果：上次答错，需巩固"]
         try:
-            if os.path.isfile(LAST_PUSH_PATH):
-                with open(LAST_PUSH_PATH, encoding="utf-8") as f:
+            lp_path = _last_push_read_path()
+            if os.path.isfile(lp_path):
+                with open(lp_path, encoding="utf-8") as f:
                     lp = json.load(f)
                 q = (lp.get("question") or "").strip()
                 if q:
@@ -251,17 +286,6 @@ def _dynamic_style_pcts(consecutive_failures: int, subject: str) -> tuple[int, i
     return exam_pct, 100 - exam_pct
 
 
-def _load_weights() -> dict:
-    """加载 data/weights.json，失败则返回空 dict。"""
-    try:
-        if os.path.exists(WEIGHTS_PATH):
-            with open(WEIGHTS_PATH, encoding="utf-8") as f:
-                return json.load(f)
-    except Exception:
-        pass
-    return {}
-
-
 def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> str | None:
     """按 weight×(1-mastery) 加权随机选题；同 L1 近 3 次不重复同一 L2。"""
     if subject not in weights:
@@ -272,12 +296,12 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
     mastery: dict[str, float] = {}
     try:
         if hasattr(bkt_log, "get_all_kp_mastery"):
-            mastery = bkt_log.get_all_kp_mastery(LEARNER_USER_ID) or {}
+            mastery = bkt_log.get_all_kp_mastery(_uid()) or {}
         for kp in kp_w:
             if kp in mastery:
                 continue
             if hasattr(bkt_log, "get_kp_mastery"):
-                kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp)
+                kc = bkt_log.get_kp_mastery(_uid(), kp)
                 if kc and hasattr(kc, "p_effective"):
                     mastery[kp] = kc.p_effective
     except Exception:
@@ -286,7 +310,7 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
     due_kps = set()
     try:
         if hasattr(bkt_log, "get_due_kps"):
-            due_kps = bkt_log.get_due_kps(LEARNER_USER_ID) or set()
+            due_kps = bkt_log.get_due_kps(_uid()) or set()
     except Exception:
         due_kps = set()
     return pick_kp_weighted(subject, kp_w, mastery, due_kps=due_kps)
@@ -314,7 +338,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         kp_from_w = _pick_kp_from_weights(weights, weight_subj, bkt_log)
         if kp_from_w:
             target_kp = kp_from_w
-            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp_from_w) \
+            kc = bkt_log.get_kp_mastery(_uid(), kp_from_w) \
                 if hasattr(bkt_log, 'get_kp_mastery') else None
             if kc and hasattr(kc, 'p_effective'):
                 target_val = kc.p_effective
@@ -323,7 +347,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
 
     # ── 回退：BKT 全局最低掌握度（需 resolve 到正式 L2）──
     if target_kp is None:
-        mastery = bkt_log.get_all_kp_mastery(LEARNER_USER_ID) \
+        mastery = bkt_log.get_all_kp_mastery(_uid()) \
             if hasattr(bkt_log, 'get_all_kp_mastery') else {}
         if mastery:
             raw_kp = min(mastery, key=mastery.get)
@@ -340,10 +364,10 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
             target_kp = resolved_l2
 
         days_since_last_push = _get_days_since_last_push(subject)
-        consecutive_failures = _get_consecutive_failures(LEARNER_USER_ID, bkt_log, target_kp)
+        consecutive_failures = _get_consecutive_failures(_uid(), bkt_log, target_kp)
         opportunity_count = 0
         if kc is None:
-            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, target_kp) \
+            kc = bkt_log.get_kp_mastery(_uid(), target_kp) \
                 if hasattr(bkt_log, 'get_kp_mastery') else None
         if kc and hasattr(kc, 'opportunity_count'):
             opportunity_count = kc.opportunity_count
@@ -352,7 +376,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         recent_correct = None
         if hasattr(bkt_log, "get_recent_correct"):
             try:
-                recent_correct = bkt_log.get_recent_correct(LEARNER_USER_ID, target_kp)
+                recent_correct = bkt_log.get_recent_correct(_uid(), target_kp)
             except Exception:
                 recent_correct = None
 
@@ -576,7 +600,7 @@ def generate(subject: str, decision: InterventionDecision, *,
     last_error = ""
     if subject == "review" or decision.type == "review":
         try:
-            log = BKTLogger(os.path.join(DATA_DIR, "answer-log.jsonl"))
+            log = BKTLogger(P.answer_log_path())
             last_error = _get_last_error_text(log, kp)
         except Exception:
             pass
@@ -749,6 +773,11 @@ def cultivate(subject: str):
     if not _bkt_available:
         print(f"[cultivate] bkt unavailable, cannot cultivate ({subject})")
         return
+    with bind_owner_schedule():
+        _cultivate_inner(subject)
+
+
+def _cultivate_inner(subject: str):
     state = assess_state(subject)
     bkt_log = state["bkt_log"]
     decision = decide(subject, bkt_log)
@@ -762,14 +791,14 @@ def cultivate(subject: str):
     opportunity_count = 0
     try:
         if hasattr(bkt_log, 'get_kp_mastery'):
-            kc = bkt_log.get_kp_mastery(LEARNER_USER_ID, kp)
+            kc = bkt_log.get_kp_mastery(_uid(), kp)
             if kc and hasattr(kc, 'p_effective'):
                 mastery = kc.p_effective
             if kc and hasattr(kc, 'opportunity_count'):
                 opportunity_count = kc.opportunity_count
     except Exception:
         pass
-    consecutive_failures = _get_consecutive_failures(LEARNER_USER_ID, bkt_log, kp)
+    consecutive_failures = _get_consecutive_failures(_uid(), bkt_log, kp)
 
     content = generate(
         subject,
@@ -786,7 +815,7 @@ def cultivate(subject: str):
     ref_source = _last_ref_source
     if deliver(content):
         record(subject, content, decision, answer, ref_source)
-        _save_last_push(subject, decision, content, answer, ref_source, kp=kp)
+        _save_last_push(subject, decision, content, answer, ref_source, kp=kp, source="schedule")
         print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
     else:
         print(f"[cultivate] {subject}: deliver failed, skipped record/last_push ({decision.type}/{kp})")

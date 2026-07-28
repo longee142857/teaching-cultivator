@@ -172,6 +172,7 @@ class TeachingAgent:
 
     def __init__(self, bot=None):
         self.bot = bot
+        self._bound_staff_id: str | None = None
         self.blocks = MemoryBlocks()
         self.transcript = Transcript()
         self.last_tools_used: list[str] = []
@@ -187,6 +188,21 @@ class TeachingAgent:
     def _memory(self) -> list:
         """兼容旧代码读取对话记忆。"""
         return self.transcript.messages
+
+    def bind_for_learner(self, staff_id: str) -> None:
+        """入站消息：按 staffId 加载该学员 memory / transcript。"""
+        sid = (staff_id or "").strip()
+        if not sid:
+            return
+        if sid == self._bound_staff_id:
+            return
+        self._bound_staff_id = sid
+        self.blocks = MemoryBlocks(staff_id=sid)
+        self.transcript = Transcript(staff_id=sid)
+        if not self.blocks._data["active_question"].get("preview"):
+            self.blocks.refresh_from_last_push()
+            self.blocks.refresh_learner_digest()
+            self.blocks.save()
 
     def _build_tool_schemas(self) -> list:
         return [
@@ -519,9 +535,16 @@ class TeachingAgent:
         """兼容旧接口：清空 transcript（推送路径应改用 on_new_push）。"""
         self.transcript.clear()
 
-    def on_new_push(self, content: str, *, subject: str = "", kp: str = "") -> None:
-        """新推送：更新 core blocks + 压缩旧对话，不清空记忆。"""
+    def on_new_push(self, content: str, *, subject: str = "", kp: str = "",
+                    public_class: bool = False) -> None:
+        """新推送：更新 core blocks；公共课不写全员 transcript。"""
         self.blocks.on_new_push(content, subject=subject, kp=kp)
+        if public_class:
+            logger.info(
+                "on_new_push(public): phase=%s (transcript untouched)",
+                self.blocks.phase,
+            )
+            return
         self.transcript.condense(keep_recent=4)
         logger.info(
             "on_new_push: phase=%s transcript_msgs=%d",

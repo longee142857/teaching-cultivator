@@ -45,6 +45,10 @@ data/push-retry-dead.jsonl
 # Refine-queue archive (BIG-TEACH-012d #17)
 data/refine-queue-archive/
 
+# Multi-learner runtime (index.json may stay tracked if seeded)
+data/learners/
+data/public/
+
 # Private ops / session notes (not for public tree)
 logs/SESSION_*.md
 logs/HANDOFF_*.md
