@@ -286,35 +286,11 @@ class TeachingBot:
 
         return _PushBridge(self)
 
-    def push_x_digest(self, force: bool = False):
-        from deliver.x_digest import XDigest
-        import deliver.bridge as db
-        import cultivate as _cultivate
-
-        orig_db = db.get_bridge
-        orig_cult = _cultivate.get_bridge
-        bridge = self._make_push_bridge()
-        db.get_bridge = lambda: bridge
-        _cultivate.get_bridge = lambda: bridge
-        try:
-            result = XDigest().run(force=force)
-            if result.get("skipped"):
-                log(f"[x-digest] {result.get('msg', '跳过')}")
-            elif result.get("ok"):
-                log(f"[OK] x-digest 推送完成 ({result.get('items', 0)} 条)")
-            else:
-                log("[失败] x-digest 推送失败")
-        except Exception as e:
-            log(f"[失败] x-digest 异常: {e}")
-        finally:
-            db.get_bridge = orig_db
-            _cultivate.get_bridge = orig_cult
-
     def push_github_trending(self):
         """GitHub Trending 推送到钉钉。"""
         import deliver.bridge as db
         import cultivate as _cultivate
-        from deliver.github_trending import fetch_trending, format_trending, translate_descriptions
+        from deliver.github_trending import fetch_formatted, send_trending
 
         orig_db = db.get_bridge
         orig_cult = _cultivate.get_bridge
@@ -322,12 +298,13 @@ class TeachingBot:
         db.get_bridge = lambda: bridge
         _cultivate.get_bridge = lambda: bridge
         try:
-            repos = fetch_trending()
-            translate_descriptions(repos)
-            text = format_trending(repos)
-            log(f"[github-trending] 抓到 {len(repos)} 个项目，推送中...")
-            bridge.send(text)
-            log(f"[OK] github-trending 推送完成 ({len(repos)} 条)")
+            text, n = fetch_formatted(max_count=10, channel="dingtalk", use_cache=True, skip_dup=True)
+            if not text:
+                log(f"[github-trending] 无新项目（已去重），跳过")
+                return
+            log(f"[github-trending] {n} 个项目，推送中...")
+            send_trending(text, channel="dingtalk", bridge_send=bridge.send)
+            log(f"[OK] github-trending 推送完成 ({n} 条)")
         except Exception as e:
             log(f"[失败] github-trending 异常: {e}")
         finally:
@@ -351,8 +328,6 @@ BIWEEKLY_EXAM_SLOT = ("08:00", "sun")
 
 def _next_scheduled_event(now: datetime.datetime):
     """返回最近待触发的 (target_dt, kind, payload)。"""
-    from config import X_DIGEST_AUTO_ENABLED, X_DIGEST_SLOTS
-
     candidates: list[tuple[datetime.datetime, str, str | None]] = []
 
     for time_str, subject in PUSH_SLOTS:
@@ -386,20 +361,6 @@ def _next_scheduled_event(now: datetime.datetime):
     except Exception:
         pass
 
-    # X-Digest：周三/周六 21:00（默认关闭，需设 X_DIGEST_AUTO=1）
-    if X_DIGEST_AUTO_ENABLED:
-        for time_str, day_name in X_DIGEST_SLOTS:
-            h, m = map(int, time_str.split(":"))
-            target_dow = _WEEKDAY_MAP.get(day_name.lower(), -1)
-            if target_dow < 0:
-                continue
-            days_ahead = (target_dow - now.weekday()) % 7
-            target = now.replace(hour=h, minute=m, second=0, microsecond=0)
-            target += datetime.timedelta(days=days_ahead)
-            if target <= now:
-                target += datetime.timedelta(days=7)
-            candidates.append((target, "x_digest", None))
-
     candidates.sort(key=lambda x: x[0])
     return candidates[0]
 
@@ -411,24 +372,23 @@ def _do_github_push(bot: TeachingBot | None = None):
     else:
         # 兜底：没有 bot 时打印到 stdout
         try:
-            from deliver.github_trending import fetch_trending, format_trending, translate_descriptions
-            repos = fetch_trending()
-            translate_descriptions(repos)
-            print(format_trending(repos))
-            log(f"[github-trending] stdout 打印 {len(repos)} 条")
+            from deliver.github_trending import fetch_formatted
+            text, n = fetch_formatted(max_count=10, channel="stdout", use_cache=True, skip_dup=True)
+            if text:
+                print(text)
+            log(f"[github-trending] stdout 打印 {n} 条")
         except Exception as e:
             log(f"[github-trending] 兜底失败: {e}")
 
 
 def scheduler_loop(bot: TeachingBot):
-    """后台线程：到点触发题目推送、x-digest 或 GitHub 自动推送。"""
+    """后台线程：到点触发题目推送或 GitHub 自动推送。"""
     while True:
         now = datetime.datetime.now()
         target, kind, payload = _next_scheduled_event(now)
         wait = (target - now).total_seconds()
         label_map = {
             "cultivate": payload,
-            "x_digest": "x-digest",
             "github_push": "github-push",
             "weekly_report": "weekly-report",
             "biweekly_exam": "biweekly-exam",
@@ -442,8 +402,6 @@ def scheduler_loop(bot: TeachingBot):
                 if kind == "cultivate":
                     bot.push_cultivate(payload)
                     log(f"[OK] {payload} 完成")
-                elif kind == "x_digest":
-                    bot.push_x_digest()
                 elif kind == "github_push":
                     _do_github_push(bot)
                     # 与周日 08:00 同槽：若双周到期则一并发卷（防候选撞车丢事件）
@@ -495,6 +453,28 @@ def main():
             log("kb_cache API 未启动（KB_CACHE_HTTP=0 或端口占用）")
     except Exception as e:
         log(f"kb_cache API 跳过: {e}")
+
+    # 双周试卷 H5（localhost；公网经 nginx 反代 /e/）
+    try:
+        from deliver.exam_web import start_in_thread as start_exam_web
+
+        if start_exam_web():
+            log("exam_web H5 已启动")
+        else:
+            log("exam_web 未启动（EXAM_WEB_HTTP=0 或端口占用）")
+    except Exception as e:
+        log(f"exam_web 跳过: {e}")
+
+    # 运维看板（驳回/学员参数；公网经 nginx 反代 /ops/）
+    try:
+        from deliver.ops_web import start_in_thread as start_ops_web
+
+        if start_ops_web():
+            log("ops_web 已启动")
+        else:
+            log("ops_web 未启动（OPS_WEB_HTTP=0 或端口占用）")
+    except Exception as e:
+        log(f"ops_web 跳过: {e}")
 
     # 阻塞：DingTalk Stream 在主线程运行
     bot.start()

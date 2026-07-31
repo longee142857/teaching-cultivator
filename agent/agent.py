@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Callable, Optional
 
-from config import DEEPSEEK_API_KEY, DEEPSEEK_API_BASE, MODEL_PRO, SSL_VERIFY
+from config import AGENT_MODEL
 from agent.tools import (
     generate_question,
     grade_answer,
@@ -28,6 +29,13 @@ from agent.tools import (
     list_exam_bank,
     get_exam_paper,
     submit_exam_answer_md,
+    get_exam_result,
+    list_knowledge_points,
+    kb_query,
+    kb_enqueue,
+    propose_add_kp,
+    confirm_add_kp,
+    cancel_add_kp,
 )
 from agent.memory_blocks import MemoryBlocks
 from agent.transcript import Transcript
@@ -36,6 +44,11 @@ logger = logging.getLogger(__name__)
 
 MAX_TOOL_STEPS = 6
 ProgressCallback = Callable[[str], None]
+
+# 确认卡片按钮 dtmd 回传文案 → 直连 confirm/cancel，不依赖弱模型理解
+_KP_CONFIRM_RE = re.compile(
+    r"^(确认|取消)(?:添加)?知识点\s*#?\s*([A-Za-z0-9]+)\s*$"
+)
 
 SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教学。
 
@@ -53,9 +66,11 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
 2. grade_answer — 批改用户的作答。用户看起来在回答问题或提交答案时调用。
    参数: last_question(可传空), user_answer(用户的回答)
 
-2b. list_exam_bank / get_exam_paper / submit_exam_answer_md — 双周检测卷题库。
+2b. list_exam_bank / get_exam_paper / submit_exam_answer_md / get_exam_result — 双周检测卷题库。
    用户问「双周卷」「试卷库」「交卷」或间隔很久再讨论某份卷时：先 list_exam_bank，再 get_exam_paper。
    用户粘贴整份答卷 md 时调用 submit_exam_answer_md。
+   用户问「我上次卷子答得怎么样」「批改结果」「得分」「某题怎么批的」时调用 get_exam_result(paper_id)，
+   返回该学员该卷的批改报告 + 作答（含得分与每题判定）。
    **重要**：批改「最近推送」时 last_question 必须传空字符串 ""，服务端会自动读取完整题干；
    禁止把系统提示里的摘要/片段当作 last_question 传入。只有用户明确在答更早一题、
    且你已用 find_record_entry 取到全文时，才把该全文传入 last_question。
@@ -93,6 +108,23 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
 
 10. get_learner_snapshot — 查看当前学习指标快照（权重/BKT/答题统计）。用户问「我现在什么水平」「指标怎么样」时调用。
     参数: days(天数,默认7)
+
+11. list_knowledge_points — 列出考纲全部知识点（L2 章节 + L3 子考点）。用户问「考纲有什么」「都有哪些知识点」「××在不在考纲里」时调用。
+    参数: subject(math/comm), query(可选关键词过滤)
+
+12. kb_query — 只读查「小库」某考点的教材证据。用户问某个具体考点/概念/公式时先调本工具，有教材原文就用原文作答。
+    参数: subject(math/comm), kp(考点关键词)
+    未收录返回提示，可再调 kb_enqueue 登记回填。
+
+13. kb_enqueue — 把「小库」未收录的考点加入教材回填队列（不直接写证据，由本地教材检索回填）。
+    参数: subject(math/comm), kp(考点关键词), query(可选)
+
+14. propose_add_kp — 用户提出新增某个**子知识点(L3)**时调用。**只登记提案并发确认卡片，不写入考纲**，用户点「确认添加」后才落盘。
+    参数: subject(math/comm), l2(所属章节名，必须是考纲已有 L2), name(子考点名), aliases(可选，顿号/逗号分隔)
+    **绝不新建章节 L2**；用户想加的是新章节时，回复说明只支持追加子考点到已有章节。
+
+15. confirm_add_kp / cancel_add_kp — 用户消息含「确认添加知识点 <token>」/「取消添加知识点 <token>」时调用（token 来自确认卡片按钮）。
+    参数: token
 
 ## 示例
 
@@ -135,6 +167,18 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
 用户: 今天早上那道多元函数
 → list_recent_entries(days=3) 再 find_record_entry(date="今天日期", num=对应题号)
 
+用户: 考纲里都有哪些知识点
+→ list_knowledge_points(subject="math")
+
+用户: 给我讲讲洛必达法则
+→ kb_query(subject="math", kp="洛必达法则")；未收录再 kb_enqueue 登记回填
+
+用户: 帮我加个子考点，函数列的一致收敛，属于级数那章
+→ propose_add_kp(subject="math", l2="级数", name="函数列的一致收敛") → 等确认卡
+
+用户: 确认添加知识点 abc123
+→ confirm_add_kp(token="abc123")
+
 ## 规则
 - **每次调用工具后，必须用自然语言告诉用户：做了什么、对用户意味着什么、接下来会怎样；禁止静默结束**
 - 工具返回里的数字/权重变化要用口语解释，不要暴露工具名称和参数
@@ -144,8 +188,10 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
 - 用户追问「结果呢」「查到了吗」「然后呢」：先看对话历史与 blocks；禁止只说「看不到之前对话」就结束
 - 调用查题/批改工具后，必须在同一条回复里给出完整结果，禁止只说「我来提取/马上查」而不输出正文
 - **书写格式（强制）**：行内公式只用 `$...$`；独立公式块单独成行用 `$$...$$`；禁止 \\(...\\)、\\[...\\]；选择题每选项单独一行 `(A)...`；段落之间空一行
+- **禁止在对用户可见回复里**写 `【曾调用】`、`【工具结果】`、伪 JSON 工具输出或伪造的日期题号；工具只能走 API tool_calls。没有真调用就不要假装查过题库。
 
 ## 作答追问规则（BIG-TEACH-012b #A1）
+- **添加知识点（重要）**：propose_add_kp 只登记提案并发确认卡片，**绝不**直接写考纲；用户点「确认添加」后才落盘。用户想加的是新章节 L2 时，说明只支持追加子考点到已有章节。
 - 用户只回答 A/B/C/D 或极短选项字母 → **禁止**调用 show_solution 倾倒全文解答；可 grade_answer 批改，并追问关键步骤/为何选该项
 - 用户只说空泛「思路」且无推导步骤 → 继续追问具体一步，禁止直接给完整解答
 - 用户明确「不会做 / 要解析 / 答案」且尚未给出任何自身尝试 → 先追问「先写你想到的一步或卡在哪」，暂缓 show_solution；若追问过 ≥1 次且用户坚持只要答案，才允许给解答"""
@@ -164,6 +210,13 @@ _TOOL_PROGRESS = {
     "adjust_difficulty": "正在调整难度…",
     "override_grade": "正在纠正批改…",
     "github_push": "正在推送 GitHub…",
+    "list_knowledge_points": "正在读取考纲知识点…",
+    "kb_query": "正在查询小库…",
+    "kb_enqueue": "正在登记教材回填…",
+    "propose_add_kp": "正在登记知识点提案…",
+    "confirm_add_kp": "正在写入知识点…",
+    "cancel_add_kp": "正在取消…",
+    "get_exam_result": "正在读取试卷批改结果…",
 }
 
 
@@ -176,6 +229,7 @@ class TeachingAgent:
         self.blocks = MemoryBlocks()
         self.transcript = Transcript()
         self.last_tools_used: list[str] = []
+        self._pending_kp_token: str = ""
         # 兼容旧调用：_memory 指向 transcript 消息（只读视图）
         self._tools = self._build_tool_schemas()
         # 启动时若有 last_push 则同步 active_question
@@ -480,53 +534,186 @@ class TeachingAgent:
                     },
                 },
             },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_exam_result",
+                    "description": "查看某人对某张双周卷的批改报告与作答（含得分、每题判定、掌握度变化）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "paper_id": {
+                                "type": "string",
+                                "description": "如 2026-07-26_math；可先 list_exam_bank 查",
+                            },
+                            "user_id": {
+                                "type": "string",
+                                "description": "可选；缺省=当前对话学员",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "list_knowledge_points",
+                    "description": "列出考纲全部知识点（L2 章节 + L3 子考点），可按关键词过滤",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm"],
+                                "description": "科目",
+                            },
+                            "query": {
+                                "type": "string",
+                                "description": "可选关键词过滤",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "kb_query",
+                    "description": "只读查询小库中某考点的已收录教材证据（不增加命中计数）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm"],
+                                "description": "科目",
+                            },
+                            "kp": {
+                                "type": "string",
+                                "description": "考点关键词，如洛必达法则",
+                            },
+                        },
+                        "required": ["kp"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "kb_enqueue",
+                    "description": "把小库未收录的考点加入教材回填队列（由本地教材检索回填，不直接写证据）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm"],
+                                "description": "科目",
+                            },
+                            "kp": {
+                                "type": "string",
+                                "description": "考点关键词",
+                            },
+                            "query": {
+                                "type": "string",
+                                "description": "可选检索词",
+                            },
+                        },
+                        "required": ["kp"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "propose_add_kp",
+                    "description": "登记新增 L3 子知识点的待确认提案并发出确认卡片（不写入考纲，用户确认后才落盘）。仅支持追加到已存在 L2 章节，绝不新建章节",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "subject": {
+                                "type": "string",
+                                "enum": ["math", "comm"],
+                                "description": "科目",
+                            },
+                            "l2": {
+                                "type": "string",
+                                "description": "所属章节名，必须是考纲已有 L2",
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "子知识点名称",
+                            },
+                            "aliases": {
+                                "type": "string",
+                                "description": "可选别名，顿号/逗号分隔",
+                            },
+                        },
+                        "required": ["subject", "l2", "name"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "confirm_add_kp",
+                    "description": "确认知识点提案并写入考纲（用户点了确认卡片的「确认添加」后调用）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "description": "确认卡片按钮回传的 token",
+                            },
+                        },
+                        "required": ["token"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "cancel_add_kp",
+                    "description": "取消知识点提案（用户点了确认卡片的「取消」后调用）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "description": "确认卡片按钮回传的 token",
+                            },
+                        },
+                        "required": ["token"],
+                    },
+                },
+            },
         ]
 
     def _call_llm(self, messages: list) -> dict:
-        """调 DeepSeek V4 Pro + thinking（带工具定义）。
+        """调 OpenRouter Agent 模型（默认 Claude Haiku 4.5）+ tools。
 
-        thinking 模式下若有 tool_calls，必须把 reasoning_content 回传，
-        否则后续请求会 400。
+        不再使用 DeepSeek thinking；历史 transcript 中的 reasoning_content
+        可忽略，不影响 OpenRouter 工具循环。
         """
-        import requests
+        from decide.router import call_openrouter_chat
 
-        payload = {
-            "model": MODEL_PRO,
-            "messages": messages,
-            "tools": self._tools,
-            "tool_choice": "auto",
-            "stream": False,
-            "thinking": {"type": "enabled"},
-            "reasoning_effort": "max",
-        }
         try:
-            resp = requests.post(
-                f"{DEEPSEEK_API_BASE}/chat/completions",
-                headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
-                json=payload,
-                timeout=300,
-                verify=SSL_VERIFY,
+            return call_openrouter_chat(
+                messages,
+                model=AGENT_MODEL,
+                tools=self._tools,
+                tool_choice="auto",
+                title="teaching-cultivator-agent",
             )
-            if not resp.ok:
-                detail = (resp.text or "")[:240].replace("\n", " ")
-                logger.error("DeepSeek %s: %s", resp.status_code, detail)
-                return {
-                    "choices": [{
-                        "message": {
-                            "content": (
-                                "刚才模型接口异常，我这边已记下。请再发一句，"
-                                "或直接说「重发今晚的题」。"
-                            )
-                        }
-                    }]
-                }
-            return resp.json()
         except Exception as e:
-            logger.error("DeepSeek request failed: %s", e)
+            logger.error("OpenRouter agent request failed: %s", e)
             return {
                 "choices": [{
                     "message": {
-                        "content": "网络或模型暂时不可用，请稍后再试一句。"
+                        "content": (
+                            "刚才对话模型接口异常（需 OPENROUTER_API_KEY 与网络）。"
+                            "请稍后再试，或直接说「重发今晚的题」。"
+                        )
                     }
                 }]
             }
@@ -586,6 +773,14 @@ class TeachingAgent:
         markers = ("我来提取", "马上查", "我来查", "稍等", "让我查", "我去查", "提取完整")
         return any(m in reply for m in markers)
 
+    @staticmethod
+    def _looks_like_fake_tool_dump(reply: str) -> bool:
+        """模型偶发把工具过程写成正文（【曾调用】/伪 JSON），对用户即乱码。"""
+        if not reply:
+            return False
+        markers = ("【曾调用】", "【工具结果】", '"entries":', '"date": "2026-12-')
+        return any(m in reply for m in markers)
+
     def handle(
         self,
         user_text: str,
@@ -593,6 +788,24 @@ class TeachingAgent:
     ) -> str:
         """处理一条用户消息；可选 on_progress 发钉钉中间态。"""
         self.last_tools_used: list[str] = []
+
+        # 确认卡片按钮 dtmd 回传文案 → 直连 confirm/cancel，绕过 LLM 判断
+        m = _KP_CONFIRM_RE.match((user_text or "").strip())
+        if m:
+            verb, token = m.group(1), m.group(2)
+            tool_name = "confirm_add_kp" if verb == "确认" else "cancel_add_kp"
+            self.last_tools_used = [tool_name]
+            if verb == "确认":
+                reply = confirm_add_kp(token)
+            else:
+                reply = cancel_add_kp(token)
+            self.transcript.append_messages([
+                {"role": "user", "content": user_text},
+                {"role": "assistant", "content": reply},
+            ])
+            self.blocks.save()
+            logger.info("kp confirm bypass: %s token=%s", tool_name, token)
+            return reply
 
         # 每轮刷新 digest（轻量）
         try:
@@ -635,6 +848,27 @@ class TeachingAgent:
 
             if not tool_calls:
                 reply = (msg.get("content") or "").strip()
+                # 无真实 tool_calls 却夹带伪造工具过程 → 视为无效，逼下一轮或兜底
+                if reply and self._looks_like_fake_tool_dump(reply):
+                    logger.warning(
+                        "reject fake tool dump in plaintext reply (len=%d)",
+                        len(reply),
+                    )
+                    messages.append({
+                        "role": "assistant",
+                        "content": reply,
+                    })
+                    messages.append({
+                        "role": "system",
+                        "content": (
+                            "上一条回复非法：含【曾调用】/【工具结果】等伪工具正文。"
+                            "请改用 API tool_calls 查题或批改；对用户只输出自然语言，"
+                            "禁止再写伪工具过程。若用户在答最近推送，直接 grade_answer"
+                            '(last_question="", user_answer=用户原文)。'
+                        ),
+                    })
+                    reply = ""
+                    continue
                 if reply:
                     turn_msgs.append({"role": "assistant", "content": reply})
                 break
@@ -719,6 +953,16 @@ class TeachingAgent:
                 reply = self._fallback_after_tools(tool_raw_results)
                 if turn_msgs and turn_msgs[-1].get("role") == "assistant":
                     turn_msgs[-1]["content"] = reply
+        elif reply and self._looks_like_fake_tool_dump(reply):
+            logger.warning("final reply still fake tool dump; clearing")
+            reply = (
+                "刚才查题过程出错了，我重来一次。"
+                "请再说一下你的选项或「要解析」，我直接批改/给解答。"
+            )
+            if turn_msgs and turn_msgs[-1].get("role") == "assistant" and not turn_msgs[-1].get("tool_calls"):
+                turn_msgs[-1]["content"] = reply
+            else:
+                turn_msgs.append({"role": "assistant", "content": reply})
 
         # 落盘
         if reply or tool_raw_results:
@@ -797,6 +1041,41 @@ class TeachingAgent:
                     args.get("md_text", ""),
                     paper_id=args.get("paper_id", ""),
                 )
+            elif name == "get_exam_result":
+                return get_exam_result(
+                    args.get("paper_id", ""),
+                    args.get("user_id", ""),
+                )
+            elif name == "list_knowledge_points":
+                return list_knowledge_points(
+                    args.get("subject", "math"),
+                    args.get("query", ""),
+                )
+            elif name == "kb_query":
+                return kb_query(args.get("subject", "math"), args.get("kp", ""))
+            elif name == "kb_enqueue":
+                return kb_enqueue(
+                    args.get("subject", "math"),
+                    args.get("kp", ""),
+                    args.get("query", ""),
+                )
+            elif name == "propose_add_kp":
+                result = propose_add_kp(
+                    args.get("subject", "math"),
+                    args.get("l2", ""),
+                    args.get("name", ""),
+                    args.get("aliases", ""),
+                )
+                m = re.search(r"\[PROPOSAL\]([a-f0-9]+)", result)
+                if m:
+                    self._pending_kp_token = m.group(1)
+                    # 剥掉内部标记，避免弱模型把 token 写进用户可见回复
+                    result = result.split("[PROPOSAL]", 1)[0].rstrip()
+                return result
+            elif name == "confirm_add_kp":
+                return confirm_add_kp(args.get("token", ""))
+            elif name == "cancel_add_kp":
+                return cancel_add_kp(args.get("token", ""))
             else:
                 return f"未知工具：{name}"
         except Exception as e:

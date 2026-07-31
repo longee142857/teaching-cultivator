@@ -10,16 +10,22 @@ from decide.router import select_model, REASONING_EFFORT_MAX
 from prompts.prompt_builder import PromptBuilder
 
 
-def test_pro_max_for_author_polish():
-    for t in ("author", "polish", "generate", "grade", "explain"):
+def test_model_tiers():
+    for t in ("author", "generate", "grade", "explain"):
         cfg = select_model(t)
         assert cfg.model == "deepseek-v4-pro", t
+        assert cfg.provider == "deepseek", t
         assert cfg.thinking is True, t
         assert cfg.effort == REASONING_EFFORT_MAX == "max", t
+    for t in ("polish", "orchestrate"):
+        cfg = select_model(t)
+        assert cfg.model == "deepseek-v4-flash", t
+        assert cfg.provider == "deepseek", t
+        assert cfg.thinking is False, t
     flash = select_model("other")
     assert flash.model == "deepseek-v4-flash"
     assert flash.thinking is False
-    print("OK model tiers (pro+thinking+max)")
+    print("OK model tiers (pro author/grade; flash polish)")
 
 
 def test_polish_template():
@@ -53,7 +59,7 @@ def test_author_templates_exist():
 
 
 if __name__ == "__main__":
-    test_pro_max_for_author_polish()
+    test_model_tiers()
     test_polish_template()
     test_author_templates_exist()
     print("ALL PASS")

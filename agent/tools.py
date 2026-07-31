@@ -80,6 +80,27 @@ def submit_exam_answer_md(md_text: str = "", paper_id: str = "") -> str:
     return submit_answer_md(md_text, paper_id=paper_id or "")
 
 
+def get_exam_result(paper_id: str = "", user_id: str = "") -> str:
+    """查看某人对某张双周卷的批改报告与作答（试卷库按人可查）。"""
+    from learner.biweekly_exam import ANSWERS_DIR
+    from learner.context import current_user_id
+    pid = (paper_id or "").strip()
+    if not pid:
+        return "请提供 paper_id（如 2026-07-26_math）。先用 list_exam_bank 查有哪些卷。"
+    uid = (user_id or "").strip() or current_user_id()
+    grade_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_grade.md")
+    ans_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_answer.md")
+    if not os.path.isfile(grade_path):
+        return f"「{pid}」没有该学员的批改记录（可能未交卷或批改未完成）。"
+    out = [f"### 批改报告 · `{pid}`"]
+    with open(grade_path, encoding="utf-8") as f:
+        out.append(f.read())
+    if os.path.isfile(ans_path):
+        with open(ans_path, encoding="utf-8") as f:
+            out.append("\n### 你的作答\n" + f.read())
+    return "\n".join(out)
+
+
 def note_weak_point(subject: str, kp: str, reason: str = "") -> str:
     """用户自述某知识点薄弱 → 提高 weights 出题权重 + BKT 信号。"""
     from learner.weights_ops import bump_kp_weight, format_bump_result
@@ -226,7 +247,13 @@ def grade_answer(last_question: str, user_answer: str) -> str:
         extra = ""
         if result.kp_name:
             extra = f"（L2={result.kp_name}，掌握 {result.p_mastery_before:.0%}→{result.p_mastery_after:.0%}）"
-        return f"{tag}，{result.feedback}\n{extra}".rstrip()
+        pending_note = ""
+        if getattr(result, "status", "applied") == "pending":
+            pending_note = (
+                "\n⚠️ 批改置信不足，掌握度未更新（pending）。"
+                "若你认为批错了，直接说「批错了」即可纠正。"
+            )
+        return f"{tag}，{result.feedback}\n{extra}{pending_note}".rstrip()
     except Exception as e:
         return f"批改失败：{e}"
 
@@ -445,3 +472,125 @@ def github_push(repo_path: str = "", commit_msg: str = "") -> str:
     else:
         lines.append(pusher.proxy_info)
     return "\n".join(lines)
+
+
+# ── 交互层升级（KB-0121）：小库只读 / 回填登记 / 考纲全量 / 知识点提案 ──
+
+
+def list_knowledge_points(subject: str = "math", query: str = "") -> str:
+    """列出考纲全部知识点（L2 章节 + 子 L3 考点），可按关键词过滤。"""
+    from learner.kp_registry import load_syllabus, syllabus_subject
+    subj = syllabus_subject(subject)
+    syl = load_syllabus(subj)
+    kps = syl.get("kps") or {}
+    if not kps:
+        return f"{subj} 考纲暂无知识点。"
+    q = (query or "").strip().lower()
+    lines = [f"{subj} 考纲知识点（共 {len(kps)} 个章节）："]
+    for l2, meta in kps.items():
+        if not isinstance(meta, dict):
+            continue
+        l3s = [l3 for l3 in meta.get("l3") or [] if isinstance(l3, dict)]
+        parts = [
+            f"{l3.get('name', '')} `{l3.get('id', '')}`" for l3 in l3s
+        ]
+        row = f"- {l2}（{len(parts)} 子考点）：{'、'.join(parts)[:200] if parts else '无'}"
+        if q:
+            hay = json.dumps({"l2": l2, "names": parts}, ensure_ascii=False).lower()
+            if q not in hay:
+                continue
+        lines.append(row)
+        if len(lines) > 120:
+            lines.append("…（考点较多，可加关键词过滤）")
+            break
+    return "\n".join(lines) if len(lines) > 1 else f"未找到含「{q}」的知识点。"
+
+
+def kb_query(subject: str = "math", kp: str = "") -> str:
+    """查询小库中某考点的已收录教材证据（只读，不增加命中计数）。"""
+    from learner import kb_cache
+    from learner.kp_registry import resolve_kp, syllabus_subject
+    subj = syllabus_subject(subject)
+    kp = (kp or "").strip()
+    if not kp:
+        return "请提供考点关键词，如「洛必达法则」。"
+    entry = kb_cache.peek(subj, kp)
+    if not entry:
+        resolved = resolve_kp(subj, kp)
+        if resolved:
+            entry = kb_cache.peek(subj, resolved)
+    if not entry:
+        return (
+            f"小库未收录「{kp}」。可调用 kb_enqueue 把该考点加入教材回填队列，"
+            "回填后再来查，我就能给出教材原文依据。"
+        )
+    lines = [f"考点「{kp}」小库已收录（{len(entry.get('snippets') or [])} 条证据）："]
+    for s in entry.get("snippets") or []:
+        if not isinstance(s, dict):
+            continue
+        src = (s.get("source") or "?").strip()
+        page = (s.get("page") or "").strip()
+        text = (s.get("text") or "").strip()
+        loc = f"{src} {page}".strip()
+        lines.append(f"- [{loc}] {text[:160]}")
+    return "\n".join(lines)
+
+
+def kb_enqueue(subject: str = "math", kp: str = "", query: str = "") -> str:
+    """把考点加入小库教材回填队列（由本机教材检索回填，不直接写证据）。"""
+    from learner import kb_cache
+    from learner.kp_registry import syllabus_subject
+    subj = syllabus_subject(subject)
+    kp = (kp or "").strip()
+    if not kp:
+        return "请提供考点关键词。"
+    r = kb_cache.enqueue(subj, kp, query=query or kp, reason="agent_chat")
+    if r.get("ok") and r.get("deduped"):
+        return f"「{kp}」已在回填队列中，无需重复登记。"
+    if r.get("ok") and r.get("cached"):
+        return f"「{kp}」小库已有缓存，无需回填。"
+    if r.get("ok"):
+        return f"已把「{kp}」加入教材回填队列，稍后会自动回填，回填后即可查询。"
+    return f"登记失败：{r.get('error') or '未知'}"
+
+
+def propose_add_kp(subject: str, l2: str, name: str, aliases: str = "") -> str:
+    """登记新 L3 子考点提案（不写入）；成功时末尾带 `[PROPOSAL]<token>` 供 harness 发确认卡。"""
+    from learner import kp_edit
+    from learner.context import current_user_id
+    al = [a for a in re.split(r"[、，,；;]", aliases or "") if (a or "").strip()]
+    r = kp_edit.propose_l3(subject, l2, name, al or None,
+                           staff_id=current_user_id())
+    if not r.get("ok"):
+        return r.get("error", "登记失败")
+    return (
+        f"已登记待确认的子考点提案：\n"
+        f"- 章节：{r['l2']}\n"
+        f"- 子考点：{r['name']}\n"
+        f"- 拟生成 l3_id：{r['l3_id']}\n"
+        f"等待用户点击确认卡片后写入考纲。\n"
+        f"[PROPOSAL]{r['token']}"
+    )
+
+
+def confirm_add_kp(token: str = "") -> str:
+    """确认知识点提案并写入考纲。"""
+    from learner import kp_edit
+    from learner.context import current_user_id
+    r = kp_edit.confirm_l3(token, staff_id=current_user_id())
+    if r.get("ok"):
+        return (
+            f"已确认并写入考纲：{r['l2']} → 「{r['name']}」"
+            f"（l3_id={r['l3_id']}）。之后出题/双周卷可覆盖该子考点。"
+        )
+    return r.get("error", "确认失败")
+
+
+def cancel_add_kp(token: str = "") -> str:
+    """取消知识点提案（不写入）。"""
+    from learner import kp_edit
+    from learner.context import current_user_id
+    r = kp_edit.cancel_l3(token, staff_id=current_user_id())
+    if r.get("ok"):
+        return f"已取消「{r['name']}」的添加，未写入考纲。"
+    return r.get("error", "取消失败")

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>双周检测卷</title>
+  <link rel="stylesheet" href="/static/katex/katex.min.css" />
+  <!-- 钉钉免登：加载失败时 window.dd 为 undefined，自动降级设备 UUID -->
+  <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.14.4/dingtalk.js"></script>
+  <style>
+    :root {
+      --bg: #f6f4ef; --card: #fffdf8; --ink: #1c1a16; --muted: #6b655c;
+      --line: #e4ddd0; --accent: #0b6e4f; --danger: #9b2c2c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #efe8da 0%, var(--bg) 28%, #f3f1ec 100%);
+      color: var(--ink); line-height: 1.65; min-height: 100vh;
+    }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 20px 16px 64px; }
+    header h1 { font-size: 1.45rem; margin: 0 0 6px; }
+    .meta { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+    .status { padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid var(--line); margin-bottom: 16px; }
+    .status.err { border-color: #f0c2c2; color: var(--danger); background: #fff5f5; }
+    .q { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 16px; }
+    .q h2 { font-size: 1.05rem; margin: 0 0 10px; }
+    .q .body { overflow-x: auto; }
+    .q .body p { margin: 0.55em 0; white-space: pre-wrap; }
+    .q .body .katex-display { margin: 0.85em 0; overflow-x: auto; overflow-y: hidden; }
+    textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+    label.ans { display: block; margin-top: 12px; color: var(--muted); font-size: 0.88rem; }
+    .actions { position: sticky; bottom: 0; padding: 12px 0 8px; background: linear-gradient(180deg, transparent, var(--bg) 35%); }
+    button { appearance: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: inherit; font-weight: 600; padding: 12px 22px; width: 100%; cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .report { margin-top: 20px; padding: 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); white-space: pre-wrap; }
+    .hint { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="boot" class="status">加载试卷中…</div>
+    <header id="head" hidden>
+      <h1 id="title">双周检测卷</h1>
+      <div class="meta" id="meta"></div>
+    </header>
+    <div id="questions"></div>
+    <div class="actions" id="actions" hidden>
+      <button type="button" id="submitBtn">提交答卷</button>
+      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。也可继续用钉钉私聊发 md /「交卷」。</p>
+    </div>
+    <div id="report" class="report" hidden></div>
+  </div>
+  <script>
+(function () {
+  const boot = document.getElementById("boot");
+  const head = document.getElementById("head");
+  const titleEl = document.getElementById("title");
+  const metaEl = document.getElementById("meta");
+  const qRoot = document.getElementById("questions");
+  const actions = document.getElementById("actions");
+  const submitBtn = document.getElementById("submitBtn");
+  const reportEl = document.getElementById("report");
+  const I18N = {
+    title: '双周检测卷',
+    bad: '链接无效：缺少 token',
+    metaId: '试卷 ID：',
+    metaSubj: '· 科目：',
+    metaQ: '题',
+    metaExp: '· 链接有效至 ',
+    qPrefix: '第 ',
+    qSuffix: ' 题',
+    zone: '作答区 ',
+    placeholder: '在此填写本题答案（可用 LaTeX）',
+    submit: '提交答卷',
+    submitting: '提交中…',
+    submitted: '已提交',
+    katexFail: '公式引擎 KaTeX 加载失败',
+  };
+  function tokenFromPath() {
+    const parts = location.pathname.replace(/\/+$/, "").split("/").filter(Boolean);
+    const i = parts.indexOf("e");
+    if (i < 0 || !parts[i + 1]) return "";
+    return parts[i + 1];
+  }
+  const TOKEN = tokenFromPath();
+  if (!TOKEN) { boot.className = "status err"; boot.textContent = I18N.bad; return; }
+
+  let UID = "";
+  let CORP_ID = "";
+
+  function deviceUid() {
+    let uid = "";
+    try { uid = localStorage.getItem("exam_device_uid") || ""; } catch (e) {}
+    if (!uid) {
+      uid = "dev" + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem("exam_device_uid", uid); } catch (e) {}
+    }
+    return uid;
+  }
+
+  function ddAuthCode() {
+    return new Promise(function (resolve, reject) {
+      if (!window.dd || !window.dd.runtime || !window.dd.runtime.permission ||
+          !window.dd.runtime.permission.requestAuthCode || !CORP_ID) {
+        reject(new Error("dd unavailable"));
+        return;
+      }
+      try {
+        window.dd.runtime.permission.requestAuthCode({
+          corpId: CORP_ID,
+          onSuccess: function (res) { resolve(res && res.authCode); },
+          onFail: function () { reject(new Error("dd auth fail")); },
+        });
+      } catch (e) { reject(e); }
+    });
+  }
+
+  async function resolveIdentity() {
+    // 默认设备级；钉钉免登可用则换真实 staffId
+    UID = deviceUid();
+    let serverUid = "";
+    try {
+      const authCode = await ddAuthCode();
+      if (authCode) {
+        const r = await fetch("/e/" + TOKEN + "/identify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ authCode: authCode }),
+        });
+        const data = await r.json();
+        if (data && data.ok && data.uid) serverUid = data.uid;
+      }
+    } catch (e) { /* 降级设备 UUID */ }
+    if (serverUid) UID = serverUid;
+    return UID;
+  }
+
+  function collectAnswers() {
+    const answers = {};
+    qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) {
+      answers[ta.dataset.i] = ta.value;
+    });
+    return answers;
+  }
+
+  let _saveTimer = null;
+  function wireAutosave() {
+    qRoot.addEventListener("input", function () {
+      if (_saveTimer) clearTimeout(_saveTimer);
+      _saveTimer = setTimeout(saveDraftNow, 1500);
+    });
+  }
+
+  async function saveDraftNow() {
+    if (!UID) return;
+    try {
+      await fetch("/e/" + TOKEN + "/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: UID, answers: collectAnswers() }),
+      });
+    } catch (e) {}
+  }
+
+  async function restoreDraft() {
+    if (!UID) return;
+    try {
+      const r = await fetch("/e/" + TOKEN + "/draft?uid=" + encodeURIComponent(UID), { cache: "no-store" });
+      const data = await r.json();
+      if (data && data.ok && data.answers) {
+        const map = data.answers;
+        qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) {
+          const v = map[ta.dataset.i];
+          if (v != null) ta.value = v;
+        });
+      }
+    } catch (e) {}
+  }
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      const s = document.createElement("script");
+      s.src = src;
+      s.async = false;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error("script " + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function renderMathMarkdown(src) {
+    const placeholders = [];
+    function stash(tex, display) {
+      const i = placeholders.length;
+      placeholders.push({ tex: tex, display: display });
+      return "@@MATH" + i + "@@";
+    }
+    let text = String(src || "");
+    // display: $$...$$ including multiline
+    text = text.replace(/\$\$([\s\S]+?)\$\$/g, function (_, tex) {
+      return stash(String(tex).trim(), true);
+    });
+    // inline: $...$ (no newlines; avoid $$ leftovers)
+    text = text.replace(/\$([^\$\n]+?)\$/g, function (_, tex) {
+      return stash(String(tex).trim(), false);
+    });
+    let html = escapeHtml(text);
+    html = html.replace(/^###\s+(.+)$/gm, "<h3>$1</h3>");
+    html = html.replace(/^##\s+(.+)$/gm, "<h2>$1</h2>");
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+    html = html.replace(/\n{2,}/g, "</p><p>");
+    html = "<p>" + html + "</p>";
+    html = html.replace(/@@MATH(\d+)@@/g, function (_, idx) {
+      const item = placeholders[Number(idx)];
+      if (!item || typeof katex === "undefined") {
+        return "<code>" + escapeHtml(item ? item.tex : "") + "</code>";
+      }
+      try {
+        return katex.renderToString(item.tex, {
+          displayMode: !!item.display,
+          throwOnError: false,
+          strict: "ignore",
+          trust: false,
+        });
+      } catch (e) {
+        return "<code>" + escapeHtml(item.tex) + "</code>";
+      }
+    });
+    return html;
+  }
+
+  async function loadPaper() {
+    const r = await fetch("/e/" + TOKEN + "/data", { cache: "no-store" });
+    const data = await r.json();
+    if (!r.ok || !data.ok) {
+      boot.className = "status err";
+      boot.textContent = (data && data.error) || ("HTTP " + r.status);
+      return;
+    }
+    CORP_ID = data.corp_id || "";
+    const paper = data.paper;
+    boot.hidden = true;
+    head.hidden = false;
+    actions.hidden = false;
+    titleEl.textContent = paper.title || paper.paper_id || I18N.title;
+    metaEl.textContent =
+      I18N.metaId + (paper.paper_id || "-") +
+      " " + I18N.metaSubj + (paper.subject || "-") +
+      " " + (paper.n_questions || (paper.items || []).length) + I18N.metaQ +
+      (data.exp ? (" " + I18N.metaExp + data.exp) : "");
+    qRoot.innerHTML = "";
+    (paper.items || []).forEach(function (it) {
+      const card = document.createElement("section");
+      card.className = "q";
+      const h = document.createElement("h2");
+      h.textContent = I18N.qPrefix + it.i + I18N.qSuffix + (it.form_label ? ("(" + it.form_label + ")") : "");
+      const body = document.createElement("div");
+      body.className = "body";
+      body.innerHTML = renderMathMarkdown(it.question_md || "");
+      const lab = document.createElement("label");
+      lab.className = "ans";
+      lab.textContent = I18N.zone + it.i;
+      const ta = document.createElement("textarea");
+      ta.dataset.i = String(it.i);
+      ta.placeholder = I18N.placeholder;
+      lab.appendChild(ta);
+      card.appendChild(h); card.appendChild(body); card.appendChild(lab);
+      qRoot.appendChild(card);
+    });
+  }
+
+  submitBtn.addEventListener("click", async function () {
+    const answers = collectAnswers();
+    submitBtn.disabled = true;
+    submitBtn.textContent = I18N.submitting;
+    reportEl.hidden = true;
+    try {
+      const r = await fetch("/e/" + TOKEN + "/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers: answers, uid: UID }),
+      });
+      const data = await r.json();
+      reportEl.hidden = false;
+      if (!r.ok || !data.ok) {
+        reportEl.textContent = (data && data.error) || ("HTTP " + r.status);
+      } else {
+        reportEl.textContent = data.report || "OK";
+        submitBtn.textContent = I18N.submitted;
+        return;
+      }
+    } catch (e) {
+      reportEl.hidden = false;
+      reportEl.textContent = String(e);
+    }
+    submitBtn.disabled = false;
+    submitBtn.textContent = I18N.submit;
+  });
+
+  loadScript("/static/katex/katex.min.js")
+    .then(function () {
+      if (typeof katex === "undefined") throw new Error("katex missing");
+      return loadPaper();
+    })
+    .then(function () { return resolveIdentity(); })
+    .then(function () { return restoreDraft(); })
+    .then(function () { wireAutosave(); })
+    .catch(function (e) {
+      boot.className = "status err";
+      boot.textContent = I18N.katexFail + ": " + e;
+    });
+})();
+  </script>
+</body>
+</html>

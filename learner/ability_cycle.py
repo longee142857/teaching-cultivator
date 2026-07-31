@@ -228,6 +228,28 @@ def parse_ability_from_reason(reason: str) -> str | None:
     return m.group(1).strip() if m else None
 
 
+def parse_item_form_from_reason(reason: str) -> str | None:
+    """从 reason 提取 [item_form=xxx]（双周卷强制大题用）。"""
+    m = re.search(r'\[item_form=([^\]]+)\]', reason or "")
+    if not m:
+        return None
+    form = m.group(1).strip()
+    if form in ("mcq", "blank", "proof_outline"):
+        return form
+    return None
+
+
+def exam_item_form(ability_goal: str) -> str:
+    """双周检测卷题型：尽量大题，禁止默认选择题。
+
+    compute → blank；construct/transfer → proof_outline；
+    recognize/diagnose 也抬成 blank（检测卷不考单选辨识）。
+    """
+    if ability_goal in ("construct", "transfer"):
+        return "proof_outline"
+    return "blank"
+
+
 def _load_last_push_item_form() -> str:
     """从 last_push / last_class 读上次 item_form（供 transfer 继承）。"""
     last_push_path = _last_push_meta_path()

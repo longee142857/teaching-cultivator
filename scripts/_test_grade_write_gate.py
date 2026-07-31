@@ -33,6 +33,20 @@ def main():
         if not cond:
             fails += 1
 
+    from learner.context import bind_learner
+
+    with bind_learner("test_staff_grade_gate"):
+        _run(check)
+
+    print("\n" + "=" * 60)
+    if fails:
+        print(f"DONE with {fails} FAIL(s)")
+        sys.exit(1)
+    print("ALL GRADE WRITE GATE TESTS PASSED")
+    sys.exit(0)
+
+
+def _run(check):
     mcq = "下列正确的是\nA. 1\nB. 2\nC. 3\nD. 4"
 
     # ── 1. Confident + agrees → applied ──
@@ -68,7 +82,8 @@ def main():
         mock_bkt.return_value = fake_bkt
 
         with tempfile.TemporaryDirectory() as td:
-            with patch.object(config_mod, "DATA_DIR", td):
+            with patch.object(config_mod, "DATA_DIR", td), \
+                 patch("grade.P.answer_log_path", return_value=os.path.join(td, "answer-log.jsonl")):
                 r = grade_answer(mcq, "Z", kp_name="函数极限与连续", subject="math")
         check(r.status == "pending", f"status={r.status}")
         check(r.is_correct is False, f"correct={r.is_correct}")
@@ -91,7 +106,8 @@ def main():
         mock_bkt.return_value = fake_bkt
 
         with tempfile.TemporaryDirectory() as td:
-            with patch.object(config_mod, "DATA_DIR", td):
+            with patch.object(config_mod, "DATA_DIR", td), \
+                 patch("grade.P.answer_log_path", return_value=os.path.join(td, "answer-log.jsonl")):
                 r = grade_answer(mcq, "B", kp_name="函数极限与连续", subject="math")
         check(r.status == "pending", f"disagree status={r.status}")
         check(not fake_bkt.record.called, "BKT.record NOT called on disagree")
@@ -107,7 +123,7 @@ def main():
         kc.update(False, item_type="mcq", force=True)
         wrong_state = kc.to_dict()
         entry1 = {
-            "ts": "2026-01-01T00:00:00+00:00", "user_id": "wx_123",
+            "ts": "2026-01-01T00:00:00+00:00", "user_id": "test_staff_grade_gate",
             "knowledge_point": "极限", "correct": False, "item_type": "mcq",
             "mastery_before": 0.2, "mastery_after": round(kc.p_mastery, 4),
             "update_applied": True, "status": "applied", "state": wrong_state,
@@ -115,7 +131,9 @@ def main():
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(json.dumps(entry1, ensure_ascii=False) + "\n")
 
-        with patch.object(config_mod, "DATA_DIR", td):
+        with patch.object(config_mod, "DATA_DIR", td), \
+             patch("agent.tools.P.answer_log_path", return_value=log_path), \
+             patch("learner.paths.answer_log_path", return_value=log_path):
             result = tools_mod.override_grade("极限", True, subject="math")
             check("已覆盖" in result, f"override msg: {result[:100]}")
 
@@ -185,17 +203,11 @@ def main():
         fake_bkt.get_kp_mastery.return_value = None
         mock_bkt.return_value = fake_bkt
         with tempfile.TemporaryDirectory() as td:
-            with patch.object(config_mod, "DATA_DIR", td):
+            with patch.object(config_mod, "DATA_DIR", td), \
+                 patch("grade.P.answer_log_path", return_value=os.path.join(td, "answer-log.jsonl")):
                 r = grade_answer(mcq, "A", kp_name="极限", subject="math")
         check(r.status == "pending", f"fallback status={r.status}")
         check(not fake_bkt.record.called, "fallback no BKT.record")
-
-    print("\n" + "=" * 60)
-    if fails:
-        print(f"DONE with {fails} FAIL(s)")
-        sys.exit(1)
-    print("ALL GRADE WRITE GATE TESTS PASSED")
-    sys.exit(0)
 
 
 if __name__ == "__main__":

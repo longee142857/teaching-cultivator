@@ -5,11 +5,78 @@
 """
 from __future__ import annotations
 
+import datetime
+import json
+import os
+import re
 from typing import Any
 
 from quality_gate import check_draft_answer, extract_answer_letter
 
 # BIG-TEACH-012a #7b: review_item (LLM reviewer for generated questions)
+
+_REJECT_RAW_MAX = 8000
+
+
+def _ops_rejects_path() -> str:
+    from config import DATA_DIR
+
+    return os.path.join(DATA_DIR, "ops", "rejects.jsonl")
+
+
+def _truncate(text: str, n: int = _REJECT_RAW_MAX) -> str:
+    s = text or ""
+    if len(s) <= n:
+        return s
+    return s[:n] + f"\n...(truncated, orig_len={len(s)})"
+
+
+def append_reject_event(event: dict[str, Any]) -> None:
+    """Append one ops reject/bypass row for the monitor board."""
+    try:
+        path = _ops_rejects_path()
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        row = dict(event)
+        row.setdefault("ts", datetime.datetime.now().isoformat(timespec="seconds"))
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    except OSError as e:
+        print(f"[orchestrate] reject log failed: {e}")
+
+
+def _strip_review_noise(raw: str) -> str:
+    """Peel markdown fences / thinking wrappers before JSON extract."""
+    text = (raw or "").strip()
+    if not text:
+        return ""
+    fence = re.search(r"```(?:json|JSON)?\s*([\s\S]*?)```", text)
+    if fence:
+        text = fence.group(1).strip()
+    text = re.sub(r"<think>[\s\S]*?</think>", "", text, flags=re.I)
+    text = re.sub(r"<thinking>[\s\S]*?</thinking>", "", text, flags=re.I)
+    return text.strip()
+
+
+def _parse_review_json(raw: str) -> dict | None:
+    cleaned = _strip_review_noise(raw)
+    if not cleaned:
+        return None
+    m = re.search(r"\{[\s\S]*\}", cleaned)
+    if not m:
+        return None
+    blob = m.group()
+    try:
+        result = json.loads(blob)
+        return result if isinstance(result, dict) else None
+    except (json.JSONDecodeError, TypeError):
+        pass
+    try:
+        fixed = re.sub(r",\s*}", "}", blob)
+        fixed = re.sub(r",\s*]", "]", fixed)
+        result = json.loads(fixed)
+        return result if isinstance(result, dict) else None
+    except (json.JSONDecodeError, TypeError):
+        return None
 
 
 def _review_item(
@@ -17,9 +84,8 @@ def _review_item(
     kp: str = "", subject: str = "",
     difficulty: str = "intermediate", item_form: str = "mcq",
 ) -> dict:
-    """LLM 审查：找题目歧义、多解、知识点不符等问题。返回 {"decision", "issues", "suggestion"}。"""
+    """LLM 审查。返回 decision/issues/suggestion/raw/parse_ok。"""
     from decide.router import call_llm
-    import re as _re, json as _json
 
     type_hint = {"mcq": "选择题", "blank": "填空题", "proof_outline": "证明/推导题"}.get(item_form, "题目")
     system = (
@@ -37,21 +103,59 @@ def _review_item(
         f"知识点：{kp}\n难度：{difficulty}\n题型：{type_hint}\n"
         f"题目：\n{draft}\n\n答案：\n{answer}\n\n请审查并输出 JSON。"
     )
-    raw = call_llm(system, prompt, "review_item", difficulty)
+    raw = call_llm(system, prompt, "review_item", difficulty) or ""
 
-    m = _re.search(r'\{[\s\S]*\}', raw)
-    if m:
-        try:
-            result = _json.loads(m.group())
-            dec = result.get("decision", "accept")
-            return {
-                "decision": dec if dec in ("accept", "reject") else "accept",
-                "issues": result.get("issues", []) if isinstance(result.get("issues"), list) else [],
-                "suggestion": result.get("suggestion", ""),
-            }
-        except (_json.JSONDecodeError, TypeError):
-            pass
-    return {"decision": "accept", "issues": [], "suggestion": ""}
+    result = _parse_review_json(raw)
+    if result is not None:
+        dec = result.get("decision", "reject")
+        return {
+            "decision": dec if dec in ("accept", "reject") else "reject",
+            "issues": result.get("issues", []) if isinstance(result.get("issues"), list) else [],
+            "suggestion": result.get("suggestion", ""),
+            "raw": raw,
+            "parse_ok": True,
+        }
+    return {
+        "decision": "reject",
+        "issues": ["review_item_parse_failed"],
+        "suggestion": "审查输出无法解析，请重写题目",
+        "raw": raw,
+        "parse_ok": False,
+    }
+
+
+def _log_gate_event(
+    *,
+    kind: str,
+    subject: str,
+    difficulty: str,
+    source: str,
+    attempts: int,
+    issues: list,
+    draft: str,
+    answer: str,
+    artifact: dict,
+    review_raw: str = "",
+    suggestion: str = "",
+) -> None:
+    append_reject_event(
+        {
+            "kind": kind,
+            "subject": subject,
+            "difficulty": difficulty,
+            "source": source,
+            "attempts": attempts,
+            "issues": list(issues or []),
+            "kp": str(artifact.get("kp") or ""),
+            "l3_id": str(artifact.get("l3_id") or artifact.get("unit_id") or ""),
+            "item_form": str(artifact.get("item_form") or ""),
+            "decision_type": str(artifact.get("decision_type") or ""),
+            "draft": _truncate(draft),
+            "answer": _truncate(answer),
+            "review_raw": _truncate(review_raw, 4000),
+            "suggestion": _truncate(suggestion, 1000),
+        }
+    )
 
 
 def _memory_digest(max_chars: int = 600) -> str:
@@ -142,6 +246,7 @@ def orchestrate_push(
     attempts = 0
     last_issues: list[str] = []
     item_form = str(art.get("item_form") or "")
+    review_bypassed = False
 
     while True:
         draft = (art.get("draft") or "").strip()
@@ -157,6 +262,17 @@ def orchestrate_push(
                 if isinstance(new_art, dict) and (new_art.get("draft") or "").strip():
                     art.update(new_art)
                     continue
+            _log_gate_event(
+                kind="reject",
+                subject=subject,
+                difficulty=difficulty,
+                source=source,
+                attempts=attempts,
+                issues=issues,
+                draft=draft,
+                answer=answer,
+                artifact=art,
+            )
             return {
                 "status": "reject",
                 "content": "",
@@ -173,23 +289,66 @@ def orchestrate_push(
             draft, answer, kp=kp, subject=subject,
             difficulty=difficulty, item_form=item_form,
         )
+        rev_issues = list(review.get("issues") or [])
+        is_parse_failed = (
+            rev_issues == ["review_item_parse_failed"]
+            or (
+                not review.get("parse_ok", True)
+                and "review_item_parse_failed" in rev_issues
+            )
+        )
+
         if review.get("decision") == "reject":
-            print(f"[orchestrate] review_item reject: {review.get('issues')}")
-            if attempts < max_author_retries and callable(reauthor_fn):
-                attempts += 1
-                print(f"[orchestrate] re-author attempt {attempts} (after review)")
-                new_art = reauthor_fn()
-                if isinstance(new_art, dict) and (new_art.get("draft") or "").strip():
-                    art.update(new_art)
-                    continue
-            return {
-                "status": "reject",
-                "content": "",
-                "answer": answer,
-                "reason": "review_item: " + ";".join(review.get("issues", [])),
-                "issues": review.get("issues", []),
-                "artifact": art,
-            }
+            # Soft-bypass only pure parse failure — keep schedule alive
+            if is_parse_failed:
+                print(
+                    "[orchestrate] review_item parse_failed — soft bypass "
+                    "(continue polish; logged as review_parse_bypassed)"
+                )
+                review_bypassed = True
+                _log_gate_event(
+                    kind="review_parse_bypassed",
+                    subject=subject,
+                    difficulty=difficulty,
+                    source=source,
+                    attempts=attempts,
+                    issues=["review_parse_bypassed"],
+                    draft=draft,
+                    answer=answer,
+                    artifact=art,
+                    review_raw=str(review.get("raw") or ""),
+                    suggestion=str(review.get("suggestion") or ""),
+                )
+            else:
+                print(f"[orchestrate] review_item reject: {rev_issues}")
+                if attempts < max_author_retries and callable(reauthor_fn):
+                    attempts += 1
+                    print(f"[orchestrate] re-author attempt {attempts} (after review)")
+                    new_art = reauthor_fn()
+                    if isinstance(new_art, dict) and (new_art.get("draft") or "").strip():
+                        art.update(new_art)
+                        continue
+                _log_gate_event(
+                    kind="reject",
+                    subject=subject,
+                    difficulty=difficulty,
+                    source=source,
+                    attempts=attempts,
+                    issues=rev_issues,
+                    draft=draft,
+                    answer=answer,
+                    artifact=art,
+                    review_raw=str(review.get("raw") or ""),
+                    suggestion=str(review.get("suggestion") or ""),
+                )
+                return {
+                    "status": "reject",
+                    "content": "",
+                    "answer": answer,
+                    "reason": "review_item: " + ";".join(rev_issues),
+                    "issues": rev_issues,
+                    "artifact": art,
+                }
 
         content = _polish_or_orchestrate(
             draft,
@@ -247,7 +406,19 @@ def orchestrate_push(
                     "reason": "fallback_draft_after_sendable_fail",
                     "issues": send_issues,
                     "artifact": art,
+                    "review_parse_bypassed": review_bypassed,
                 }
+            _log_gate_event(
+                kind="reject",
+                subject=subject,
+                difficulty=difficulty,
+                source=source,
+                attempts=attempts,
+                issues=send_issues,
+                draft=draft,
+                answer=answer,
+                artifact=art,
+            )
             return {
                 "status": "reject",
                 "content": "",
@@ -261,7 +432,8 @@ def orchestrate_push(
             "status": "accept",
             "content": content,
             "answer": answer,
-            "reason": "ok",
-            "issues": [],
+            "reason": "ok_review_parse_bypassed" if review_bypassed else "ok",
+            "issues": ["review_parse_bypassed"] if review_bypassed else [],
             "artifact": art,
+            "review_parse_bypassed": review_bypassed,
         }

@@ -50,8 +50,21 @@ def build_group_action_param(
 ) -> tuple[str, dict]:
     """返回 (msgKey, msgParam) 供 groupMessages/send。
 
-    buttons: [(按钮标题, 点击后发送的文本), ...]
+    buttons: [(按钮标题, 点击后发送的文本), ...] — URL 为 dtmd 回传。
     """
+    return build_group_action_param_urls(
+        title,
+        text,
+        [(label, dtmd_send(content)) for label, content in buttons],
+    )
+
+
+def build_group_action_param_urls(
+    title: str,
+    text: str,
+    buttons: Sequence[tuple[str, str]],
+) -> tuple[str, dict]:
+    """返回 (msgKey, msgParam)；buttons 为 (标题, 完整 URL)，可为 https 或 dtmd。"""
     btns = list(buttons)[:5]
     n = len(btns)
     if n == 0:
@@ -64,14 +77,14 @@ def build_group_action_param(
     }
 
     if n == 1:
-        label, content = btns[0]
+        label, url = btns[0]
         param["singleTitle"] = label[:20]
-        param["singleURL"] = dtmd_send(content)
+        param["singleURL"] = url[:500]
         return msg_key, param
 
-    for i, (label, content) in enumerate(btns, start=1):
+    for i, (label, url) in enumerate(btns, start=1):
         param[f"actionTitle{i}"] = label[:20]
-        param[f"actionURL{i}"] = dtmd_send(content)
+        param[f"actionURL{i}"] = url[:500]
     return msg_key, param
 
 
@@ -116,3 +129,22 @@ def weekly_card_title() -> str:
 
 def question_followup_hint() -> str:
     return "题目在上方。点按钮或直接作答均可。"
+
+
+def confirm_kp_actions(token: str) -> list[tuple[str, str]]:
+    """添加知识点确认卡的按钮（dtmd 回传文案，须与 agent._KP_CONFIRM_RE 匹配）。"""
+    return [
+        ("确认添加", f"确认添加知识点 {token}"),
+        ("取消", f"取消添加知识点 {token}"),
+    ]
+
+
+def confirm_kp_title() -> str:
+    return "添加知识点确认"
+
+
+def confirm_kp_text() -> str:
+    return (
+        "只会在已有章节下追加子考点，不会新建章节。\n"
+        "确认后即写入考纲，之后出题/双周卷可覆盖该子考点。"
+    )

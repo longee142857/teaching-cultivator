@@ -297,6 +297,29 @@ def send_group_action_card(
     )
 
 
+def send_group_action_card_urls(
+    *,
+    access_token: str,
+    robot_code: str,
+    open_conversation_id: str,
+    title: str,
+    text: str,
+    buttons: list,
+) -> bool:
+    """群主动推送 ActionCard；buttons=[(标题, https/dtmd URL), ...]。"""
+    from deliver.action_cards import build_group_action_param_urls
+
+    msg_key, msg_param = build_group_action_param_urls(title, text, buttons)
+    return send_group_message(
+        access_token=access_token,
+        robot_code=robot_code,
+        open_conversation_id=open_conversation_id,
+        msg_key=msg_key,
+        msg_param=msg_param,
+    )
+
+
+
 def send_session_action_card(
     session_webhook: str,
     title: str,

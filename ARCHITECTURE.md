@@ -16,16 +16,28 @@ watchdog (optional)
 ## Cultivate path
 
 ```
-assess → decide → generate (author) → orchestrate/polish → quality_gate → deliver → record
+assess → decide → author → rule_gate → review_item → polish/orchestrate → deliver → record
                               ↑
                      rag_retrieve / kb_cache (evidence)
 ```
 
-Grading updates mastery-related state and can adjust future selection weights.
+Grading: `grade` → `verify_grade` → apply|pending → mastery write-back when applied.
+
+## Model matrix
+
+| Role | Default model | Channel |
+|------|---------------|---------|
+| Agent (chat / tools) | `anthropic/claude-haiku-4.5` | OpenRouter (`OPENROUTER_API_KEY`) |
+| author / grade / explain | `deepseek-v4-pro` + thinking | DeepSeek direct |
+| review_item / verify_grade | `qwen/qwen3.6-plus` | OpenRouter (Flash fallback on OR failure) |
+| polish / orchestrate | `deepseek-v4-flash` | DeepSeek direct |
+| X digest | `x-ai/grok-4.3` | OpenRouter (unchanged) |
+
+Override via env: `AGENT_MODEL`, `REVIEWER_MODEL`, `DEEPSEEK_MODEL_*`.
 
 ## Agent path
 
-Same authoring and grading tools as the scheduler where possible, plus solution / difficulty / exam helpers. Memory blocks keep phase, active item, and a short learner digest across turns.
+Same authoring and grading tools as the scheduler where possible, plus solution / difficulty / exam helpers. Memory blocks keep phase, active item, and a short learner digest across turns. The Agent host model is Haiku; tool backends still call DeepSeek for author/grade/explain.
 
 ## Channels
 
@@ -41,3 +53,4 @@ Same authoring and grading tools as the scheduler where possible, plus solution 
 2. Mastery keys stay normalized to syllabus grain.
 3. Delivery constraints of the IM client are part of the product (math rendering, cards, group vs DM).
 4. Content supply may be external; this repo is the **runtime**.
+5. Critique roles (`review_item` / `verify_grade`) stay cross-provider from author/grade when OpenRouter is available.

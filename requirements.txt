@@ -1,3 +1,4 @@
 requests>=2.31
 dingtalk-stream>=0.20.0
 matplotlib>=3.7
+fpdf2>=2.7

@@ -13,6 +13,23 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from learner import biweekly_exam as be
+from grade import GradeResult
+
+
+def _gr(text: str, correct: bool, credit: float | None = None) -> GradeResult:
+    """模拟 grade_answer 返回的真实 GradeResult（生产非异常路径）。"""
+    return GradeResult(
+        is_correct=correct,
+        feedback=text,
+        kp_name="函数极限与连续",
+        subject="math",
+        p_mastery_before=0.2,
+        p_mastery_after=0.35,
+        credit=credit,
+        item_type="blank",
+        status="applied",
+        confidence=1.0,
+    )
 
 
 def sep(title: str):
@@ -149,7 +166,7 @@ A
 ```
 - paper_id: {pid}
 """
-    with patch("grade.grade_answer", return_value="正确。选择 A。"):
+    with patch("grade.grade_answer", return_value=_gr("正确。选择 A。", True)):
         r = be.submit_answer_md(partial)
     check("未作答" in r, "q2 unanswered")
     check("非空作答：1/2" in r, f"partial count: {r[:250]}")
@@ -172,10 +189,10 @@ A
 - paper_id: {pid}
 """
 
-    def fake_grade(q, a):
+    def fake_grade(q, a, **kw):
         if "sinx" in q or "____" in q or "limit" in q.lower() or "lim" in q.lower():
-            return "不正确。应为 1。"
-        return "正确。选择 A。"
+            return _gr("不正确。应为 1。", False)
+        return _gr("正确。选择 A。", True)
 
     with patch("grade.grade_answer", side_effect=fake_grade):
         r = be.submit_answer_md(full)

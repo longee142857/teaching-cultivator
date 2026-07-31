@@ -29,6 +29,9 @@ DEEPSEEK_API_BASE = os.environ.get("DEEPSEEK_API_BASE", "https://api.deepseek.co
 # ── 模型 ──
 MODEL_FLASH = os.environ.get("DEEPSEEK_MODEL_FLASH", "deepseek-v4-flash")
 MODEL_PRO = os.environ.get("DEEPSEEK_MODEL_PRO", "deepseek-v4-pro")
+# OpenRouter：对话 Agent / 审查校验（与 X-digest 共用 OPENROUTER_API_KEY）
+AGENT_MODEL = os.environ.get("AGENT_MODEL", "anthropic/claude-haiku-4.5")
+REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen/qwen3.6-plus")
 
 # ── 可选：外置知识库根目录（RAG 回填 / Chroma 查询辅助脚本）──
 KB_PATH = os.environ.get("KB_PATH", "")
@@ -69,6 +72,8 @@ PUSH_SLOTS = {
 # ── 钉钉 Stream Mode（主通道） ──
 DINGTALK_CLIENT_ID = os.environ.get("DINGTALK_CLIENT_ID", "")
 DINGTALK_CLIENT_SECRET = os.environ.get("DINGTALK_CLIENT_SECRET", "")
+# 组织 corpId：试卷网页免登 requestAuthCode 需要；钉钉开发者后台可查
+DINGTALK_CORP_ID = os.environ.get("DINGTALK_CORP_ID", "")
 # 定时主动推送用的群 openConversationId；设置后优先生效，避免私聊覆盖
 DINGTALK_GROUP_CONVERSATION_ID = os.environ.get("DINGTALK_GROUP_CONVERSATION_ID", "")
 # 1=群里收到讨论时完整回复走私聊（oTo）；群内只回短确认。0=群内直接回全文
@@ -89,23 +94,9 @@ GITHUB_DEFAULT_REPO = os.path.dirname(__file__)  # teaching-cultivator
 WX_BOT_URL = "https://ilinkai.weixin.qq.com/ilink/bot"
 WX_BOT_TOKEN = os.environ.get("WX_BOT_TOKEN", "")
 
-# ── OpenRouter / X 资讯双周报 ──
+# ── OpenRouter（Agent / reviewer 等；X Digest 模块已退役）──
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE = "https://openrouter.ai/api/v1"
-# grok-4.1-fast 已于 OpenRouter 下线；默认 grok-4.3（成本低于 4.5，且支持 native X Search）
-X_DIGEST_MODEL = os.environ.get("OPENROUTER_X_DIGEST_MODEL", "x-ai/grok-4.3")
-# 自动调度开关：宿主恢复前默认关闭，避免空烧 OpenRouter（CLI 手动仍可用）
-# 环境变量 X_DIGEST_AUTO=1 可临时打开；恢复后改默认 True 或设环境变量
-X_DIGEST_AUTO_ENABLED = os.environ.get("X_DIGEST_AUTO", "0") == "1"
-# 与题目 PUSH_SLOTS 独立：每周三、周六 21:00（仅当 X_DIGEST_AUTO_ENABLED）
-X_DIGEST_SLOTS = [("21:00", "wed"), ("21:00", "sat")]
-X_DIGEST_QUOTA = {"ai": 6, "comm": 1, "math": 1, "dark": 2}
-X_DIGEST_DATA_DIR = os.path.join(DATA_DIR, "x_digest")
-# 可选 watchlist（空列表 = 不限 handle）
-X_DIGEST_HANDLES_AI: list[str] = []
-X_DIGEST_HANDLES_COMM: list[str] = []
-X_DIGEST_HANDLES_MATH: list[str] = []
-X_DIGEST_SEEN_DAYS = 14
 
 # ── RAG Fallback 策略（BIG-TEACH-012c #10）──
 RAG_FALLBACK = os.environ.get("RAG_FALLBACK", "abort")
@@ -115,3 +106,22 @@ RAG_FALLBACK = os.environ.get("RAG_FALLBACK", "abort")
 LEARNER_USER_ID = os.environ.get("LEARNER_USER_ID", "wx_123")
 # 课表/公共课策略账户（钉钉 senderStaffId）；多人模式生产必填
 OWNER_STAFF_ID = os.environ.get("OWNER_STAFF_ID", "") or os.environ.get("LEARNER_USER_ID", "")
+
+# ── 双周试卷 H5 阅读页（KaTeX；公网经 nginx 反代）──
+# 公网基址，如 https://exam.example.com ；空则不发 H5 链接（可降级 PNG）
+EXAM_WEB_PUBLIC_BASE = (os.environ.get("EXAM_WEB_PUBLIC_BASE") or "").rstrip("/")
+EXAM_VIEW_SECRET = os.environ.get("EXAM_VIEW_SECRET", "")
+EXAM_WEB_PORT = int(os.environ.get("EXAM_WEB_PORT", "8766"))
+EXAM_WEB_HOST = os.environ.get("EXAM_WEB_HOST", "127.0.0.1")
+EXAM_TOKEN_TTL_DAYS = int(os.environ.get("EXAM_TOKEN_TTL_DAYS", "14"))
+EXAM_WEB_HTTP = os.environ.get("EXAM_WEB_HTTP", "1") == "1"
+# 1=推送时额外发 PNG 长图（默认关，H5 为主）
+EXAM_PUSH_PNG = os.environ.get("EXAM_PUSH_PNG", "0") == "1"
+# 单 token 提交限流：每小时次数
+EXAM_SUBMIT_LIMIT_PER_HOUR = int(os.environ.get("EXAM_SUBMIT_LIMIT_PER_HOUR", "5"))
+
+# ── 运维看板（驳回题 / 学员参数；公网经 nginx /ops/）──
+OPS_WEB_HOST = os.environ.get("OPS_WEB_HOST", "127.0.0.1")
+OPS_WEB_PORT = int(os.environ.get("OPS_WEB_PORT", "8767"))
+OPS_WEB_HTTP = os.environ.get("OPS_WEB_HTTP", "1") == "1"
+OPS_VIEW_TOKEN = os.environ.get("OPS_VIEW_TOKEN", "")
