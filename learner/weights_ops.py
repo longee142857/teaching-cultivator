@@ -101,8 +101,13 @@ def _bump_cap(old: float) -> float:
     return BUMP_CAP_ABS
 
 
-def bump_kp_weight(subject: str, kp_hint: str, *, reason: str = "") -> dict:
-    """提高某知识点出题权重，并写 refine-queue 信号。返回操作详情 dict。"""
+def bump_kp_weight(subject: str, kp_hint: str, *, reason: str = "",
+                   record_bkt: bool = True) -> dict:
+    """提高某知识点出题权重，并写 refine-queue 信号。返回操作详情 dict。
+
+    record_bkt=False：跳过 BKT 写入（调用方已记作答，如 grade 答错路径），
+    避免一次答错被 BKT 记两次（grade.record + self_report_weak 双重记账）。
+    """
     weights = load_weights()
     if subject not in weights:
         return {"ok": False, "error": f"科目 {subject} 不在 weights.json"}
@@ -127,29 +132,32 @@ def bump_kp_weight(subject: str, kp_hint: str, *, reason: str = "") -> dict:
     _append_refine_signal(subject, kp_key, reason, old, new)
 
     bkt_msg = ""
-    try:
-        from bkt import BKTLogger, KCState
-        bkt = BKTLogger(_answer_log())
-        kc = bkt.get_kp_mastery(_uid(), kp_key)
-        if kc is None:
-            kc = KCState(p_mastery=0.25)
-        else:
-            kc = KCState.from_dict(kc.to_dict())
-        before = kc.p_mastery
-        meta = bkt.record(
-            _uid(),
-            kp_key,
-            False,
-            kc,
-            conv_tag="self_report_weak",
-            item_type="unknown",
-        )
-        if meta.get("applied"):
-            bkt_msg = f"BKT {kp_key} 掌握度 {before*100:.0f}%→{kc.p_mastery*100:.0f}%"
-        else:
-            bkt_msg = f"BKT {kp_key} 未更新（{meta.get('reason')}），当前 {before*100:.0f}%"
-    except Exception as e:
-        bkt_msg = f"BKT 更新跳过：{e}"
+    if record_bkt:
+        try:
+            from bkt import BKTLogger, KCState
+            bkt = BKTLogger(_answer_log())
+            kc = bkt.get_kp_mastery(_uid(), kp_key)
+            if kc is None:
+                kc = KCState(p_mastery=0.25)
+            else:
+                kc = KCState.from_dict(kc.to_dict())
+            before = kc.p_mastery
+            meta = bkt.record(
+                _uid(),
+                kp_key,
+                False,
+                kc,
+                conv_tag="self_report_weak",
+                item_type="unknown",
+            )
+            if meta.get("applied"):
+                bkt_msg = f"BKT {kp_key} 掌握度 {before*100:.0f}%→{kc.p_mastery*100:.0f}%"
+            else:
+                bkt_msg = f"BKT {kp_key} 未更新（{meta.get('reason')}），当前 {before*100:.0f}%"
+        except Exception as e:
+            bkt_msg = f"BKT 更新跳过：{e}"
+    else:
+        bkt_msg = "BKT 跳过（调用方已记作答）"
 
     return {
         "ok": True,

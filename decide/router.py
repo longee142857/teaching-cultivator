@@ -7,6 +7,8 @@ from typing import Literal
 
 from config import (
     AGENT_MODEL,
+    AGENT_REASONING_EFFORT,
+    AGENT_THINKING,
     MODEL_FLASH,
     MODEL_PRO,
     REVIEWER_MODEL,
@@ -38,7 +40,7 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
       author/grade/explain/generate → DeepSeek Pro + thinking max
       polish/orchestrate              → DeepSeek Flash（文案）
       review_item/verify_grade        → OpenRouter REVIEWER_MODEL（异厂）
-      agent                           → OpenRouter AGENT_MODEL
+      agent                           → DeepSeek Flash（0731 Agent 强化版）+ thinking max
     """
     _ = difficulty  # 保留签名兼容
     if task_type in ("grade", "generate", "explain", "author"):
@@ -54,8 +56,16 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
             REVIEWER_MODEL, provider="openrouter", thinking=False, effort=REASONING_EFFORT_DEFAULT
         )
     if task_type == "agent":
+        effort = (
+            AGENT_REASONING_EFFORT
+            if AGENT_REASONING_EFFORT in ("high", "max")
+            else REASONING_EFFORT_MAX
+        )
         return ModelConfig(
-            AGENT_MODEL, provider="openrouter", thinking=False, effort=REASONING_EFFORT_DEFAULT
+            AGENT_MODEL or MODEL_FLASH,
+            provider="deepseek",
+            thinking=AGENT_THINKING,
+            effort=effort,
         )
     return ModelConfig(
         MODEL_FLASH, provider="deepseek", thinking=False, effort=REASONING_EFFORT_DEFAULT
@@ -187,9 +197,9 @@ def call_openrouter_chat(
     tool_choice: str | None = "auto",
     title: str = "teaching-cultivator-agent",
 ) -> dict:
-    """OpenRouter chat（供 Agent 工具循环）；返回完整 API JSON。"""
+    """OpenRouter chat（遗留/可选）；返回完整 API JSON。"""
     payload: dict = {
-        "model": model or AGENT_MODEL,
+        "model": model or REVIEWER_MODEL,
         "messages": messages,
         "stream": False,
     }
@@ -199,3 +209,44 @@ def call_openrouter_chat(
             payload["tool_choice"] = tool_choice
     logger.info("call_openrouter_chat model=%s tools=%s", payload["model"], bool(tools))
     return _post_openrouter(payload, title=title)
+
+
+def call_deepseek_chat(
+    messages: list[dict],
+    *,
+    model: str | None = None,
+    tools: list | None = None,
+    tool_choice: str | None = "auto",
+    thinking: bool | None = None,
+    reasoning_effort: str | None = None,
+) -> dict:
+    """DeepSeek chat（Agent 工具循环）；返回完整 API JSON。
+
+    thinking 模式下若有 tool_calls，调用方须把 reasoning_content 回传。
+    """
+    use_thinking = AGENT_THINKING if thinking is None else thinking
+    effort = reasoning_effort or AGENT_REASONING_EFFORT
+    if effort not in ("high", "max"):
+        effort = REASONING_EFFORT_MAX
+    payload: dict = {
+        "model": model or AGENT_MODEL or MODEL_FLASH,
+        "messages": messages,
+        "stream": False,
+    }
+    if use_thinking:
+        payload["thinking"] = {"type": "enabled"}
+        payload["reasoning_effort"] = effort
+    else:
+        payload["thinking"] = {"type": "disabled"}
+    if tools is not None:
+        payload["tools"] = tools
+        if tool_choice is not None:
+            payload["tool_choice"] = tool_choice
+    logger.info(
+        "call_deepseek_chat model=%s tools=%s thinking=%s effort=%s",
+        payload["model"],
+        bool(tools),
+        use_thinking,
+        payload.get("reasoning_effort", "off"),
+    )
+    return _post_deepseek(payload)

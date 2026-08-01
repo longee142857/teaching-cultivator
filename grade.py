@@ -388,7 +388,10 @@ def grade_answer(
             if credit is None and not is_correct and extracted_kp and extracted_kp != "未分类":
                 try:
                     from learner.weights_ops import bump_kp_weight
-                    bump_kp_weight(subj, extracted_kp, reason=f"grade_incorrect:{extracted_kp}")
+                    # record_bkt=False：本函数已 bkt.record 记过答错，避免双重 BKT
+                    bump_kp_weight(subj, extracted_kp,
+                                   reason=f"grade_incorrect:{extracted_kp}",
+                                   record_bkt=False)
                 except Exception as e:
                     print(f"[grade] weight bump skipped: {e}")
 

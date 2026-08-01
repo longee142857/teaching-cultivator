@@ -27,17 +27,16 @@ Grading: `grade` → `verify_grade` → apply|pending → mastery write-back whe
 
 | Role | Default model | Channel |
 |------|---------------|---------|
-| Agent (chat / tools) | `anthropic/claude-haiku-4.5` | OpenRouter (`OPENROUTER_API_KEY`) |
+| Agent (chat / tools) | `deepseek-v4-flash` + thinking max | DeepSeek direct (0731 agentic refresh) |
 | author / grade / explain | `deepseek-v4-pro` + thinking | DeepSeek direct |
 | review_item / verify_grade | `qwen/qwen3.6-plus` | OpenRouter (Flash fallback on OR failure) |
 | polish / orchestrate | `deepseek-v4-flash` | DeepSeek direct |
-| X digest | `x-ai/grok-4.3` | OpenRouter (unchanged) |
 
-Override via env: `AGENT_MODEL`, `REVIEWER_MODEL`, `DEEPSEEK_MODEL_*`.
+Override via env: `AGENT_MODEL`, `AGENT_THINKING`, `AGENT_REASONING_EFFORT`, `REVIEWER_MODEL`, `DEEPSEEK_MODEL_*`.
 
 ## Agent path
 
-Same authoring and grading tools as the scheduler where possible, plus solution / difficulty / exam helpers. Memory blocks keep phase, active item, and a short learner digest across turns. The Agent host model is Haiku; tool backends still call DeepSeek for author/grade/explain.
+Same authoring and grading tools as the scheduler where possible, plus solution / difficulty / exam helpers. Memory blocks keep phase, active item, and a short learner digest across turns. The Agent host is DeepSeek V4 Flash (post-0731); tool backends still call Pro for author/grade/explain.
 
 ## Channels
 

@@ -29,9 +29,12 @@ DEEPSEEK_API_BASE = os.environ.get("DEEPSEEK_API_BASE", "https://api.deepseek.co
 # ── 模型 ──
 MODEL_FLASH = os.environ.get("DEEPSEEK_MODEL_FLASH", "deepseek-v4-flash")
 MODEL_PRO = os.environ.get("DEEPSEEK_MODEL_PRO", "deepseek-v4-pro")
-# OpenRouter：对话 Agent / 审查校验（与 X-digest 共用 OPENROUTER_API_KEY）
-AGENT_MODEL = os.environ.get("AGENT_MODEL", "anthropic/claude-haiku-4.5")
+# OpenRouter：审查校验（异厂）；交互 Agent 已改走 DeepSeek Flash 直连
+AGENT_MODEL = os.environ.get("AGENT_MODEL", "deepseek-v4-flash")
 REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen/qwen3.6-plus")
+# Agent thinking：官方 Agent 评测用 max；设 AGENT_THINKING=0 可关
+AGENT_THINKING = os.environ.get("AGENT_THINKING", "1") == "1"
+AGENT_REASONING_EFFORT = os.environ.get("AGENT_REASONING_EFFORT", "max")
 
 # ── 可选：外置知识库根目录（RAG 回填 / Chroma 查询辅助脚本）──
 KB_PATH = os.environ.get("KB_PATH", "")
@@ -94,7 +97,7 @@ GITHUB_DEFAULT_REPO = os.path.dirname(__file__)  # teaching-cultivator
 WX_BOT_URL = "https://ilinkai.weixin.qq.com/ilink/bot"
 WX_BOT_TOKEN = os.environ.get("WX_BOT_TOKEN", "")
 
-# ── OpenRouter（Agent / reviewer 等；X Digest 模块已退役）──
+# ── OpenRouter（reviewer 异厂校验；X Digest 已退役；Agent 走 DeepSeek）──
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE = "https://openrouter.ai/api/v1"
 

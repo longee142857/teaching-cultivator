@@ -24,7 +24,7 @@ ANSWERS_DIR = os.path.join(BANK_DIR, "answers")
 INDEX_PATH = os.path.join(BANK_DIR, "index.json")
 STATE_PATH = os.path.join(BANK_DIR, "state.json")
 
-QUESTIONS_PER_SUBJECT = 5
+QUESTIONS_PER_SUBJECT = 7
 INTERVAL_DAYS = 14
 _lock = threading.Lock()
 
@@ -140,19 +140,6 @@ def _warm_l3_ids(subject: str) -> list[str]:
         return []
 
 
-def _l2_for_l3(subject: str, l3_id: str) -> str | None:
-    from learner.kp_registry import load_syllabus, syllabus_subject
-
-    syl = load_syllabus(syllabus_subject(subject))
-    for l2, meta in (syl.get("kps") or {}).items():
-        if not isinstance(meta, dict):
-            continue
-        for l3 in meta.get("l3") or []:
-            if isinstance(l3, dict) and (l3.get("id") or "").strip() == l3_id:
-                return l2
-    return None
-
-
 # 双周卷能力池：偏计算/构造/迁移，避开 recognize→mcq
 _EXAM_ABILITIES = ("compute", "construct", "transfer", "compute", "construct")
 
@@ -172,44 +159,102 @@ def _looks_like_mcq(question: str) -> bool:
     return False
 
 
-def _pick_units(subject: str, n: int = QUESTIONS_PER_SUBJECT) -> list[dict]:
-    """选 n 个优先已热的 (l2, l3_id, ability)。"""
+def _all_l3_units(subject: str) -> list[dict]:
+    """考纲全部 L3 考点，带所属 L2 与 L2 权重（无上下文时权重退化 0）。"""
+    from learner import weights_ops
+    from learner.kp_registry import load_syllabus, syllabus_subject
+
+    subj = syllabus_subject(subject)
+    kps = (load_syllabus(subj).get("kps")) or {}
+    try:
+        weights = weights_ops.load_weights()
+    except Exception:
+        weights = {}
+    kp_w = (weights.get(subject) or {}).get("kp_weights") or {}
+    out: list[dict] = []
+    for l2, meta in kps.items():
+        if not isinstance(meta, dict):
+            continue
+        try:
+            l2_w = float(kp_w.get(l2) or 0.0)
+        except (TypeError, ValueError):
+            l2_w = 0.0
+        for l3 in meta.get("l3") or []:
+            if isinstance(l3, dict) and (l3.get("id") or "").strip():
+                out.append({"l2": l2, "l3_id": l3["id"].strip(), "l2_weight": l2_w})
+    return out
+
+
+def _spread_units(
+    candidates: list[dict],
+    n: int,
+    start_picks: list[dict] | None = None,
+    *,
+    shuffle: bool = True,
+) -> list[dict]:
+    """从候选中分散 L2 取 n 个：每 L2 先 1 个，不足再同 L2 补。"""
     import random
 
-    warm = _warm_l3_ids(subject)
-    random.shuffle(warm)
-    picks: list[dict] = []
-    used_l2: set[str] = set()
-
-    # 先尽量分散 L2
-    for l3_id in warm:
+    picks = list(start_picks or [])
+    used_l2 = {p["l2"] for p in picks}
+    pool = list(candidates)
+    if shuffle:
+        random.shuffle(pool)
+    for u in pool:
+        if len(picks) >= n:
+            return picks
+        if u["l2"] in used_l2:
+            continue
+        used_l2.add(u["l2"])
+        picks.append(u)
+    for u in pool:
         if len(picks) >= n:
             break
-        l2 = _l2_for_l3(subject, l3_id)
-        if not l2 or l2 in used_l2:
+        if any(p["l3_id"] == u["l3_id"] for p in picks):
             continue
-        used_l2.add(l2)
-        ability = _EXAM_ABILITIES[len(picks) % len(_EXAM_ABILITIES)]
-        picks.append({"l2": l2, "l3_id": l3_id, "ability": ability})
-
-    # 不足：同 L2 再取热 L3
-    if len(picks) < n:
-        for l3_id in warm:
-            if len(picks) >= n:
-                break
-            if any(p["l3_id"] == l3_id for p in picks):
-                continue
-            l2 = _l2_for_l3(subject, l3_id)
-            if not l2:
-                continue
-            ability = _EXAM_ABILITIES[len(picks) % len(_EXAM_ABILITIES)]
-            picks.append({"l2": l2, "l3_id": l3_id, "ability": ability})
-
+        picks.append(u)
     return picks
 
 
-def _author_one(subject: str, l2: str, l3_id: str, ability: str) -> dict | None:
-    """单题：走 generate 硬闸；强制大题；仍像选择题则再试一次。"""
+def _pick_units(subject: str, n: int = QUESTIONS_PER_SUBJECT) -> list[dict]:
+    """热考点保底 + 冷门考点配额。
+
+    冷门 = 小库未热（无教材证据 = 没被检测过）。约一半配额给热考点保底能发
+    出去，其余给冷门考点（低 L2 权重优先）；冷门出题走 generate 的
+    exam_allow_low_rag 放宽 RAG，从而打破「冷门永远不考」的恶性循环。
+    """
+    import random
+
+    all_units = _all_l3_units(subject)
+    warm = set(_warm_l3_ids(subject))
+    # 冷门 = 低 L2 权重（抽题优先级低 = 不常考）。低权重在前，同权重段随机
+    # （先 shuffle 再稳定排序，保证同权重段内顺序随机）。
+    random.shuffle(all_units)
+    all_units.sort(key=lambda u: u["l2_weight"])
+    mid = len(all_units) // 2
+    hot_units = all_units[mid:]   # 高权重 = 常考，保底能发出高质量题
+    cold_units = all_units[:mid]  # 低权重 = 不常考，主动摸底打破循环
+
+    n_hot = max(1, n // 2)
+    picks = _spread_units(hot_units, n_hot)
+    picks = _spread_units(cold_units, n, start_picks=picks, shuffle=False)
+    if len(picks) < n:
+        picks = _spread_units(hot_units, n, start_picks=picks)
+
+    for i, u in enumerate(picks):
+        u["ability"] = _EXAM_ABILITIES[i % len(_EXAM_ABILITIES)]
+        u["cold"] = u["l3_id"] not in warm
+    return picks
+
+
+def _author_one(
+    subject: str, l2: str, l3_id: str, ability: str, *, allow_low_rag: bool = False
+) -> dict | None:
+    """单题：走 generate 硬闸；强制大题；仍像选择题则再试一次。
+
+    allow_low_rag=True 用于冷门考点：小库未热、无教材证据也允许出题
+    （试卷目的 = 检测会不会，非出高质量训练题）。
+    """
     from intervention import InterventionDecision
     from cultivate import generate, get_last_answer
     from learner.ability_cycle import encode_ability_reason, exam_item_form
@@ -225,7 +270,9 @@ def _author_one(subject: str, l2: str, l3_id: str, ability: str) -> dict | None:
             "push", "intermediate", reason, 3, ability_goal=ability
         )
         try:
-            content = generate(subject, decision, source="schedule")
+            content = generate(
+                subject, decision, source="schedule", exam_allow_low_rag=allow_low_rag
+            )
         except Exception:
             return None
         if not content or not str(content).strip():
@@ -262,7 +309,10 @@ def assemble_paper(subject: str, *, n: int = QUESTIONS_PER_SUBJECT) -> dict:
     for u in units:
         if len(items) >= n:
             break
-        got = _author_one(subject, u["l2"], u["l3_id"], u["ability"])
+        got = _author_one(
+            subject, u["l2"], u["l3_id"], u["ability"],
+            allow_low_rag=u.get("cold", False),
+        )
         if got:
             items.append(got)
 

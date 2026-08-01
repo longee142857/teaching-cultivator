@@ -20,6 +20,9 @@ from agent.tools import (
     show_solution,
     adjust_difficulty,
     override_grade,
+    propose_override_grade,
+    confirm_override,
+    cancel_override,
     build_report,
     github_push,
     find_record_entry,
@@ -48,6 +51,9 @@ ProgressCallback = Callable[[str], None]
 # 确认卡片按钮 dtmd 回传文案 → 直连 confirm/cancel，不依赖弱模型理解
 _KP_CONFIRM_RE = re.compile(
     r"^(确认|取消)(?:添加)?知识点\s*#?\s*([A-Za-z0-9]+)\s*$"
+)
+_OVERRIDE_CONFIRM_RE = re.compile(
+    r"^(确认|取消)纠正\s*#?\s*([A-Za-z0-9]+)\s*$"
 )
 
 SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教学。
@@ -82,15 +88,16 @@ SYSTEM_PROMPT = """你叫瑞贝卡，是用户的考研导师，在钉钉群教�
    - "NO_ENTRY" → 题库为空，让用户先出题
    - "SOLUTION_FAILED|{题目}" → LLM 生成失败，可以重试
 
-3b. override_grade — 用户说「批错了」「这题判错了」「其实我对了」「改一下掌握度」时调用，覆盖最近对该知识点的批改并重算掌握度。
+3b. override_grade — 用户说「批错了」「这题判错了」「其实我对了」「改一下掌握度」时调用，**只登记纠正提案并发确认卡片，不直接改掌握度**。用户点「确认纠正」后才覆盖。
    参数: kp(知识点名), correct(true/false), subject(可选), credit(可选 0~1)
+   confirm_override / cancel_override — 用户消息含「确认纠正 <token>」/「取消纠正 <token>」时调用（token 来自确认卡片按钮）。
 
 4. adjust_difficulty — **仅**当用户说「太难」「太难了」「太简单」「简单点」「难点」时调用（调科目整体难度偏好）。
    参数: subject(math/comm/review), level(basic/intermediate/challenge)
    太难/太难了→basic, 太简单→challenge
    **不会**降低掌握度；批改争议请用 override_grade
 
-5. note_weak_point — 用户说某**知识点/章节**薄弱、要加强、不熟时调用（如「线性代数弱」）。
+5. note_weak_point — 用户说某**知识点/章节**薄弱、要加强、不熟时调用（如「线性代数弱」）。**只提高该知识点出题权重，不改变掌握度**（掌握度只由实际作答决定）。
    参数: subject(math/comm), kp(知识点名), reason(可选用户原话)
    **不要**用 adjust_difficulty 代替本工具
 
@@ -208,7 +215,9 @@ _TOOL_PROGRESS = {
     "get_learner_snapshot": "正在读取学习指标…",
     "note_weak_point": "正在记录薄弱点…",
     "adjust_difficulty": "正在调整难度…",
-    "override_grade": "正在纠正批改…",
+    "override_grade": "正在登记纠正提案…",
+    "confirm_override": "正在重算掌握度…",
+    "cancel_override": "正在取消纠正…",
     "github_push": "正在推送 GitHub…",
     "list_knowledge_points": "正在读取考纲知识点…",
     "kb_query": "正在查询小库…",
@@ -230,6 +239,7 @@ class TeachingAgent:
         self.transcript = Transcript()
         self.last_tools_used: list[str] = []
         self._pending_kp_token: str = ""
+        self._pending_override_token: str = ""
         # 兼容旧调用：_memory 指向 transcript 消息（只读视图）
         self._tools = self._build_tool_schemas()
         # 启动时若有 last_push 则同步 active_question
@@ -315,7 +325,7 @@ class TeachingAgent:
                 "type": "function",
                 "function": {
                     "name": "override_grade",
-                    "description": "用户认为批改有误时，覆盖该知识点最近一次批改并重算掌握度",
+                    "description": "用户认为批改有误时（「批错了」「判错了」「其实我对了」「改一下掌握度」），登记纠正提案并发确认卡片。确认后才会覆盖掌握度。",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -338,6 +348,34 @@ class TeachingAgent:
                             },
                         },
                         "required": ["kp", "correct"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "confirm_override",
+                    "description": "用户消息含「确认纠正 <token>」时调用（token 来自确认卡片按钮）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "token": {"type": "string", "description": "确认 token"},
+                        },
+                        "required": ["token"],
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "cancel_override",
+                    "description": "用户消息含「取消纠正 <token>」时调用（token 来自确认卡片按钮）",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "token": {"type": "string", "description": "取消 token"},
+                        },
+                        "required": ["token"],
                     },
                 },
             },
@@ -368,7 +406,7 @@ class TeachingAgent:
                 "type": "function",
                 "function": {
                     "name": "note_weak_point",
-                    "description": "用户自述某知识点/章节薄弱、要加强时，提高该知识点出题权重并更新BKT",
+                    "description": "用户自述某知识点/章节薄弱、要加强时，提高该知识点出题权重（不改变掌握度）",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -690,28 +728,27 @@ class TeachingAgent:
         ]
 
     def _call_llm(self, messages: list) -> dict:
-        """调 OpenRouter Agent 模型（默认 Claude Haiku 4.5）+ tools。
+        """调 DeepSeek V4 Flash（0731 Agent 强化）+ tools。
 
-        不再使用 DeepSeek thinking；历史 transcript 中的 reasoning_content
-        可忽略，不影响 OpenRouter 工具循环。
+        thinking 模式下若有 tool_calls，必须把 reasoning_content 回传，
+        否则后续请求会 400。
         """
-        from decide.router import call_openrouter_chat
+        from decide.router import call_deepseek_chat
 
         try:
-            return call_openrouter_chat(
+            return call_deepseek_chat(
                 messages,
                 model=AGENT_MODEL,
                 tools=self._tools,
                 tool_choice="auto",
-                title="teaching-cultivator-agent",
             )
         except Exception as e:
-            logger.error("OpenRouter agent request failed: %s", e)
+            logger.error("DeepSeek agent request failed: %s", e)
             return {
                 "choices": [{
                     "message": {
                         "content": (
-                            "刚才对话模型接口异常（需 OPENROUTER_API_KEY 与网络）。"
+                            "刚才对话模型接口异常（需 DEEPSEEK_API_KEY 与网络）。"
                             "请稍后再试，或直接说「重发今晚的题」。"
                         )
                     }
@@ -790,7 +827,22 @@ class TeachingAgent:
         self.last_tools_used: list[str] = []
 
         # 确认卡片按钮 dtmd 回传文案 → 直连 confirm/cancel，绕过 LLM 判断
-        m = _KP_CONFIRM_RE.match((user_text or "").strip())
+        raw_text = (user_text or "").strip()
+        m = _OVERRIDE_CONFIRM_RE.match(raw_text)
+        if m:
+            verb, token = m.group(1), m.group(2)
+            tool_name = "confirm_override" if verb == "确认" else "cancel_override"
+            self.last_tools_used = [tool_name]
+            reply = confirm_override(token) if verb == "确认" else cancel_override(token)
+            self.transcript.append_messages([
+                {"role": "user", "content": user_text},
+                {"role": "assistant", "content": reply},
+            ])
+            self.blocks.save()
+            logger.info("override confirm bypass: %s token=%s", tool_name, token)
+            return reply
+
+        m = _KP_CONFIRM_RE.match(raw_text)
         if m:
             verb, token = m.group(1), m.group(2)
             tool_name = "confirm_add_kp" if verb == "确认" else "cancel_add_kp"
@@ -1007,12 +1059,21 @@ class TeachingAgent:
                     args.get("level", "intermediate"),
                 )
             elif name == "override_grade":
-                return override_grade(
+                result = propose_override_grade(
                     args.get("kp", ""),
                     bool(args.get("correct")),
                     subject=args.get("subject", "") or "",
                     credit=float(args.get("credit") or 0),
                 )
+                m = re.search(r"\[OVERRIDE\]([a-f0-9]+)", result)
+                if m:
+                    self._pending_override_token = m.group(1)
+                    result = result.split("[OVERRIDE]", 1)[0].rstrip()
+                return result
+            elif name == "confirm_override":
+                return confirm_override(args.get("token", ""))
+            elif name == "cancel_override":
+                return cancel_override(args.get("token", ""))
             elif name == "build_report":
                 return build_report(args.get("days", 7))
             elif name == "github_push":

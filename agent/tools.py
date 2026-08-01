@@ -102,9 +102,12 @@ def get_exam_result(paper_id: str = "", user_id: str = "") -> str:
 
 
 def note_weak_point(subject: str, kp: str, reason: str = "") -> str:
-    """用户自述某知识点薄弱 → 提高 weights 出题权重 + BKT 信号。"""
+    """用户自述某知识点薄弱 → 只提高出题权重，不记 BKT 假答错。
+
+    record_bkt=False：自述薄弱 ≠ 答错，掌握度只由实际作答决定。
+    """
     from learner.weights_ops import bump_kp_weight, format_bump_result
-    result = bump_kp_weight(subject, kp, reason=reason)
+    result = bump_kp_weight(subject, kp, reason=reason, record_bkt=False)
     text = format_bump_result(result)
     if result.get("ok"):
         from learner.snapshot import build_learner_snapshot
@@ -164,17 +167,47 @@ def generate_question(subject: str, kp_hint: str = "") -> str:
 
 
 def _load_last_push_record() -> dict:
-    """个人 last_push 或公共 last_class。"""
+    """个人 last_push 或公共 last_class，取 timestamp 更新的那个。
+
+    定时公共推送写 public/last_class；私聊自出题写个人 last_push。
+    两个都可能存在，固定个人优先会在公共推送后读到过期个人题（批改错题）。
+    """
+    candidates = []
     for path in (P.last_push_path(), P.public_last_class_path()):
         try:
             if os.path.exists(path):
                 with open(path, encoding="utf-8") as f:
                     data = json.load(f)
                 if isinstance(data, dict):
-                    return data
+                    candidates.append(data)
         except Exception:
             pass
-    return {}
+    if not candidates:
+        return {}
+    if len(candidates) == 1:
+        return candidates[0]
+    # 取 timestamp 更新者；无 timestamp 时按文件 mtime
+    def _ts(d: dict):
+        raw = (d.get("timestamp") or "").strip()
+        if raw:
+            try:
+                from datetime import datetime
+                return datetime.fromisoformat(raw)
+            except ValueError:
+                pass
+        return None
+
+    ts_list = [(i, _ts(d)) for i, d in enumerate(candidates)]
+    if all(t is not None for _, t in ts_list):
+        return candidates[max(ts_list, key=lambda x: x[1])[0]]
+    # 无 timestamp：回退比较 mtime
+    mt = []
+    for path in (P.last_push_path(), P.public_last_class_path()):
+        try:
+            mt.append(os.path.getmtime(path) if os.path.exists(path) else -1)
+        except OSError:
+            mt.append(-1)
+    return candidates[0] if mt[0] >= mt[1] else candidates[1]
 
 
 def _load_last_push_question() -> str:
@@ -334,6 +367,47 @@ def build_report(days: int = 7) -> str:
     from learner.reporter import format_detailed
     profile = build_weekly(weeks=max(1, days // 7))
     return format_detailed(profile)
+
+
+def propose_override_grade(kp: str, correct: bool, subject: str = "",
+                           credit: float = 0.0) -> str:
+    """用户说「批错了」→ 登记纠正提案，确认卡确认后才覆盖 mastery。
+
+    不直接写 answer-log。成功时末尾带 `[OVERRIDE]<token>` 供 harness 发确认卡。
+    """
+    from learner.override_edit import propose_override
+    from learner.context import current_user_id
+    result = propose_override(
+        kp, correct, subject=subject, credit=credit,
+        staff_id=current_user_id(),
+    )
+    if not result.get("ok"):
+        return f"登记失败：{result.get('error', '未知错误')}"
+    return (
+        f"已登记「{result['kp']}」的批改纠正提案（correct={'对' if result['correct'] else '错'}）。\n"
+        f"等待用户点击确认卡片后才会重算掌握度。\n"
+        f"[OVERRIDE]{result['token']}"
+    )
+
+
+def confirm_override(token: str = "") -> str:
+    """确认批改纠正提案并覆盖 mastery。"""
+    from learner.override_edit import confirm_override as _confirm
+    from learner.context import current_user_id
+    r = _confirm(token, staff_id=current_user_id())
+    if r.get("ok"):
+        return r.get("msg", "已覆盖")
+    return r.get("error", "确认失败")
+
+
+def cancel_override(token: str = "") -> str:
+    """取消批改纠正提案（不覆盖）。"""
+    from learner.override_edit import cancel_override as _cancel
+    from learner.context import current_user_id
+    r = _cancel(token, staff_id=current_user_id())
+    if r.get("ok"):
+        return f"已取消「{r.get('kp', '')}」的纠正，未重算掌握度。"
+    return r.get("error", "取消失败")
 
 
 def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.0) -> str:
@@ -529,7 +603,7 @@ def kb_query(subject: str = "math", kp: str = "") -> str:
         if not isinstance(s, dict):
             continue
         src = (s.get("source") or "?").strip()
-        page = (s.get("page") or "").strip()
+        page = str(s.get("page") or "").strip()
         text = (s.get("text") or "").strip()
         loc = f"{src} {page}".strip()
         lines.append(f"- [{loc}] {text[:160]}")

@@ -82,8 +82,8 @@ All credentials come from environment variables or `.env` (gitignored).
 | `DEEPSEEK_API_KEY` | Author / grade / explain / polish (DeepSeek) |
 | `DINGTALK_CLIENT_ID` / `DINGTALK_CLIENT_SECRET` | DingTalk Stream app |
 | `DINGTALK_GROUP_CONVERSATION_ID` | Optional fixed group for scheduled pushes |
-| `OPENROUTER_API_KEY` | Agent (Haiku)、review/verify、可选 X digest |
-| `AGENT_MODEL` / `REVIEWER_MODEL` | OpenRouter model overrides |
+| `OPENROUTER_API_KEY` | reviewer 异厂校验（Flash 回退） |
+| `AGENT_MODEL` / `REVIEWER_MODEL` | Agent=DeepSeek Flash；reviewer=OpenRouter |
 | `KB_CACHE_TOKEN` | Optional HTTP auth for `kb_cache_api` |
 | `RAG_STRICT` | `1` (default) refuse author on weak retrieval; `0` debug |
 | `KB_PATH` / `KB_QUERY_HELPER` / `KB_PYTHON` | Optional external RAG helper |

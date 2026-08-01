@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>双周检测卷</title>
   <link rel="stylesheet" href="/static/katex/katex.min.css" />
-  <!-- 钉钉免登：加载失败时 window.dd 为 undefined，自动降级设备 UUID -->
-  <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.14.4/dingtalk.js"></script>
   <style>
     :root {
       --bg: #f6f4ef; --card: #fffdf8; --ink: #1c1a16; --muted: #6b655c;
@@ -41,6 +39,19 @@
 <body>
   <div class="wrap">
     <div id="boot" class="status">加载试卷中…</div>
+    <div id="gate" class="status" hidden>
+      <label for="uidInput" style="display:block;margin-bottom:8px;font-weight:600;">输入你的编号进入试卷</label>
+      <div style="display:flex;gap:10px;">
+        <input id="uidInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8"
+               placeholder="纯数字编号" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;" />
+        <button type="button" id="uidBtn" style="width:auto;padding:10px 20px;">进入</button>
+      </div>
+      <p class="hint">编号由老师私聊发给你；同一编号会恢复你的草稿，提交后草稿自动清除。</p>
+    </div>
+    <div id="draftNote" class="status" hidden>
+      已恢复上次作答草稿
+      <button type="button" id="restartBtn" style="width:auto;padding:6px 14px;margin-left:8px;">重新开始</button>
+    </div>
     <header id="head" hidden>
       <h1 id="title">双周检测卷</h1>
       <div class="meta" id="meta"></div>
@@ -88,54 +99,10 @@
   if (!TOKEN) { boot.className = "status err"; boot.textContent = I18N.bad; return; }
 
   let UID = "";
-  let CORP_ID = "";
-
-  function deviceUid() {
-    let uid = "";
-    try { uid = localStorage.getItem("exam_device_uid") || ""; } catch (e) {}
-    if (!uid) {
-      uid = "dev" + Math.random().toString(36).slice(2, 10);
-      try { localStorage.setItem("exam_device_uid", uid); } catch (e) {}
-    }
-    return uid;
-  }
-
-  function ddAuthCode() {
-    return new Promise(function (resolve, reject) {
-      if (!window.dd || !window.dd.runtime || !window.dd.runtime.permission ||
-          !window.dd.runtime.permission.requestAuthCode || !CORP_ID) {
-        reject(new Error("dd unavailable"));
-        return;
-      }
-      try {
-        window.dd.runtime.permission.requestAuthCode({
-          corpId: CORP_ID,
-          onSuccess: function (res) { resolve(res && res.authCode); },
-          onFail: function () { reject(new Error("dd auth fail")); },
-        });
-      } catch (e) { reject(e); }
-    });
-  }
-
-  async function resolveIdentity() {
-    // 默认设备级；钉钉免登可用则换真实 staffId
-    UID = deviceUid();
-    let serverUid = "";
-    try {
-      const authCode = await ddAuthCode();
-      if (authCode) {
-        const r = await fetch("/e/" + TOKEN + "/identify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ authCode: authCode }),
-        });
-        const data = await r.json();
-        if (data && data.ok && data.uid) serverUid = data.uid;
-      }
-    } catch (e) { /* 降级设备 UUID */ }
-    if (serverUid) UID = serverUid;
-    return UID;
-  }
+  const gate = document.getElementById("gate");
+  const uidInput = document.getElementById("uidInput");
+  const uidBtn = document.getElementById("uidBtn");
+  const draftNote = document.getElementById("draftNote");
 
   function collectAnswers() {
     const answers = {};
@@ -165,7 +132,8 @@
   }
 
   async function restoreDraft() {
-    if (!UID) return;
+    if (!UID) return false;
+    let restored = false;
     try {
       const r = await fetch("/e/" + TOKEN + "/draft?uid=" + encodeURIComponent(UID), { cache: "no-store" });
       const data = await r.json();
@@ -173,10 +141,11 @@
         const map = data.answers;
         qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) {
           const v = map[ta.dataset.i];
-          if (v != null) ta.value = v;
+          if (v != null && String(v).trim() !== "") { ta.value = v; restored = true; }
         });
       }
     } catch (e) {}
+    return restored;
   }
 
   function loadScript(src) {
@@ -244,7 +213,6 @@
       boot.textContent = (data && data.error) || ("HTTP " + r.status);
       return;
     }
-    CORP_ID = data.corp_id || "";
     const paper = data.paper;
     boot.hidden = true;
     head.hidden = false;
@@ -304,15 +272,53 @@
     submitBtn.textContent = I18N.submit;
   });
 
+  function startExam() {
+    return loadPaper()
+      .then(function () { return restoreDraft(); })
+      .then(function (restored) {
+        if (restored) draftNote.hidden = false;
+      })
+      .then(function () { wireAutosave(); });
+  }
+
+  function enterWithUid(v) {
+    UID = v;
+    gate.hidden = true;
+    boot.hidden = false;
+    boot.className = "status";
+    boot.textContent = "加载试卷中…";
+    startExam();
+  }
+
+  uidBtn.addEventListener("click", function () {
+    const v = String(uidInput.value || "").trim();
+    if (!/^[0-9]{1,8}$/.test(v)) {
+      boot.hidden = false;
+      boot.className = "status err";
+      boot.textContent = "编号需为纯数字（例如 01）";
+      return;
+    }
+    enterWithUid(v);
+  });
+
+  uidInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") uidBtn.click();
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", function () {
+    qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) { ta.value = ""; });
+    draftNote.hidden = true;
+    saveDraftNow();
+  });
+
   loadScript("/static/katex/katex.min.js")
     .then(function () {
       if (typeof katex === "undefined") throw new Error("katex missing");
-      return loadPaper();
+      boot.hidden = true;
+      gate.hidden = false;
     })
-    .then(function () { return resolveIdentity(); })
-    .then(function () { return restoreDraft(); })
-    .then(function () { wireAutosave(); })
     .catch(function (e) {
+      boot.hidden = false;
       boot.className = "status err";
       boot.textContent = I18N.katexFail + ": " + e;
     });

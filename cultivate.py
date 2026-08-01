@@ -509,7 +509,8 @@ def _polish_once(builder: PromptBuilder, draft: str, answer: str, difficulty: st
 def generate(subject: str, decision: InterventionDecision, *,
              mastery: float = 0.0, opportunity_count: int = 0,
              consecutive_failures: int = 0,
-             source: str = "schedule") -> str:
+             source: str = "schedule",
+             exam_allow_low_rag: bool = False) -> str:
     """出题契约 → 编排质检/文案 → 可发送正文（Phase C）。"""
     topic_desc = TOPIC_MAP.get(subject, subject)
     difficulty_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
@@ -570,7 +571,7 @@ def generate(subject: str, decision: InterventionDecision, *,
             f"[cultivate] rag_retrieve ok={rag.ok} hit={rag.hit_count} "
             f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
         )
-        if rag_strict_enabled() and not rag.ok:
+        if rag_strict_enabled() and not rag.ok and not exam_allow_low_rag:
             # 换 L3 重试：同 L2 再试 1 个其他 L3
             if l3_id:
                 retry_l3 = pick_l3(l3_subj, kp, recent_l3=[l3_id])
@@ -591,7 +592,7 @@ def generate(subject: str, decision: InterventionDecision, *,
         print(f"[cultivate] rag_retrieve failed: {e}")
         from learner.rag_retrieve import rag_strict_enabled
 
-        if rag_strict_enabled():
+        if rag_strict_enabled() and not exam_allow_low_rag:
                 _rag_strict_blocked = True
                 return ""
 

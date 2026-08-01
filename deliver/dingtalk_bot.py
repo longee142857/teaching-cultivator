@@ -456,6 +456,9 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 confirm_kp_actions,
                 confirm_kp_title,
                 confirm_kp_text,
+                confirm_override_actions,
+                confirm_override_title,
+                confirm_override_text,
             )
         except Exception as e:
             logger.warning("action card import: %s", e)
@@ -488,6 +491,17 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                     confirm_kp_actions(token),
                 )
                 logger.info("confirm kp ActionCard: %s token=%s", ok, token)
+        elif "override_grade" in tools:
+            agent = self._get_agent()
+            token = getattr(agent, "_pending_override_token", "") or ""
+            if token:
+                ok = send_session_action_card(
+                    session_webhook,
+                    confirm_override_title(),
+                    confirm_override_text(),
+                    confirm_override_actions(token),
+                )
+                logger.info("confirm override ActionCard: %s token=%s", ok, token)
 
 
 class DingTalkBot:

@@ -48,12 +48,19 @@ scripts/                acceptance tests and ops helpers
 
 ## 双周卷个人化（2026-07-31）
 
-- **身份**：网页免登（`DINGTALK_CORP_ID` + 钉钉 JSAPI `requestAuthCode` → `POST /e/{t}/identify` 换 staffId）；JSAPI 不可用时降级**设备 UUID**（localStorage）。
-- **草稿**：作答自动防抖保存 `POST /e/{t}/draft`，按 `(paper_id, uid)` 存 `data/exam_bank/drafts/`；重开恢复，提交后清除。
+- **身份**：学员在 H5 前置页输入**纯数字编号**（每次进入都要输入，无记忆）；uid=编号，草稿/批改/BKT 按编号各算各的。不再依赖钉钉 JSAPI / corpId / HTTPS。
+- **草稿**：作答自动防抖保存 `POST /e/{t}/draft`，按 `(paper_id, uid)` 存 `data/exam_bank/drafts/`；重开输入编号后恢复（有草稿提示「已恢复 + 重新开始」），提交后清除。
 - **按人存卷**：答卷/批改文件 `answers/<pid>_<uid>_answer.md` / `_grade.md`；`submit_answer_md(md, paper_id, user_id)`，网页提交在 `bind_learner(uid)` 内执行。
 - **批改反馈**：`submit_answer_md` 汇总含**得分**（`得分：N/100`）+ 每题掌握度 `before→after`；调 `grade_answer` 时传 `kp_name=L2` + `subject`，掌握度落到考纲正确 L2 → 与每日做题共用 BKT → 自然并入周报趋势。
 - **agent 查看**：`get_exam_result(paper_id[, user_id])` 返回某人对某卷的批改报告 + 作答。
-- **部署注意**：`DINGTALK_CORP_ID` 需在钉钉开发者后台查；钉钉 JSAPI 生产一般要求 HTTPS，当前 nginx 为 http 需评估。
+- **前端**：`web/static/exam.html` 编号门（无 localStorage 记忆）；`exam_web.py` identify 端点保留但前端不再用。
+
+## 双周卷编题（2026-07-31）
+
+- **节奏/题数**：隔 14 天周日 08:00，数学 + 通信各一份；**目标 7 题，保底 3 题**（`QUESTIONS_PER_SUBJECT=7`，`run_biweekly_issue` 要求 `n_ok>=3`）。
+- **混合采样**（`learner/biweekly_exam.py` `_pick_units`）：约一半配额给**热考点**（高 L2 权重）保底能发出高质量题；其余给**冷门考点**（低 L2 权重 = 抽题优先级低 = 不常考）主动摸底，打破「不常考→没数据→更不考」的恶性循环。选考点分散 L2，每章一题优先。
+- **冷门放宽 RAG**：冷门考点经 `_author_one(allow_low_rag=True)` → `generate(exam_allow_low_rag=True)` 放宽 RAG 硬闸——无教材证据也允许出题（试卷目的=检测会不会，非出高质量训练题）。每日推送的硬闸不受影响（默认参数行为不变）。
+- **强制大题**：能力池 `compute/construct/transfer`，模型偶发写选择题则丢弃重试一次，两次仍像选择宁缺毋滥。
 
 ## Syllabus / mastery
 

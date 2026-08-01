@@ -148,3 +148,25 @@ def confirm_kp_text() -> str:
         "只会在已有章节下追加子考点，不会新建章节。\n"
         "确认后即写入考纲，之后出题/双周卷可覆盖该子考点。"
     )
+
+
+def confirm_override_actions(token: str) -> list[tuple[str, str]]:
+    """批改纠正确认卡的按钮（dtmd 回传文案，须与 agent._OVERRIDE_CONFIRM_RE 匹配）。"""
+    return [
+        ("确认纠正", f"确认纠正 {token}"),
+        ("取消", f"取消纠正 {token}"),
+    ]
+
+
+def confirm_override_title() -> str:
+    return "批改纠正确认"
+
+
+def confirm_override_text(kp: str = "", correct: bool | None = None) -> str:
+    verdict = "判对" if correct is True else ("判错" if correct is False else "")
+    kp_s = f"知识点「{kp}」" if kp else "该知识点"
+    verdict_s = f"，纠正为{verdict}" if verdict else ""
+    return (
+        f"你请求纠正 {kp_s} 最近一次批改{verdict_s}。\n"
+        "确认后会重算掌握度并写入审计记录；取消则不改变。"
+    )
