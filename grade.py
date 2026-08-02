@@ -374,14 +374,16 @@ def grade_answer(
         if status == "applied":
             rec_correct = True if credit is not None else is_correct
             _kp_overrides = _bkt_module._load_bkt_overrides().get(extracted_kp, {})
-            try:
-                bkt.record(
-                    _uid(), extracted_kp, rec_correct, kc,
-                    subject=subj, item_type=item_type, credit=credit,
-                    status="applied", overrides=_kp_overrides,
-                )
-            except TypeError:
-                bkt.record(_uid(), extracted_kp, is_correct, kc)
+            # 未分类不是有效 L2，不写 BKT 状态（权重 bump/decay 已跳过）
+            if extracted_kp and extracted_kp != "未分类":
+                try:
+                    bkt.record(
+                        _uid(), extracted_kp, rec_correct, kc,
+                        subject=subj, item_type=item_type, credit=credit,
+                        status="applied", overrides=_kp_overrides,
+                    )
+                except TypeError:
+                    bkt.record(_uid(), extracted_kp, is_correct, kc)
             mastery_after = kc.p_mastery
 
             # 答错（非部分正确）→ 轻微提高出题权重

@@ -288,9 +288,12 @@ def _append_refine_signal(subject: str, kp: str, reason: str, old: float, new: f
     try:
         rq = _refine_queue()
         os.makedirs(os.path.dirname(rq) or ".", exist_ok=True)
+        # 按 reason 来源拆分 type：grade 答错 vs 真·用户自述薄弱
+        signal_type = "grade_incorrect" if reason.startswith("grade_incorrect:") \
+            else "weak_self_report"
         entry = {
             "ts": datetime.now(timezone.utc).isoformat(),
-            "type": "weak_self_report",
+            "type": signal_type,
             "subject": subject,
             "kp": kp,
             "reason": reason,

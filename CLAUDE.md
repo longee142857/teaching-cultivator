@@ -46,6 +46,38 @@ scripts/                acceptance tests and ops helpers
   - l3_id 自动生成（取该 L2 现有点分前缀 + `k{n}`，含 pending 提案占用 id 去重）
   - 提案存 `data/kp_proposals.json`（staff 校验，跨 learner 不可确认）；所有写入落 `data/kp_edit_audit.jsonl`
 
+## Pi 交互层白名单（2026-08-02 · 架构约束，未部署 Pi 进程）
+
+**主线**：系统封装、交互自由。培养闭环（推题/批改/BKT）是确定性系统，由人维护；Pi（`pi.dev` 薄 harness，OpenClaw 背后的 harness，非 OpenClaw Desktop 整壳）只做对话与编排调用，**只能调系统 API，不能改系统代码、不能裸写参数**。
+
+### 允许 — 读（Pi 自由调）
+
+`list_recent_entries` / `find_record_entry` / `get_learner_snapshot` / `list_knowledge_points` / `kb_query`（peek 只读）/ `list_exam_bank` / `get_exam_paper` / `get_exam_result` / `show_solution` / `build_report`
+
+### 允许 — 动作（调系统，写状态由系统闸决定）
+
+`generate_question`（走 cultivate/RAG/质检，不绕闸） / `grade_answer`（confidence→applied/pending）/ `submit_exam_answer_md` / `adjust_difficulty`（audit_only）/ `note_weak_point`（只 bump weights，record_bkt=False）/ `propose_add_kp`+`confirm_add_kp`+`cancel_add_kp`（确认卡+审计）/ `propose_override_grade`+`confirm_override`+`cancel_override`（确认卡+审计）/ `kb_enqueue`（只进队列）
+
+### 禁止 — Pi 永不可用
+
+- 读/写/改**系统源码**（cultivate/grade/agent/…）— 系统问题归人修
+- `bash` / 任意 shell / 装包 — 逃逸面
+- 直接读写 `weights.json` / `answer-log` / `syllabus_*` / `.env` — 绕过闸
+- 裸 `bkt.record` / 裸 `bump_kp_weight` — 必须经系统 API
+- `github_push`（默认关，权限过大）
+- 新建 L2 章节（只能追加 L3 到已有 L2）
+
+### 定时推送 / `decide()` / 双周卷组卷
+
+**Pi 不可调用**；仍属调度器与系统规则路径。
+
+### 参数链路可观测（2026-08-02）
+
+- 每次 BKT record 追加一行 `data/learners/<sid>/param_audit.jsonl`（ts/kp/applied/reason/source/mastery）
+- `refine-queue` 的 `type` 已按来源拆分：`grade_incorrect`（grade 答错抬权）/ `weak_self_report`（真·用户自述薄弱）/ `decay`
+- `knowledge_point=="未分类"` 或 `quarantined=True` 的条目被隔离：`get_kp_mastery`/`get_all_kp_mastery`/快照/`decide` 均跳过
+- `RATE_LIMIT_MAX=5`（24h 内同 KP 最多 5 次有效更新，防刷保留）
+
 ## 双周卷个人化（2026-07-31）
 
 - **身份**：学员在 H5 前置页输入**纯数字编号**（每次进入都要输入，无记忆）；uid=编号，草稿/批改/BKT 按编号各算各的。不再依赖钉钉 JSAPI / corpId / HTTPS。
@@ -78,6 +110,21 @@ Production evidence can come from `learner/kb_cache` plus an optional helper pro
 - `KB_PATH` / `KB_LIB` — if importing sibling knowledge-system libraries
 
 Without these, strict mode will correctly refuse low-evidence authoring.
+
+## 教材证据分科（kb_cache / source_hints）
+
+`learner/rag_retrieve.py` 把 L3 `source_allow` 映射为检索 `source_hints`；**数学不再把「教材」扩成含卓里奇的大杂烩**。
+
+| 分科 | 主路径 hints（培养闸） | Chroma 拓展（不进主闸） |
+|------|------------------------|-------------------------|
+| calc | 同济《高等数学》 | 卓里奇《数学分析》 |
+| linalg | 丘维声《高等代数》 | — |
+| prob | 盛骤 + 茆诗松 | — |
+| comm | 周炯槃 + 樊昌信 | — |
+
+- 考纲 L3 的 `source_allow` 宜写具体书名（或「教材」+ 真题）；warm 时必须传 `unit_id`，否则数学会落到三科主书并集（仍不含卓里奇）。
+- 小库 `data/kb_cache/store.json` 是运行时证据；云端用本机 warm 后的 store 同步即可，不必在云上跑 embedding。
+- **勿**恢复已废弃的 `explain_anchors` / 重学 YAML 旁路。
 
 ## Tests
 

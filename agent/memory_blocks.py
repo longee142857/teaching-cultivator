@@ -230,15 +230,29 @@ class MemoryBlocks:
             self._data["learner_digest"] = ""
 
     def on_new_push(self, content: str, *, subject: str = "", kp: str = "") -> None:
-        """定时/主动出题后：更新当前题与 phase，todos 改为等待作答。"""
-        if not subject:
+        """定时/主动出题后：更新当前题与 phase，todos 改为等待作答。
+
+        subject/kp 为空时从文件补读（个人 last_push 或公共 last_class），
+        保证 active_question 与最新推送对齐，防错题叙事粘滞。
+        """
+        if not subject or not kp:
             try:
-                lp = self._last_push_path
-                if os.path.isfile(lp):
-                    with open(lp, encoding="utf-8") as f:
-                        data = json.load(f)
-                    subject = str(data.get("subject") or "")
-                    kp = kp or str(data.get("kp") or "")
+                # 优先公共 last_class（定时推送写这里），其次个人 last_push
+                from learner import paths as P
+                candidates = [self._last_push_path]
+                pub = P.public_last_class_path()
+                if os.path.isfile(pub):
+                    candidates.insert(0, pub)
+                for lp in candidates:
+                    if os.path.isfile(lp):
+                        with open(lp, encoding="utf-8") as f:
+                            data = json.load(f)
+                        if not subject:
+                            subject = str(data.get("subject") or "")
+                        if not kp:
+                            kp = str(data.get("kp") or "")
+                        if subject and kp:
+                            break
             except Exception:
                 pass
         self.set_active_question(
@@ -285,6 +299,8 @@ class MemoryBlocks:
             self.set_todos([
                 {"id": "review_done", "content": "批改已完成，可讲解或出下一题", "status": "completed"},
             ])
+            # 批改后同步 active_question 到最新 last_push/last_class（防串题）
+            self.refresh_from_last_push()
             self.refresh_learner_digest()
         elif tool_name == "show_solution":
             self.set_phase(PHASE_REVIEWING)

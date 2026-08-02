@@ -194,8 +194,19 @@ class TeachingBot:
                 if oid:
                     with bind_owner_schedule():
                         self.agent.bind_for_learner(oid)
+                        # 从 public/last_class 读 kp（_save_last_push 已写入），
+                        # 保证 blocks 的 active_question 有正确 kp（防错题叙事粘滞）
+                        push_kp = ""
+                        try:
+                            _pub = P.public_last_class_path()
+                            if os.path.isfile(_pub):
+                                with open(_pub, encoding="utf-8") as _f:
+                                    push_kp = (json.load(_f).get("kp") or "").strip()
+                        except Exception:
+                            pass
                         self.agent.on_new_push(
-                            self._last_question, subject=subject, public_class=True,
+                            self._last_question, subject=subject, kp=push_kp,
+                            public_class=True,
                         )
                 # 出题后跟发快捷按钮 ActionCard
                 try:

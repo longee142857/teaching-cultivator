@@ -50,6 +50,9 @@ def _load_answer_log(days: int = 7) -> list[dict]:
                     continue
                 if e.get("user_id") not in (uid, None, ""):
                     continue
+                # 跳过测试污染（未分类/被隔离条目），避免污染快照统计
+                if e.get("knowledge_point") == "未分类" or e.get("quarantined"):
+                    continue
                 ts = e.get("ts", "")
                 if ts:
                     try:

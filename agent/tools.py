@@ -286,7 +286,9 @@ def grade_answer(last_question: str, user_answer: str) -> str:
                 "\n⚠️ 批改置信不足，掌握度未更新（pending）。"
                 "若你认为批错了，直接说「批错了」即可纠正。"
             )
-        return f"{tag}，{result.feedback}\n{extra}{pending_note}".rstrip()
+        # KP 横幅放最前，让 LLM 组织回复时优先引用系统判定的知识点（防串题）
+        kp_banner = f"[KP={result.kp_name}]" if result.kp_name else "[KP=未分类]"
+        return f"{kp_banner} {tag}，{result.feedback}\n{extra}{pending_note}".rstrip()
     except Exception as e:
         return f"批改失败：{e}"
 
