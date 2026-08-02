@@ -36,7 +36,7 @@ def _build_units():
                 "subject": subject,
                 "kp": l2,
                 "query": " ".join(q[:4]),
-                "source_hints": _source_hints_from_allow(subject, allow)[:3],
+                "source_hints": _source_hints_from_allow(subject, allow, l2)[:3],
             })
             for l3 in meta.get("l3") or []:
                 if isinstance(l3, dict) and l3.get("id"):
@@ -45,7 +45,9 @@ def _build_units():
                         "subject": subject,
                         "kp": l3["id"],
                         "query": " ".join(q3[:4]),
-                        "source_hints": _source_hints_from_allow(subject, a3)[:3],
+                        "source_hints": _source_hints_from_allow(
+                            subject, a3, l3["id"]
+                        )[:3],
                     })
     return units
 

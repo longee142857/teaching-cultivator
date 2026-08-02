@@ -154,32 +154,85 @@ def _from_cache(subject: str, unit_id: str, N: int) -> RagResult | None:
     )
 
 
-_SOURCE_HINTS_MATH = {
-    "教材": ["卓里奇", "高等数学", "线性代数", "概率", "数理统计", "数学分析"],
+# 数一培养主闸：按考点分科，不再把「教材」扩成含卓里奇的大杂烩。
+# 卓里奇仍在 Chroma，供 Agent 拓展检索；不进 calc/prob/linalg 主路径。
+_SOURCE_HINTS_MATH_TRACK = {
+    "calc": ["同济", "高等数学"],
+    "linalg": ["丘维声", "高等代数"],
+    "prob": ["盛骤", "茆诗松", "概率论", "数理统计"],
+}
+_SOURCE_HINTS_MATH_TAG = {
     "真题": ["真题", "题库", "灰虎", "考研数学", "数学一"],
     "讲义": ["讲义", "笔记"],
 }
 _SOURCE_HINTS_COMM = {
-    "教材": ["周炯槃", "通信原理", "樊昌信"],
+    "教材": ["周炯槃", "樊昌信", "通信原理"],
     "真题": ["真题", "题库", "801", "北邮"],
     "讲义": ["讲义", "笔记"],
 }
+_ALLOW_TAGS = frozenset({"教材", "真题", "讲义"})
 
 
-def _source_hints_from_allow(subject: str, source_allow: list[str]) -> list[str]:
-    """映射 source_allow → source_hints（教材优先，按科目）。"""
-    table = _SOURCE_HINTS_COMM if subject == "comm" else _SOURCE_HINTS_MATH
+def _math_track_for_unit(unit_id: str) -> str:
+    """math.calc.* / math.linalg.* / math.prob.* → track；L2 中文名查 syllabus。"""
+    uid = (unit_id or "").strip()
+    for track in ("calc", "linalg", "prob"):
+        if uid.startswith(f"math.{track}."):
+            return track
+    try:
+        from learner.kp_registry import load_syllabus
+
+        meta = (load_syllabus("math").get("kps") or {}).get(uid)
+        if isinstance(meta, dict):
+            for l3 in meta.get("l3") or []:
+                lid = (l3.get("id") or "").strip()
+                for track in ("calc", "linalg", "prob"):
+                    if lid.startswith(f"math.{track}."):
+                        return track
+    except Exception:
+        pass
+    return ""
+
+
+def _source_hints_from_allow(
+    subject: str, source_allow: list[str], unit_id: str = ""
+) -> list[str]:
+    """映射 source_allow → source_hints。教材按考点分科；非标签项原样作 hint。"""
     hints: list[str] = []
-    allow = source_allow or ["教材", "真题"]
-    for tag in ("教材", "真题", "讲义"):
-        if tag in allow:
-            hints.extend(table.get(tag, []))
-    if not hints:
-        hints = list(table["教材"][:3]) + list(table["真题"][:2])
+    allow = list(source_allow or ["教材", "真题"])
+    if subject == "comm":
+        for item in allow:
+            if item in _SOURCE_HINTS_COMM:
+                hints.extend(_SOURCE_HINTS_COMM[item])
+            elif item not in _ALLOW_TAGS:
+                hints.append(item)
+        if not hints:
+            hints = list(_SOURCE_HINTS_COMM["教材"]) + list(_SOURCE_HINTS_COMM["真题"][:2])
+    else:
+        track = _math_track_for_unit(unit_id)
+        for item in allow:
+            if item == "教材":
+                if track and track in _SOURCE_HINTS_MATH_TRACK:
+                    hints.extend(_SOURCE_HINTS_MATH_TRACK[track])
+                else:
+                    # 未知 L2：三科主书，仍不含卓里奇
+                    for t in ("calc", "linalg", "prob"):
+                        hints.extend(_SOURCE_HINTS_MATH_TRACK[t])
+            elif item in _SOURCE_HINTS_MATH_TAG:
+                hints.extend(_SOURCE_HINTS_MATH_TAG[item])
+            elif item not in _ALLOW_TAGS:
+                hints.append(item)
+        if not hints:
+            if track and track in _SOURCE_HINTS_MATH_TRACK:
+                hints = list(_SOURCE_HINTS_MATH_TRACK[track]) + list(
+                    _SOURCE_HINTS_MATH_TAG["真题"][:2]
+                )
+            else:
+                hints = ["同济", "盛骤", "丘维声"]
     seen: set[str] = set()
     out: list[str] = []
     for h in hints:
-        if h not in seen:
+        if h and h not in seen:
             seen.add(h)
             out.append(h)
     return out
@@ -221,7 +274,7 @@ def _query_local_chroma(
         py = sys.executable
 
     try:
-        hints = _source_hints_from_allow(subject, source_allow)
+        hints = _source_hints_from_allow(subject, source_allow, unit_id)
         req = {
             "subject": subject,
             "kp": unit_id,
