@@ -101,7 +101,7 @@ def _format_subject_by_l1(
         items = by_l1.get(l1_id) or []
         if not items:
             continue
-        ms = [mastery[k] for k, _ in items if k in mastery]
+        ms = [mastery[k] for k, _ in items if mastery.get(k) is not None]
         weak = f"最低掌握{min(ms)*100:.0f}%" if ms else "掌握?"
         l1_summaries.append(f"{get_l1_name(subject, l1_id)}({weak})")
     if l1_summaries:
@@ -154,7 +154,8 @@ def build_learner_snapshot(days: int = 7) -> str:
         lines.extend(_format_subject_by_l1(subject, kp_w, mastery))
 
     if mastery:
-        weak = sorted(mastery.items(), key=lambda x: x[1])[:5]
+        valid = {k: v for k, v in mastery.items() if v is not None}
+        weak = sorted(valid.items(), key=lambda x: x[1])[:5]
         weak_s = "；".join(f"{kp} {v*100:.0f}%" for kp, v in weak)
         lines.append(f"- BKT 薄弱知识点：{weak_s}")
 

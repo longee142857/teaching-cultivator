@@ -464,7 +464,11 @@ class BKTLogger:
             kp = r.get("knowledge_point")
             if not kp or kp == "未分类" or r.get("quarantined"):
                 continue
-            kps[kp] = r["mastery_after"]
+            ma = r.get("mastery_after")
+            # 跳过 audit/未应用等无 mastery 的日志（如 adjust_difficulty 审计记录）
+            if ma is None:
+                continue
+            kps[kp] = ma
         return kps
 
     def get_recent_correct(self, user_id: str, knowledge_point: str) -> Optional[bool]:
