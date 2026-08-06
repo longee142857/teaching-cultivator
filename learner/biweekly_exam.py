@@ -1,8 +1,9 @@
 """双周 Markdown 试卷 — 补日常 defer 漏洞 + 全面检测。
 
-节奏：隔周周日 08:00；数学 / 通信各一份 .md。
+节奏：隔周周日 08:00；数学 / 通信各一份 .md（落盘 exam_bank）。
 组题优先「kb_cache 已热」子考点，尽量保证整卷能发出。
-答卷：用户人机单聊发 .md 文件（群聊钉钉不支持收文件），或粘贴「交卷」+ md 正文。
+推送：H5 阅读页（KaTeX，见 deliver/exam_web）为主；EXAM_PUSH_PNG=1 可加长图。
+答卷：网页提交，或人机单聊发 .md /「交卷」+ 正文（群聊钉钉不支持收文件）。
 题库：data/exam_bank/ 供 LLM 工具检索。
 """
 from __future__ import annotations
@@ -23,7 +24,7 @@ ANSWERS_DIR = os.path.join(BANK_DIR, "answers")
 INDEX_PATH = os.path.join(BANK_DIR, "index.json")
 STATE_PATH = os.path.join(BANK_DIR, "state.json")
 
-QUESTIONS_PER_SUBJECT = 5
+QUESTIONS_PER_SUBJECT = 7
 INTERVAL_DAYS = 14
 _lock = threading.Lock()
 
@@ -35,6 +36,15 @@ def _ensure_dirs() -> None:
 
 def _now() -> datetime:
     return datetime.now()
+
+
+def _uid() -> str:
+    """当前学员身份；无上下文时回退 anonymous（避免写坏全局）。"""
+    try:
+        from learner.context import current_user_id
+        return current_user_id() or "anonymous"
+    except Exception:
+        return "anonymous"
 
 
 def _load_json(path: str, default: Any) -> Any:
@@ -130,86 +140,162 @@ def _warm_l3_ids(subject: str) -> list[str]:
         return []
 
 
-def _l2_for_l3(subject: str, l3_id: str) -> str | None:
+# 双周卷能力池：偏计算/构造/迁移，避开 recognize→mcq
+_EXAM_ABILITIES = ("compute", "construct", "transfer", "compute", "construct")
+
+
+def _looks_like_mcq(question: str) -> bool:
+    """粗检：是否仍被模型写成选择题（应尽量拒绝）。"""
+    q = question or ""
+    hits = sum(
+        1
+        for m in ("A.", "B.", "C.", "D.", "A．", "B．", "C．", "D．", "(A)", "（A）")
+        if m in q
+    )
+    if hits >= 3:
+        return True
+    if ("选择题" in q or "单选" in q) and hits >= 2:
+        return True
+    return False
+
+
+def _all_l3_units(subject: str) -> list[dict]:
+    """考纲全部 L3 考点，带所属 L2 与 L2 权重（无上下文时权重退化 0）。"""
+    from learner import weights_ops
     from learner.kp_registry import load_syllabus, syllabus_subject
 
-    syl = load_syllabus(syllabus_subject(subject))
-    for l2, meta in (syl.get("kps") or {}).items():
+    subj = syllabus_subject(subject)
+    kps = (load_syllabus(subj).get("kps")) or {}
+    try:
+        weights = weights_ops.load_weights()
+    except Exception:
+        weights = {}
+    kp_w = (weights.get(subject) or {}).get("kp_weights") or {}
+    out: list[dict] = []
+    for l2, meta in kps.items():
         if not isinstance(meta, dict):
             continue
+        try:
+            l2_w = float(kp_w.get(l2) or 0.0)
+        except (TypeError, ValueError):
+            l2_w = 0.0
         for l3 in meta.get("l3") or []:
-            if isinstance(l3, dict) and (l3.get("id") or "").strip() == l3_id:
-                return l2
-    return None
+            if isinstance(l3, dict) and (l3.get("id") or "").strip():
+                out.append({"l2": l2, "l3_id": l3["id"].strip(), "l2_weight": l2_w})
+    return out
 
 
-def _pick_units(subject: str, n: int = QUESTIONS_PER_SUBJECT) -> list[dict]:
-    """选 n 个优先已热的 (l2, l3_id, ability)。"""
-    from learner.ability_cycle import ABILITY_GOALS
+def _spread_units(
+    candidates: list[dict],
+    n: int,
+    start_picks: list[dict] | None = None,
+    *,
+    shuffle: bool = True,
+) -> list[dict]:
+    """从候选中分散 L2 取 n 个：每 L2 先 1 个，不足再同 L2 补。"""
     import random
 
-    warm = _warm_l3_ids(subject)
-    random.shuffle(warm)
-    picks: list[dict] = []
-    used_l2: set[str] = set()
-
-    # 先尽量分散 L2
-    for l3_id in warm:
+    picks = list(start_picks or [])
+    used_l2 = {p["l2"] for p in picks}
+    pool = list(candidates)
+    if shuffle:
+        random.shuffle(pool)
+    for u in pool:
+        if len(picks) >= n:
+            return picks
+        if u["l2"] in used_l2:
+            continue
+        used_l2.add(u["l2"])
+        picks.append(u)
+    for u in pool:
         if len(picks) >= n:
             break
-        l2 = _l2_for_l3(subject, l3_id)
-        if not l2 or l2 in used_l2:
+        if any(p["l3_id"] == u["l3_id"] for p in picks):
             continue
-        used_l2.add(l2)
-        ability = ABILITY_GOALS[len(picks) % len(ABILITY_GOALS)]
-        # 试卷里 diagnose 改 recognize，避免整卷对照题过多
-        if ability == "diagnose":
-            ability = "recognize"
-        picks.append({"l2": l2, "l3_id": l3_id, "ability": ability})
-
-    # 不足：同 L2 再取热 L3
-    if len(picks) < n:
-        for l3_id in warm:
-            if len(picks) >= n:
-                break
-            if any(p["l3_id"] == l3_id for p in picks):
-                continue
-            l2 = _l2_for_l3(subject, l3_id)
-            if not l2:
-                continue
-            ability = ABILITY_GOALS[len(picks) % len(ABILITY_GOALS)]
-            if ability == "diagnose":
-                ability = "compute"
-            picks.append({"l2": l2, "l3_id": l3_id, "ability": ability})
-
+        picks.append(u)
     return picks
 
 
-def _author_one(subject: str, l2: str, l3_id: str, ability: str) -> dict | None:
-    """单题：走 generate 硬闸；失败返回 None。"""
+def _pick_units(subject: str, n: int = QUESTIONS_PER_SUBJECT) -> list[dict]:
+    """热考点保底 + 冷门考点配额。
+
+    冷门 = 小库未热（无教材证据 = 没被检测过）。约一半配额给热考点保底能发
+    出去，其余给冷门考点（低 L2 权重优先）；冷门出题走 generate 的
+    exam_allow_low_rag 放宽 RAG，从而打破「冷门永远不考」的恶性循环。
+    """
+    import random
+
+    all_units = _all_l3_units(subject)
+    warm = set(_warm_l3_ids(subject))
+    # 冷门 = 低 L2 权重（抽题优先级低 = 不常考）。低权重在前，同权重段随机
+    # （先 shuffle 再稳定排序，保证同权重段内顺序随机）。
+    random.shuffle(all_units)
+    all_units.sort(key=lambda u: u["l2_weight"])
+    mid = len(all_units) // 2
+    hot_units = all_units[mid:]   # 高权重 = 常考，保底能发出高质量题
+    cold_units = all_units[:mid]  # 低权重 = 不常考，主动摸底打破循环
+
+    n_hot = max(1, n // 2)
+    picks = _spread_units(hot_units, n_hot)
+    picks = _spread_units(cold_units, n, start_picks=picks, shuffle=False)
+    if len(picks) < n:
+        picks = _spread_units(hot_units, n, start_picks=picks)
+
+    for i, u in enumerate(picks):
+        u["ability"] = _EXAM_ABILITIES[i % len(_EXAM_ABILITIES)]
+        u["cold"] = u["l3_id"] not in warm
+    return picks
+
+
+def _author_one(
+    subject: str, l2: str, l3_id: str, ability: str, *, allow_low_rag: bool = False
+) -> dict | None:
+    """单题：走 generate 硬闸；强制大题；仍像选择题则再试一次。
+
+    allow_low_rag=True 用于冷门考点：小库未热、无教材证据也允许出题
+    （试卷目的 = 检测会不会，非出高质量训练题）。
+    """
     from intervention import InterventionDecision
     from cultivate import generate, get_last_answer
-    from learner.ability_cycle import encode_ability_reason, ability_to_item_form
+    from learner.ability_cycle import encode_ability_reason, exam_item_form
 
-    reason = f"{l2}: 双周检测 [l3={l3_id}] {encode_ability_reason(ability)}"
-    decision = InterventionDecision(
-        "push", "intermediate", reason, 3, ability_goal=ability
-    )
-    try:
-        content = generate(subject, decision, source="schedule")
-    except Exception:
+    item_form = exam_item_form(ability)
+
+    def _once() -> dict | None:
+        reason = (
+            f"{l2}: 双周检测大题 [l3={l3_id}] "
+            f"{encode_ability_reason(ability)} [item_form={item_form}]"
+        )
+        decision = InterventionDecision(
+            "push", "intermediate", reason, 3, ability_goal=ability
+        )
+        try:
+            content = generate(
+                subject, decision, source="schedule", exam_allow_low_rag=allow_low_rag
+            )
+        except Exception:
+            return None
+        if not content or not str(content).strip():
+            return None
+        answer = get_last_answer() or ""
+        return {
+            "l2": l2,
+            "l3_id": l3_id,
+            "ability": ability,
+            "item_form": item_form,
+            "question": content.strip(),
+            "answer": answer.strip(),
+        }
+
+    got = _once()
+    if got and _looks_like_mcq(got["question"]):
+        # 模型偶发无视约束 → 丢弃重试一次
+        got2 = _once()
+        if got2 and not _looks_like_mcq(got2["question"]):
+            return got2
+        # 两次仍像选择题：宁缺毋滥
         return None
-    if not content or not str(content).strip():
-        return None
-    answer = get_last_answer() or ""
-    return {
-        "l2": l2,
-        "l3_id": l3_id,
-        "ability": ability,
-        "item_form": ability_to_item_form(ability),
-        "question": content.strip(),
-        "answer": answer.strip(),
-    }
+    return got
 
 
 def assemble_paper(subject: str, *, n: int = QUESTIONS_PER_SUBJECT) -> dict:
@@ -223,7 +309,10 @@ def assemble_paper(subject: str, *, n: int = QUESTIONS_PER_SUBJECT) -> dict:
     for u in units:
         if len(items) >= n:
             break
-        got = _author_one(subject, u["l2"], u["l3_id"], u["ability"])
+        got = _author_one(
+            subject, u["l2"], u["l3_id"], u["ability"],
+            allow_low_rag=u.get("cold", False),
+        )
         if got:
             items.append(got)
 
@@ -243,21 +332,28 @@ def assemble_paper(subject: str, *, n: int = QUESTIONS_PER_SUBJECT) -> dict:
 
 
 def _render_public_md(paper_id: str, title: str, subject: str, items: list[dict]) -> str:
+    """题库归档用全文（仍为 md）。钉钉推送不再发此文件附件，改群消息分题推送。"""
     lines = [
         f"# 双周检测卷 · {title}",
         "",
         f"- 试卷 ID：`{paper_id}`",
         f"- 科目：{subject}",
         f"- 题数：{len(items)}",
-        f"- 说明：请在人机单聊中回复一份 Markdown 答卷（文件名建议 `{paper_id}_答案.md`），"
-        "或发送文本以「交卷」开头并粘贴全文。群聊无法接收文件附件。",
+        f"- 说明：题目以 **H5 链接**推送（KaTeX）。"
+        f"也可**人机单聊**发回 Markdown 答卷（建议 `{paper_id}_答案.md`），"
+        "或「交卷」+ 正文。群聊无法收文件。",
         "",
         "---",
         "",
     ]
     for i, it in enumerate(items, 1):
-        form = it.get("item_form") or "mcq"
-        lines.append(f"## 第 {i} 题（{form} · {it.get('ability', '')}）")
+        form = it.get("item_form") or "blank"
+        form_cn = {
+            "blank": "填空/计算",
+            "proof_outline": "证明/推导",
+            "mcq": "选择",
+        }.get(form, form)
+        lines.append(f"## 第 {i} 题（{form_cn} · {it.get('ability', '')}）")
         lines.append("")
         lines.append(it.get("question") or "")
         lines.append("")
@@ -274,6 +370,39 @@ def _render_public_md(paper_id: str, title: str, subject: str, items: list[dict]
     lines.append(f"- paper_id: {paper_id}")
     lines.append(f"- subject: {subject}")
     return "\n".join(lines)
+
+
+def render_dingtalk_chunks(paper: dict) -> list[str]:
+    """拆成多条钉钉可读消息：封面 + 每题一条（公式交给 send_push 做 CDN）。"""
+    pid = paper.get("paper_id") or ""
+    title = paper.get("title") or pid
+    items = paper.get("items") or []
+    chunks: list[str] = [
+        (
+            f"### 双周检测卷 · {title}\n\n"
+            f"- 试卷 ID：`{pid}`\n"
+            f"- 题数：{len(items)}（尽量为大题：填空/计算/证明）\n"
+            f"- 题目分条推送；公式已按钉钉可读方式渲染\n"
+            f"- **作答**：人机单聊发 `.md` 答卷，或「交卷」+ 正文；"
+            f"答卷请保留 `paper_id: {pid}`\n"
+            f"- 不再发送 `.md` 附件（钉钉打开异常 / 公式不渲染）\n"
+        )
+    ]
+    for i, it in enumerate(items, 1):
+        form = it.get("item_form") or "blank"
+        form_cn = {
+            "blank": "填空/计算",
+            "proof_outline": "证明/推导",
+            "mcq": "选择",
+        }.get(form, form)
+        q = (it.get("question") or "").strip()
+        chunks.append(
+            f"### {title} · 第 {i}/{len(items)} 题（{form_cn}）\n\n"
+            f"`paper_id: {pid}`\n\n"
+            f"{q}\n\n"
+            f"> 作答区请写入答卷 md 的「### 作答区 {i}」代码块中。"
+        )
+    return chunks
 
 
 def persist_paper(paper: dict) -> str:
@@ -404,8 +533,17 @@ def _extract_paper_id(md: str) -> str | None:
     return m.group(1) if m else None
 
 
-def submit_answer_md(md_text: str, *, paper_id: str = "") -> str:
-    """接收用户答卷 md → 逐题批改 → 写入 answers/ 更新 index。"""
+def submit_answer_md(
+    md_text: str,
+    *,
+    paper_id: str = "",
+    user_id: str = "",
+) -> str:
+    """接收用户答卷 md → 逐题批改 → 写入 answers/（按人）更新 index。
+
+    user_id 缺省取当前 learner 上下文；答卷与批改文件均按 (paper, uid) 落盘，
+    群内多人各自一份。
+    """
     md_text = (md_text or "").strip()
     if not md_text:
         return "答卷为空。请粘贴作答内容，或发送带作答区的 .md 文件。"
@@ -435,6 +573,7 @@ def submit_answer_md(md_text: str, *, paper_id: str = "") -> str:
             "空文件 / 只有标题不会进入批改。"
         )
 
+    subject = key.get("subject") or ""
     from grade import grade_answer as grade_one
 
     results = []
@@ -460,7 +599,13 @@ def submit_answer_md(md_text: str, *, paper_id: str = "") -> str:
         except Exception:
             pass
         try:
-            report = grade_one(q_full, ua)
+            # 传 key 里的 L2 + subject，让掌握度落到考纲正确位置并入周报
+            report = grade_one(
+                q_full,
+                ua,
+                kp_name=it.get("l2") or "",
+                subject=subject,
+            )
         except Exception as e:
             report = f"批改异常（已跳过本题，不影响其它题）：{e}"
         # structured verdict (BIG-TEACH-012c #13): 优先用 GradeResult 字段
@@ -474,29 +619,40 @@ def submit_answer_md(md_text: str, *, paper_id: str = "") -> str:
                 correct_n += 1
             elif credit is not None and credit > 0:
                 correct_n += 0.5
-            results.append(f"### 第{i}题\n{report.feedback}")
+            line = f"### 第{i}题\n{report.feedback}"
+            if report.kp_name and report.kp_name != "未分类":
+                line += (
+                    f"\n\n（{report.kp_name} 掌握 "
+                    f"{report.p_mastery_before:.0%}→{report.p_mastery_after:.0%}"
+                )
+                line += "）" if report.status == "applied" else "，置信不足未更新）"
+            results.append(line)
 
     total = len(key.get("items") or [])
+    score = int(round(correct_n / total * 100)) if total else 0
     summary = (
         f"# 双周答卷批改 · `{pid}`\n\n"
         f"- 解析到作答区：{len(user_ans)} 个\n"
         f"- 非空作答：{answered_n}/{total}\n"
-        f"- 判对（启发式）：{correct_n}/{total}\n\n"
+        f"- 判对（启发式）：{correct_n}/{total}\n"
+        f"- **得分：{score}/100**\n\n"
         + "\n\n".join(results)
     )
 
+    uid = (user_id or "").strip() or _uid()
     _ensure_dirs()
-    ans_path = os.path.join(ANSWERS_DIR, f"{pid}_answer.md")
+    ans_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_answer.md")
     with open(ans_path, "w", encoding="utf-8") as f:
         f.write(md_text)
-    with open(os.path.join(ANSWERS_DIR, f"{pid}_grade.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(ANSWERS_DIR, f"{pid}_{uid}_grade.md"), "w", encoding="utf-8") as f:
         f.write(summary)
 
     index = load_index()
     for p in index.get("papers") or []:
         if p.get("id") == pid:
             p["status"] = "graded" if answered_n else "submitted_empty"
-            p["answer_path"] = f"answers/{pid}_answer.md"
+            p["answer_path"] = f"answers/{pid}_{uid}_answer.md"
+            p["last_uid"] = uid
             break
     save_index(index)
     return summary

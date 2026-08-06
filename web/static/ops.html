@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teaching Ops</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --reject: #c45c5c;
+      --bypass: #c9a227;
+      --ok: #3d9a6a;
+      --line: #2a3548;
+      --accent: #5b8def;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.15rem; font-weight: 600; }
+    .meta { color: var(--muted); font-size: 0.85rem; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+    .chip b { color: var(--accent); }
+    main {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      padding: 16px 20px 40px;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; }
+    }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-height: 200px;
+    }
+    section h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .row {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .row > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+    .row > summary::-webkit-details-marker { display: none; }
+    .row[open] > summary { border-bottom: 1px solid var(--line); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .tag.reject { background: rgba(196,92,92,.2); color: var(--reject); }
+    .tag.bypass { background: rgba(201,162,39,.2); color: var(--bypass); }
+    .tag.ok { background: rgba(61,154,106,.2); color: var(--ok); }
+    .title-line { font-size: 0.92rem; }
+    .sub { color: var(--muted); font-size: 0.78rem; }
+    .body {
+      padding: 12px;
+      background: #121821;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .body h4 { margin: 10px 0 4px; font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+    .learner {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .learner .id { font-weight: 600; font-size: 0.9rem; }
+    .learner .kv { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
+    .empty { color: var(--muted); font-size: 0.9rem; padding: 12px 0; }
+    input[type="date"] {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 4px 8px;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    button.secondary {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+    .tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .err { color: var(--reject); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Teaching 运维看板</h1>
+      <div class="meta" id="statusLine">加载中…</div>
+    </div>
+    <div class="tools">
+      <input type="date" id="datePick" />
+      <button id="btnReload">刷新</button>
+      <button class="secondary" id="btnToday">今天</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </header>
+  <main>
+    <section>
+      <h2>驳回 / 软降级</h2>
+      <div id="rejects" class="empty">加载中…</div>
+    </section>
+    <section>
+      <h2>学员参数</h2>
+      <div id="learners" class="empty">加载中…</div>
+    </section>
+  </main>
+  <script>
+    function tokenFromUrl() {
+      const u = new URL(location.href);
+      return u.searchParams.get("token") || "";
+    }
+    function api(path) {
+      const t = tokenFromUrl();
+      const sep = path.includes("?") ? "&" : "?";
+      const url = t ? (path + sep + "token=" + encodeURIComponent(t)) : path;
+      return fetch(url, { cache: "no-store" }).then(async (r) => {
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || ("HTTP " + r.status));
+        return j;
+      });
+    }
+    function esc(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+    function todayISO() {
+      const d = new Date();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+    function renderRejects(rows) {
+      const el = document.getElementById("rejects");
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">这一天没有驳回/软降级记录。</div>';
+        return;
+      }
+      el.innerHTML = rows.slice().reverse().map((r, i) => {
+        const kind = r.kind === "review_parse_bypassed" ? "bypass" : "reject";
+        const label = kind === "bypass" ? "软降级" : "驳回";
+        const issues = (r.issues || []).join("; ");
+        return (
+          '<details class="row">' +
+          "<summary>" +
+          '<div class="title-line"><span class="tag ' + kind + '">' + label + "</span>" +
+          esc(r.subject || "?") + " · " + esc(r.kp || "(无 kp)") + "</div>" +
+          '<div class="sub">' + esc(r.ts || "") +
+          " · attempts=" + esc(r.attempts) +
+          " · " + esc(issues) + "</div>" +
+          "</summary>" +
+          '<div class="body">' +
+          "<h4>题干</h4>" + esc(r.draft || "(空)") +
+          "<h4>解答</h4>" + esc(r.answer || "(空)") +
+          (r.suggestion ? ("<h4>审查建议</h4>" + esc(r.suggestion)) : "") +
+          (r.review_raw ? ("<h4>审查原文(截断)</h4>" + esc(r.review_raw)) : "") +
+          "</div></details>"
+        );
+      }).join("");
+    }
+    function renderLearners(list) {
+      const el = document.getElementById("learners");
+      if (!list.length) {
+        el.innerHTML = '<div class="empty">尚无学员目录。</div>';
+        return;
+      }
+      el.innerHTML = list.map((L) => {
+        const diff = L.difficulty || {};
+        const diffStr = Object.keys(diff).map((k) => k + "=" + diff[k]).join(", ") || "(无)";
+        const aq = L.active_question || {};
+        const top = (L.weights_top || []).map((w) => w.kp + ":" + w.w).join(" · ") || "(无)";
+        return (
+          '<div class="learner">' +
+          '<div class="id">' + esc(L.staff_id) + "</div>" +
+          '<div class="kv">phase: ' + esc(L.phase || "-") +
+          " · 难度: " + esc(diffStr) + "</div>" +
+          '<div class="kv">当前题: ' + esc(aq.subject || "") + " / " + esc(aq.kp || "") +
+          " · " + esc(aq.preview || "") + "</div>" +
+          '<div class="kv">weights TOP: ' + esc(top) + "</div>" +
+          (L.digest_head ? ('<div class="kv">' + esc(L.digest_head) + "</div>") : "") +
+          "</div>"
+        );
+      }).join("");
+    }
+    function renderStatus(s) {
+      document.getElementById("statusLine").textContent =
+        "今日 " + (s.today || "") +
+        " · 落盘条目 " + (s.today_entry_count ?? "?") +
+        " · last_class " + ((s.last_class && s.last_class.subject) || "-") +
+        "/" + ((s.last_class && s.last_class.kp) || "-");
+      document.getElementById("chips").innerHTML =
+        '<span class="chip">驳回 <b>' + (s.rejects_today ?? 0) + "</b></span>" +
+        '<span class="chip">软降级 <b>' + (s.parse_bypass_today ?? 0) + "</b></span>" +
+        '<span class="chip">last_class 字数 <b>' + ((s.last_class && s.last_class.q_len) || 0) + "</b></span>";
+    }
+    async function reload() {
+      const date = document.getElementById("datePick").value || todayISO();
+      try {
+        const [st, rej, learn] = await Promise.all([
+          api("/ops/api/status"),
+          api("/ops/api/rejects?date=" + encodeURIComponent(date)),
+          api("/ops/api/learners"),
+        ]);
+        renderStatus(st);
+        renderRejects(rej.rows || []);
+        renderLearners(learn.learners || []);
+      } catch (e) {
+        document.getElementById("statusLine").innerHTML =
+          '<span class="err">加载失败: ' + esc(e.message) + "（检查 OPS_VIEW_TOKEN）</span>";
+      }
+    }
+    document.getElementById("datePick").value = todayISO();
+    document.getElementById("btnReload").onclick = reload;
+    document.getElementById("btnToday").onclick = () => {
+      document.getElementById("datePick").value = todayISO();
+      reload();
+    };
+    reload();
+  </script>
+</body>
+</html>

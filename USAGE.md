@@ -11,11 +11,13 @@ cp .env.example .env
 
 Required for a live DingTalk bot:
 
-- `DEEPSEEK_API_KEY`
+- `DEEPSEEK_API_KEY` — author / grade / explain / polish
 - `DINGTALK_CLIENT_ID`
 - `DINGTALK_CLIENT_SECRET`
+- `OPENROUTER_API_KEY` — chat Agent (Haiku)、题目/批改审查、可选 X digest（共用同一 key）
 
-Optional: WeCom fallback via `WECOM_*`, digests via `OPENROUTER_API_KEY`, RAG helper via `KB_*`.
+Optional: WeCom fallback via `WECOM_*`, RAG helper via `KB_*`.  
+Model overrides: `AGENT_MODEL`, `REVIEWER_MODEL`, `DEEPSEEK_MODEL_PRO`, `DEEPSEEK_MODEL_FLASH`.
 
 ## 2. Seed data
 
@@ -47,6 +49,7 @@ watchdog.bat
 
 ```bash
 python scripts/dry_prompt.py
+python scripts/_test_model_router.py
 python scripts/_test_rag_retrieve.py
 python scripts/_test_l3_gate.py
 ```

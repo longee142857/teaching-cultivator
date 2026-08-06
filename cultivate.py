@@ -8,7 +8,7 @@
 from __future__ import annotations
 import sys, os, json, datetime
 
-from config import DATA_DIR, RAG_FALLBACK
+from config import DATA_DIR, DAILY_RECORD_DIR, RAG_FALLBACK
 from learner import paths as P
 from learner.context import current_user_id, get_binding, bind_owner_schedule
 from decide.router import call_llm
@@ -76,6 +76,13 @@ def set_difficulty_pref(subject: str, level: str) -> bool:
     """设置用户难度偏好。level: basic / intermediate / challenge"""
     if level not in ("basic", "intermediate", "challenge"):
         return False
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return False
+    except Exception:
+        pass
     pref = _load_difficulty_pref()
     pref[subject] = level
     try:
@@ -99,6 +106,13 @@ def get_last_answer() -> str:
 def _save_last_push(subject: str, decision: InterventionDecision, content: str,
                     answer: str = "", ref_source: str = "", kp: str = "",
                     *, source: str = ""):
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return
+    except Exception:
+        pass
     try:
         record = {
             "subject": subject,
@@ -509,7 +523,8 @@ def _polish_once(builder: PromptBuilder, draft: str, answer: str, difficulty: st
 def generate(subject: str, decision: InterventionDecision, *,
              mastery: float = 0.0, opportunity_count: int = 0,
              consecutive_failures: int = 0,
-             source: str = "schedule") -> str:
+             source: str = "schedule",
+             exam_allow_low_rag: bool = False) -> str:
     """出题契约 → 编排质检/文案 → 可发送正文（Phase C）。"""
     topic_desc = TOPIC_MAP.get(subject, subject)
     difficulty_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
@@ -570,7 +585,7 @@ def generate(subject: str, decision: InterventionDecision, *,
             f"[cultivate] rag_retrieve ok={rag.ok} hit={rag.hit_count} "
             f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
         )
-        if rag_strict_enabled() and not rag.ok:
+        if rag_strict_enabled() and not rag.ok and not exam_allow_low_rag:
             # 换 L3 重试：同 L2 再试 1 个其他 L3
             if l3_id:
                 retry_l3 = pick_l3(l3_subj, kp, recent_l3=[l3_id])
@@ -591,7 +606,7 @@ def generate(subject: str, decision: InterventionDecision, *,
         print(f"[cultivate] rag_retrieve failed: {e}")
         from learner.rag_retrieve import rag_strict_enabled
 
-        if rag_strict_enabled():
+        if rag_strict_enabled() and not exam_allow_low_rag:
                 _rag_strict_blocked = True
                 return ""
 
@@ -608,16 +623,24 @@ def generate(subject: str, decision: InterventionDecision, *,
     builder = PromptBuilder()
 
     # ── ability_goal → item_form (BIG-TEACH-011d)；transfer 继承上次 form ──
+    # 双周卷可在 reason 写 [item_form=blank|proof_outline] 强制大题
     from learner.ability_cycle import (
-        ability_to_item_form, parse_ability_from_reason, _load_last_push_item_form,
+        ability_to_item_form,
+        parse_ability_from_reason,
+        parse_item_form_from_reason,
+        _load_last_push_item_form,
     )
     ability_goal = getattr(decision, 'ability_goal', '') or parse_ability_from_reason(decision.reason) or ''
     global _last_item_form
-    last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
-    _last_item_form = (
-        ability_to_item_form(ability_goal, last_form=last_form or None, subject=subject)
-        if ability_goal else "mcq"
-    )
+    forced_form = parse_item_form_from_reason(decision.reason)
+    if forced_form:
+        _last_item_form = forced_form
+    else:
+        last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
+        _last_item_form = (
+            ability_to_item_form(ability_goal, last_form=last_form or None, subject=subject)
+            if ability_goal else "mcq"
+        )
 
     author_kwargs = dict(
         subject_cn=subject_cn,
@@ -814,8 +837,17 @@ def _cultivate_inner(subject: str):
     answer = _last_answer
     ref_source = _last_ref_source
     if deliver(content):
-        record(subject, content, decision, answer, ref_source)
-        _save_last_push(subject, decision, content, answer, ref_source, kp=kp, source="schedule")
+        # 已发出：落盘失败不得抛出，否则上层会当成推送失败入重试队列 → 双发
+        try:
+            record(subject, content, decision, answer, ref_source)
+        except Exception as e:
+            print(f"[cultivate] {subject}: record failed after deliver: {e}")
+        try:
+            _save_last_push(
+                subject, decision, content, answer, ref_source, kp=kp, source="schedule"
+            )
+        except Exception as e:
+            print(f"[cultivate] {subject}: last_push save failed after deliver: {e}")
         print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
     else:
         print(f"[cultivate] {subject}: deliver failed, skipped record/last_push ({decision.type}/{kp})")

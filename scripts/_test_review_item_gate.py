@@ -51,12 +51,13 @@ def main():
         check(result["decision"] == "reject", f"decision={result['decision']}")
         check(len(result.get("issues", [])) > 0, f"has issues: {result.get('issues')}")
 
-    # ── 3. Non-JSON fallback → accept ──
-    sep("3. Non-JSON fallback")
+    # ── 3. Non-JSON fallback → reject (fail-closed) ──
+    sep("3. Non-JSON fallback → reject")
     with patch("decide.router.call_llm") as mock_llm:
         mock_llm.return_value = "Looks good to me"
         result = _review_item("Q", "A", kp="极限")
-        check(result["decision"] == "accept", f"fallback accept={result['decision']}")
+        check(result["decision"] == "reject", f"fallback reject={result['decision']}")
+        check("review_item_parse_failed" in result.get("issues", []), "parse_failed issue")
 
     # ── 4. orchestrate_push with review accept ──
     sep("4. orchestrate_push with review accept")

@@ -45,13 +45,15 @@ def main():
         importlib.reload(config_mod)
         check(config_mod.SSL_VERIFY is False, "SSL_VERIFY=0 → False")
 
-    # agent/agent.py imports SSL_VERIFY
+    # agent → call_deepseek_chat → _post_deepseek uses SSL_VERIFY
     from agent.agent import TeachingAgent
     agent = TeachingAgent()
-    # Check that _call_llm method exists and uses verify param
     import inspect
     src = inspect.getsource(agent._call_llm)
-    check("verify=SSL_VERIFY" in src or "verify=" in src, "agent._call_llm uses verify")
+    check("call_deepseek_chat" in src, "agent._call_llm uses call_deepseek_chat")
+    from decide.router import _post_deepseek
+    src_post = inspect.getsource(_post_deepseek)
+    check("verify=SSL_VERIFY" in src_post or "verify=" in src_post, "deepseek post uses verify")
 
     # decide/router.py uses verify param
     from decide.router import call_llm as router_call_llm

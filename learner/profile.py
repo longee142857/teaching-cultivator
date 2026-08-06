@@ -66,8 +66,10 @@ def _format_md(p: WeeklyProfile) -> str:
     if p.kp_trends:
         lines.append("## 掌握度变化")
         for t in p.kp_trends:
-            arrow = "↑" if t.mastery_after > t.mastery_before else "↓" if t.mastery_after < t.mastery_before else "→"
-            lines.append(f"- {t.name} {t.mastery_before:.0%} {arrow} {t.mastery_after:.0%} ({t.opportunity_count}次)")
+            mb = t.mastery_before or 0
+            ma = t.mastery_after or 0
+            arrow = "↑" if ma > mb else "↓" if ma < mb else "→"
+            lines.append(f"- {t.name} {mb:.0%} {arrow} {ma:.0%} ({t.opportunity_count}次)")
         lines.append("")
 
     if p.error_patterns:

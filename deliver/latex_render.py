@@ -185,6 +185,9 @@ def render_latex_png(latex: str, *, fontsize: int = 18, dpi: int = 160) -> bytes
     latex = (latex or "").strip()
     if not latex:
         return None
+    # matplotlib mathtext 兼容：\le/\ge → \leq/\geq
+    latex = re.sub(r"\\le(?![a-zA-Z])", r"\\leq", latex)
+    latex = re.sub(r"\\ge(?![a-zA-Z])", r"\\geq", latex)
     expr = latex
     if not (expr.startswith("$") and expr.endswith("$")):
         expr = f"${expr}$"

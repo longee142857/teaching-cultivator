@@ -146,13 +146,16 @@ def _summarize_for_condense(msgs: list[dict]) -> str:
             if c:
                 user_bits.append(c[:80])
         elif role == "assistant":
+            c = (m.get("content") or "").replace("\n", " ").strip()
+            # 已压缩过的摘要不再二次压榨，避免 [对话摘要] 递归嵌套
+            if not c or c.startswith("[对话摘要]"):
+                continue
             for tc in m.get("tool_calls") or []:
                 try:
                     name = tc.get("function", {}).get("name") or "?"
                 except Exception:
                     name = "?"
                 tools_used.append(name)
-            c = (m.get("content") or "").replace("\n", " ").strip()
             if c:
                 asst_bits.append(c[:80])
         elif role == "tool":

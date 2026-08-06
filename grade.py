@@ -360,6 +360,14 @@ def grade_answer(
     item_type = _detect_item_type(q)
 
     # ── BKT update（仅 applied 时更新 mastery；pending 直写日志不更新 state）──
+    # 作答即唤醒：先 mark_answered，避免 silent 闸挡住 weights/BKT 写入
+    try:
+        from learner.roster import mark_answered
+
+        mark_answered(_uid())
+    except Exception as e:
+        print(f"[grade] mark_answered skipped: {e}")
+
     bkt = _get_bkt_log()
     mastery_before = 0.2
     mastery_after = 0.2
@@ -374,21 +382,26 @@ def grade_answer(
         if status == "applied":
             rec_correct = True if credit is not None else is_correct
             _kp_overrides = _bkt_module._load_bkt_overrides().get(extracted_kp, {})
-            try:
-                bkt.record(
-                    _uid(), extracted_kp, rec_correct, kc,
-                    subject=subj, item_type=item_type, credit=credit,
-                    status="applied", overrides=_kp_overrides,
-                )
-            except TypeError:
-                bkt.record(_uid(), extracted_kp, is_correct, kc)
+            # 未分类不是有效 L2，不写 BKT 状态（权重 bump/decay 已跳过）
+            if extracted_kp and extracted_kp != "未分类":
+                try:
+                    bkt.record(
+                        _uid(), extracted_kp, rec_correct, kc,
+                        subject=subj, item_type=item_type, credit=credit,
+                        status="applied", overrides=_kp_overrides,
+                    )
+                except TypeError:
+                    bkt.record(_uid(), extracted_kp, is_correct, kc)
             mastery_after = kc.p_mastery
 
             # 答错（非部分正确）→ 轻微提高出题权重
             if credit is None and not is_correct and extracted_kp and extracted_kp != "未分类":
                 try:
                     from learner.weights_ops import bump_kp_weight
-                    bump_kp_weight(subj, extracted_kp, reason=f"grade_incorrect:{extracted_kp}")
+                    # record_bkt=False：本函数已 bkt.record 记过答错，避免双重 BKT
+                    bump_kp_weight(subj, extracted_kp,
+                                   reason=f"grade_incorrect:{extracted_kp}",
+                                   record_bkt=False)
                 except Exception as e:
                     print(f"[grade] weight bump skipped: {e}")
 

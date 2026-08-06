@@ -86,24 +86,39 @@ def load_daily_records(days: int = 7) -> str:
 
 # ── 分析函数 ──
 
+def _is_applied_learning_record(r: dict) -> bool:
+    """是否有效学习记录（audit/pending/未应用/无 mastery 均跳过）。"""
+    if r.get("status") in ("audit", "pending"):
+        return False
+    if r.get("update_applied") is False:
+        return False
+    kp = r.get("knowledge_point")
+    if not kp:
+        return False
+    # mastery 缺失视为无效（adjust_difficulty audit 等日志会缺 mastery）
+    if r.get("mastery_before") is None and r.get("mastery_after") is None:
+        return False
+    return True
+
+
 def analyze_kp_trends(bkt_log: list[dict]) -> list[KPTrend]:
-    """BKT 掌握度变化趋势（仅基于 answer-log）。"""
+    """BKT 掌握度变化趋势（仅基于有效学习记录，跳过 audit/pending/无 mastery）。"""
     latest = {}
     first = {}
     for r in bkt_log:
-        kp = r.get("knowledge_point")
-        if not kp:
+        if not _is_applied_learning_record(r):
             continue
+        kp = r.get("knowledge_point")
         if kp not in first:
-            first[kp] = r.get("mastery_before", 0)
-        latest[kp] = r.get("mastery_after", 0)
+            first[kp] = r.get("mastery_before") or 0
+        latest[kp] = r.get("mastery_after") or 0
 
     kp_occurrences: dict[str, int] = defaultdict(int)
     kp_last_seen: dict[str, str] = {}
     for r in bkt_log:
-        kp = r.get("knowledge_point")
-        if not kp:
+        if not _is_applied_learning_record(r):
             continue
+        kp = r.get("knowledge_point")
         kp_occurrences[kp] += 1
         ts = r.get("ts", "")
         if ts and (kp not in kp_last_seen or ts > kp_last_seen[kp]):

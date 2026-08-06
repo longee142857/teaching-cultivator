@@ -279,7 +279,12 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
 
         # 报名 / 首次开通（口令或懒开户）
         try:
-            from learner.roster import is_enroll_utterance, ensure_learner, resolve_learner
+            from learner.roster import (
+                is_enroll_utterance,
+                ensure_learner,
+                resolve_learner,
+                refresh_silent_status,
+            )
 
             if is_enroll_utterance(text):
                 ensure_learner(sender_staff, nick=sender_nick, source="enroll")
@@ -289,6 +294,8 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 return AckMessage.STATUS_OK, "OK"
             if resolve_learner(sender_staff) is None:
                 ensure_learner(sender_staff, nick=sender_nick, source="auto")
+            else:
+                refresh_silent_status(sender_staff)
         except Exception as e:
             logger.warning("enroll handle: %s", e)
 
@@ -446,13 +453,19 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
             return False
 
     def _maybe_send_followup_card(self, session_webhook: str, tools: list) -> None:
-        """根据本轮用过的工具，跟发题目卡或周报操作卡。"""
+        """根据本轮用过的工具，跟发题目卡 / 周报操作卡 / 知识点确认卡。"""
         try:
             from deliver.dingtalk_media import send_session_action_card
             from deliver.action_cards import (
                 QUESTION_ACTIONS,
                 WEEKLY_ACTIONS,
                 question_followup_hint,
+                confirm_kp_actions,
+                confirm_kp_title,
+                confirm_kp_text,
+                confirm_override_actions,
+                confirm_override_title,
+                confirm_override_text,
             )
         except Exception as e:
             logger.warning("action card import: %s", e)
@@ -474,6 +487,28 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 WEEKLY_ACTIONS,
             )
             logger.info("followup weekly ActionCard: %s", ok)
+        elif "propose_add_kp" in tools:
+            agent = self._get_agent()
+            token = getattr(agent, "_pending_kp_token", "") or ""
+            if token:
+                ok = send_session_action_card(
+                    session_webhook,
+                    confirm_kp_title(),
+                    confirm_kp_text(),
+                    confirm_kp_actions(token),
+                )
+                logger.info("confirm kp ActionCard: %s token=%s", ok, token)
+        elif "override_grade" in tools:
+            agent = self._get_agent()
+            token = getattr(agent, "_pending_override_token", "") or ""
+            if token:
+                ok = send_session_action_card(
+                    session_webhook,
+                    confirm_override_title(),
+                    confirm_override_text(),
+                    confirm_override_actions(token),
+                )
+                logger.info("confirm override ActionCard: %s token=%s", ok, token)
 
 
 class DingTalkBot:
@@ -738,32 +773,134 @@ class DingTalkBot:
             file_type=file_type,
         )
 
+    def send_image(self, png_bytes: bytes, filename: str = "exam.png") -> bool:
+        """群内发图片（sampleImageMsg，手机可在线预览）。"""
+        if not self.conversation_id or not png_bytes:
+            return False
+        from deliver.dingtalk_media import (
+            get_access_token,
+            upload_image,
+            send_group_image,
+        )
+        token = get_access_token(self.client_id, self.client_secret)
+        mid = upload_image(token, png_bytes, filename=filename)
+        if not mid:
+            return False
+        return send_group_image(
+            access_token=token,
+            robot_code=self.client_id,
+            open_conversation_id=self.conversation_id,
+            media_id=mid,
+        )
+
     def send_biweekly_papers(self, papers: list) -> bool:
-        """推送双周试卷：markdown 摘要 + .md 文件附件。"""
+        """推送双周试卷：摘要 + H5 链接 ActionCard（KaTeX）；可选 PNG 降级。
+
+        默认不再发 PNG。设 EXAM_PUSH_PNG=1 可额外发长图。
+        未配置 EXAM_WEB_PUBLIC_BASE 时回退 PNG（若有图）或仅摘要。
+        """
         ok_any = False
-        for paper in papers or []:
-            pid = paper.get("paper_id") or ""
-            title = paper.get("title") or pid
-            n = paper.get("n_ok") or 0
-            md = paper.get("public_md") or ""
+        from config import EXAM_PUSH_PNG, EXAM_WEB_PUBLIC_BASE
+
+        use_h5 = bool((EXAM_WEB_PUBLIC_BASE or "").strip())
+        n_papers = len(papers or [])
+        if n_papers:
+            ids = ", ".join(
+                f"`{p.get('paper_id')}`" for p in papers if p.get("paper_id")
+            )
+            form_line = (
+                "- 形式：**H5 阅读页**（KaTeX 公式，点卡片打开）\n"
+                if use_h5
+                else "- 形式：**图片长卷**（未配置 EXAM_WEB_PUBLIC_BASE）\n"
+            )
             summary = (
-                f"### 双周检测卷 · {title}\n\n"
-                f"- 试卷 ID：`{pid}`\n"
-                f"- 题数：{n}\n"
-                f"- 请下载附件作答；**人机单聊**发回 `.md` 答卷"
-                f"（或发「交卷」+ 正文）。群聊无法收文件。\n"
+                f"### 双周检测卷已发出（{n_papers} 份）\n\n"
+                f"- 试卷：{ids}\n"
+                f"{form_line}"
+                f"- **作答**：打开链接在网页填写，或人机单聊发 `.md` /「交卷」+ 正文\n"
+                f"- 群聊无法收答卷文件\n"
             )
             if self.send_push(summary):
                 ok_any = True
-            if md:
+
+        for paper in papers or []:
+            pid = paper.get("paper_id") or "paper"
+            title = paper.get("title") or pid
+            url = None
+            if use_h5:
                 try:
-                    raw = md.encode("utf-8")
-                    if self.send_file(raw, f"{pid}.md", "md"):
-                        ok_any = True
-                    else:
-                        self.send_push(md[:15000])
+                    from deliver.exam_web import issue_exam_url
+
+                    url = issue_exam_url(pid)
                 except Exception as e:
-                    logger.warning("biweekly file push: %s", e)
+                    logger.warning("issue exam url %s: %s", pid, e)
+                    url = None
+
+            if url and url.startswith("http"):
+                try:
+                    from deliver.dingtalk_media import (
+                        get_access_token,
+                        send_group_action_card_urls,
+                    )
+
+                    token = get_access_token(self.client_id, self.client_secret)
+                    text = (
+                        f"**{title}**\n\n"
+                        f"`{pid}`\n\n"
+                        f"点下方按钮打开试卷（KaTeX 渲染）。"
+                        f"也可私聊发答卷 md。"
+                    )
+                    ok = send_group_action_card_urls(
+                        access_token=token,
+                        robot_code=self.client_id,
+                        open_conversation_id=self.conversation_id,
+                        title=title[:64],
+                        text=text,
+                        buttons=[("打开试卷", url)],
+                    )
+                    if ok:
+                        ok_any = True
+                        logger.info("biweekly H5 card sent: %s -> %s", pid, url)
+                    else:
+                        logger.warning("biweekly H5 card failed: %s", pid)
+                        self.send_push(f"### {title}\n\n打开试卷：{url}")
+                        ok_any = True
+                except Exception as e:
+                    logger.warning("biweekly H5 push %s: %s", pid, e)
+                    self.send_push(f"### {title}\n\n打开试卷：{url}")
+                    ok_any = True
+            elif not EXAM_PUSH_PNG:
+                # no public base: fall through to PNG path below
+                pass
+
+            if EXAM_PUSH_PNG or not (url and url.startswith("http")):
+                try:
+                    from deliver.exam_image import build_exam_png_pages, persist_exam_pngs
+
+                    pages = build_exam_png_pages(paper)
+                    if not pages:
+                        raise RuntimeError("empty png pages")
+                    paths = persist_exam_pngs(paper, pages)
+                    logger.info(
+                        "exam png saved: %s (%d pages, %s)",
+                        pid,
+                        len(pages),
+                        ",".join(os.path.basename(p) for p in paths),
+                    )
+                    self.send_push(f"### {title}\n\n`{pid}` · 共 {len(pages)} 页图 ↓")
+                    for i, png in enumerate(pages, 1):
+                        fname = f"{pid}_p{i}.png"
+                        if self.send_image(png, filename=fname):
+                            ok_any = True
+                            logger.info(
+                                "biweekly PNG sent: %s (%d bytes)", fname, len(png)
+                            )
+                        else:
+                            logger.warning("biweekly PNG send failed: %s", fname)
+                except Exception as e:
+                    logger.warning("biweekly PNG build/send %s: %s", pid, e)
+                    if not (url and str(url).startswith("http")):
+                        self.send_push(f"### {title}\n\n试卷推送失败：{e}")
         return ok_any
 
     def _push_via_api(self, content: str) -> bool:

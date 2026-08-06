@@ -310,6 +310,13 @@ def load_recent_picks(subject: str) -> list[str]:
 def append_recent_pick(subject: str, kp: str, *, maxlen: int = 12) -> None:
     if not kp or subject not in ("math", "comm"):
         return
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return
+    except Exception:
+        pass
     data = _load_json(_recent_picks_path())
     picks = [p for p in (data.get(subject) or []) if isinstance(p, str)]
     picks = [kp] + [p for p in picks if p != kp]
