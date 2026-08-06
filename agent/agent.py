@@ -263,6 +263,15 @@ class TeachingAgent:
         self._bound_staff_id = sid
         self.blocks = MemoryBlocks(staff_id=sid)
         self.transcript = Transcript(staff_id=sid)
+        # 静默学员：不把公共课/个人 last_push 同步进 memory，避免空壳污染
+        try:
+            from learner.roster import refresh_silent_status, is_silent
+
+            refresh_silent_status(sid)
+            if is_silent(sid):
+                return
+        except Exception:
+            pass
         if not self.blocks._data["active_question"].get("preview"):
             self.blocks.refresh_from_last_push()
             self.blocks.refresh_learner_digest()
@@ -1032,6 +1041,28 @@ class TeachingAgent:
 
     def _run_tool(self, name: str, args: dict) -> str:
         """执行工具调用，返回文本结果。"""
+        # 静默学员：允许问答/查库/批改；禁止改权重/难度/主动出题等学习态写入
+        # grade_answer 会 mark_answered 唤醒，故放行
+        _silent_block = {
+            "generate_question",
+            "note_weak_point",
+            "adjust_difficulty",
+            "confirm_override",
+            "propose_add_kp",
+            "confirm_add_kp",
+        }
+        if name in _silent_block:
+            try:
+                from learner.roster import is_silent
+
+                if is_silent(self._bound_staff_id):
+                    return (
+                        "SILENT_BLOCKED|你当前处于静默状态（超过一天未作答），"
+                        "学习进度已冻结。提交一道题的答案后会自动恢复；"
+                        "现在仍可提问或讨论。"
+                    )
+            except Exception:
+                pass
         try:
             if name == "generate_question":
                 content = generate_question(args.get("subject", "math"), args.get("kp_hint", ""))

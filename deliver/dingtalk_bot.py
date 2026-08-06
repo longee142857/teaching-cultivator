@@ -279,7 +279,12 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
 
         # 报名 / 首次开通（口令或懒开户）
         try:
-            from learner.roster import is_enroll_utterance, ensure_learner, resolve_learner
+            from learner.roster import (
+                is_enroll_utterance,
+                ensure_learner,
+                resolve_learner,
+                refresh_silent_status,
+            )
 
             if is_enroll_utterance(text):
                 ensure_learner(sender_staff, nick=sender_nick, source="enroll")
@@ -289,6 +294,8 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 return AckMessage.STATUS_OK, "OK"
             if resolve_learner(sender_staff) is None:
                 ensure_learner(sender_staff, nick=sender_nick, source="auto")
+            else:
+                refresh_silent_status(sender_staff)
         except Exception as e:
             logger.warning("enroll handle: %s", e)
 

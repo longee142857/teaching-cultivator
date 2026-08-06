@@ -360,6 +360,14 @@ def grade_answer(
     item_type = _detect_item_type(q)
 
     # ── BKT update（仅 applied 时更新 mastery；pending 直写日志不更新 state）──
+    # 作答即唤醒：先 mark_answered，避免 silent 闸挡住 weights/BKT 写入
+    try:
+        from learner.roster import mark_answered
+
+        mark_answered(_uid())
+    except Exception as e:
+        print(f"[grade] mark_answered skipped: {e}")
+
     bkt = _get_bkt_log()
     mastery_before = 0.2
     mastery_after = 0.2

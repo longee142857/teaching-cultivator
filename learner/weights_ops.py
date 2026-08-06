@@ -77,6 +77,13 @@ def load_weights() -> dict:
 
 def save_weights(weights: dict) -> bool:
     try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return False
+    except Exception:
+        pass
+    try:
         path = _weights_path()
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:

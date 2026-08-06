@@ -82,6 +82,13 @@ def _save_recent_picks(data: dict[str, list[str]]) -> None:
 def append_recent_ability(subject: str, ability: str, *, maxlen: int = 6) -> None:
     if ability not in ABILITY_GOALS:
         return
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return
+    except Exception:
+        pass
     data = _load_recent_picks()
     picks = [p for p in (data.get(subject) or []) if isinstance(p, str)]
     picks = [ability] + [p for p in picks if p != ability]

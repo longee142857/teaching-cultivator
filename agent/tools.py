@@ -332,6 +332,10 @@ def adjust_difficulty(subject: str, level: str) -> str:
     result = f"{subject} 难度已调整为 {level}" if ok else "调整失败"
     # 可选审计日志（不影响 mastery）
     try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return result
         from datetime import datetime, timezone
         entry = _read_latest_entry()
         kp = ""

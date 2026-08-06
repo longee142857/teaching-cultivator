@@ -76,6 +76,13 @@ def set_difficulty_pref(subject: str, level: str) -> bool:
     """设置用户难度偏好。level: basic / intermediate / challenge"""
     if level not in ("basic", "intermediate", "challenge"):
         return False
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return False
+    except Exception:
+        pass
     pref = _load_difficulty_pref()
     pref[subject] = level
     try:
@@ -99,6 +106,13 @@ def get_last_answer() -> str:
 def _save_last_push(subject: str, decision: InterventionDecision, content: str,
                     answer: str = "", ref_source: str = "", kp: str = "",
                     *, source: str = ""):
+    try:
+        from learner.roster import allows_learning_writes
+
+        if not allows_learning_writes():
+            return
+    except Exception:
+        pass
     try:
         record = {
             "subject": subject,

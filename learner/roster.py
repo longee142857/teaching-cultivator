@@ -1,4 +1,11 @@
-"""学员花名册：staffId → 目录与报名状态。"""
+"""学员花名册：staffId → 目录与报名状态。
+
+静默策略（方案 A）：
+- 开户后超过 SILENT_AFTER_SEC 未作答（无 last_answer_at 更新）→ status=silent
+- 保留 id 与目录；隔绝学习态写入（weights / answer-log 副作用 / 公共课同步进个人 memory 等）
+- 任意真实作答（grade 写日志）→ mark_answered 唤醒为 active
+- 纯私聊不唤醒；schedule 绑定不受静默闸影响
+"""
 from __future__ import annotations
 
 import json
@@ -9,6 +16,19 @@ from typing import Any, Optional
 
 from learner import paths as P
 from learner.context import LearnerIdentityError
+
+STATUS_ACTIVE = "active"
+STATUS_SILENT = "silent"
+
+# 超过此时长未作答 → 静默（可用环境变量覆盖，单位秒）
+def _silent_after_sec() -> float:
+    try:
+        raw = os.environ.get("SILENT_AFTER_SEC", "").strip()
+        if raw:
+            return max(60.0, float(raw))
+    except Exception:
+        pass
+    return 24 * 3600.0
 
 
 def _load_index() -> dict[str, Any]:
@@ -45,26 +65,58 @@ def list_learners() -> dict[str, dict[str, Any]]:
     return dict(_load_index().get("learners") or {})
 
 
+def list_active_learners() -> dict[str, dict[str, Any]]:
+    """刷新静默后仅返回 active。"""
+    out: dict[str, dict[str, Any]] = {}
+    for sid in list(list_learners().keys()):
+        entry = refresh_silent_status(sid)
+        if entry and entry.get("status") == STATUS_ACTIVE:
+            out[sid] = entry
+    return out
+
+
 def upsert_roster(
     staff_id: str,
     *,
     nick: str = "",
     source: str = "",
-    status: str = "active",
+    status: Optional[str] = None,
+    last_answer_at: Optional[float] = None,
+    set_last_answer_at: bool = False,
 ) -> dict[str, Any]:
+    """写入/更新花名册。
+
+    status / last_answer_at 默认保留旧值（避免私聊 save_discuss_user 误把 silent 刷回 active）。
+    set_last_answer_at=True 时写入 last_answer_at（缺省 now）并强制 active。
+    """
     sid = (staff_id or "").strip()
     if not sid:
         raise LearnerIdentityError("staff_id 为空，无法写入花名册")
     data = _load_index()
     prev = data["learners"].get(sid) or {}
+    now = time.time()
+
+    if set_last_answer_at:
+        ans_ts = float(last_answer_at) if last_answer_at is not None else now
+        new_status = STATUS_ACTIVE
+    else:
+        ans_ts = prev.get("last_answer_at")
+        if last_answer_at is not None:
+            ans_ts = float(last_answer_at)
+        if status is not None:
+            new_status = status
+        else:
+            new_status = prev.get("status") or STATUS_ACTIVE
+
     entry = {
         "staff_id": sid,
         "safe_id": P.safe_learner_id(sid),
         "nick": (nick or "").strip() or prev.get("nick") or "",
         "source": source or prev.get("source") or "",
-        "status": status or prev.get("status") or "active",
-        "enrolled_at": prev.get("enrolled_at") or time.time(),
-        "updated_at": time.time(),
+        "status": new_status,
+        "enrolled_at": prev.get("enrolled_at") or now,
+        "last_answer_at": ans_ts,
+        "updated_at": now,
     }
     data["learners"][sid] = entry
     _save_index(data)
@@ -77,11 +129,14 @@ def ensure_learner(
     nick: str = "",
     source: str = "enroll",
 ) -> dict[str, Any]:
-    """报名/首次见到：建目录 + 初始 weights + 花名册。"""
+    """报名/首次见到：建目录 + 初始 weights + 花名册。
+
+    口令报名显式 active；已存在学员保留原 status（含 silent）。
+    """
     sid = (staff_id or "").strip()
     if not sid:
         raise LearnerIdentityError("staff_id 为空，禁止 ensure_learner")
-    d = P.ensure_learner_dir(sid)
+    P.ensure_learner_dir(sid)
     wpath = P.weights_path(sid)
     if not os.path.isfile(wpath):
         example = P.weights_example_path()
@@ -90,8 +145,120 @@ def ensure_learner(
         else:
             with open(wpath, "w", encoding="utf-8") as f:
                 json.dump({"math": {"kps": {}}, "comm": {"kps": {}}}, f, ensure_ascii=False, indent=2)
-    # 空 answer-log 可惰性创建
-    return upsert_roster(sid, nick=nick, source=source, status="active")
+
+    prev = resolve_learner(sid)
+    if source == "enroll":
+        return upsert_roster(sid, nick=nick, source=source, status=STATUS_ACTIVE)
+    if prev:
+        return upsert_roster(sid, nick=nick, source=source)
+    return upsert_roster(sid, nick=nick, source=source, status=STATUS_ACTIVE)
+
+
+def _answer_anchor(entry: dict[str, Any]) -> float:
+    """未作答过则用 enrolled_at 起算。"""
+    la = entry.get("last_answer_at")
+    if isinstance(la, (int, float)) and la > 0:
+        return float(la)
+    en = entry.get("enrolled_at")
+    if isinstance(en, (int, float)) and en > 0:
+        return float(en)
+    return 0.0
+
+
+def refresh_silent_status(staff_id: str, *, now: Optional[float] = None) -> Optional[dict[str, Any]]:
+    """按方案 A 刷新 status；返回最新条目（不存在则 None）。"""
+    sid = (staff_id or "").strip()
+    if not sid:
+        return None
+    data = _load_index()
+    entry = data["learners"].get(sid)
+    if not entry:
+        return None
+    ts = float(now if now is not None else time.time())
+    anchor = _answer_anchor(entry)
+    limit = _silent_after_sec()
+    cur = entry.get("status") or STATUS_ACTIVE
+
+    if anchor > 0 and (ts - anchor) >= limit:
+        if cur != STATUS_SILENT:
+            entry = {**entry, "status": STATUS_SILENT, "updated_at": ts}
+            data["learners"][sid] = entry
+            _save_index(data)
+        return data["learners"][sid]
+
+    # 锚点仍在窗口内：若曾被标 silent 但 last_answer 已更新，拉回 active
+    if cur == STATUS_SILENT and anchor > 0 and (ts - anchor) < limit:
+        entry = {**entry, "status": STATUS_ACTIVE, "updated_at": ts}
+        data["learners"][sid] = entry
+        _save_index(data)
+        return data["learners"][sid]
+
+    return entry
+
+
+def sweep_silent(*, now: Optional[float] = None) -> list[str]:
+    """扫描全员，返回新进入 silent 的 staff_id 列表。"""
+    flipped: list[str] = []
+    for sid, prev in list_learners().items():
+        before = prev.get("status")
+        after = refresh_silent_status(sid, now=now)
+        if after and before != STATUS_SILENT and after.get("status") == STATUS_SILENT:
+            flipped.append(sid)
+    return flipped
+
+
+def mark_answered(staff_id: str | None = None, *, at: Optional[float] = None) -> Optional[dict[str, Any]]:
+    """作答唤醒：刷新 last_answer_at 并置 active。"""
+    sid = (staff_id or "").strip()
+    if not sid:
+        try:
+            from learner.context import get_learner_id
+
+            sid = (get_learner_id() or "").strip()
+        except Exception:
+            sid = ""
+    if not sid:
+        return None
+    # 确保花名册有条目
+    if resolve_learner(sid) is None:
+        ensure_learner(sid, source="answer")
+    return upsert_roster(sid, set_last_answer_at=True, last_answer_at=at)
+
+
+def is_silent(staff_id: str | None = None) -> bool:
+    sid = (staff_id or "").strip()
+    if not sid:
+        try:
+            from learner.context import get_learner_id
+
+            sid = (get_learner_id() or "").strip()
+        except Exception:
+            return False
+    if not sid:
+        return False
+    entry = refresh_silent_status(sid)
+    return bool(entry and entry.get("status") == STATUS_SILENT)
+
+
+def allows_learning_writes(staff_id: str | None = None) -> bool:
+    """学习态写入是否允许。
+
+    schedule 绑定（公共课/课表）始终允许；silent 个人账户拒绝。
+    无身份上下文时放行（兼容单测与无花名册路径）。
+    """
+    try:
+        from learner.context import get_binding, get_learner_id
+
+        if get_binding() == "schedule":
+            return True
+        sid = (staff_id or get_learner_id() or "").strip()
+    except Exception:
+        sid = (staff_id or "").strip()
+    if not sid:
+        return True
+    if resolve_learner(sid) is None:
+        return True
+    return not is_silent(sid)
 
 
 ENROLL_PHRASES = (

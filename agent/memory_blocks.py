@@ -175,6 +175,13 @@ class MemoryBlocks:
         subject: str = "",
         kp: str = "",
     ) -> None:
+        try:
+            from learner.roster import allows_learning_writes
+
+            if not allows_learning_writes(self._staff_id):
+                return
+        except Exception:
+            pass
         preview = (content or "").replace("\n", " ").strip()
         if len(preview) > QUESTION_PREVIEW_LEN:
             preview = preview[:QUESTION_PREVIEW_LEN] + "…"
@@ -188,6 +195,13 @@ class MemoryBlocks:
 
     def refresh_from_last_push(self) -> None:
         """从 last_push / last_class 同步 active_question。"""
+        try:
+            from learner.roster import allows_learning_writes
+
+            if not allows_learning_writes(self._staff_id):
+                return
+        except Exception:
+            pass
         try:
             lp = self._last_push_path
             if not os.path.isfile(lp):
@@ -235,6 +249,13 @@ class MemoryBlocks:
         subject/kp 为空时从文件补读（个人 last_push 或公共 last_class），
         保证 active_question 与最新推送对齐，防错题叙事粘滞。
         """
+        try:
+            from learner.roster import allows_learning_writes
+
+            if not allows_learning_writes(self._staff_id):
+                return
+        except Exception:
+            pass
         if not subject or not kp:
             try:
                 # 优先公共 last_class（定时推送写这里），其次个人 last_push
