@@ -165,6 +165,43 @@ def _answer_anchor(entry: dict[str, Any]) -> float:
     return 0.0
 
 
+def _infer_last_answer_from_log(staff_id: str) -> Optional[float]:
+    """从 answer-log 推断最近作答时间（兼容升级前无 last_answer_at 的花名册）。"""
+    try:
+        path = P.answer_log_path(staff_id)
+    except Exception:
+        return None
+    if not os.path.isfile(path):
+        return None
+    latest: Optional[float] = None
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    e = json.loads(line)
+                except Exception:
+                    continue
+                if e.get("status") == "audit" and e.get("correct") is None:
+                    continue
+                raw = e.get("ts")
+                if not raw:
+                    continue
+                try:
+                    from datetime import datetime
+
+                    t = datetime.fromisoformat(str(raw).replace("Z", "+00:00")).timestamp()
+                except Exception:
+                    continue
+                if latest is None or t > latest:
+                    latest = t
+    except OSError:
+        return None
+    return latest
+
+
 def refresh_silent_status(staff_id: str, *, now: Optional[float] = None) -> Optional[dict[str, Any]]:
     """按方案 A 刷新 status；返回最新条目（不存在则 None）。"""
     sid = (staff_id or "").strip()
@@ -175,6 +212,16 @@ def refresh_silent_status(staff_id: str, *, now: Optional[float] = None) -> Opti
     if not entry:
         return None
     ts = float(now if now is not None else time.time())
+
+    # 升级兼容：缺 last_answer_at 时从 answer-log 回填一次
+    la = entry.get("last_answer_at")
+    if not (isinstance(la, (int, float)) and la > 0):
+        inferred = _infer_last_answer_from_log(sid)
+        if inferred is not None:
+            entry = {**entry, "last_answer_at": inferred, "updated_at": ts}
+            data["learners"][sid] = entry
+            _save_index(data)
+
     anchor = _answer_anchor(entry)
     limit = _silent_after_sec()
     cur = entry.get("status") or STATUS_ACTIVE
