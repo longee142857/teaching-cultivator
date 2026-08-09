@@ -254,10 +254,11 @@ def _looks_truncated(provided: str, stored: str) -> bool:
     return False
 
 
-def grade_answer(last_question: str, user_answer: str) -> str:
+def grade_answer(last_question: str = "", user_answer: str = "") -> str:
     """批改作答，返回结果摘要。
 
     优先用 last_push / 题库全文；若 LLM 传入了截断片段则丢弃改用全文。
+    last_question 可空（系统自动读当前题），与 HTTP API TS 端 Optional 语义对齐。
     """
     ua = (user_answer or "").strip()
     if not ua:
