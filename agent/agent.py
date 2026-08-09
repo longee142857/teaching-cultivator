@@ -29,6 +29,7 @@ from agent.tools import (
     list_recent_entries,
     note_weak_point,
     get_learner_snapshot,
+    get_active_question,
     list_exam_bank,
     get_exam_paper,
     submit_exam_answer_md,
@@ -524,6 +525,14 @@ class TeachingAgent:
                             },
                         },
                     },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_active_question",
+                    "description": "获取当前正在做的题（单一真相源：合并最近推送与个人自出题）。用户问「现在哪道题」「当前题目是什么」时调用",
+                    "parameters": {"type": "object", "properties": {}},
                 },
             },
             {
@@ -1124,6 +1133,8 @@ class TeachingAgent:
                 )
             elif name == "get_learner_snapshot":
                 return get_learner_snapshot(args.get("days", 7))
+            elif name == "get_active_question":
+                return get_active_question()
             elif name == "list_exam_bank":
                 return list_exam_bank(args.get("query", ""), args.get("limit", 20))
             elif name == "get_exam_paper":

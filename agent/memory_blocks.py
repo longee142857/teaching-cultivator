@@ -194,7 +194,11 @@ class MemoryBlocks:
         }
 
     def refresh_from_last_push(self) -> None:
-        """从 last_push / last_class 同步 active_question。"""
+        """从个人 last_push / 公共 last_class（取最新）同步 active_question。
+
+        统一走 learner.active_question 单一真相源，避免公共推送后
+        仍锁在旧个人题（mg#1）。
+        """
         try:
             from learner.roster import allows_learning_writes
 
@@ -203,23 +207,14 @@ class MemoryBlocks:
         except Exception:
             pass
         try:
-            lp = self._last_push_path
-            if not os.path.isfile(lp):
-                from learner import paths as P
-                pub = P.public_last_class_path()
-                if os.path.isfile(pub):
-                    lp = pub
-                else:
-                    return
-            with open(lp, encoding="utf-8") as f:
-                data = json.load(f)
-            q = data.get("question") or ""
-            if q:
+            from learner.active_question import get_active_question
+            aq = get_active_question(self._staff_id)
+            if aq.get("found"):
                 self.set_active_question(
-                    q,
-                    source="last_push",
-                    subject=str(data.get("subject") or ""),
-                    kp=str(data.get("kp") or ""),
+                    aq.get("question", ""),
+                    source=aq.get("source") or "last_push",
+                    subject=aq.get("subject", ""),
+                    kp=aq.get("kp", ""),
                 )
         except Exception:
             pass

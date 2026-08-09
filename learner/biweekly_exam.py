@@ -83,7 +83,12 @@ def save_index(index: dict) -> None:
 
 
 def biweekly_is_due(now: datetime | None = None) -> bool:
-    """距上次成功发卷 ≥14 天（或从未发过）则为到期。"""
+    """距上次成功发卷 ≥14 个日历日（或从未发过）则为到期。
+
+    按日历日比较（非精确时刻）：上次 7/26 08:23 发卷，8/9 当天 08:00 检查
+    日期差已是 14 天，视为到期。避免 08:00 槽位被 last_run 的分钟偏移卡住
+    而错过整个周日（mg#6）。
+    """
     now = now or _now()
     st = load_state()
     last = (st.get("last_run") or "").strip()
@@ -93,7 +98,7 @@ def biweekly_is_due(now: datetime | None = None) -> bool:
         last_dt = datetime.fromisoformat(last)
     except ValueError:
         return True
-    return (now - last_dt) >= timedelta(days=INTERVAL_DAYS)
+    return (now.date() - last_dt.date()).days >= INTERVAL_DAYS
 
 
 def next_biweekly_slot(now: datetime | None = None) -> datetime:
@@ -103,14 +108,19 @@ def next_biweekly_slot(now: datetime | None = None) -> datetime:
     days_ahead = (6 - now.weekday()) % 7
     target = now.replace(hour=8, minute=0, second=0, microsecond=0)
     target = target + timedelta(days=days_ahead)
-    if target <= now:
+    # 严格小于：target==now（恰好 08:00 整点）视为「即将触发」而非「已过」
+    if target < now:
         target += timedelta(days=7)
-    # 若未到期，跳到 last_run+14 之后的周日
+    # 若未到期，跳到最早可发日（last_run 日期 + 14 天）之后的周日
     if not biweekly_is_due(now):
         st = load_state()
         try:
             last_dt = datetime.fromisoformat(st["last_run"])
-            earliest = last_dt + timedelta(days=INTERVAL_DAYS)
+            # 按日历日：最早可发日 = last_run 当日 + 14 天，槽位取该日 08:00
+            earliest = (last_dt.date() + timedelta(days=INTERVAL_DAYS))
+            earliest = datetime.combine(earliest, datetime.min.time()).replace(
+                hour=8, minute=0, second=0, microsecond=0
+            )
             while target < earliest:
                 target += timedelta(days=7)
         except Exception:

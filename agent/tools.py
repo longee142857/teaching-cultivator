@@ -62,6 +62,30 @@ def get_learner_snapshot(days: int = 7) -> str:
     return build_learner_snapshot(days=days)
 
 
+def get_active_question() -> str:
+    """返回当前正在做的题（单一真相源：合并个人 last_push 与公共 last_class，取最新）。"""
+    from learner.active_question import get_active_question as _get
+    from learner.context import current_user_id
+    try:
+        sid = current_user_id() or ""
+    except Exception:
+        sid = ""
+    aq = _get(sid)
+    if not aq.get("found"):
+        return "当前没有进行中的题目。"
+    parts = [
+        f"科目：{aq.get('subject', '') or '?'}",
+        f"知识点：{aq.get('kp', '') or '?'}",
+        f"难度：{aq.get('difficulty', '') or '?'}",
+        f"来源：{aq.get('source', '') or '?'}",
+        f"推送时间：{aq.get('timestamp', '') or '?'}",
+        "",
+        "题目：",
+        aq.get("question", ""),
+    ]
+    return "\n".join(parts)
+
+
 def list_exam_bank(query: str = "", limit: int = 20) -> str:
     """双周检测卷题库目录（LLM 可查）。"""
     from learner.biweekly_exam import list_bank
@@ -286,9 +310,11 @@ def grade_answer(last_question: str, user_answer: str) -> str:
                 "\n⚠️ 批改置信不足，掌握度未更新（pending）。"
                 "若你认为批错了，直接说「批错了」即可纠正。"
             )
-        # KP 横幅放最前，让 LLM 组织回复时优先引用系统判定的知识点（防串题）
+        # 横幅回显「批的是哪道」：KP + 题目时间戳，让 LLM 明确批改对象（防串题/静默批错题）
         kp_banner = f"[KP={result.kp_name}]" if result.kp_name else "[KP=未分类]"
-        return f"{kp_banner} {tag}，{result.feedback}\n{extra}{pending_note}".rstrip()
+        ts = (lp.get("timestamp") or "").strip()[:19] if lp else ""
+        ts_banner = f"[TS={ts}]" if ts else ""
+        return f"{kp_banner}{ts_banner} {tag}，{result.feedback}\n{extra}{pending_note}".rstrip()
     except Exception as e:
         return f"批改失败：{e}"
 
