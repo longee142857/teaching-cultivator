@@ -701,3 +701,35 @@ def cancel_add_kp(token: str = "") -> str:
     if r.get("ok"):
         return f"已取消「{r['name']}」的添加，未写入考纲。"
     return r.get("error", "取消失败")
+
+
+def write_feedback(title: str = "", content: str = "") -> str:
+    """Cow 写反馈/想法到云端 problem_queue，同步到本机 tasks/problem/。
+
+    用于 Cow 向开发者传递系统问题、改进建议或想法。写的是队列目录，
+    不是系统状态；不触发任何修改。
+    """
+    title = (title or "").strip() or "untitled"
+    content = (content or "").strip()
+    if not content:
+        return "反馈内容为空，未写入。请提供 content。"
+    from config import DATA_DIR
+    qdir = os.path.join(DATA_DIR, "problem_queue")
+    os.makedirs(qdir, exist_ok=True)
+    import datetime
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    # 文件名 sanitize
+    slug = re.sub(r"[^\w一-鿿-]+", "_", title)[:40].strip("_")
+    path = os.path.join(qdir, f"{ts}_{slug}.md")
+    block = (
+        f"# {title}\n\n"
+        f"- 时间：{datetime.datetime.now().isoformat()}\n"
+        f"- 来源：cow\n\n"
+        f"## 内容\n\n{content}\n"
+    )
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(block)
+    except OSError as e:
+        return f"写入反馈失败：{e}"
+    return f"已写入反馈：{os.path.basename(path)}（将同步到本机 tasks/problem/）"

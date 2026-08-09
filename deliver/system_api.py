@@ -58,6 +58,7 @@ WHITELIST: dict[str, Callable[..., Any]] = {
     "confirm_override": T.confirm_override,
     "cancel_override": T.cancel_override,
     "kb_enqueue": T.kb_enqueue,
+    "write_feedback": T.write_feedback,
 }
 
 # 只读工具：GET 放行；写工具仅 POST（避免 URL 泄露敏感参数）
