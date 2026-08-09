@@ -11,8 +11,10 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import shlex
+import shutil
 import socket
 import subprocess
 import threading
@@ -22,6 +24,8 @@ from pathlib import Path
 from typing import Callable, Optional, TextIO
 
 from learner.paths import ensure_learner_dir, safe_learner_id
+
+logger = logging.getLogger(__name__)
 
 # 工具名 → 中文进度提示（与旧 Agent 的 _TOOL_PROGRESS 对齐）
 TOOL_PROGRESS: dict[str, str] = {
@@ -229,6 +233,8 @@ class PiRpcBridge:
     def _connect(self) -> _JsonlIO:
         if self._io:
             return self._io
+        # 新连接：不信任旧绑定（Pi 进程可能已换会话）
+        self._bound_session = ""
         if PI_RPC_CMD:
             args = shlex.split(PI_RPC_CMD)
             Path(PI_WORKSPACE).mkdir(parents=True, exist_ok=True)
@@ -254,28 +260,79 @@ class PiRpcBridge:
         self._io = _JsonlIO(r, w, sock=sock)
         return self._io
 
+    def _get_session_file(self, io: _JsonlIO) -> str:
+        st = io.request({"type": "get_state"}, timeout=15)
+        return str((st.get("data") or {}).get("sessionFile") or "")
+
     def _ensure_session(self, staff_id: str) -> str:
+        """保证 Pi 活动会话 = 学员 canonical 路径（一人一文件，可持久）。
+
+        旧 bug：`new_session` 只在 session-dir 下生成 UUID 文件，却把指针写成
+        learners/{id}.jsonl（文件从未创建）→ 每次桥重置再 new_session → 多文件、
+        cow 自称「只有一轮记忆」。
+        """
         path = session_path_for(staff_id)
-        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        canon = Path(path)
+        canon.parent.mkdir(parents=True, exist_ok=True)
         io = self._connect()
-        if self._bound_session != path:
-            if Path(path).is_file() and Path(path).stat().st_size > 0:
+
+        try:
+            current = self._get_session_file(io)
+        except Exception:
+            current = ""
+
+        # 已有 canonical：必要时 switch 上去
+        if canon.is_file() and canon.stat().st_size > 0:
+            if current != path:
                 resp = io.request({"type": "switch_session", "sessionPath": path})
-            else:
-                resp = io.request({"type": "new_session"})
-                try:
-                    io.request(
-                        {
-                            "type": "set_session_name",
-                            "name": f"learner-{safe_learner_id(staff_id)}",
-                        }
-                    )
-                except Exception:
-                    pass
-            if resp.get("success") is False:
-                raise RuntimeError(f"session switch failed: {resp}")
+                if resp.get("success") is False:
+                    raise RuntimeError(f"switch_session failed: {resp}")
+                logger.info("pi session switched → %s", path)
             self._bound_session = path
             write_session_pointer(staff_id, path)
+            return path
+
+        # canonical 不存在：new_session 后立刻拷到 learners/{id}.jsonl 再 switch
+        resp = io.request({"type": "new_session"})
+        if resp.get("success") is False:
+            raise RuntimeError(f"new_session failed: {resp}")
+        actual = ""
+        try:
+            actual = self._get_session_file(io)
+        except Exception as e:
+            logger.warning("get_state after new_session: %s", e)
+
+        if actual and Path(actual).is_file():
+            try:
+                if Path(actual).resolve() != canon.resolve():
+                    shutil.copy2(actual, path)
+                    sw = io.request({"type": "switch_session", "sessionPath": path})
+                    if sw.get("success") is False:
+                        # 拷贝失败则退回真实 UUID 路径，至少指针诚实
+                        logger.warning("switch to canonical failed, keep %s", actual)
+                        self._bound_session = actual
+                        write_session_pointer(staff_id, actual)
+                        return actual
+            except OSError as e:
+                logger.warning("copy session to canonical failed: %s", e)
+                self._bound_session = actual
+                write_session_pointer(staff_id, actual)
+                return actual
+        else:
+            raise RuntimeError("new_session produced no sessionFile")
+
+        try:
+            io.request(
+                {
+                    "type": "set_session_name",
+                    "name": f"learner-{safe_learner_id(staff_id)}",
+                }
+            )
+        except Exception:
+            pass
+        self._bound_session = path
+        write_session_pointer(staff_id, path)
+        logger.info("pi session bound canonical %s (from %s)", path, actual)
         return path
 
     def ask(
@@ -308,26 +365,17 @@ class PiRpcBridge:
             last_text = ""
             settled = False
             idle_rounds = 0
-            _progress_calls = 0
-            _last_progress_at = 0.0
+            _sent_tools: set[str] = set()  # 每个工具每次对话只发一句提示
 
-            def _limited_progress(txt: str) -> None:
-                # 限频：工具提示（正在X…）最多 10 次 + 间隔 1.5s；泛化提示最多 3 次
-                nonlocal _progress_calls, _last_progress_at
-                if not on_progress:
+            def _send_tool_progress(tname: str) -> None:
+                if not on_progress or not tname:
                     return
-                now = time.time()
-                is_tool = not txt.startswith("Cow ")
-                if _progress_calls >= 10:
+                if tname in _sent_tools:
                     return
-                if (now - _last_progress_at) < 1.5:
-                    return
-                if not is_tool and _progress_calls >= 3:
-                    return
-                _progress_calls += 1
-                _last_progress_at = now
+                _sent_tools.add(tname)
+                tip = TOOL_PROGRESS.get(tname, f"正在调用 {tname}…")
                 try:
-                    on_progress(txt)
+                    on_progress(tip)
                 except Exception:
                     pass
 
@@ -341,12 +389,9 @@ class PiRpcBridge:
                     if etype == "agent_settled":
                         settled = True
                     if etype == "tool_execution_start":
-                        # 工具调用：显示「正在X…」而非泛化「处理中」
+                        # 工具调用：每个工具每次对话只发一句提示（不重复、不刷屏）
                         tname = str(ev.get("toolName") or "")
-                        tip = TOOL_PROGRESS.get(tname, f"正在调用 {tname}…")
-                        _limited_progress(tip)
-                    elif etype in ("message_update", "turn_start"):
-                        _limited_progress("Cow 处理中…")
+                        _send_tool_progress(tname)
                 try:
                     st = io.request({"type": "get_state"}, timeout=10)
                     _sdata = st.get("data") or {}
