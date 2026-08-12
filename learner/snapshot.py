@@ -69,14 +69,23 @@ def _load_answer_log(days: int = 7) -> list[dict]:
 
 def _bkt_mastery_map() -> dict[str, float]:
     try:
-        from bkt import BKTLogger
-        bkt = BKTLogger(P.answer_log_path())
-        return bkt.get_all_kp_mastery(_user_id()) or {}
+        from learner.bkt_db import DbBKTLogger
+        from learner.db import get_store
+
+        return DbBKTLogger(get_store()).get_all_kp_mastery(_user_id()) or {}
     except Exception:
         return {}
 
 
 def _last_push_meta() -> dict:
+    try:
+        from learner.db import get_store
+
+        rec = get_store().get_latest_push(_user_id() or None)
+        if rec and rec.get("question"):
+            return rec
+    except Exception:
+        pass
     for path in (P.last_push_path(), P.public_last_class_path()):
         data = _load_json(path)
         if data.get("question"):
@@ -179,4 +188,33 @@ def build_learner_snapshot(days: int = 7) -> str:
     lines.append(
         "- 说明：用户自述薄弱点请用 note_weak_point；嫌太难/太简单才用 adjust_difficulty"
     )
+
+    # 结构化能力信号（供云端 agent 解析；markdown 之外附 JSON 块）
+    try:
+        from learner.db import get_store
+        from learner.context import current_user_id
+
+        sig = get_store().recent_ability_signals(current_user_id(), limit=15)
+        if any(sig.values()):
+            lines.append("- 技巧失误 Top：" + (
+                "；".join(
+                    f"{x['technique']}×{x['n']}" for x in (sig.get("technique_fail_top") or [])[:5]
+                ) or "无"
+            ))
+            fails = sig.get("cdp_fail_recent") or []
+            if fails:
+                lines.append(
+                    "- 近期 CDP 失败："
+                    + "；".join(
+                        f"{f.get('id')}({f.get('technique') or '-'})" for f in fails[:5]
+                    )
+                )
+            import json as _json
+            lines.append("")
+            lines.append("```ability_json")
+            lines.append(_json.dumps(sig, ensure_ascii=False))
+            lines.append("```")
+    except Exception:
+        pass
+
     return "\n".join(lines)

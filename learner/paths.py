@@ -19,6 +19,16 @@ def _data_dir() -> str:
     return _cfg.DATA_DIR
 
 
+def teaching_db_path() -> str:
+    """SQLite 真相源库路径（BIG-TEACH-013）。"""
+    try:
+        if (_cfg.TEACHING_DB or "").strip():
+            return _cfg.TEACHING_DB.strip()
+    except Exception:
+        pass
+    return os.path.join(_data_dir(), "teaching.db")
+
+
 def safe_learner_id(staff_id: str) -> str:
     sid = (staff_id or "").strip()
     if not sid:

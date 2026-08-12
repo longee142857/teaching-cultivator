@@ -157,10 +157,11 @@ def _save_last_push(subject: str, decision: InterventionDecision, content: str,
 def assess_state(subject: str) -> dict:
     """返回当前学习状态摘要。"""
     summary = get_heartbeat_summary()
+    from learner.bkt_db import DbBKTLogger
     return {
         "heartbeat": summary,
         "subject": subject,
-        "bkt_log": BKTLogger(P.answer_log_path()),
+        "bkt_log": DbBKTLogger(),
     }
 
 
@@ -176,20 +177,28 @@ def _load_weights() -> dict:
 
 
 def _get_days_since_last_push(subject: str) -> float | None:
-    """从 last_push / last_class 读取该科目距上次推送天数。
+    """从 DB 读取该科目距上次推送天数。
 
-    若 subject != "all" 且 last_push 科目不匹配，视为未知返回 None。
+    若 subject != "all" 且最新推送科目不匹配，视为未知返回 None。
     """
-    path = _last_push_read_path()
     try:
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
+        from learner.db import get_store
+        from learner.context import current_user_id
+        sid = current_user_id() or ""
+    except Exception:
+        sid = ""
+    try:
+        data = get_store().get_latest_push(sid or None)
+        if not data:
+            return None
         if subject != "all" and data.get("subject") != subject:
             return None
-        ts = data.get("timestamp", "")
+        ts = data.get("pushed_at") or ""
         if ts:
-            last = datetime.datetime.fromisoformat(ts)
-            delta = datetime.datetime.now() - last
+            last = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            if last.tzinfo is None:
+                last = last.replace(tzinfo=datetime.timezone.utc)
+            delta = datetime.datetime.now(datetime.timezone.utc) - last
             return max(0.0, delta.total_seconds() / 86400)
     except Exception:
         pass
@@ -276,13 +285,11 @@ def _get_last_error_text(bkt_log: BKTLogger, kp: str = "") -> str:
             continue
         parts = [f"知识点：{entry_kp or kp or '未知'}", "结果：上次答错，需巩固"]
         try:
-            lp_path = _last_push_read_path()
-            if os.path.isfile(lp_path):
-                with open(lp_path, encoding="utf-8") as f:
-                    lp = json.load(f)
-                q = (lp.get("question") or "").strip()
-                if q:
-                    parts.insert(1, f"题目摘要：{q[:300]}")
+            from learner.db import get_store
+            lp = get_store().get_latest_push(_uid() or None)
+            q = (lp.get("question") or "").strip() if lp else ""
+            if q:
+                parts.insert(1, f"题目摘要：{q[:300]}")
         except Exception:
             pass
         return "；".join(parts)
@@ -615,7 +622,8 @@ def generate(subject: str, decision: InterventionDecision, *,
     last_error = ""
     if subject == "review" or decision.type == "review":
         try:
-            log = BKTLogger(P.answer_log_path())
+            from learner.bkt_db import DbBKTLogger
+            log = DbBKTLogger()
             last_error = _get_last_error_text(log, kp)
         except Exception:
             pass
@@ -727,33 +735,70 @@ def deliver(content: str) -> bool:
 
 def record(subject: str, content: str, decision: InterventionDecision, answer: str = "",
            ref_source: str = ""):
-    """追加到当月题目记录 + 侧车索引，并写 sync-queue。"""
+    """先落库：同一事务写 items+pushes；MD 导出/同步队列为附属。
+
+    SQLite 写入失败必须向上抛出（禁止静默成功）。导出失败不回滚已成功的 DB 事务。
+    """
     if not content:
         return
-    from record_index import (
-        append_index_entry,
-        count_today_entries,
-        ensure_trailing_blank,
-        file_char_size,
-        month_md_path,
-        month_of,
-        parse_entry_meta,
+    from learner.db import get_store, shanghai_hhmm
+    from learner.context import get_binding, current_user_id
+    from learner.kp_registry import parse_l3_from_reason
+
+    kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
+    kp = kp.split("[")[0].strip()
+    l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
+    sid = ""
+    try:
+        sid = current_user_id() or ""
+    except Exception:
+        sid = ""
+    is_public = get_binding() == "schedule"
+    learner_id = None if is_public else (sid or None)
+
+    store = get_store()
+    push_id = store.record_push(
+        subject=subject,
+        question=content,
+        answer=answer,
+        difficulty=getattr(decision, "difficulty", ""),
+        kp=kp,
+        l3_id=l3_id or "",
+        item_form=_last_item_form,
+        ability_goal=getattr(decision, "ability_goal", "") or "",
+        ref_source=ref_source or _last_ref_source,
+        decision_type=getattr(decision, "type", ""),
+        reason=getattr(decision, "reason", ""),
+        learner_id=learner_id,
     )
+    push = store.get_push(push_id) or {}
+    day = push.get("day") or datetime.date.today().isoformat()
+    num = push.get("seq") or 1
+    now = shanghai_hhmm(push.get("pushed_at") or "") or datetime.datetime.now().strftime("%H:%M")
 
-    os.makedirs(DAILY_RECORD_DIR, exist_ok=True)
-    today = datetime.date.today().isoformat()
-    now = datetime.datetime.now().strftime("%H:%M")
-    month = month_of(today)
-    path = month_md_path(DAILY_RECORD_DIR, month)
+    try:
+        from scripts.export_daily_md import export_month
+        export_month(day[:7], out_dir=DAILY_RECORD_DIR)
+    except Exception as e:
+        print(f"[cultivate] MD export failed (DB ok): {e}")
 
-    num = count_today_entries(DAILY_RECORD_DIR, today) + 1
-    ensure_trailing_blank(path)
-    char_offset = file_char_size(path)
+    try:
+        block = _build_md_block(day, now, num, subject, decision, content, answer, ref_source)
+        SYNC_QUEUE_DIR = os.path.join(DATA_DIR, "sync-queue")
+        os.makedirs(SYNC_QUEUE_DIR, exist_ok=True)
+        qpath = os.path.join(SYNC_QUEUE_DIR, f"{day}-{num:03d}.md")
+        with open(qpath, "w", encoding="utf-8") as f:
+            f.write("\n" + block.lstrip("\n").rstrip() + "\n\n")
+    except Exception as e:
+        print(f"[cultivate] sync-queue export failed (DB ok): {e}")
 
-    # 条目以 ## 开头；若文件非空则前缀换行分隔
-    prefix = "" if char_offset == 0 else "\n"
+
+
+def _build_md_block(day: str, now: str, num: int, subject: str,
+                    decision: InterventionDecision, content: str,
+                    answer: str, ref_source: str) -> str:
     block = (
-        f"{prefix}## {today} {now} #{num}\n"
+        f"## {day} {now} #{num}\n"
         f"### 题目\n"
         f"**{subject} · {decision.difficulty}**\n\n"
         f"{content}\n\n"
@@ -768,23 +813,7 @@ def record(subject: str, content: str, decision: InterventionDecision, answer: s
     if ref_source:
         block += f"- 参考来源：{ref_source}\n"
     block += "---\n"
-
-    # char_offset 指向 ## 行起点（跳过前缀换行）
-    entry_offset = char_offset + len(prefix)
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(block)
-
-    meta = parse_entry_meta(block.lstrip("\n"), char_offset=entry_offset)
-    if meta:
-        append_index_entry(DAILY_RECORD_DIR, meta)
-
-    # ── 同步队列：给本机 sync_teaching 拉取 ──
-    SYNC_QUEUE_DIR = os.path.join(DATA_DIR, "sync-queue")
-    os.makedirs(SYNC_QUEUE_DIR, exist_ok=True)
-    qpath = os.path.join(SYNC_QUEUE_DIR, f"{today}-{num:03d}.md")
-    # 首尾各保证空行，避免远端拼接粘连
-    with open(qpath, "w", encoding="utf-8") as f:
-        f.write("\n" + block.lstrip("\n").rstrip() + "\n\n")
+    return block
 
 
 # ═══════════════════════════════════════════
@@ -801,6 +830,8 @@ def cultivate(subject: str):
 
 
 def _cultivate_inner(subject: str):
+    """推送：优先从 ready 题库抽取；默认不做 live author。"""
+    global _last_answer, _last_ref_source, _last_item_form
     state = assess_state(subject)
     bkt_log = state["bkt_log"]
     decision = decide(subject, bkt_log)
@@ -808,49 +839,108 @@ def _cultivate_inner(subject: str):
         print(f"[cultivate] {subject}: 跳过（{decision.reason}）")
         return
 
-    # ── 为提示词上下文计算 BKT 统计数据 ──
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
-    mastery = 0.0
-    opportunity_count = 0
-    try:
-        if hasattr(bkt_log, 'get_kp_mastery'):
-            kc = bkt_log.get_kp_mastery(_uid(), kp)
-            if kc and hasattr(kc, 'p_effective'):
-                mastery = kc.p_effective
-            if kc and hasattr(kc, 'opportunity_count'):
-                opportunity_count = kc.opportunity_count
-    except Exception:
-        pass
-    consecutive_failures = _get_consecutive_failures(_uid(), bkt_log, kp)
+    kp = kp.split("[")[0].strip()
 
-    content = generate(
-        subject,
-        decision,
-        mastery=mastery,
-        opportunity_count=opportunity_count,
-        consecutive_failures=consecutive_failures,
-        source="schedule",
-    )
-    if not content:
-        print(f"[cultivate] {subject}: 编排未通过，跳过推送（{decision.type}/{kp}）")
-        return
-    answer = _last_answer
-    ref_source = _last_ref_source
-    if deliver(content):
-        # 已发出：落盘失败不得抛出，否则上层会当成推送失败入重试队列 → 双发
+    from learner.item_bank import pick_for_push, live_fallback_enabled, pick_technique_for_kp
+    from learner.db import get_store
+
+    tech = pick_technique_for_kp(kp)
+    try:
+        sid = _uid()
+    except Exception:
+        sid = ""
+    item = pick_for_push(subject, kp=kp, technique=tech, learner_id=sid or None)
+    if not item:
+        if not live_fallback_enabled():
+            print(
+                f"[cultivate] {subject}: ready 题库为空/无匹配 "
+                f"(kp={kp} tech={tech or '-'})，跳过（BANK_LIVE_FALLBACK=0）"
+            )
+            try:
+                from pathlib import Path
+                from config import DATA_DIR
+                qdir = Path(DATA_DIR) / "problem_queue"
+                qdir.mkdir(parents=True, exist_ok=True)
+                (qdir / f"bank_empty_{subject}.md").write_text(
+                    f"# bank empty\nsubject={subject}\nkp={kp}\ntech={tech}\n",
+                    encoding="utf-8",
+                )
+            except Exception:
+                pass
+            return
+        # 旧路径 live author（仅 flag 打开）
+        content = generate(subject, decision, source="schedule")
+        if not content:
+            print(f"[cultivate] {subject}: live fallback 也失败")
+            return
+        answer = _last_answer
+        ref_source = _last_ref_source
         try:
             record(subject, content, decision, answer, ref_source)
         except Exception as e:
-            print(f"[cultivate] {subject}: record failed after deliver: {e}")
-        try:
-            _save_last_push(
-                subject, decision, content, answer, ref_source, kp=kp, source="schedule"
-            )
-        except Exception as e:
-            print(f"[cultivate] {subject}: last_push save failed after deliver: {e}")
-        print(f"[cultivate] {subject}: ✅ {decision.type} / {decision.difficulty} / {kp}")
+            print(f"[cultivate] {subject}: record failed: {e}")
+            return
+        _save_last_push(
+            subject, decision, content, answer, ref_source, kp=kp, source="schedule"
+        )
+        if deliver(content):
+            print(f"[cultivate] {subject}: OK live / {kp}")
+        return
+
+    # bank pick → push only
+    store = get_store()
+    is_public = True  # schedule binding
+    try:
+        from learner.context import get_binding
+        is_public = get_binding() == "schedule"
+    except Exception:
+        pass
+    learner_id = None if is_public else (sid or None)
+    try:
+        push_id = store.record_push_for_item(
+            item_id=int(item["id"]),
+            learner_id=learner_id,
+            slot=subject,
+            decision_type=decision.type,
+            reason=decision.reason,
+        )
+    except Exception as e:
+        print(f"[cultivate] {subject}: record_push_for_item failed: {e}")
+        return
+
+    content = item.get("question") or ""
+    answer = item.get("answer") or ""
+    ref_source = item.get("ref_source") or ""
+    _last_answer = answer
+    _last_ref_source = ref_source
+    _last_item_form = item.get("item_form") or ""
+
+    try:
+        _save_last_push(
+            subject, decision, content, answer, ref_source, kp=kp, source="schedule"
+        )
+    except Exception as e:
+        print(f"[cultivate] {subject}: last_push mirror failed: {e}")
+
+    # MD export (best-effort)
+    try:
+        from scripts.export_daily_md import export_month
+        from learner.db import shanghai_day
+        export_month(shanghai_day(None)[:7], out_dir=DAILY_RECORD_DIR)
+    except Exception:
+        pass
+
+    if deliver(content):
+        print(
+            f"[cultivate] {subject}: OK bank#{item['id']} push={push_id} / "
+            f"{decision.difficulty} / {kp}"
+        )
     else:
-        print(f"[cultivate] {subject}: deliver failed, skipped record/last_push ({decision.type}/{kp})")
+        print(
+            f"[cultivate] {subject}: deliver failed after bank push "
+            f"(item={item['id']} push={push_id})"
+        )
 
 
 if __name__ == "__main__":

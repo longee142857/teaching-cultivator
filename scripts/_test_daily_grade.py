@@ -180,15 +180,14 @@ def _run_daily(check) -> None:
         with patch.object(config_mod, "DATA_DIR", td):
             paths_mod.ensure_learner_dir()
             full_q = mcq + "\n" + ("补充说明。" * 40)
-            lp = {
-                "subject": "math",
-                "question": full_q,
-                "answer": "A",
-                "kp": "函数极限与连续",
-                "timestamp": "2099-01-01T00:00:00",
-            }
-            with open(paths_mod.last_push_path(), "w", encoding="utf-8") as f:
-                json.dump(lp, f, ensure_ascii=False)
+            # BIG-TEACH-013: 权威源改为 SQLite，直接播种推送（替代写 last_push.json）
+            from learner.db import get_store
+            store = get_store()
+            store.record_push(
+                subject="math", question=full_q, answer="A", difficulty="intermediate",
+                kp="函数极限与连续", learner_id="test_staff_daily_grade",
+                pushed_at="2099-01-01T00:00:00+00:00", day="2099-01-01",
+            )
 
             r = tools_mod.grade_answer("", "")
             check("未作答" in r, f"tool empty: {r}")

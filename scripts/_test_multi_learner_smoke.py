@@ -62,14 +62,19 @@ def main() -> int:
 
     check("weights isolated", wa != wb, f"a={wa} b={wb}")
 
-    pub = P.public_last_class_path()
-    os.makedirs(os.path.dirname(pub), exist_ok=True)
-    with open(pub, "w", encoding="utf-8") as f:
-        json.dump({"question": "public Q", "subject": "math"}, f)
-    with C.bind_learner("learner_a", binding="personal"):
-        lp = P.last_push_path()
-        with open(lp, "w", encoding="utf-8") as f:
-            json.dump({"question": "private Q", "subject": "math"}, f)
+    # BIG-TEACH-013: 权威源为 DB pushes
+    from learner.db import get_store, reset_store
+    from datetime import datetime, timedelta, timezone
+    reset_store()
+    store = get_store()
+    pub_pid = store.record_push(
+        subject="math", question="public Q", learner_id=None,
+        pushed_at=(datetime.now(timezone.utc) - timedelta(hours=1)).isoformat(),
+    )
+    priv_pid = store.record_push(
+        subject="math", question="private Q", learner_id="learner_a",
+        pushed_at=datetime.now(timezone.utc).isoformat(),
+    )
 
     from agent.tools import _load_last_push_question
 
@@ -77,7 +82,8 @@ def main() -> int:
         q = _load_last_push_question()
     check("personal last_push wins", q == "private Q", q)
 
-    os.remove(lp)
+    # 删除个人推送 → 回退公共
+    store.delete_push(priv_pid)
     with C.bind_learner("learner_a", binding="personal"):
         q2 = _load_last_push_question()
     check("fallback public class", q2 == "public Q", q2)

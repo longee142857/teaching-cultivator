@@ -193,6 +193,65 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
 
         return submit_answer_md(text)
 
+    def _ingest_dm_images(
+        self,
+        raw: dict,
+        robot_code: str,
+        sender_staff: str,
+        caption: str = "",
+    ) -> tuple[str, list[str]]:
+        """私聊图片/富文本图 → 下载暂存。返回 (提示文案, image_ids)。不自动 OCR。"""
+        from deliver.inbound_images import (
+            extract_picture_download_codes,
+            stash_image,
+        )
+        from deliver.dingtalk_media import get_access_token, download_robot_file
+
+        codes = extract_picture_download_codes(raw)
+        if not codes:
+            return "", []
+        if not sender_staff:
+            return (
+                "【系统】收到图片，但未能识别你的钉钉身份，暂存失败。"
+                "请用私聊再发一次。",
+                [],
+            )
+        if not self._get_credentials:
+            return "【系统】收到图片，但机器人凭证不可用，无法下载暂存。", []
+        client_id, client_secret = self._get_credentials()
+        token = get_access_token(client_id, client_secret)
+        rc = robot_code or client_id
+        ids: list[str] = []
+        for i, dc in enumerate(codes):
+            data = download_robot_file(token, dc, rc)
+            if not data:
+                continue
+            try:
+                iid = stash_image(
+                    sender_staff,
+                    data,
+                    filename=f"dm_{i}.jpg",
+                    caption=caption,
+                )
+                ids.append(iid)
+            except Exception as e:
+                logger.warning("stash image failed: %s", e)
+        if not ids:
+            return (
+                "【系统】收到图片但下载/暂存失败。请重新发送清晰照片。",
+                [],
+            )
+        id_list = "、".join(ids)
+        tip = (
+            f"【系统】用户发来 {len(ids)} 张图片，已暂存。"
+            f"image_id={id_list}。"
+            "若用户说明这是作答/交卷/重做，请调用 grade_handwriting"
+            f"（image_id 可填 `{ids[-1]}`，或留空用最新一张）；"
+            "若只想看图里写了什么，调用 ocr_handwriting。"
+            "不要对无关截图/表情包调用批改。"
+        )
+        return tip, ids
+
     async def process(self, callback: dingtalk_stream.CallbackMessage):
         msg = dingtalk_stream.ChatbotMessage.from_dict(callback.data)
         raw = callback.data if isinstance(callback.data, dict) else {}
@@ -254,6 +313,34 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
             except Exception as e:
                 logger.error("exam file handle: %s", e)
             return AckMessage.STATUS_OK, "OK"
+
+        # ── 人机单聊：图片/富文本图只暂存，交给 Cow 判断是否作答再调工具 ──
+        if not is_group and msgtype.lower() in ("picture", "richtext"):
+            from deliver.inbound_images import extract_rich_text_caption
+
+            cap = (text or "").strip() or extract_rich_text_caption(raw)
+            tip = ""
+            ids: list[str] = []
+            try:
+                tip, ids = await asyncio.to_thread(
+                    self._ingest_dm_images,
+                    raw,
+                    robot_code,
+                    sender_staff,
+                    cap,
+                )
+            except Exception as e:
+                logger.error("dm image ingest: %s", e)
+                tip = f"【系统】图片暂存失败：{e}"
+            if tip:
+                # 用户说明文字 + 系统暂存提示，一并交给 Cow
+                text = (cap + "\n\n" + tip).strip() if cap else tip
+                logger.info(
+                    "dm image ingested msgtype=%s ids=%s staff=%s",
+                    msgtype,
+                    ",".join(ids) if ids else "-",
+                    (sender_staff[:8] + "…") if sender_staff else "-",
+                )
 
         logger.info(
             "handler got msg: text=%s sw=%s type=%s staff=%s robotCode=%s",
@@ -374,6 +461,11 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
                 from learner.context import bind_learner
 
                 with bind_learner(sender_staff, binding="personal"):
+                    # Pi RPC 交互层（flag）；失败不再回退旧 TeachingAgent，直接抛错透传
+                    from agent.pi_rpc_bridge import enabled as _pi_on, get_bridge
+
+                    if _pi_on():
+                        return get_bridge().ask(sender_staff, text, _on_progress)
                     agent = self._get_agent()
                     agent.bind_for_learner(sender_staff)
                     try:
@@ -383,9 +475,25 @@ class DingTalkHandler(dingtalk_stream.ChatbotHandler):
 
             try:
                 reply = await asyncio.to_thread(_handle_bound)
-                logger.info("agent reply: %s chars", len(reply) if reply else 0)
+                _prev = (reply or "").replace("\n", " ")[:400]
+                logger.info(
+                    "agent reply: %s chars preview=%r",
+                    len(reply) if reply else 0,
+                    _prev,
+                )
             except Exception as e:
                 logger.error("agent error: %s", e)
+                # 不静默：向用户透传错误（Pi 失败时暴露，便于排障）
+                try:
+                    err_msg = (
+                        f"处理时出错（{type(e).__name__}）：{str(e)[:300]}"
+                    )
+                    if sw:
+                        self.reply_markdown("瑞贝卡", err_msg, msg)
+                    else:
+                        logger.info("no session webhook, error surfaced to log only")
+                except Exception as reply_e:
+                    logger.error("failed to surface error: %s", reply_e)
                 return AckMessage.STATUS_OK, "OK"
 
             if reply:

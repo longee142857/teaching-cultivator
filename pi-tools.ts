@@ -1,12 +1,9 @@
 /**
- * Pi 交互层工具注册草稿（2026-08-09）— 不部署进程，仅作为接入示例。
+ * @deprecated 2026-08-09 — Pi 扩展不进本仓 git。
+ * 正式实现在云端 ~/.pi/agent/extensions/teaching-api-client.ts（HTTP → System API）。
+ * 契约：docs/system-api.md + docs/pi-tools-whitelist.md。
  *
- * 依据：docs/pi-tools-whitelist.md（白名单 → tools.py 符号对照表）。
- * 模式：pi --mode rpc --extension pi-tools.ts --provider deepseek --model deepseek-v4-flash[1m]
- *
- * 桥形态（Cursor 裁决第一期）：tool shim —— Pi 工具 execute 内
- * subprocess 调 Python 白名单函数（agent/tools.py）。写状态由系统闸决定，
- * Pi 只触发，不裸写 weights/answer-log。
+ * 以下为历史草稿，勿再部署为本仓路径。
  */
 
 import { spawnSync } from "node:child_process";

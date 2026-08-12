@@ -14,11 +14,11 @@ import json
 import logging
 import os
 import shlex
-import shutil
 import socket
 import subprocess
 import threading
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional, TextIO
@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 TOOL_PROGRESS: dict[str, str] = {
     "list_recent_entries": "正在查题库索引…",
     "find_record_entry": "正在提取题目全文…",
+    "list_today_questions": "正在读取今日题库…",
     "grade_answer": "正在批改…",
     "generate_question": "正在出题…",
     "show_solution": "正在生成解答…",
@@ -52,6 +53,9 @@ TOOL_PROGRESS: dict[str, str] = {
     "propose_override_grade": "正在登记纠正提案…",
     "confirm_override": "正在重算掌握度…",
     "cancel_override": "正在取消纠正…",
+    "write_feedback": "正在写入反馈…",
+    "ocr_handwriting": "正在识别手写图…",
+    "grade_handwriting": "正在识别并批改手写作答…",
 }
 
 PI_RPC_ENABLED = os.environ.get("PI_RPC_ENABLED", "0") == "1"
@@ -86,6 +90,53 @@ def write_session_pointer(staff_id: str, session_path: str) -> None:
         ),
         encoding="utf-8",
     )
+
+
+def bind_active_learner(staff_id: str) -> Path:
+    """写入当前 ask 绑定的学员，供 Pi extension 作为 X-Learner-Id。
+
+    桥的 ask() 已全局加锁，文件在整轮工具调用期间有效。
+    """
+    from config import DATA_DIR
+
+    sid = (staff_id or "").strip()
+    if not sid:
+        raise ValueError("empty staff_id")
+    path = Path(DATA_DIR) / "pi_active_learner.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "learner_id": sid,
+                "safe_id": safe_learner_id(sid),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
+def seed_session_file(path: str) -> None:
+    """写入 Pi 可 switch 的空会话（仅 header）。
+
+    Pi RPC 的 `new_session` 会推迟到首条消息才落盘，此前 get_state.sessionFile
+    指向尚不存在的路径；直接 seed + switch 更稳。
+    """
+    now = datetime.now(timezone.utc)
+    ts = now.strftime("%Y-%m-%dT%H:%M:%S.") + f"{now.microsecond // 1000:03d}Z"
+    header = {
+        "type": "session",
+        "version": 3,
+        "id": str(uuid.uuid4()),
+        "timestamp": ts,
+        "cwd": PI_WORKSPACE,
+    }
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(header, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 class _JsonlIO:
@@ -230,6 +281,16 @@ class PiRpcBridge:
         self._proc: Optional[subprocess.Popen] = None
         self._bound_session: str = ""
 
+    def _close_io(self) -> None:
+        if self._io:
+            try:
+                self._io.close()
+            except Exception:
+                pass
+        self._io = None
+        self._proc = None
+        self._bound_session = ""
+
     def _connect(self) -> _JsonlIO:
         if self._io:
             return self._io
@@ -292,35 +353,11 @@ class PiRpcBridge:
             write_session_pointer(staff_id, path)
             return path
 
-        # canonical 不存在：new_session 后立刻拷到 learners/{id}.jsonl 再 switch
-        resp = io.request({"type": "new_session"})
+        # canonical 不存在/空：seed 合法空会话再 switch（勿依赖 new_session 落盘）
+        seed_session_file(path)
+        resp = io.request({"type": "switch_session", "sessionPath": path})
         if resp.get("success") is False:
-            raise RuntimeError(f"new_session failed: {resp}")
-        actual = ""
-        try:
-            actual = self._get_session_file(io)
-        except Exception as e:
-            logger.warning("get_state after new_session: %s", e)
-
-        if actual and Path(actual).is_file():
-            try:
-                if Path(actual).resolve() != canon.resolve():
-                    shutil.copy2(actual, path)
-                    sw = io.request({"type": "switch_session", "sessionPath": path})
-                    if sw.get("success") is False:
-                        # 拷贝失败则退回真实 UUID 路径，至少指针诚实
-                        logger.warning("switch to canonical failed, keep %s", actual)
-                        self._bound_session = actual
-                        write_session_pointer(staff_id, actual)
-                        return actual
-            except OSError as e:
-                logger.warning("copy session to canonical failed: %s", e)
-                self._bound_session = actual
-                write_session_pointer(staff_id, actual)
-                return actual
-        else:
-            raise RuntimeError("new_session produced no sessionFile")
-
+            raise RuntimeError(f"switch_session(new) failed: {resp}")
         try:
             io.request(
                 {
@@ -332,7 +369,7 @@ class PiRpcBridge:
             pass
         self._bound_session = path
         write_session_pointer(staff_id, path)
-        logger.info("pi session bound canonical %s (from %s)", path, actual)
+        logger.info("pi session seeded+switched → %s", path)
         return path
 
     def ask(
@@ -342,100 +379,119 @@ class PiRpcBridge:
         on_progress: Optional[Callable[[str], None]] = None,
     ) -> str:
         with self._lock:
-            self._ensure_session(staff_id)
-            io = self._connect()
-            msg = (
-                f"[learner={staff_id}] 若涉及当前推送题，先调用 get_active_question。\n\n"
-                + (text or "")
+            try:
+                return self._ask_once(staff_id, text, on_progress)
+            except (BrokenPipeError, ConnectionError, TimeoutError, OSError) as e:
+                # pi-rpc 单独重启后旧 TCP 会 Broken pipe；清连接再试一次
+                logger.warning("pi rpc stale connection (%s); reconnecting", e)
+                self._close_io()
+                return self._ask_once(staff_id, text, on_progress)
+
+    def _ask_once(
+        self,
+        staff_id: str,
+        text: str,
+        on_progress: Optional[Callable[[str], None]] = None,
+    ) -> str:
+        bind_active_learner(staff_id)
+        self._ensure_session(staff_id)
+        io = self._connect()
+        msg = (
+            f"[learner={staff_id}] 若涉及当前推送题，先调用 get_active_question。"
+            " 本会话上下文含历史轮次；钉钉表情可能显示为 [名称]。"
+            " 勿用 bash 扫描 pi-sessions 旧文件来回答「刚才说了什么」。"
+            " 私聊图片仅暂存：用户明确作答/交卷时才调 grade_handwriting；"
+            "只想看图内容用 ocr_handwriting；无关截图勿批改。\n\n"
+            + (text or "")
+        )
+        resp = io.request({"type": "prompt", "message": msg}, timeout=15)
+        if not resp.get("success"):
+            resp = io.request(
+                {
+                    "type": "prompt",
+                    "message": msg,
+                    "streamingBehavior": "followUp",
+                },
+                timeout=15,
             )
-            resp = io.request({"type": "prompt", "message": msg}, timeout=15)
-            if not resp.get("success"):
-                resp = io.request(
-                    {
-                        "type": "prompt",
-                        "message": msg,
-                        "streamingBehavior": "followUp",
-                    },
-                    timeout=15,
+        if not resp.get("success"):
+            raise RuntimeError(f"pi prompt failed: {resp}")
+
+        deadline = time.time() + PI_RPC_TIMEOUT
+        last_text = ""
+        settled = False
+        idle_rounds = 0
+        _sent_tools: set[str] = set()  # 每个工具每次对话只发一句提示
+
+        def _send_tool_progress(tname: str) -> None:
+            if not on_progress or not tname:
+                return
+            if tname in _sent_tools:
+                return
+            _sent_tools.add(tname)
+            tip = TOOL_PROGRESS.get(tname, f"正在调用 {tname}…")
+            try:
+                on_progress(tip)
+            except Exception:
+                pass
+
+        _stable_rounds = 0
+        _prev_text = ""
+        while time.time() < deadline:
+            events = io.drain_events(time.time() + 0.35)
+            for ev in events:
+                etype = ev.get("type")
+                # agent_settled = Pi 完成一轮 agent（含工具循环），快速路径
+                if etype == "agent_settled":
+                    settled = True
+                if etype == "tool_execution_start":
+                    # 工具调用：每个工具每次对话只发一句提示（不重复、不刷屏）
+                    tname = str(ev.get("toolName") or "")
+                    _send_tool_progress(tname)
+            try:
+                st = io.request({"type": "get_state"}, timeout=10)
+                _sdata = st.get("data") or {}
+                _streaming = bool(
+                    _sdata.get("isStreaming")
+                    or _sdata.get("streaming")
+                    or _sdata.get("isRunning")
                 )
-            if not resp.get("success"):
-                raise RuntimeError(f"pi prompt failed: {resp}")
+            except Exception:
+                _streaming = True
+            try:
+                ta = io.request({"type": "get_last_assistant_text"}, timeout=10)
+                tdata = ta.get("data") or {}
+                text_out = (
+                    tdata.get("text")
+                    or tdata.get("lastAssistantText")
+                    or ""
+                )
+                if text_out:
+                    last_text = text_out
+            except Exception:
+                pass
 
-            deadline = time.time() + PI_RPC_TIMEOUT
-            last_text = ""
-            settled = False
-            idle_rounds = 0
-            _sent_tools: set[str] = set()  # 每个工具每次对话只发一句提示
-
-            def _send_tool_progress(tname: str) -> None:
-                if not on_progress or not tname:
-                    return
-                if tname in _sent_tools:
-                    return
-                _sent_tools.add(tname)
-                tip = TOOL_PROGRESS.get(tname, f"正在调用 {tname}…")
-                try:
-                    on_progress(tip)
-                except Exception:
-                    pass
-
-            _stable_rounds = 0
-            _prev_text = ""
-            while time.time() < deadline:
-                events = io.drain_events(time.time() + 0.35)
-                for ev in events:
-                    etype = ev.get("type")
-                    # agent_settled = Pi 完成一轮 agent（含工具循环），快速路径
-                    if etype == "agent_settled":
-                        settled = True
-                    if etype == "tool_execution_start":
-                        # 工具调用：每个工具每次对话只发一句提示（不重复、不刷屏）
-                        tname = str(ev.get("toolName") or "")
-                        _send_tool_progress(tname)
-                try:
-                    st = io.request({"type": "get_state"}, timeout=10)
-                    _sdata = st.get("data") or {}
-                    _streaming = bool(
-                        _sdata.get("isStreaming")
-                        or _sdata.get("streaming")
-                        or _sdata.get("isRunning")
-                    )
-                except Exception:
-                    _streaming = True
-                try:
-                    ta = io.request({"type": "get_last_assistant_text"}, timeout=10)
-                    tdata = ta.get("data") or {}
-                    text_out = (
-                        tdata.get("text")
-                        or tdata.get("lastAssistantText")
-                        or ""
-                    )
-                    if text_out:
-                        last_text = text_out
-                except Exception:
-                    pass
-
-                if settled:
-                    # agent_settled：取最终回复即完成
-                    if last_text:
+            if settled:
+                # agent_settled：取最终回复即完成
+                if last_text:
+                    break
+                idle_rounds += 1
+                if idle_rounds >= 2:
+                    break
+            elif not _streaming and last_text:
+                # 文本稳定（连续 3 次相同 + 非 streaming）= Pi 完成
+                if last_text == _prev_text:
+                    _stable_rounds += 1
+                    if _stable_rounds >= 3:
                         break
-                    idle_rounds += 1
-                    if idle_rounds >= 2:
-                        break
-                elif not _streaming and last_text:
-                    # 文本稳定（连续 3 次相同 + 非 streaming）= Pi 完成
-                    if last_text == _prev_text:
-                        _stable_rounds += 1
-                        if _stable_rounds >= 3:
-                            break
-                    else:
-                        _stable_rounds = 0
-                    _prev_text = last_text
                 else:
                     _stable_rounds = 0
-                    _prev_text = ""
-                time.sleep(0.35)
-            return last_text or "（Pi 无文本回复）"
+                _prev_text = last_text
+            else:
+                _stable_rounds = 0
+                _prev_text = ""
+            time.sleep(0.35)
+        return last_text or "（Pi 无文本回复）"
 
     def notify_new_push(self, staff_id: str, *, subject: str = "", kp: str = "") -> None:
         if not enabled():

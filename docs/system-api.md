@@ -29,7 +29,9 @@ POST `/v1/call` 也可用 body `learner_id`。
 
 ### 读
 
-`list_recent_entries` · `find_record_entry` · `get_learner_snapshot` · `get_active_question` · `list_knowledge_points` · `kb_query` · `list_exam_bank` · `get_exam_paper` · `get_exam_result` · `show_solution` · `build_report`
+`list_recent_entries` · `find_record_entry` · `get_learner_snapshot` · `get_active_question` · `list_today_questions` · `list_knowledge_points` · `kb_query` · `list_exam_bank` · `get_exam_paper` · `get_exam_result` · `show_solution` · `build_report`
+
+> `list_today_questions`：今日（Asia/Shanghai）可见推送题，带 `answered` 标记；排序固定推送时间升序（非未答优先）。
 
 ### 动作（写状态由系统闸）
 

@@ -11,14 +11,18 @@ Runtime for an adaptive exam-cultivation bot: schedule → decide → evidence-g
 ```
 main.py                 entry: Stream + scheduler (+ optional kb_cache HTTP)
 config.py               env / .env only — no hardcoded secrets
-cultivate.py            cultivate loop
-grade.py                grading + mastery update
+cultivate.py            cultivate loop（推送：bank pick，默认不 live author）
+cultivate_bank.py       分时段预生成 → items status=ready
+cultivate_judge.py      题库审判层（双槽质检，劣质降权）
+grade.py                grading + mastery + CDP 对齐
 orchestrate.py          polish / delivery-side checks
 quality_gate.py         reject / retry rules
 agent/                  ReAct-style tool harness + memory blocks
 decide/                 LLM call helpers
-deliver/                DingTalk, WeCom, media, digests
-learner/                syllabus, weights, RAG contract, ability cycle, exams
+deliver/                DingTalk, WeCom, media, digests, system_api, SimpleTex
+learner/                syllabus, weights, RAG, SQLite store, item_bank, exams
+learner/db.py           teaching.db SSOT（pushes/items/attempts/…）
+learner/item_bank.py    缺口选规格 / pick / CDP 对齐与可归因过滤
 learner/kp_edit.py      L3 知识点提案→确认→落盘（唯一写入路径，审计）
 prompts/                templates + format rules
 data/                   syllabus seeds; runtime state mostly gitignored
@@ -31,8 +35,20 @@ scripts/                acceptance tests and ops helpers
 2. **Do not invent absolute machine paths** in committed code; use env (`KB_PATH`, `KB_QUERY_HELPER`, `DAILY_RECORD_DIR`, …).
 3. **RAG_STRICT defaults on.** Weak retrieval should refuse authoring unless explicitly debugging with `RAG_STRICT=0`.
 4. **Push and agent tools share policy.** Chat shortcuts must not bypass cultivate gates.
-5. **Runtime learner files stay local** (`answer-log.jsonl`, conversation ids, `kb_cache/store.json`, …).
+5. **Runtime learner files stay local** (`answer-log.jsonl`, conversation ids, `kb_cache/store.json`, `teaching.db`, …).
 6. **知识点写入只经 `learner/kp_edit.py`**：只允许追加 **L3** 到已存在 L2；**绝不新建 L2**（BKT 掌握度主键挂 L2）；必须经确认卡片 + 审计，未确认一律不落盘。
+7. **推送/列表/当前题以 SQLite 为权威**（`learner/db.py`）。MD/JSON 镜像仅导出或兼容，不得单独冒充成功落库。
+8. **日推默认从 ready 题库抽取**（`BANK_LIVE_FALLBACK=0`）。YAML structured 是 **RAG/风格种子**，不是题源；题源是 `cultivate_bank` 预生成。
+
+## 预出题库 + CDP + 审判（2026-08-12）
+
+- **补货**：`cultivate_bank.PREGEN_SLOTS` 分时段、每槽最多 1 道；按薄弱 KP/技巧缺口选规格再 author；入库 `status=ready` + `techniques` / `solution` / `cdps`（≥2）
+- **抽题**：`pick_ready_item` 顺序 KP+technique → KP → L1 → 任意；同档按 `quality_score`（pass > pending > poor）；候选 `LIMIT 40`（非全库遍历最优）
+- **CDP**：题级写死；批改对齐 id；仅 `attributable` 失败进入技巧/能力信号（对齐占位 `missing_from_grade` 等不计）
+- **审判**：每日约 08:30 / 17:30；机器硬闸 + `review_item` 异模型；不合格 `quality_tier=poor` 压抽题权重，不删题
+- **解答**：`items.answer` 出题层；结构化 `items.solution` 入库前抽取；`show_solution` 优先渲染 steps
+- **学员身份（Cow）**：桥写 `data/pi_active_learner.json`；Pi `teaching-api-client` 解析 `X-Learner-Id`（勿死绑 env owner）
+- 验收：`scripts/_test_item_bank.py`；结案叙事见 `D:\cc\logs\SESSION_2026-08-12.md`（本机日志，不进仓）
 
 ## 交互层 Agent 工具（2026-07-31）
 
@@ -46,30 +62,28 @@ scripts/                acceptance tests and ops helpers
   - l3_id 自动生成（取该 L2 现有点分前缀 + `k{n}`，含 pending 提案占用 id 去重）
   - 提案存 `data/kp_proposals.json`（staff 校验，跨 learner 不可确认）；所有写入落 `data/kp_edit_audit.jsonl`
 
-## Pi 交互层白名单（2026-08-02 · 架构约束，未部署 Pi 进程）
+## 系统调用面 + Pi（2026-08-09）
 
-**主线**：系统封装、交互自由。培养闭环（推题/批改/BKT）是确定性系统，由人维护；Pi（`pi.dev` 薄 harness，OpenClaw 背后的 harness，非 OpenClaw Desktop 整壳）只做对话与编排调用，**只能调系统 API，不能改系统代码、不能裸写参数**。
+**主线**：本仓是**可调用系统**（调度/培养/BKT + 白名单 HTTP）；交互 agent（Pi 等）在仓外，经 API 使用能力。Pi 配置/session/**不进本仓 git**。
 
-### 允许 — 读（Pi 自由调）
+### System API（任意 agent）
 
-`list_recent_entries` / `find_record_entry` / `get_learner_snapshot` / `list_knowledge_points` / `kb_query`（peek 只读）/ `list_exam_bank` / `get_exam_paper` / `get_exam_result` / `show_solution` / `build_report`
+- 实现：`deliver/system_api.py`；契约：`docs/system-api.md`
+- 默认 `http://127.0.0.1:8770`；`Authorization: Bearer $SYSTEM_API_TOKEN` + `X-Learner-Id`
+- 白名单工具表见 `docs/pi-tools-whitelist.md`（与 API 对齐）
+- **禁止**经 API：`github_push`、裸写 weights/answer-log、`decide()`/调度、改源码
 
-### 允许 — 动作（调系统，写状态由系统闸决定）
+### Pi 交互层（主机侧，非本仓）
 
-`generate_question`（走 cultivate/RAG/质检，不绕闸） / `grade_answer`（confidence→applied/pending）/ `submit_exam_answer_md` / `adjust_difficulty`（audit_only）/ `note_weak_point`（只 bump weights，record_bkt=False）/ `propose_add_kp`+`confirm_add_kp`+`cancel_add_kp`（确认卡+审计）/ `propose_override_grade`+`confirm_override`+`cancel_override`（确认卡+审计）/ `kb_enqueue`（只进队列）
-
-### 禁止 — Pi 永不可用
-
-- 读/写/改**系统源码**（cultivate/grade/agent/…）— 系统问题归人修
-- `bash` / 任意 shell / 装包 — 逃逸面
-- 直接读写 `weights.json` / `answer-log` / `syllabus_*` / `.env` — 绕过闸
-- 裸 `bkt.record` / 裸 `bump_kp_weight` — 必须经系统 API
-- `github_push`（默认关，权限过大）
-- 新建 L2 章节（只能追加 L3 到已有 L2）
+- 云端：`~/.pi/agent/extensions/`（`protect-teaching` 路径守卫 + `teaching-api-client` 调 System API）
+- 保留 Pi 通用 `bash`/`write`/`edit`；官方 `tool_call` **拦截对教学仓根的裸写**
+- 钉钉唤醒：`PI_RPC_ENABLED=1` → `agent/pi_rpc_bridge.py`（TCP 或 `PI_RPC_CMD`）
+- 会话树：`PI_SESSION_DIR/learners/{id}.jsonl`；推送后 `[NEW_PUSH]` + fork；指针 `data/learners/{id}/pi_session.json`
+- 仓内 `pi-tools.ts` 为历史草稿，已 deprecated
 
 ### 定时推送 / `decide()` / 双周卷组卷
 
-**Pi 不可调用**；仍属调度器与系统规则路径。
+**交互 agent 不可调用**；仍属调度器与系统规则路径。
 
 ### 参数链路可观测（2026-08-02）
 

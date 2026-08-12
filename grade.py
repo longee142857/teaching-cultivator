@@ -39,7 +39,8 @@ class GradeResult:
 
 
 def _get_bkt_log():
-    return BKTLogger(P.answer_log_path())
+    from learner.bkt_db import DbBKTLogger
+    return DbBKTLogger()
 
 
 def _uid() -> str:
@@ -114,6 +115,24 @@ def _find_reference_answer(kp_name: str) -> str:
 def _infer_subject(explicit: str, kp_name: str) -> str:
     if explicit in ("math", "comm", "review"):
         return "math" if explicit == "review" else explicit
+    # DB 权威（BIG-TEACH-013）
+    try:
+        from learner.db import get_store
+        from learner.context import current_user_id
+        sid = current_user_id() or ""
+    except Exception:
+        sid = ""
+    try:
+        lp = get_store().get_latest_push(sid or None)
+        if lp:
+            subj = (lp.get("subject") or "").strip()
+            if subj in ("math", "comm"):
+                return subj
+            if subj == "review":
+                return "math"
+    except Exception:
+        pass
+    # 旧文件兼容（迁移前）
     for path in (P.last_push_path(), P.public_last_class_path()):
         try:
             if os.path.isfile(path):
@@ -182,22 +201,39 @@ def _parse_grade_json(raw: str) -> dict | None:
     return None
 
 
-def _call_grade_llm(question: str, user_answer: str, ref_answer: str = "") -> dict:
-    """Grade LLM 返回结构化 verdict。"""
+def _call_grade_llm(
+    question: str,
+    user_answer: str,
+    ref_answer: str = "",
+    cdps: list | None = None,
+) -> dict:
+    """Grade LLM 返回结构化 verdict（可选 CDP 逐条判定）。"""
     ref_block = f"\n参考答案：{ref_answer}" if ref_answer else ""
+    cdp_block = ""
+    cdp_schema = ""
+    if cdps:
+        import json as _json
+        cdp_block = "\n决策点列表（必须逐 id 判定）：\n" + _json.dumps(
+            cdps, ensure_ascii=False
+        )
+        cdp_schema = (
+            ', "cdp_results": [{"id":"cdp1","ok":true|false,'
+            '"technique":"...","note":"..."}]'
+        )
     system = (
         "你是一个严格的考研批卷老师。判断用户解答是否正确。\n"
         "以 JSON 格式输出，不要包含其他内容：\n"
         '{"verdict": "correct|partial|incorrect", "confidence": 0.0-1.0, '
-        '"explanation": "..."}\n\n'
+        f'"explanation": "..."{cdp_schema}}}\n\n'
         "置信度说明：\n"
         "- 1.0: 完全确定，答案明确正确或错误\n"
         "- 0.8-0.9: 很确定\n"
         "- 0.5-0.7: 有些不确定，解答模糊\n"
         "- <0.5: 很不确定\n"
+        "若给出了决策点，cdp_results 必须覆盖每一个 id，并填写 technique。\n"
         "书写格式：行内公式只用 $...$；块公式用 $$...$$；禁止 \\(...\\)。"
     )
-    prompt = f"题目：{question}\n\n用户解答：{user_answer}{ref_block}"
+    prompt = f"题目：{question}\n\n用户解答：{user_answer}{ref_block}{cdp_block}"
     raw = call_llm(system, prompt, "grade")
     from math_format import normalize_markdown_body
     raw = normalize_markdown_body(raw)
@@ -209,6 +245,7 @@ def _call_grade_llm(question: str, user_answer: str, ref_answer: str = "") -> di
             "confidence": float(parsed.get("confidence", 0.6)),
             "raw": raw,
             "from_fallback": False,
+            "cdp_results": parsed.get("cdp_results") or [],
         }
 
     # Fallback: old text parser — uncertain only, never high enough to write BKT
@@ -224,6 +261,7 @@ def _call_grade_llm(question: str, user_answer: str, ref_answer: str = "") -> di
         "confidence": 0.4,
         "raw": raw,
         "from_fallback": True,
+        "cdp_results": [],
     }
 
 
@@ -319,14 +357,36 @@ def grade_answer(
 
     ref_answer = _find_reference_answer(kp_name)
 
+    item_cdps: list = []
+    try:
+        from learner.db import get_store
+        item = get_store().get_item_by_question(q, subject or "")
+        if item:
+            item_cdps = list(item.get("cdps") or [])
+            if not ref_answer and item.get("answer"):
+                ref_answer = item.get("answer") or ""
+    except Exception:
+        item_cdps = []
+
     # ── Structured grade LLM → verifier → apply/pending (BIG-TEACH-012a #7a) ──
-    grade_json = _call_grade_llm(q, ua, ref_answer)
+    grade_json = _call_grade_llm(q, ua, ref_answer, cdps=item_cdps or None)
     verify_json = _call_verify_llm(q, ua, grade_json)
     effective_conf = _compute_effective_confidence(
         grade_json.get("confidence", 0.0),
         verify_json,
         grade_fallback=bool(grade_json.get("from_fallback")),
     )
+
+    cdp_results: list = []
+    aligned = True
+    if item_cdps:
+        from learner.item_bank import align_cdp_results
+        cdp_results, aligned = align_cdp_results(
+            item_cdps, grade_json.get("cdp_results") or []
+        )
+        if not aligned:
+            # 缺条/错 id → 压低置信度，倾向 pending
+            effective_conf = min(effective_conf, 0.5)
 
     raw = grade_json.get("raw", "")
     verdict = grade_json.get("verdict", "incorrect")
@@ -385,10 +445,20 @@ def grade_answer(
             # 未分类不是有效 L2，不写 BKT 状态（权重 bump/decay 已跳过）
             if extracted_kp and extracted_kp != "未分类":
                 try:
+                    from learner.db import get_store
+                    resolved = get_store().resolve_push_for_question(_uid(), q)
+                    push_id = resolved[0] if resolved else None
+                    item_id = resolved[1] if resolved else None
+                except Exception:
+                    push_id = item_id = None
+                try:
                     bkt.record(
                         _uid(), extracted_kp, rec_correct, kc,
                         subject=subj, item_type=item_type, credit=credit,
                         status="applied", overrides=_kp_overrides,
+                        push_id=push_id, item_id=item_id,
+                        cdp_results=cdp_results or None,
+                        confidence=round(effective_conf, 4),
                     )
                 except TypeError:
                     bkt.record(_uid(), extracted_kp, is_correct, kc)
@@ -433,8 +503,33 @@ def grade_answer(
                 pending_entry["credit"] = credit
             if subj:
                 pending_entry["subject"] = subj
-            with open(P.answer_log_path(), "a", encoding="utf-8") as f:
-                f.write(json.dumps(pending_entry, ensure_ascii=False) + "\n")
+            if cdp_results:
+                pending_entry["cdp_results"] = cdp_results
+            try:
+                from learner.db import get_store
+                store = get_store()
+                resolved = store.resolve_push_for_question(_uid(), q)
+                if resolved:
+                    pending_entry["push_id"] = resolved[0]
+                    pending_entry["item_id"] = resolved[1]
+                store.add_attempt_entry(pending_entry)
+                if cdp_results:
+                    from learner.item_bank import learner_cdp_fail_summary
+
+                    fail_sum = learner_cdp_fail_summary(cdp_results)
+                    store.add_ability_snapshot(
+                        _uid(),
+                        {
+                            "kp_failures": [extracted_kp] if not is_correct else [],
+                            "technique_failures": fail_sum["technique_failures"],
+                            "cdp_fail_ids": fail_sum["cdp_fail_ids"],
+                            "at": pending_entry["ts"],
+                            "status": "pending",
+                            "cdp_aligned": aligned if item_cdps else None,
+                        },
+                    )
+            except Exception as e:
+                print(f"[grade] pending write failed: {e}")
             mastery_after = mastery_before
     except Exception as e:
         print(f"[grade] BKT update failed: {e}")

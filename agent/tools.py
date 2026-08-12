@@ -6,19 +6,27 @@
 题目上下文优先从按月记录 + 侧车索引读取（非内存），保证重启后不丢。
 """
 import re, os, json
-from config import DAILY_RECORD_DIR
 from learner.context import current_user_id
-from learner import paths as P
 
 
 def _uid() -> str:
     return current_user_id()
 
 
+def _db_sid() -> str:
+    try:
+        return current_user_id() or ""
+    except Exception:
+        return ""
+
+
 def _read_latest_entry() -> dict | None:
-    """从当月索引取最新一条题目字段。"""
-    from record_index import latest_entry
-    return latest_entry(DAILY_RECORD_DIR)
+    """DB 中该学员最新可见推送（当前题字段）。"""
+    try:
+        from learner.db import get_store
+        return get_store().get_latest_push(_db_sid() or None)
+    except Exception:
+        return None
 
 
 def find_record_entry(date: str, num: int = 0) -> str:
@@ -26,7 +34,6 @@ def find_record_entry(date: str, num: int = 0) -> str:
 
     num=0 表示取该日最后一条。供跨推送时段讨论使用。
     """
-    from record_index import find_entry
     date = (date or "").strip()
     if not date:
         return "请提供日期，格式 YYYY-MM-DD"
@@ -34,12 +41,16 @@ def find_record_entry(date: str, num: int = 0) -> str:
         num = int(num or 0)
     except (TypeError, ValueError):
         num = 0
-    entry = find_entry(DAILY_RECORD_DIR, date, num)
+    try:
+        from learner.db import get_store
+        entry = get_store().find_entry(date, num, _db_sid() or None)
+    except Exception:
+        entry = None
     if not entry:
         hint = f"#{num}" if num else "任意题号"
         return f"未找到 {date} {hint} 的题目记录"
     parts = [
-        f"日期：{entry.get('date', date)} {entry.get('time', '')} #{entry.get('num', '?')}",
+        f"日期：{entry.get('day', date)} {entry.get('time', '')} #{entry.get('seq', '?')}",
         f"科目：{entry.get('subject', '')} · {entry.get('difficulty', '')}",
     ]
     if entry.get("kp"):
@@ -48,7 +59,7 @@ def find_record_entry(date: str, num: int = 0) -> str:
         parts.append(f"参考来源：{entry['ref_source']}")
     parts.append("")
     parts.append("题目：")
-    parts.append(entry.get("question") or entry.get("raw", ""))
+    parts.append(entry.get("question") or "")
     if entry.get("answer"):
         parts.append("")
         parts.append("解答：")
@@ -141,101 +152,143 @@ def note_weak_point(subject: str, kp: str, reason: str = "") -> str:
 
 def list_recent_entries(days: int = 7) -> str:
     """列出最近 N 天题目索引（不含正文），供 LLM 选条目后再 find_record_entry。"""
-    from record_index import list_recent
     try:
         days = int(days or 7)
     except (TypeError, ValueError):
         days = 7
     days = max(1, min(days, 62))
-    rows = list_recent(DAILY_RECORD_DIR, days)
+    try:
+        from learner.db import get_store
+        rows = get_store().list_recent_pushes(_db_sid() or None, days)
+    except Exception:
+        rows = []
     if not rows:
         return f"最近 {days} 天无题目记录"
+    rows = sorted(
+        rows, key=lambda r: (r.get("day", ""), r.get("seq", 0), r.get("pushed_at", ""))
+    )
     lines = [f"最近 {days} 天共 {len(rows)} 条："]
     for r in rows:
         kp = r.get("kp") or "-"
         ref = r.get("ref_source") or ""
         ref_s = f" | 参考:{ref}" if ref else ""
         lines.append(
-            f"- {r.get('date')} {r.get('time', '')} #{r.get('num')} "
+            f"- {r.get('day')} {r.get('time', '')} #{r.get('seq')} "
             f"{r.get('subject', '')}/{r.get('difficulty', '')} | {kp}{ref_s}"
         )
     lines.append("需要某条全文时调用 find_record_entry(date, num)。")
     return "\n".join(lines)
 
 
+def list_today_questions(subject: str = "") -> str:
+    """列出今日（Asia/Shanghai）可见推送题，带已答标记；按推送时间序（非未答优先）。"""
+    try:
+        from learner.db import get_store, shanghai_day
+        today = shanghai_day(None)
+        rows = get_store().list_today_pushes(_db_sid() or None, today)
+    except Exception:
+        return "今日题目查询失败"
+    if subject:
+        subj = (subject or "").strip().lower()
+        rows = [r for r in rows if (r.get("subject") or "").lower() == subj]
+    if not rows:
+        return f"今日（{today}）没有进行中的题目"
+    lines = [f"今日（{today}）共 {len(rows)} 道："]
+    for r in rows:
+        answered = "已作答" if r.get("answered") else "未作答"
+        lines.append(
+            f"- {r.get('time', '')} #{r.get('seq')} [{answered}] "
+            f"{r.get('subject', '')}/{r.get('difficulty', '')} | {r.get('kp', '-')}"
+        )
+    lines.append("需要全文时调用 find_record_entry(date, num)。")
+    return "\n".join(lines)
+
+
 def generate_question(subject: str, kp_hint: str = "") -> str:
-    """出一题（与定时推送共用编排闸），返回题目内容。"""
+    """从 ready 题库抽取一题（与定时推送同一 pick 契约）；尊重 kp_hint。"""
     from cultivate import (
-        assess_state, decide, generate, record, get_last_answer, _save_last_push,
-        _last_ref_source,
+        assess_state, decide, _save_last_push, _bkt_available,
     )
+    from learner.item_bank import (
+        pick_for_push, pick_technique_for_kp, live_fallback_enabled,
+    )
+    from learner.db import get_store
+    from intervention import InterventionDecision
+
+    if not _bkt_available:
+        return "【失败】BKT 不可用"
     state = assess_state(subject)
     decision = decide(subject, state["bkt_log"])
+    hint = (kp_hint or "").strip()
+    if hint and decision.type != "defer":
+        ability = getattr(decision, "ability_goal", "") or ""
+        reason = f"{hint}[ability={ability}]" if ability else hint
+        decision = InterventionDecision(
+            type=decision.type,
+            difficulty=decision.difficulty,
+            reason=reason,
+            priority=getattr(decision, "priority", 3),
+            ability_goal=ability,
+        )
     if decision.type == "defer":
         return f"【跳过】{decision.reason}"
-    content = generate(subject, decision, source="chat")
-    if not content:
-        from cultivate import _rag_strict_blocked
-        if _rag_strict_blocked:
-            return "【生成失败：RAG 检索未达标，考点资料不足，无法出题】"
-        return "【生成失败：编排质检未通过】"
-    answer = get_last_answer()
-    record(subject, content, decision, answer)
+
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
-    # 去掉 [l3=]/[ability=] 后缀再存 kp
     kp = kp.split("[")[0].strip()
+    tech = pick_technique_for_kp(kp)
+    item = pick_for_push(subject, kp=kp, technique=tech, learner_id=_db_sid() or None)
+    if not item:
+        if live_fallback_enabled():
+            from cultivate import generate, record, get_last_answer, _last_ref_source
+            content = generate(subject, decision, source="chat")
+            if not content:
+                return "【生成失败：编排质检未通过】"
+            answer = get_last_answer()
+            record(subject, content, decision, answer)
+            _save_last_push(
+                subject, decision, content, answer, _last_ref_source, kp=kp, source="personal",
+            )
+            return content
+        return f"【题库为空】暂无匹配 ready 题（kp={kp}）。请等待分时段预生成补货。"
+
+    store = get_store()
+    try:
+        store.record_push_for_item(
+            item_id=int(item["id"]),
+            learner_id=_db_sid() or None,
+            slot=subject,
+            decision_type=decision.type,
+            reason=decision.reason,
+        )
+    except Exception as e:
+        return f"【失败】落库推送失败：{e}"
+
+    content = item.get("question") or ""
+    answer = item.get("answer") or ""
     _save_last_push(
-        subject, decision, content, answer, _last_ref_source, kp=kp, source="personal",
+        subject,
+        decision,
+        content,
+        answer,
+        item.get("ref_source") or "",
+        kp=kp,
+        source="personal",
     )
     return content
 
 
 def _load_last_push_record() -> dict:
-    """个人 last_push 或公共 last_class，取 timestamp 更新的那个。
-
-    定时公共推送写 public/last_class；私聊自出题写个人 last_push。
-    两个都可能存在，固定个人优先会在公共推送后读到过期个人题（批改错题）。
-    """
-    candidates = []
-    for path in (P.last_push_path(), P.public_last_class_path()):
-        try:
-            if os.path.exists(path):
-                with open(path, encoding="utf-8") as f:
-                    data = json.load(f)
-                if isinstance(data, dict):
-                    candidates.append(data)
-        except Exception:
-            pass
-    if not candidates:
+    """DB 中该学员最新可见推送（当前题元信息，权威源）。"""
+    try:
+        from learner.db import get_store
+        rec = get_store().get_latest_push(_db_sid() or None)
+        return rec or {}
+    except Exception:
         return {}
-    if len(candidates) == 1:
-        return candidates[0]
-    # 取 timestamp 更新者；无 timestamp 时按文件 mtime
-    def _ts(d: dict):
-        raw = (d.get("timestamp") or "").strip()
-        if raw:
-            try:
-                from datetime import datetime
-                return datetime.fromisoformat(raw)
-            except ValueError:
-                pass
-        return None
-
-    ts_list = [(i, _ts(d)) for i, d in enumerate(candidates)]
-    if all(t is not None for _, t in ts_list):
-        return candidates[max(ts_list, key=lambda x: x[1])[0]]
-    # 无 timestamp：回退比较 mtime
-    mt = []
-    for path in (P.last_push_path(), P.public_last_class_path()):
-        try:
-            mt.append(os.path.getmtime(path) if os.path.exists(path) else -1)
-        except OSError:
-            mt.append(-1)
-    return candidates[0] if mt[0] >= mt[1] else candidates[1]
 
 
 def _load_last_push_question() -> str:
-    """从 last_push / last_class 取完整题干（推送后权威源）。"""
+    """从 DB 最新推送取完整题干（权威源）。"""
     data = _load_last_push_record()
     return (data.get("question") or "").strip()
 
@@ -321,19 +374,46 @@ def grade_answer(last_question: str = "", user_answer: str = "") -> str:
 
 
 def show_solution() -> str:
-    """根据题库中最新的题目，调 LLM 生成解答。
-
-    不是查缓存，是真做一遍——读题、理解、给出完整推导。
-    """
+    """优先渲染题库结构化 solution；否则现场 LLM 解答。"""
     entry = _read_latest_entry()
+    if not entry:
+        # DB 最新推送
+        entry = _load_last_push_record()
     if not entry:
         return "NO_ENTRY"
     question = entry.get("question", "")
     if not question:
         return "NO_ENTRY"
+
+    solution = entry.get("solution") or {}
+    if not solution:
+        try:
+            from learner.db import get_store
+            item = get_store().get_item_by_question(question, entry.get("subject") or "")
+            if item:
+                solution = item.get("solution") or {}
+                entry.setdefault("answer", item.get("answer") or "")
+        except Exception:
+            pass
+
+    steps = (solution or {}).get("steps") or []
+    if steps:
+        from math_format import normalize_markdown_body
+        question = normalize_markdown_body(question)
+        lines = [f"题目：{question}", "", "解答（结构化）："]
+        for s in steps:
+            if isinstance(s, dict):
+                lines.append(f"- ({s.get('id') or '?'}) {s.get('text') or ''}")
+            else:
+                lines.append(f"- {s}")
+        fa = (solution or {}).get("final_answer") or entry.get("answer") or ""
+        if fa:
+            lines.append("")
+            lines.append(f"最终答案：{fa}")
+        return normalize_markdown_body("\n".join(lines))
+
     subject = entry.get("subject", "math")
     diff = entry.get("difficulty", "intermediate")
-
     from decide.router import call_llm
     system = (
         f"你是瑞贝卡，考研导师。请给下面这道{subject}题做完整解答。\n"
@@ -343,12 +423,12 @@ def show_solution() -> str:
     )
     user = f"题目（难度{diff}）：\n{question}\n\n请给出完整解答。"
     try:
-        solution = call_llm(system, user, "explain", diff)
+        sol = call_llm(system, user, "explain", diff)
         from math_format import normalize_markdown_body
         question = normalize_markdown_body(question)
-        solution = normalize_markdown_body(solution)
-        return f"题目：{question}\n\n解答：\n{solution}"
-    except Exception as e:
+        sol = normalize_markdown_body(sol)
+        return f"题目：{question}\n\n解答：\n{sol}"
+    except Exception:
         return f"SOLUTION_FAILED|{question}"
 
 
@@ -368,12 +448,9 @@ def adjust_difficulty(subject: str, level: str) -> str:
         kp = ""
         if entry:
             kp = (entry.get("kp") or "").strip()
-            if not kp and entry.get("raw"):
-                m = re.search(r"决策原因：(.+)", entry["raw"])
-                if m:
-                    kp = m.group(1).split(":")[0].strip()
+            if not kp and entry.get("reason"):
+                kp = entry["reason"].split(":")[0].strip()
         if kp:
-            log_path = P.answer_log_path()
             audit = {
                 "ts": datetime.now(timezone.utc).isoformat(),
                 "user_id": _uid(),
@@ -386,8 +463,8 @@ def adjust_difficulty(subject: str, level: str) -> str:
                 "update_reason": "audit_only",
                 "status": "audit",
             }
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps(audit, ensure_ascii=False) + "\n")
+            from learner.db import get_store
+            get_store().add_attempt_entry(audit)
             result += f"\n（已记录 '{kp}' 审计日志，不影响掌握度）"
     except Exception:
         pass
@@ -444,32 +521,22 @@ def cancel_override(token: str = "") -> str:
 
 
 def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.0) -> str:
-    """覆盖最近一条批改记录并重算掌握度（BIG-TEACH-012a #7a）。"""
+    """覆盖最近一条批改记录并重算掌握度（BIG-TEACH-012a #7a；DB 读写）。"""
     from bkt import KCState
     from datetime import datetime, timezone
+    from learner.db import get_store
 
-    log_path = P.answer_log_path()
-    if not os.path.exists(log_path):
-        return f"'{kp}' 无批改记录可覆盖"
-
-    entries: list[dict] = []
+    store = get_store()
+    uid = _uid()
     try:
-        with open(log_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line_s = line.strip()
-                if not line_s:
-                    continue
-                try:
-                    e = json.loads(line_s)
-                    if e.get("knowledge_point") == kp:
-                        entries.append(e)
-                except json.JSONDecodeError:
-                    continue
+        entries = [
+            e for e in store.get_attempts(uid) if e.get("knowledge_point") == kp
+        ]
     except Exception as e:
-        return f"读取 answer-log 失败：{e}"
+        return f"读取作答记录失败：{e}"
 
     if not entries:
-        return f"'{kp}' 无历史记录"
+        return f"'{kp}' 无批改记录可覆盖"
 
     skip_status = {"pending", "audit"}
     # 最近一条仍有效的已应用作答 → 被本次 override 取代
@@ -523,7 +590,7 @@ def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.
 
     override_entry = {
         "ts": datetime.now(timezone.utc).isoformat(),
-        "user_id": _uid(),
+        "user_id": uid,
         "knowledge_point": kp,
         "correct": correct,
         "credit": float(credit) if credit else None,
@@ -538,8 +605,8 @@ def override_grade(kp: str, correct: bool, subject: str = "", credit: float = 0.
     if subject:
         override_entry["subject"] = subject
     try:
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(override_entry, ensure_ascii=False) + "\n")
+        store.add_attempt_entry(override_entry)
+        store.set_mastery(uid, kp, kc.to_dict(), override_entry["ts"])
     except Exception as e:
         return f"写入 override 失败：{e}"
 
@@ -733,3 +800,76 @@ def write_feedback(title: str = "", content: str = "") -> str:
     except OSError as e:
         return f"写入反馈失败：{e}"
     return f"已写入反馈：{os.path.basename(path)}（将同步到本机 tasks/problem/）"
+
+
+def ocr_handwriting(image_id: str = "") -> str:
+    """识别私聊暂存的手写/演算图片（不批改）。
+
+    image_id 可空：用该学员最近一张入站图。用户说「帮我看看图里写了什么」时用。
+    """
+    from learner.context import current_user_id
+    from deliver.inbound_images import resolve_image
+    from deliver.simpletex import is_configured, ocr_image
+
+    if not is_configured():
+        return "SimpleTex 未配置，无法识别。请管理员写入 SIMPLETEX_UAT 或 APP 凭证。"
+    try:
+        uid = current_user_id()
+    except Exception:
+        uid = ""
+    try:
+        iid, data, meta = resolve_image(uid, image_id)
+    except FileNotFoundError:
+        return (
+            "没有可用的暂存图片。请让用户在人机私聊直接发图（可附说明），"
+            "然后再调用本工具。"
+        )
+    out = ocr_image(data, filename=str(meta.get("filename") or "handwriting.jpg"))
+    if not out.get("ok"):
+        return f"识别失败（{out.get('error') or 'unknown'}）。可请用户换更清晰的照片。"
+    text = (out.get("text") or "").strip()
+    conf = out.get("conf")
+    conf_note = f"，置信 {conf:.0%}" if isinstance(conf, (int, float)) else ""
+    return f"[image_id={iid}{conf_note}]\n{text}"
+
+
+def grade_handwriting(image_id: str = "") -> str:
+    """把私聊暂存图片 OCR 后，按当前题调用 grade_answer 批改。
+
+    仅当用户明确这是作答/交卷/重做时调用；不要对随便发的截图、表情包调用。
+    image_id 可空：用该学员最近一张入站图。
+    """
+    from learner.context import current_user_id
+    from deliver.inbound_images import resolve_image
+    from deliver.simpletex import is_configured, ocr_image
+
+    if not is_configured():
+        return "SimpleTex 未配置，无法识别作答图。"
+    try:
+        uid = current_user_id()
+    except Exception:
+        uid = ""
+    try:
+        iid, data, meta = resolve_image(uid, image_id)
+    except FileNotFoundError:
+        return (
+            "没有可用的暂存图片。请用户先在人机私聊发作答照片，"
+            "再说「这是作答」后你再调用 grade_handwriting。"
+        )
+    out = ocr_image(data, filename=str(meta.get("filename") or "handwriting.jpg"))
+    if not out.get("ok"):
+        return (
+            f"识别失败（{out.get('error') or 'unknown'}），未批改。"
+            "请用户重拍更清晰的照片。"
+        )
+    text = (out.get("text") or "").strip()
+    if not text:
+        return "识别结果为空，未批改。"
+    grade_msg = grade_answer("", text)
+    conf = out.get("conf")
+    conf_note = f"（置信 {conf:.0%}）" if isinstance(conf, (int, float)) else ""
+    preview = text if len(text) <= 600 else (text[:600] + "…")
+    return (
+        f"📷 OCR{conf_note} image_id={iid}：\n```\n{preview}\n```\n\n"
+        f"——\n{grade_msg}"
+    )

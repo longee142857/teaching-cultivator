@@ -12,6 +12,7 @@ from __future__ import annotations
 import inspect
 import json
 import os
+import re
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Callable
@@ -39,6 +40,7 @@ WHITELIST: dict[str, Callable[..., Any]] = {
     "find_record_entry": T.find_record_entry,
     "get_learner_snapshot": T.get_learner_snapshot,
     "get_active_question": T.get_active_question,
+    "list_today_questions": T.list_today_questions,
     "list_knowledge_points": T.list_knowledge_points,
     "kb_query": T.kb_query,
     "list_exam_bank": T.list_exam_bank,
@@ -59,6 +61,8 @@ WHITELIST: dict[str, Callable[..., Any]] = {
     "cancel_override": T.cancel_override,
     "kb_enqueue": T.kb_enqueue,
     "write_feedback": T.write_feedback,
+    "ocr_handwriting": T.ocr_handwriting,
+    "grade_handwriting": T.grade_handwriting,
 }
 
 # 只读工具：GET 放行；写工具仅 POST（避免 URL 泄露敏感参数）
@@ -67,6 +71,7 @@ _READ_TOOLS: set[str] = {
     "find_record_entry",
     "get_learner_snapshot",
     "get_active_question",
+    "list_today_questions",
     "list_knowledge_points",
     "kb_query",
     "list_exam_bank",
@@ -115,7 +120,16 @@ def call_tool(name: str, learner_id: str, params: dict | None = None) -> dict:
     try:
         with bind_learner(lid, binding="personal"):
             result = fn(**kwargs)
-        return {"ok": True, "tool": name, "result": result}
+        out: dict[str, Any] = {"ok": True, "tool": name, "result": result}
+        # get_learner_snapshot：把 ```ability_json 块提升为可解析字段
+        if name == "get_learner_snapshot" and isinstance(result, str):
+            m = re.search(r"```ability_json\s*\n([\s\S]*?)\n```", result)
+            if m:
+                try:
+                    out["ability"] = json.loads(m.group(1))
+                except json.JSONDecodeError:
+                    pass
+        return out
     except Exception as e:
         return {"ok": False, "tool": name, "error": str(e)}
 

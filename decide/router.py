@@ -1,4 +1,4 @@
-"""模型选择器 — 按任务类型选模型与通道（DeepSeek 直连 / OpenRouter）。"""
+"""模型选择器 — 按任务类型选模型与通道（DeepSeek / DashScope / 可选 OpenRouter）。"""
 from __future__ import annotations
 
 import logging
@@ -12,6 +12,7 @@ from config import (
     MODEL_FLASH,
     MODEL_PRO,
     REVIEWER_MODEL,
+    REVIEWER_PROVIDER,
     SSL_VERIFY,
 )
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 REASONING_EFFORT_MAX = "max"
 REASONING_EFFORT_DEFAULT = "high"
 
-Provider = Literal["deepseek", "openrouter"]
+Provider = Literal["deepseek", "dashscope", "openrouter"]
 
 
 @dataclass
@@ -39,8 +40,8 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
     矩阵：
       author/grade/explain/generate → DeepSeek Pro + thinking max
       polish/orchestrate              → DeepSeek Flash（文案）
-      review_item/verify_grade        → OpenRouter REVIEWER_MODEL（异厂）
-      agent                           → DeepSeek Flash（0731 Agent 强化版）+ thinking max
+      review_item/verify_grade        → REVIEWER_PROVIDER（默认 dashscope/qwen-plus）
+      agent                           → DeepSeek Flash + thinking max
     """
     _ = difficulty  # 保留签名兼容
     if task_type in ("grade", "generate", "explain", "author"):
@@ -52,8 +53,11 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
             MODEL_FLASH, provider="deepseek", thinking=False, effort=REASONING_EFFORT_DEFAULT
         )
     if task_type in ("review_item", "verify_grade"):
+        prov: Provider = "dashscope"
+        if REVIEWER_PROVIDER in ("dashscope", "openrouter", "deepseek"):
+            prov = REVIEWER_PROVIDER  # type: ignore[assignment]
         return ModelConfig(
-            REVIEWER_MODEL, provider="openrouter", thinking=False, effort=REASONING_EFFORT_DEFAULT
+            REVIEWER_MODEL, provider=prov, thinking=False, effort=REASONING_EFFORT_DEFAULT
         )
     if task_type == "agent":
         effort = (
@@ -89,13 +93,37 @@ def _post_deepseek(payload: dict) -> dict:
     return resp.json()
 
 
+def _post_dashscope(payload: dict) -> dict:
+    """阿里云百炼 OpenAI 兼容接口（北京，直连，不走本地代理）。"""
+    import requests
+    from config import DASHSCOPE_API_BASE, DASHSCOPE_API_KEY
+
+    if not DASHSCOPE_API_KEY:
+        raise RuntimeError("未设置 DASHSCOPE_API_KEY（百炼控制台 API-KEY）")
+    base = DASHSCOPE_API_BASE.rstrip("/")
+    resp = requests.post(
+        f"{base}/chat/completions",
+        headers={
+            "Authorization": f"Bearer {DASHSCOPE_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json=payload,
+        timeout=300,
+        verify=SSL_VERIFY,
+        # 明确直连：不使用 detect_proxies / 环境代理翻墙
+        proxies={"http": None, "https": None},
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 def _post_openrouter(payload: dict, *, title: str = "teaching-cultivator") -> dict:
     import requests
     from config import OPENROUTER_API_KEY, OPENROUTER_BASE
     from decide.http_util import detect_proxies
 
     if not OPENROUTER_API_KEY:
-        raise RuntimeError("未设置 OPENROUTER_API_KEY（Agent/审查与 X-digest 共用）")
+        raise RuntimeError("未设置 OPENROUTER_API_KEY")
     resp = requests.post(
         f"{OPENROUTER_BASE}/chat/completions",
         headers={
@@ -119,6 +147,22 @@ def _content_from_response(data: dict) -> str:
     return msg.get("content") or ""
 
 
+def _fallback_deepseek_flash(messages: list[dict], task_type: str, err: Exception) -> str:
+    logger.warning(
+        "%s failed (%s); fallback DeepSeek Flash",
+        task_type,
+        err,
+    )
+    fb = {
+        "model": MODEL_FLASH,
+        "messages": messages,
+        "stream": False,
+        "thinking": {"type": "disabled"},
+    }
+    data = _post_deepseek(fb)
+    return _content_from_response(data)
+
+
 def call_llm(
     system: str,
     user: str,
@@ -127,9 +171,9 @@ def call_llm(
     *,
     reasoning_effort: str | None = None,
 ) -> str:
-    """按 task_type 调 DeepSeek 或 OpenRouter，返回最终 content。
+    """按 task_type 调模型，返回最终 content。
 
-    review_item / verify_grade：OpenRouter 失败时回退 DeepSeek Flash（降级独立性，不阻断）。
+    review_item / verify_grade：DashScope/OpenRouter 失败时回退 DeepSeek Flash（不阻断）。
     """
     cfg = select_model(task_type, difficulty)
     effort = reasoning_effort or cfg.effort
@@ -162,7 +206,21 @@ def call_llm(
         data = _post_deepseek(payload)
         return _content_from_response(data)
 
-    # openrouter
+    if cfg.provider == "dashscope":
+        logger.info(
+            "call_llm task=%s provider=dashscope model=%s",
+            task_type,
+            cfg.model,
+        )
+        try:
+            data = _post_dashscope(payload)
+            return _content_from_response(data)
+        except Exception as e:
+            if task_type not in ("review_item", "verify_grade"):
+                raise
+            return _fallback_deepseek_flash(messages, task_type, e)
+
+    # openrouter（可选遗留）
     logger.info(
         "call_llm task=%s provider=openrouter model=%s",
         task_type,
@@ -174,19 +232,7 @@ def call_llm(
     except Exception as e:
         if task_type not in ("review_item", "verify_grade"):
             raise
-        logger.warning(
-            "OpenRouter %s failed (%s); fallback DeepSeek Flash",
-            task_type,
-            e,
-        )
-        fb = {
-            "model": MODEL_FLASH,
-            "messages": messages,
-            "stream": False,
-            "thinking": {"type": "disabled"},
-        }
-        data = _post_deepseek(fb)
-        return _content_from_response(data)
+        return _fallback_deepseek_flash(messages, task_type, e)
 
 
 def call_openrouter_chat(

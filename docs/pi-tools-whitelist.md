@@ -1,7 +1,8 @@
-# Pi 交互层白名单 → tools.py 符号对照表（2026-08-09）
+# 系统白名单 → tools.py 符号对照表（2026-08-09）
 
-> 依据：`teaching-cultivator/CLAUDE.md`「Pi 交互层白名单」+ `agent/tools.py` 实际函数。
-> 用途：Pi tool 注册（`pi-tools.ts`）的权威依据。Pi 只调这些；其余函数内部用，不暴露。
+> 依据：`CLAUDE.md` + `agent/tools.py`。  
+> **权威 HTTP 契约**：[`system-api.md`](system-api.md)（任意 agent）。  
+> Pi 侧扩展在主机 `~/.pi/`（不进本仓）；仓内 `pi-tools.ts` 已 deprecated。
 
 ## 一、read:* — 只读（Pi 自由调）
 
@@ -11,6 +12,7 @@
 | `find_record_entry` | `find_record_entry(date, num=0)` | 某条题目全文 | 无 |
 | `get_learner_snapshot` | `get_learner_snapshot(days=7)` | 学习指标快照 | 无 |
 | `get_active_question` | `get_active_question()` | 当前题（单一真相源） | 无 |
+| `list_today_questions` | `list_today_questions(subject)` | 今日推送题（含 `answered`；时间升序，非未答优先） | 无 |
 | `list_knowledge_points` | `list_knowledge_points(subject, query)` | 考纲 L2/L3 | 无 |
 | `kb_query` | `kb_query(subject, kp)` | 小库只读 peek | 无（不增命中计数） |
 | `list_exam_bank` | `list_exam_bank(query, limit)` | 双周卷目录 | 无 |
@@ -25,6 +27,8 @@
 |-----------|--------------|---------|
 | `generate_question` | `generate_question(subject, kp_hint)` | 走 cultivate/RAG/质检；不绕闸 |
 | `grade_answer` | `grade_answer(last_question, user_answer)` | confidence→applied/pending；BKT+weights 在系统内；回显 [KP=][TS=] |
+| `ocr_handwriting` | `ocr_handwriting(image_id)` | 读私聊暂存图 → SimpleTex；不批改；image_id 可空=最新 |
+| `grade_handwriting` | `grade_handwriting(image_id)` | OCR → `grade_answer`；仅用户明确作答时由 Cow 调用 |
 | `submit_exam_answer_md` | `submit_exam_answer_md(md_text, paper_id)` | 同 grade 链 |
 | `adjust_difficulty` | `adjust_difficulty(subject, level)` | audit_only，不改 mastery |
 | `note_weak_point` | `note_weak_point(subject, kp, reason)` | 只 bump weights（record_bkt=False） |

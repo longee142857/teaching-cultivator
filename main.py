@@ -143,21 +143,29 @@ class TeachingBot:
     # ── 上下文恢复 ──────────────────────────────────
 
     def _restore_last_question(self):
-        path = P.public_last_class_path()
-        if not os.path.exists(path):
-            path = P.last_push_path()
+        q = ""
         try:
+            from learner.db import get_store
+            rec = get_store().get_latest_push(None)
+            if rec:
+                q = (rec.get("question") or "").strip()
+        except Exception:
+            pass
+        if not q:
+            path = P.public_last_class_path()
             if not os.path.exists(path):
-                return
-            with open(path, encoding="utf-8") as f:
-                data = json.load(f)
-            q = (data.get("question") or "").strip()
-            if q:
-                self._last_question = q
-                self._last_question_time = time.time()
-                log(f"恢复 last_push 题目 ({len(q)} chars)")
-        except Exception as e:
-            log(f"恢复 last_push 失败: {e}")
+                path = P.last_push_path()
+            try:
+                if os.path.exists(path):
+                    with open(path, encoding="utf-8") as f:
+                        data = json.load(f)
+                    q = (data.get("question") or "").strip()
+            except Exception as e:
+                log(f"恢复 last_push 失败: {e}")
+        if q:
+            self._last_question = q
+            self._last_question_time = time.time()
+            log(f"恢复 last_push 题目 ({len(q)} chars)")
 
     def _save_last_push(self, subject, decision, content, answer=""):
         """Deprecated：推送正文由 cultivate._save_last_push 写入 public/last_class。"""
@@ -194,20 +202,37 @@ class TeachingBot:
                 if oid:
                     with bind_owner_schedule():
                         self.agent.bind_for_learner(oid)
-                        # 从 public/last_class 读 kp（_save_last_push 已写入），
-                        # 保证 blocks 的 active_question 有正确 kp（防错题叙事粘滞）
+                        # 当前题 kp 以 SQLite 为准（JSON last_class 仅为镜像）
                         push_kp = ""
                         try:
-                            _pub = P.public_last_class_path()
-                            if os.path.isfile(_pub):
-                                with open(_pub, encoding="utf-8") as _f:
-                                    push_kp = (json.load(_f).get("kp") or "").strip()
-                        except Exception:
-                            pass
+                            from learner.db import get_store
+
+                            _rec = get_store().get_latest_push(None)
+                            if _rec:
+                                push_kp = (_rec.get("kp") or "").strip()
+                        except Exception as _dbe:
+                            log(f"[cultivate] kp from DB failed, JSON fallback: {_dbe}")
+                            try:
+                                _pub = P.public_last_class_path()
+                                if os.path.isfile(_pub):
+                                    with open(_pub, encoding="utf-8") as _f:
+                                        push_kp = (json.load(_f).get("kp") or "").strip()
+                            except Exception:
+                                pass
                         self.agent.on_new_push(
                             self._last_question, subject=subject, kp=push_kp,
                             public_class=True,
                         )
+                        # Pi 会话树：新推送 fork（PI_RPC_ENABLED 时）
+                        try:
+                            from agent.pi_rpc_bridge import enabled as _pi_on, get_bridge
+
+                            if _pi_on():
+                                get_bridge().notify_new_push(
+                                    oid, subject=subject, kp=push_kp
+                                )
+                        except Exception as _pe:
+                            log(f"[pi-session] notify_new_push skip: {_pe}")
                 # 出题后跟发快捷按钮 ActionCard
                 try:
                     self.dingtalk.send_question_action_card(subject)
@@ -327,6 +352,30 @@ class TeachingBot:
 
 PUSH_SLOTS = [("09:00", "math"), ("15:00", "comm"), ("19:00", "review")]
 
+# 分时段预生成（每槽最多 1 道；与推送错开）
+try:
+    from cultivate_bank import PREGEN_SLOTS as _PREGEN_SLOTS
+    PREGEN_SLOTS = list(_PREGEN_SLOTS)
+except Exception:
+    PREGEN_SLOTS = [
+        ("01:00", "math"),
+        ("02:30", "math"),
+        ("04:00", "comm"),
+        ("05:30", "math"),
+        ("07:00", "comm"),
+        ("11:00", "review"),
+        ("13:00", "math"),
+        ("16:30", "comm"),
+        ("21:00", "fill"),
+    ]
+
+# 审判层：每日两次质检题库（劣质题压低抽题权重）
+try:
+    from cultivate_judge import JUDGE_SLOTS as _JUDGE_SLOTS
+    JUDGE_SLOTS = list(_JUDGE_SLOTS)
+except Exception:
+    JUDGE_SLOTS = ["08:30", "17:30"]
+
 _WEEKDAY_MAP = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 
 
@@ -347,6 +396,33 @@ def _next_scheduled_event(now: datetime.datetime):
         if target <= now:
             target += datetime.timedelta(days=1)
         candidates.append((target, "cultivate", subject))
+
+    for time_str, subj in PREGEN_SLOTS:
+        h, m = map(int, time_str.split(":"))
+        target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+        if target <= now:
+            target += datetime.timedelta(days=1)
+        candidates.append((target, "pregen", subj))
+
+    for time_str in JUDGE_SLOTS:
+        h, m = map(int, time_str.split(":"))
+        target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+        if target <= now:
+            target += datetime.timedelta(days=1)
+        candidates.append((target, "judge", time_str))
+
+    # 题库审判层：每日两次（质检 / 劣质降权）
+    try:
+        from cultivate_judge import JUDGE_SLOTS as _JUDGE_SLOTS
+        judge_slots = list(_JUDGE_SLOTS)
+    except Exception:
+        judge_slots = ["08:30", "17:30"]
+    for time_str in judge_slots:
+        h, m = map(int, time_str.split(":"))
+        target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+        if target <= now:
+            target += datetime.timedelta(days=1)
+        candidates.append((target, "bank_judge", None))
 
     # GitHub 自动推送：每天 08:00
     target_gh = now.replace(hour=8, minute=0, second=0, microsecond=0)
@@ -400,19 +476,29 @@ def scheduler_loop(bot: TeachingBot):
         wait = (target - now).total_seconds()
         label_map = {
             "cultivate": payload,
+            "pregen": f"pregen:{payload}",
+            "judge": f"judge:{payload}",
             "github_push": "github-push",
             "weekly_report": "weekly-report",
             "biweekly_exam": "biweekly-exam",
         }
         label = label_map.get(kind, kind)
         if wait < 120:
-            log(f"[定时] {label} 推送倒计时 {wait:.0f}s")
+            log(f"[定时] {label} 倒计时 {wait:.0f}s")
             time.sleep(max(0, wait))
-            log(f"[推送] 推送 {label}")
+            log(f"[触发] {label}")
             try:
                 if kind == "cultivate":
                     bot.push_cultivate(payload)
                     log(f"[OK] {payload} 完成")
+                elif kind == "pregen":
+                    from cultivate_bank import run_pregen_slot
+                    result = run_pregen_slot(payload)
+                    log(f"[OK] pregen {payload} → {result}")
+                elif kind == "judge":
+                    from cultivate_judge import run_judge_slot
+                    result = run_judge_slot()
+                    log(f"[OK] judge {payload} → {result}")
                 elif kind == "github_push":
                     _do_github_push(bot)
                     # 与周日 08:00 同槽：若双周到期则一并发卷（防候选撞车丢事件）
@@ -464,6 +550,17 @@ def main():
             log("kb_cache API 未启动（KB_CACHE_HTTP=0 或端口占用）")
     except Exception as e:
         log(f"kb_cache API 跳过: {e}")
+
+    # 教学系统白名单 API（任意 agent 可调；默认 127.0.0.1:8770）
+    try:
+        from deliver.system_api import start_in_thread as start_system_api
+
+        if start_system_api():
+            log("system_api 已启动")
+        else:
+            log("system_api 未启动（SYSTEM_API_HTTP=0 或端口占用）")
+    except Exception as e:
+        log(f"system_api 跳过: {e}")
 
     # 双周试卷 H5（localhost；公网经 nginx 反代 /e/）
     try:

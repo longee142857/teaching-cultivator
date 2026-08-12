@@ -10,7 +10,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from config import AGENT_MODEL, MODEL_FLASH, MODEL_PRO, REVIEWER_MODEL
+from config import AGENT_MODEL, MODEL_FLASH, MODEL_PRO, REVIEWER_MODEL, REVIEWER_PROVIDER
 from decide.router import call_deepseek_chat, call_llm, select_model
 
 
@@ -38,7 +38,7 @@ def main() -> None:
 
     for t in ("review_item", "verify_grade"):
         cfg = select_model(t)
-        check(cfg.provider == "openrouter", f"{t} provider=openrouter", fails)
+        check(cfg.provider == REVIEWER_PROVIDER, f"{t} provider={REVIEWER_PROVIDER}", fails)
         check(cfg.model == REVIEWER_MODEL, f"{t} model=reviewer", fails)
 
     cfg_agent = select_model("agent")
@@ -78,19 +78,19 @@ def main() -> None:
             fails,
         )
 
-    print("\n=== call_llm review openrouter ===")
-    with patch("decide.router._post_openrouter") as mock_or:
-        mock_or.return_value = {
+    print("\n=== call_llm review dashscope ===")
+    with patch("decide.router._post_dashscope") as mock_dscope:
+        mock_dscope.return_value = {
             "choices": [{"message": {"content": '{"decision":"accept"}'}}]
         }
         out = call_llm("sys", "usr", "review_item")
-        check("accept" in out, "review or content", fails)
-        payload = mock_or.call_args[0][0]
+        check("accept" in out, "review dashscope content", fails)
+        payload = mock_dscope.call_args[0][0]
         check(payload["model"] == REVIEWER_MODEL, "review model", fails)
         check("thinking" not in payload, "review no thinking key", fails)
 
-    print("\n=== review OR fallback to flash ===")
-    with patch("decide.router._post_openrouter", side_effect=RuntimeError("or down")), \
+    print("\n=== review dashscope fallback to flash ===")
+    with patch("decide.router._post_dashscope", side_effect=RuntimeError("ds down")), \
          patch("decide.router._post_deepseek") as mock_ds:
         mock_ds.return_value = {
             "choices": [{"message": {"content": "fallback"}}]

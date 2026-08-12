@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""_load_last_push_record 修复测试：定时公共推送后，批改应读最新的 last_class 而非旧个人题。
+"""_load_last_push_record 修复测试：定时公共推送后，批改应读最新的公共题而非旧个人题。
 
-场景：个人 last_push(旧题) + 公共 last_class(新题) 同时存在，应取 timestamp 新的。
+BIG-TEACH-013：权威源为 SQLite pushes（公共 learner_id IS NULL ∪ 个人）。
+场景：个人旧题 + 公共新题 同时存在，应取 pushed_at 最新的。
 """
 from __future__ import annotations
 
-import json
 import os
 import sys
 import tempfile
@@ -42,34 +42,25 @@ def main():
 def _run(check):
     import config as cfg
     import agent.tools as T
+    from learner.db import get_store, reset_store
 
+    now = datetime.now(timezone.utc)
+
+    # 场景 1：个人旧题（昨天） + 公共新题（1 小时前）→ 应选公共新题
     with tempfile.TemporaryDirectory() as td:
-        os.environ["TEACHING_DATA_DIR"] = td
         cfg.DATA_DIR = td
-
-        from learner import paths as P
-        personal = P.last_push_path()
-        public = P.public_last_class_path()
-        os.makedirs(os.path.dirname(personal), exist_ok=True)
-        os.makedirs(os.path.dirname(public), exist_ok=True)
-
-        now = datetime.now(timezone.utc)
-
-        # 个人 last_push：旧题（昨天）
-        with open(personal, "w", encoding="utf-8") as f:
-            json.dump({
-                "subject": "comm", "kp": "卷积码与维特比译码",
-                "question": "旧的维特比题...",
-                "timestamp": (now - timedelta(days=1)).isoformat(),
-            }, f, ensure_ascii=False)
-
-        # 公共 last_class：新题（今天 19:01）
-        with open(public, "w", encoding="utf-8") as f:
-            json.dump({
-                "subject": "review", "kp": "二重积分与三重积分",
-                "question": "新的二重积分题...",
-                "timestamp": (now - timedelta(hours=1)).isoformat(),
-            }, f, ensure_ascii=False)
+        reset_store()
+        store = get_store()
+        store.record_push(
+            subject="comm", question="旧的维特比题...", kp="卷积码与维特比译码",
+            learner_id="test_last_push_prio",
+            pushed_at=(now - timedelta(days=1)).isoformat(),
+        )
+        store.record_push(
+            subject="review", question="新的二重积分题...", kp="二重积分与三重积分",
+            learner_id=None,
+            pushed_at=(now - timedelta(hours=1)).isoformat(),
+        )
 
         rec = T._load_last_push_record()
         check(rec.get("kp") == "二重积分与三重积分",
@@ -78,29 +69,21 @@ def _run(check):
         q = T._load_last_push_question()
         check(q.startswith("新的二重积分题"), f"question 应为新题: {q[:20]}")
 
-    # 反向：个人更新 → 应选个人
+    # 场景 2：个人新题（now） + 公共旧题（2 天前）→ 应选个人
     with tempfile.TemporaryDirectory() as td:
-        os.environ["TEACHING_DATA_DIR"] = td
         cfg.DATA_DIR = td
-        from learner import paths as P2
-        personal = P2.last_push_path()
-        public = P2.public_last_class_path()
-        os.makedirs(os.path.dirname(personal), exist_ok=True)
-        os.makedirs(os.path.dirname(public), exist_ok=True)
-
-        now = datetime.now(timezone.utc)
-        with open(personal, "w", encoding="utf-8") as f:
-            json.dump({
-                "subject": "math", "kp": "私聊自出题",
-                "question": "刚私聊出的题...",
-                "timestamp": now.isoformat(),
-            }, f, ensure_ascii=False)
-        with open(public, "w", encoding="utf-8") as f:
-            json.dump({
-                "subject": "comm", "kp": "旧公共题",
-                "question": "旧的公共题...",
-                "timestamp": (now - timedelta(days=2)).isoformat(),
-            }, f, ensure_ascii=False)
+        reset_store()
+        store = get_store()
+        store.record_push(
+            subject="math", question="刚私聊出的题...", kp="私聊自出题",
+            learner_id="test_last_push_prio",
+            pushed_at=now.isoformat(),
+        )
+        store.record_push(
+            subject="comm", question="旧的公共题...", kp="旧公共题",
+            learner_id=None,
+            pushed_at=(now - timedelta(days=2)).isoformat(),
+        )
 
         rec = T._load_last_push_record()
         check(rec.get("kp") == "私聊自出题",

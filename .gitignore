@@ -49,6 +49,12 @@ data/refine-queue-archive/
 data/learners/
 data/public/
 
+# BIG-TEACH-013: SQLite 真相源（运行时生成，勿入库）
+data/teaching.db
+data/teaching.db-wal
+data/teaching.db-shm
+data/param_audit.jsonl
+
 # Private ops / session notes (not for public tree)
 logs/SESSION_*.md
 logs/HANDOFF_*.md

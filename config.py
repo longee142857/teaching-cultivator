@@ -29,9 +29,11 @@ DEEPSEEK_API_BASE = os.environ.get("DEEPSEEK_API_BASE", "https://api.deepseek.co
 # ── 模型 ──
 MODEL_FLASH = os.environ.get("DEEPSEEK_MODEL_FLASH", "deepseek-v4-flash")
 MODEL_PRO = os.environ.get("DEEPSEEK_MODEL_PRO", "deepseek-v4-pro")
-# OpenRouter：审查校验（异厂）；交互 Agent 已改走 DeepSeek Flash 直连
+# Agent：DeepSeek Flash 直连
 AGENT_MODEL = os.environ.get("AGENT_MODEL", "deepseek-v4-flash")
-REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen/qwen3.6-plus")
+# 审查异厂：默认阿里云百炼（北京）qwen-plus；可改 REVIEWER_PROVIDER=openrouter|deepseek
+REVIEWER_PROVIDER = (os.environ.get("REVIEWER_PROVIDER") or "dashscope").strip().lower()
+REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen-plus")
 # Agent thinking：官方 Agent 评测用 max；设 AGENT_THINKING=0 可关
 AGENT_THINKING = os.environ.get("AGENT_THINKING", "1") == "1"
 AGENT_REASONING_EFFORT = os.environ.get("AGENT_REASONING_EFFORT", "max")
@@ -57,6 +59,8 @@ SSL_VERIFY = os.environ.get("SSL_VERIFY", "1") == "1"
 
 # ── 数据文件 ──
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+# BIG-TEACH-013: SQLite 真相源库；空则用 DATA_DIR/teaching.db
+TEACHING_DB = os.environ.get("TEACHING_DB", "")
 BKT_OVERRIDES_PATH = os.path.join(DATA_DIR, "bkt_overrides.json")  # BIG-TEACH-012b #2
 LP_PATH = os.path.join(DATA_DIR, "learning-progress.json")  # DEPRECATED (BIG-TEACH-012d #16)
 # 每日记录目录：默认仓库内 data/daily_export；可用环境变量覆盖
@@ -97,7 +101,23 @@ GITHUB_DEFAULT_REPO = os.path.dirname(__file__)  # teaching-cultivator
 WX_BOT_URL = "https://ilinkai.weixin.qq.com/ilink/bot"
 WX_BOT_TOKEN = os.environ.get("WX_BOT_TOKEN", "")
 
-# ── OpenRouter（reviewer 异厂校验；X Digest 已退役；Agent 走 DeepSeek）──
+# ── 阿里云百炼 DashScope（review_item / verify_grade 默认通道；OpenAI 兼容）──
+DASHSCOPE_API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
+DASHSCOPE_API_BASE = os.environ.get(
+    "DASHSCOPE_API_BASE",
+    "https://dashscope.aliyuncs.com/compatible-mode/v1",
+)
+
+# ── SimpleTex 手写/公式 OCR（私聊发图批改）──
+SIMPLETEX_UAT = os.environ.get("SIMPLETEX_UAT", "")
+SIMPLETEX_APP_ID = os.environ.get("SIMPLETEX_APP_ID", "")
+SIMPLETEX_APP_SECRET = os.environ.get("SIMPLETEX_APP_SECRET", "")
+SIMPLETEX_API_BASE = os.environ.get("SIMPLETEX_API_BASE", "https://server.simpletex.cn")
+# general=整页混排(默认)；formula_turbo=轻量公式；formula=标准公式
+SIMPLETEX_OCR_MODE = os.environ.get("SIMPLETEX_OCR_MODE", "general")
+SIMPLETEX_ENABLED = os.environ.get("SIMPLETEX_ENABLED", "1") == "1"
+
+# ── OpenRouter（可选遗留；默认审查已改走 DashScope，不走代理翻墙）──
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE = "https://openrouter.ai/api/v1"
 
@@ -128,3 +148,18 @@ OPS_WEB_HOST = os.environ.get("OPS_WEB_HOST", "127.0.0.1")
 OPS_WEB_PORT = int(os.environ.get("OPS_WEB_PORT", "8767"))
 OPS_WEB_HTTP = os.environ.get("OPS_WEB_HTTP", "1") == "1"
 OPS_VIEW_TOKEN = os.environ.get("OPS_VIEW_TOKEN", "")
+
+# ── 系统白名单 API（任意 agent；默认本机）──
+SYSTEM_API_HTTP = os.environ.get("SYSTEM_API_HTTP", "1") == "1"
+SYSTEM_API_HOST = os.environ.get("SYSTEM_API_HOST", "127.0.0.1")
+SYSTEM_API_PORT = int(os.environ.get("SYSTEM_API_PORT", "8770"))
+SYSTEM_API_TOKEN = os.environ.get("SYSTEM_API_TOKEN", "")
+
+# ── Pi RPC 交互层（钉钉唤醒；扩展/session 在主机 Pi 家目录，不进本仓）──
+PI_RPC_ENABLED = os.environ.get("PI_RPC_ENABLED", "0") == "1"
+PI_RPC_HOST = os.environ.get("PI_RPC_HOST", "127.0.0.1")
+PI_RPC_PORT = int(os.environ.get("PI_RPC_PORT", "8780"))
+PI_SESSION_DIR = os.environ.get("PI_SESSION_DIR", "/home/ubuntu/pi-sessions")
+PI_WORKSPACE = os.environ.get("PI_WORKSPACE", "/home/ubuntu/pi-workspace")
+PI_RPC_CMD = os.environ.get("PI_RPC_CMD", "")
+PI_RPC_TIMEOUT = float(os.environ.get("PI_RPC_TIMEOUT", "180"))

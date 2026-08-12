@@ -62,7 +62,9 @@ def _run(check):
         fake_bkt.get_kp_mastery.return_value = None
         mock_bkt.return_value = fake_bkt
 
-        r = grade_answer(mcq, "A", kp_name="函数极限与连续", subject="math")
+        with tempfile.TemporaryDirectory() as td:
+            with patch.object(config_mod, "DATA_DIR", td):
+                r = grade_answer(mcq, "A", kp_name="函数极限与连续", subject="math")
         check(r.status == "applied", f"status={r.status}")
         check(r.is_correct is True, f"correct={r.is_correct}")
         check(r.confidence >= CONFIDENCE_THRESHOLD, f"confidence={r.confidence}")
@@ -116,9 +118,10 @@ def _run(check):
     sep("4. override_grade")
     from agent import tools as tools_mod
     from bkt import KCState
+    from learner.db import get_store, reset_store
 
+    reset_store()
     with tempfile.TemporaryDirectory() as td:
-        log_path = os.path.join(td, "answer-log.jsonl")
         kc = KCState()
         kc.update(False, item_type="mcq", force=True)
         wrong_state = kc.to_dict()
@@ -128,18 +131,17 @@ def _run(check):
             "mastery_before": 0.2, "mastery_after": round(kc.p_mastery, 4),
             "update_applied": True, "status": "applied", "state": wrong_state,
         }
-        with open(log_path, "w", encoding="utf-8") as f:
-            f.write(json.dumps(entry1, ensure_ascii=False) + "\n")
 
-        with patch.object(config_mod, "DATA_DIR", td), \
-             patch("agent.tools.P.answer_log_path", return_value=log_path), \
-             patch("learner.paths.answer_log_path", return_value=log_path):
+        with patch.object(config_mod, "DATA_DIR", td):
+            store = get_store()
+            store.add_attempt_entry(entry1)
+            store.set_mastery("test_staff_grade_gate", "极限", wrong_state, entry1["ts"])
+
             result = tools_mod.override_grade("极限", True, subject="math")
             check("已覆盖" in result, f"override msg: {result[:100]}")
 
-            with open(log_path, encoding="utf-8") as f:
-                lines = f.readlines()
-            last = json.loads(lines[-1])
+            attempts = store.get_attempts("test_staff_grade_gate")
+            last = attempts[-1]
             check(last.get("status") == "overridden", f"status={last.get('status')}")
             check(last.get("correct") is True, f"correct={last.get('correct')}")
             check(
