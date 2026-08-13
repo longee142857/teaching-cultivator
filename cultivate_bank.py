@@ -66,10 +66,26 @@ def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
     dtype = decision.type if decision.type != "defer" else "push"
 
     if force_kp:
-        # 保留 ability 标签在 reason 中供 generate 解析
-        reason = force_kp
+        # 强制 L2 时必须挂上 [l3=…]，否则 generate 在 RAG_STRICT 下直接 abort
+        from learner.kp_registry import pick_l3, syllabus_subject, list_l3_for_l2
+        from learner.ability_cycle import encode_ability_reason
+
+        l2 = force_kp.split("[")[0].strip()
+        weight_subj = syllabus_subject(subject)
+        l3_id = pick_l3(weight_subj, l2) if l2 else None
+        if not l3_id and l2 and not list_l3_for_l2(weight_subj, l2):
+            # 缺口 KP 不在考纲 / 无 L3：回退 decide 已选 L3
+            l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
+        if not l3_id:
+            return {
+                "ok": False,
+                "error": "no_l3_for_gap_kp",
+                "subject": subject,
+                "kp": l2,
+            }
+        reason = f"{l2} [l3={l3_id}]"
         if ability:
-            reason = f"{force_kp}[ability={ability}]"
+            reason = f"{reason} {encode_ability_reason(ability)}"
         decision = InterventionDecision(
             type=dtype, difficulty=diff, reason=reason, priority=3, ability_goal=ability
         )

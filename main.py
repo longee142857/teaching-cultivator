@@ -196,8 +196,16 @@ class TeachingBot:
         try:
             from learner.context import bind_owner_schedule, owner_staff_id
 
+            q_before = self._last_question or ""
+            t_before = float(self._last_question_time or 0)
             run(subject)
-            if self._last_question:
+            # 仅当本轮确实交付了新题才通知 / 发快捷卡（避免空库时复用启动恢复的旧题）
+            delivered_new = bool(
+                self._last_question
+                and float(self._last_question_time or 0) > t_before
+                and self._last_question != q_before
+            )
+            if delivered_new:
                 oid = owner_staff_id()
                 if oid:
                     with bind_owner_schedule():
@@ -238,7 +246,9 @@ class TeachingBot:
                     self.dingtalk.send_question_action_card(subject)
                 except Exception as e:
                     log(f"[action-card] 出题卡失败: {e}")
-            log(f"[OK] {subject} 推送执行完毕")
+                log(f"[OK] {subject} 推送执行完毕")
+            else:
+                log(f"[跳过] {subject} 本轮无新题交付（题库空或 generate 失败），不发快捷卡")
         except Exception as e:
             log(f"[失败] {subject} 推送异常: {e}")
             saved_content = self._last_question

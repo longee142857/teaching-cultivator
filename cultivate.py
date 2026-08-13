@@ -565,11 +565,19 @@ def generate(subject: str, decision: InterventionDecision, *,
 
     # ── L3 硬闸 (BIG-TEACH-011c) ──
     from learner.kp_registry import parse_l3_from_reason, is_valid_l3_id, pick_l3, syllabus_subject
+    # reason 可能含 [l3=…][ability=…]；L2 名取方括号前
+    kp = (kp or "").split("[")[0].strip()
     l3_subj = syllabus_subject(subject)
     l3_id = parse_l3_from_reason(decision.reason)
     if l3_id and not is_valid_l3_id(l3_subj, l3_id):
         print(f"[cultivate] l3_id '{l3_id}' not in syllabus — treated as miss")
         l3_id = None
+    if not l3_id and kp:
+        # 兼容漏挂 [l3=] 的调用方（如旧 pregen）：现场补选
+        l3_id = pick_l3(l3_subj, kp)
+        if l3_id:
+            decision.reason = f"{decision.reason} [l3={l3_id}]"
+            print(f"[cultivate] auto-attached l3={l3_id} for L2={kp}")
 
     # ── RAG 硬契约（011-rag）：唯一入口 rag_retrieve；禁止直调 query_rag ──
     rag_items: list[dict] = []
