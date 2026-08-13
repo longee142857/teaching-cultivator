@@ -131,13 +131,28 @@ def pick_for_push(
             l1 = get_l1(syllabus_subject(subject), kp) or ""
         except Exception:
             l1 = ""
-    return store.pick_ready_item(
+    hit = store.pick_ready_item(
         subject=subject,
         kp=kp,
         technique=technique,
         l1=l1,
         exclude_hashes=excl,
     )
+    # review 槽与数学同考纲；review 池空时回退 math ready（避免晚间空推）
+    if not hit and (subject or "").strip().lower() == "review":
+        hit = store.pick_ready_item(
+            subject="math",
+            kp=kp,
+            technique=technique,
+            l1=l1,
+            exclude_hashes=excl,
+        )
+        if hit:
+            print(
+                f"[item_bank] review pool empty → fallback math item#{hit.get('id')} "
+                f"kp={hit.get('kp') or '-'}"
+            )
+    return hit
 
 
 def validate_bank_payload(
