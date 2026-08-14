@@ -75,6 +75,11 @@ def main() -> int:
     check("roster entry", entry["staff_id"] == "staff_b" and entry["nick"] == "Bob")
     check("weights seeded", os.path.isfile(P.weights_path("staff_b")))
     check("resolve", R.resolve_learner("staff_b") is not None)
+    R.upsert_roster("staff_exam_owner", nick="O", source="test", exam_code="01")
+    check("exam code 1", R.resolve_exam_uid("1") == "staff_exam_owner")
+    check("exam code 01", R.resolve_exam_uid("01") == "staff_exam_owner")
+    check("exam staff passthrough", R.resolve_exam_uid("staff_exam_owner") == "staff_exam_owner")
+    check("exam unknown stays", R.resolve_exam_uid("staff_a") == "staff_a")
     check("enroll phrase", R.is_enroll_utterance("我想报名培养"))
     check("enroll neg", not R.is_enroll_utterance("选B"))
 

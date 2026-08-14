@@ -117,23 +117,8 @@ def submit_exam_answer_md(md_text: str = "", paper_id: str = "") -> str:
 
 def get_exam_result(paper_id: str = "", user_id: str = "") -> str:
     """查看某人对某张双周卷的批改报告与作答（试卷库按人可查）。"""
-    from learner.biweekly_exam import ANSWERS_DIR
-    from learner.context import current_user_id
-    pid = (paper_id or "").strip()
-    if not pid:
-        return "请提供 paper_id（如 2026-07-26_math）。先用 list_exam_bank 查有哪些卷。"
-    uid = (user_id or "").strip() or current_user_id()
-    grade_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_grade.md")
-    ans_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_answer.md")
-    if not os.path.isfile(grade_path):
-        return f"「{pid}」没有该学员的批改记录（可能未交卷或批改未完成）。"
-    out = [f"### 批改报告 · `{pid}`"]
-    with open(grade_path, encoding="utf-8") as f:
-        out.append(f.read())
-    if os.path.isfile(ans_path):
-        with open(ans_path, encoding="utf-8") as f:
-            out.append("\n### 你的作答\n" + f.read())
-    return "\n".join(out)
+    from learner.biweekly_exam import get_exam_result as _get
+    return _get(paper_id, user_id=user_id or "")
 
 
 def note_weak_point(subject: str, kp: str, reason: str = "") -> str:

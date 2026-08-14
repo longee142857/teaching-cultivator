@@ -543,6 +543,74 @@ def _extract_paper_id(md: str) -> str | None:
     return m.group(1) if m else None
 
 
+def get_exam_result(paper_id: str, user_id: str = "") -> str:
+    """按人取批改报告。短编号会解析到 staff_id，并回退 index.last_uid。"""
+    pid = _safe_exam_token(paper_id)
+    if not pid:
+        return "请提供 paper_id（如 2026-07-26_math）。先用 list_exam_bank 查有哪些卷。"
+    raw = (user_id or "").strip()
+    if not raw:
+        try:
+            from learner.context import current_user_id
+            raw = current_user_id() or ""
+        except Exception:
+            raw = ""
+    try:
+        from learner.roster import resolve_exam_uid
+        resolved = resolve_exam_uid(raw) if raw else ""
+    except Exception:
+        resolved = raw
+    candidates: list[str] = []
+    for u in (resolved, raw):
+        u = _safe_exam_token(u)
+        if u and u not in candidates:
+            candidates.append(u)
+    index = load_index()
+    for p in index.get("papers") or []:
+        if p.get("id") != pid:
+            continue
+        extras: list[str] = []
+        lu = _safe_exam_token(str(p.get("last_uid") or ""))
+        if lu:
+            extras.append(lu)
+        ap = str(p.get("answer_path") or "")
+        m = re.search(r"answers/(.+)_answer\.md$", ap.replace("\\", "/"))
+        if m:
+            stem = m.group(1)
+            prefix = pid + "_"
+            if stem.startswith(prefix):
+                extra = _safe_exam_token(stem[len(prefix):])
+                if extra:
+                    extras.append(extra)
+        for extra in extras:
+            try:
+                from learner.roster import resolve_exam_uid as _re
+                extra_res = _re(extra)
+            except Exception:
+                extra_res = extra
+            if extra_res == resolved or extra == raw or extra_res == raw:
+                if extra not in candidates:
+                    candidates.append(extra)
+        break
+    for uid in candidates:
+        grade_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_grade.md")
+        if not os.path.isfile(grade_path):
+            continue
+        out = [f"### 批改报告 · `{pid}`"]
+        with open(grade_path, encoding="utf-8") as f:
+            out.append(f.read())
+        ans_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_answer.md")
+        if os.path.isfile(ans_path):
+            with open(ans_path, encoding="utf-8") as f:
+                out.append("\n### 你的作答\n" + f.read())
+        return "\n".join(out)
+    return f"「{pid}」没有该学员的批改记录（可能未交卷或批改未完成）。"
+
+
+def _safe_exam_token(s: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_\-]", "", (s or "").strip())[:64]
+
+
 def submit_answer_md(
     md_text: str,
     *,
@@ -650,6 +718,12 @@ def submit_answer_md(
     )
 
     uid = (user_id or "").strip() or _uid()
+    try:
+        from learner.roster import resolve_exam_uid
+        uid = resolve_exam_uid(uid) or uid
+    except Exception:
+        pass
+    uid = _safe_exam_token(uid) or "anonymous"
     _ensure_dirs()
     ans_path = os.path.join(ANSWERS_DIR, f"{pid}_{uid}_answer.md")
     with open(ans_path, "w", encoding="utf-8") as f:

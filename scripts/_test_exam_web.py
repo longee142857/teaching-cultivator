@@ -176,9 +176,10 @@ def test_http_deny_and_data(tmp_bank: str):
 
         called = {}
 
-        def _fake_submit(md_text, *, paper_id=""):
+        def _fake_submit(md_text, *, paper_id="", user_id=""):
             called["md"] = md_text
             called["paper_id"] = paper_id
+            called["user_id"] = user_id
             return "FAKE_REPORT_OK"
 
         be2.submit_answer_md = _fake_submit

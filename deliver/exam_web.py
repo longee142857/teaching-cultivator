@@ -383,7 +383,10 @@ class ExamHandler(BaseHTTPRequestHandler):
         self._cors()
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except BrokenPipeError:
+            logger.warning("exam_web client disconnected during JSON write")
 
     def _bytes(self, code: int, data: bytes, content_type: str) -> None:
         self.send_response(code)
@@ -560,6 +563,11 @@ class ExamHandler(BaseHTTPRequestHandler):
         data = self._read_json()
         raw_answers = data.get("answers") or {}
         uid = (data.get("uid") or "").strip()
+        try:
+            from learner.roster import resolve_exam_uid
+            uid = resolve_exam_uid(uid) if uid else uid
+        except Exception:
+            pass
         if not isinstance(raw_answers, dict):
             self._json(400, {"ok": False, "error": "answers must be object"})
             return
@@ -600,6 +608,9 @@ class ExamHandler(BaseHTTPRequestHandler):
             else:
                 report = submit_answer_md(md, paper_id=meta["paper_id"])
             clear_draft(meta["paper_id"], uid or "anonymous")
+            raw_uid = (data.get("uid") or "").strip()
+            if raw_uid and raw_uid != uid:
+                clear_draft(meta["paper_id"], raw_uid)
         except Exception as e:
             logger.exception("exam submit failed")
             self._json(
@@ -611,7 +622,7 @@ class ExamHandler(BaseHTTPRequestHandler):
             )
             return
 
-        self._json(200, {"ok": True, "report": report})
+        self._json(200, {"ok": True, "report": (report or "")[:8000]})
 
 
 def make_server(host: str | None = None, port: int | None = None) -> ThreadingHTTPServer:

@@ -75,6 +75,52 @@ def list_active_learners() -> dict[str, dict[str, Any]]:
     return out
 
 
+def normalize_exam_code(code: str) -> str:
+    """H5 编号：'01' 与 '1' 视为同一码。非纯数字原样返回。"""
+    s = (code or "").strip()
+    if s.isdigit():
+        return str(int(s))
+    return s
+
+
+def resolve_exam_uid(raw: str) -> str:
+    """H5 短编号 → 花名册 staff_id。
+
+    钉钉 staffId（长数字）原样返回。1–8 位编号按 exam_code 匹配；
+    未登记时，'1'/'01' 回落到 OWNER_STAFF_ID（当前单人主学员）。
+    """
+    raw = (raw or "").strip()
+    if not raw:
+        return ""
+    learners = list_learners()
+    # 长 staffId 已在花名册 → 直接用；短数字编号即使误入花名册也继续按 exam_code 解析
+    if raw in learners and not (raw.isdigit() and len(raw) <= 8):
+        return raw
+    key = normalize_exam_code(raw)
+    for sid, entry in learners.items():
+        if not isinstance(entry, dict):
+            continue
+        if sid.isdigit() and len(sid) <= 8:
+            continue
+        code = entry.get("exam_code") or ""
+        if code and normalize_exam_code(str(code)) == key:
+            return sid
+    if raw.isdigit() and 1 <= len(raw) <= 8:
+        try:
+            from learner.context import owner_staff_id
+            owner = owner_staff_id()
+        except Exception:
+            owner = ""
+        if owner:
+            oe = learners.get(owner) or {}
+            oc = str(oe.get("exam_code") or "01")
+            if normalize_exam_code(oc) == key:
+                return owner
+    if raw in learners:
+        return raw
+    return raw
+
+
 def upsert_roster(
     staff_id: str,
     *,
@@ -83,6 +129,7 @@ def upsert_roster(
     status: Optional[str] = None,
     last_answer_at: Optional[float] = None,
     set_last_answer_at: bool = False,
+    exam_code: Optional[str] = None,
 ) -> dict[str, Any]:
     """写入/更新花名册。
 
@@ -116,6 +163,9 @@ def upsert_roster(
         "status": new_status,
         "enrolled_at": prev.get("enrolled_at") or now,
         "last_answer_at": ans_ts,
+        "exam_code": str(
+            exam_code if exam_code is not None else prev.get("exam_code") or ""
+        ).strip(),
         "updated_at": now,
     }
     data["learners"][sid] = entry

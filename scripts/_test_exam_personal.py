@@ -122,6 +122,31 @@ def main():
         out_miss = get_exam_result(pid, user_id="nobody")
         check("没有该学员的批改记录" in out_miss, "missing result handled")
 
+        print("=== 3b. 短编号 last_uid 回退 ===")
+        fa1 = os.path.join(be.ANSWERS_DIR, f"{pid}_1_answer.md")
+        fg1 = os.path.join(be.ANSWERS_DIR, f"{pid}_1_grade.md")
+        os.replace(fa, fa1)
+        os.replace(fg, fg1)
+        idx = be.load_index()
+        for p in idx.get("papers") or []:
+            if p.get("id") == pid:
+                p["last_uid"] = "1"
+                p["answer_path"] = f"answers/{pid}_1_answer.md"
+        be.save_index(idx)
+        import learner.roster as R
+
+        _old = R.resolve_exam_uid
+        R.resolve_exam_uid = (
+            lambda raw, _o=_old: "staff_a"
+            if raw in ("1", "01", "staff_a")
+            else (_o(raw) if raw else "")
+        )
+        try:
+            out_alias = get_exam_result(pid, user_id="staff_a")
+            check("批改报告" in out_alias, "alias last_uid found for staff_a")
+        finally:
+            R.resolve_exam_uid = _old
+
         print("=== 4. 草稿端点 helper（exam_web）===")
         import deliver.exam_web as ew
 
