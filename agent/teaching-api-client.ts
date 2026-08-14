@@ -67,7 +67,7 @@ function resolveLearnerId(ctx?: ExtensionContext, explicit?: string): string {
 async function apiCall(
   tool: string,
   params: Record<string, unknown>,
-  ctx?: ExtensionContext,, ctx): Promise<string> {
+  ctx?: ExtensionContext): Promise<string> {
   const body: Record<string, unknown> = { ...params };
   let explicit = "";
   if (typeof body.learner_id === "string") {

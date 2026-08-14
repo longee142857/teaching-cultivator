@@ -1189,7 +1189,7 @@ class Store:
         reason: str = "",
         pushed_at: str | None = None,
     ) -> int:
-        """已有 bank item → 只写 pushes；use_count+1。"""
+        """已有 bank item → 写 pushes 并消耗（推过即 retired，供同 KP 补新题）。"""
         def _do(conn) -> int:
             row = conn.execute("SELECT * FROM items WHERE id=?", (int(item_id),)).fetchone()
             if not row:
@@ -1208,8 +1208,11 @@ class Store:
                 meta["decision_type"] = decision_type
             if reason:
                 meta["reason"] = reason
+            # 消耗式：推送即退休 → 离开 ready 池 → count_ready 下降 → 同 KP 自动补新题。
+            # 推过的题永不重抽，杜绝「200 窗口滚动后确定性重抽同一题」。
             conn.execute(
-                "UPDATE items SET meta=?, use_count=COALESCE(use_count,0)+1 WHERE id=?",
+                "UPDATE items SET meta=?, use_count=COALESCE(use_count,0)+1, "
+                "status='retired' WHERE id=?",
                 (json.dumps(meta, ensure_ascii=False), int(item_id)),
             )
             conn.execute(
