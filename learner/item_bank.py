@@ -87,8 +87,11 @@ def pick_technique_for_kp(kp: str) -> str:
     return max(counts.items(), key=lambda x: x[1])[0]
 
 
-def select_gap_spec(subject: str) -> dict[str, str] | None:
-    """选缺口最大的 (kp[, technique])；科目 ready 已满则 None。"""
+def select_gap_spec(subject: str, *, skip_kps: set[str] | None = None) -> dict[str, str] | None:
+    """选缺口最大的 (kp[, technique])；科目 ready 已满则 None。
+
+    skip_kps：上一缺口出题失败时跳过，支持预生成回退次优缺口。
+    """
     store = get_store()
     quota = bank_quota(subject)
     if store.count_ready(subject) >= quota:
@@ -97,9 +100,12 @@ def select_gap_spec(subject: str) -> dict[str, str] | None:
     if not ranked:
         return {"kp": "", "technique": "", "subject": subject}
 
+    skip = {str(k).split("[")[0].strip() for k in (skip_kps or set())}
     best = None
     best_gap = -1
     for kp, score in ranked:
+        if kp in skip:
+            continue
         tech = pick_technique_for_kp(kp)
         have = store.count_ready(subject, kp=kp, technique=tech) if tech else store.count_ready(
             subject, kp=kp

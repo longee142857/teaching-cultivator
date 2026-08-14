@@ -236,10 +236,79 @@ def test_cultivate_uses_bank_no_author() -> None:
         check(store.count_rows("pushes") == 1, "cultivate created push")
 
 
+def test_author_spec_inserts_ready() -> None:
+    """驱动 _author_spec 走完整入库路径（曾因提取后丢 store 而 NameError）。"""
+    from learner.db import Store
+    from types import SimpleNamespace
+    from cultivate_bank import _author_spec
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        decision = SimpleNamespace(
+            type="push", difficulty="basic",
+            reason="函数极限与连续 [l3=math.calc.limit.def] [ability=recognize]",
+            ability_goal="recognize",
+        )
+        structured = {
+            "techniques": ["t_a"],
+            "solution": {"steps": [{"id": "s1", "text": "步骤"}],
+                         "final_answer": "答案", "techniques_used": ["t_a"]},
+            "cdps": [{"id": "c1", "prompt": "p", "expected": "e", "technique": "t_a", "depends_on": []},
+                     {"id": "c2", "prompt": "p2", "expected": "e2", "technique": "t_a", "depends_on": ["c1"]}],
+        }
+        with patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("cultivate_bank.get_store", return_value=store), \
+             patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+             patch("cultivate.decide", return_value=decision), \
+             patch("cultivate.generate", return_value="题干内容X"), \
+             patch("cultivate.get_last_answer", return_value="答案X"), \
+             patch("cultivate._last_ref_source", ""), \
+             patch("cultivate._last_item_form", ""), \
+             patch("cultivate._bkt_available", True), \
+             patch("learner.kp_registry.pick_l3", return_value="math.calc.limit.def"), \
+             patch("learner.kp_registry.list_l3_for_l2", return_value=[{"id": "x"}]), \
+             patch("cultivate_bank.structure_item_via_llm", return_value=structured):
+            spec = {"kp": "函数极限与连续", "technique": "t_a", "subject": "math"}
+            r = _author_spec("math", spec)
+        check(r.get("ok") is True, "author_spec ok")
+        check(store.count_ready("math") == 1, "item inserted ready")
+
+
+def test_pregen_fallback_next_gap() -> None:
+    """首个缺口出题失败后，预生成回退到次优缺口。"""
+    from learner.db import Store
+    from cultivate_bank import _pregenerate_one_inner
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        calls = {"n": 0}
+
+        def fake_select(subject, skip_kps=None):
+            if "A" in (skip_kps or set()):
+                return {"kp": "B", "technique": "", "subject": subject}
+            return {"kp": "A", "technique": "", "subject": subject}
+
+        def fake_author(subject, spec):
+            calls["n"] += 1
+            if spec["kp"] == "A":
+                return {"ok": False, "error": "generate_failed", "kp": "A", "subject": subject}
+            return {"ok": True, "skipped": False, "item_id": 1, "kp": "B", "subject": subject}
+
+        with patch("cultivate_bank.get_store", return_value=store), \
+             patch("cultivate_bank.select_gap_spec", side_effect=fake_select), \
+             patch("cultivate_bank._author_spec", side_effect=fake_author):
+            r = _pregenerate_one_inner("math")
+        check(r.get("ok") is True, "fallback picks next gap after fail")
+        check(calls["n"] == 2, "author tried A(fail) then B(ok)")
+
+
 def main() -> int:
     print("== item bank / CDP unit ==")
     test_schema_and_pick()
     test_cultivate_uses_bank_no_author()
+    test_author_spec_inserts_ready()
+    test_pregen_fallback_next_gap()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")

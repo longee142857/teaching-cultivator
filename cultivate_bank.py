@@ -26,6 +26,9 @@ def pregenerate_one(subject: str, *, max_items: int = 1) -> dict[str, Any]:
         return _pregenerate_one_inner(subject)
 
 
+MAX_GAP_ATTEMPTS = 3
+
+
 def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
     store = get_store()
     if store.count_ready(subject) >= bank_quota(subject):
@@ -37,10 +40,27 @@ def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
             "subject": subject,
         }
 
-    spec = select_gap_spec(subject)
-    if not spec:
-        return {"ok": True, "skipped": True, "reason": "no_gap", "subject": subject}
+    # 单缺口出题失败（无 L3 / 生成空 / 质量闸拒）时回退次优缺口，
+    # 避免最弱 KP 一直出不来导致整个科目池长期空转。
+    skipped_kps: set[str] = set()
+    last_error = "no_gap"
+    for _ in range(MAX_GAP_ATTEMPTS):
+        spec = select_gap_spec(subject, skip_kps=skipped_kps)
+        if not spec:
+            return {"ok": True, "skipped": True, "reason": last_error, "subject": subject}
+        result = _author_spec(subject, spec)
+        if result.get("ok"):
+            return result
+        kp = (spec.get("kp") or "").split("[")[0].strip()
+        if kp:
+            skipped_kps.add(kp)
+        last_error = result.get("error") or "generate_failed"
+    return {"ok": False, "error": last_error, "subject": subject}
 
+
+def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
+    """对单个缺口规格出题；失败返回 ok=False，供上层回退次优缺口。"""
+    store = get_store()
     force_kp = (spec.get("kp") or "").strip()
     force_tech = (spec.get("technique") or "").strip()
 
