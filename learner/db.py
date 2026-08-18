@@ -753,6 +753,11 @@ class Store:
             entry["item_type"] = r["item_type"] or "unknown"
             entry["status"] = r["status"] or "applied"
             entry["ts"] = r["answered_at"]
+            entry["answered_at"] = r["answered_at"]
+            if r["push_id"] is not None:
+                entry["push_id"] = int(r["push_id"])
+            if r["item_id"] is not None:
+                entry["item_id"] = int(r["item_id"])
             if r["credit"] is not None:
                 entry["credit"] = r["credit"]
             if r["confidence"] is not None:

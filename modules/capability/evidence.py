@@ -142,8 +142,29 @@ def bundle_from_store(
     syllabus_path: str | None = None,
 ) -> dict[str, Any]:
     attempts = store.get_attempts(user_id)
+    # 用 items 表补 difficulty / irt（attempts.meta 可能缺）
+    enriched: list[dict] = []
+    for row in attempts:
+        e = dict(row)
+        item_id = e.get("item_id")
+        if item_id is None and isinstance(e.get("meta"), dict):
+            item_id = e["meta"].get("item_id")
+        if item_id and hasattr(store, "get_item"):
+            try:
+                item = store.get_item(int(item_id))
+            except Exception:
+                item = None
+            if item:
+                if not e.get("difficulty") and item.get("difficulty"):
+                    e["difficulty"] = item.get("difficulty")
+                imeta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
+                if isinstance(imeta.get("irt"), dict):
+                    e["irt"] = imeta["irt"]
+                if not e.get("knowledge_point") and item.get("kp"):
+                    e["knowledge_point"] = item.get("kp")
+        enriched.append(e)
     return attempts_to_bundle(
-        attempts,
+        enriched,
         learner_id=learner_id or user_id,
         days=days,
         syllabus_path=syllabus_path,

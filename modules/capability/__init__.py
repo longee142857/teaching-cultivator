@@ -27,12 +27,16 @@ from .evidence import (
     ADAPTER_ASSUMPTIONS,
     attempts_to_bundle,
     bundle_from_store,
+    difficulty_to_d,
 )
+from .irt import build_irt_meta, merge_irt_into_meta
 from .service import (
     CapabilityService,
     build_learner_params,
     estimate_eta_for_learner,
+    refresh_after_grade,
 )
+from .select import domain_boost_for_kp, weak_domain_boosts
 
 __all__ = [
     "ADAPTER_ASSUMPTIONS",
@@ -47,12 +51,18 @@ __all__ = [
     "MasteryEntry",
     "ParamAssumptions",
     "attempts_to_bundle",
+    "build_irt_meta",
     "build_learner_params",
     "bundle_from_store",
     "default_assumptions",
+    "difficulty_to_d",
+    "domain_boost_for_kp",
     "estimate_eta_for_learner",
     "estimate_latent",
     "irt_mle",
     "load_kp_l1_map",
     "map_kp_to_domain",
+    "merge_irt_into_meta",
+    "refresh_after_grade",
+    "weak_domain_boosts",
 ]

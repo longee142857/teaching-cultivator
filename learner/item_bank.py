@@ -53,6 +53,21 @@ def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
     except Exception:
         pass
 
+    # 域 η 薄弱提权（有作答观测的域才提；不替代 BKT/weights）
+    domain_boosts: dict[str, float] = {}
+    try:
+        from modules.capability import (
+            build_learner_params,
+            weak_domain_boosts,
+            domain_boost_for_kp,
+        )
+        from modules.capability.select import eta_map_from_params
+
+        params = build_learner_params(get_store(), _uid(), days=90, persist_snapshot=False)
+        domain_boosts = weak_domain_boosts(eta_map_from_params(params))
+    except Exception:
+        domain_boosts = {}
+
     ranked: list[tuple[str, float]] = []
     for kp, w in kp_w.items():
         try:
@@ -61,6 +76,11 @@ def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
             ww = 1.0
         m = float(mastery.get(kp, 0.2))
         score = ww * (1.0 - m) + tech_boost.get(kp, 0.0)
+        if domain_boosts:
+            try:
+                score += domain_boost_for_kp(str(kp), domain_boosts)
+            except Exception:
+                pass
         ranked.append((str(kp), score))
     ranked.sort(key=lambda x: -x[1])
     return ranked[:limit]

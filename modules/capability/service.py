@@ -158,3 +158,28 @@ class CapabilityService:
             syllabus_path=kwargs.pop("syllabus_path", self.syllabus_path),
             **kwargs,
         )
+
+
+def refresh_after_grade(
+    user_id: str,
+    *,
+    store=None,
+    persist_snapshot: bool = True,
+    days: int | None = 90,
+) -> Optional[LearnerParams]:
+    """批改 applied 后刷新 LearnerParams（BKT 已写回 + 重估 η）。失败返回 None。"""
+    try:
+        if store is None:
+            from learner.db import get_store
+
+            store = get_store()
+        return build_learner_params(
+            store,
+            user_id,
+            learner_id=user_id,
+            days=days,
+            persist_snapshot=persist_snapshot,
+        )
+    except Exception as e:
+        print(f"[capability] refresh_after_grade skipped: {e}")
+        return None

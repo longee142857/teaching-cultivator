@@ -161,6 +161,14 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     kp = kp.split("[")[0].strip()
     l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "") or ""
 
+    meta = {"source": "pregen", "technique_hint": force_tech}
+    try:
+        from modules.capability import merge_irt_into_meta
+
+        meta = merge_irt_into_meta(meta, kp=kp, difficulty=diff)
+    except Exception as e:
+        print(f"[cultivate_bank] irt meta skipped: {e}")
+
     item_id = store.insert_bank_item(
         subject=subject,
         question=content,
@@ -174,7 +182,7 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
         techniques=techniques,
         solution=solution,
         cdps=cdps,
-        meta={"source": "pregen", "technique_hint": force_tech},
+        meta=meta,
         status="ready",
     )
     return {
