@@ -86,13 +86,33 @@ class LearnerBridge:
         )
 
 
-def get_learner_params(user_id: str, **kwargs) -> dict[str, Any]:
-    """system_api / DSH 可挂的工具函数。"""
-    return LearnerBridge().get_learner_params(user_id, **kwargs)
+def get_learner_params(user_id: str = "", **kwargs) -> dict[str, Any]:
+    """system_api / DSH 可挂的工具函数。user_id 缺省时用 bind_learner 上下文。"""
+    uid = (user_id or "").strip()
+    if not uid:
+        try:
+            from learner.context import current_user_id
+
+            uid = current_user_id()
+        except Exception:
+            uid = ""
+    if not uid:
+        raise ValueError("missing user_id (pass param or X-Learner-Id)")
+    return LearnerBridge().get_learner_params(uid, **kwargs)
 
 
-def get_capability_evidence(user_id: str, **kwargs) -> dict[str, Any]:
-    return LearnerBridge().get_evidence_bundle(user_id, **kwargs)
+def get_capability_evidence(user_id: str = "", **kwargs) -> dict[str, Any]:
+    uid = (user_id or "").strip()
+    if not uid:
+        try:
+            from learner.context import current_user_id
+
+            uid = current_user_id()
+        except Exception:
+            uid = ""
+    if not uid:
+        raise ValueError("missing user_id (pass param or X-Learner-Id)")
+    return LearnerBridge().get_evidence_bundle(uid, **kwargs)
 
 
 def capability_whitelist() -> dict[str, Any]:

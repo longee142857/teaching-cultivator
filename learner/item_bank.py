@@ -65,7 +65,8 @@ def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
 
         params = build_learner_params(get_store(), _uid(), days=90, persist_snapshot=False)
         domain_boosts = weak_domain_boosts(eta_map_from_params(params))
-    except Exception:
+    except Exception as e:
+        print(f"[item_bank] domain η boost skipped: {e}")
         domain_boosts = {}
 
     ranked: list[tuple[str, float]] = []
@@ -79,8 +80,8 @@ def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
         if domain_boosts:
             try:
                 score += domain_boost_for_kp(str(kp), domain_boosts)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[item_bank] domain boost for {kp} skipped: {e}")
         ranked.append((str(kp), score))
     ranked.sort(key=lambda x: -x[1])
     return ranked[:limit]

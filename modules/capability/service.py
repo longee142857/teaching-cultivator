@@ -131,8 +131,8 @@ def build_learner_params(
     if persist_snapshot and hasattr(store, "add_ability_snapshot"):
         try:
             store.add_ability_snapshot(lid, params.to_dict())
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[capability] add_ability_snapshot failed: {e}")
     return params
 
 
