@@ -9,6 +9,10 @@ Runtime for an adaptive exam-cultivation bot: schedule → decide → evidence-g
 ## Layout
 
 ```
+modules/                目标六模块（拆分中）：items / store / capability / bridge / notify / frontend
+modules/capability/     LearnerParams = BKT(L2) + 域 η；EvidenceBundle 导出
+modules/notify/         仅通知 + FRONTEND_BASE_URL 深链（答题/讲解不在 IM）
+modules/PARKED.md       旁路资讯 / IM 全量 UX 降级清单
 main.py                 entry: Stream + scheduler (+ optional kb_cache HTTP)
 config.py               env / .env only — no hardcoded secrets
 cultivate.py            cultivate loop（推送：bank pick，默认不 live author）
@@ -17,9 +21,9 @@ cultivate_judge.py      题库审判层（双槽质检，劣质降权）
 grade.py                grading + mastery + CDP 对齐
 orchestrate.py          polish / delivery-side checks
 quality_gate.py         reject / retry rules
-agent/                  ReAct-style tool harness + memory blocks
+agent/                  legacy ReAct harness（交互改 DSH / 前端）
 decide/                 LLM call helpers
-deliver/                DingTalk, WeCom, media, digests, system_api, SimpleTex
+deliver/                DingTalk(通知化), system_api, media；digests park
 learner/                syllabus, weights, RAG, SQLite store, item_bank, exams
 learner/db.py           teaching.db SSOT（pushes/items/attempts/…）
 learner/item_bank.py    缺口选规格 / pick / CDP 对齐与可归因过滤
@@ -28,6 +32,8 @@ prompts/                templates + format rules
 data/                   syllabus seeds; runtime state mostly gitignored
 scripts/                acceptance tests and ops helpers
 ```
+
+新代码优先 `from modules.…`。能力参数红线：BKT mastery ≠ 事件概率；η 未标定仅相对序。
 
 ## Hard rules
 

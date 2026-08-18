@@ -20,17 +20,15 @@ This repository is intended as a **readable, runnable reference** of a vertical 
 ## Architecture (high level)
 
 ```
-main.py
-  ├─ DingTalk Stream listener
-  ├─ Scheduler → cultivate / review / report / optional digests
-  └─ Agent (tool loop) ──┐
-                         ▼
-              cultivate / grade / orchestrate / quality_gate
-                         │
-         syllabus + weights + kb_cache + (optional) external RAG
+modules/
+  items | store | capability | bridge | notify | frontend
+         │           │            │
+         └──── SQLite SSOT ───────┘
+notify → 短通知 + 前端深链（答题/讲解在前端）
+capability → LearnerParams（BKT L2 + 域 η）
 ```
 
-Details for contributors working inside the tree: see `ARCHITECTURE.md` and `CLAUDE.md`.
+兼容入口仍为 `main.py`（调度 + 可选 Stream）。细节见 `ARCHITECTURE.md`、`modules/README.md`。
 
 ## Requirements
 
