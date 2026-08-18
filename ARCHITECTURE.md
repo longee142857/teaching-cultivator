@@ -38,6 +38,9 @@ SQLite (`DATA_DIR/teaching.db`，可用 env `TEACHING_DB` 覆盖) 是运行时**
 | IRT | `η` | calc / linalg / prob | 跨 KP 量化；导出给 capability-prob 事件预测 |
 
 入口：`modules.capability.build_learner_params` → `LearnerParams`。  
+写回：`grade` applied 后 `refresh_after_grade` 落 `ability_snapshots`。  
+选题：`weak_kp_ranked` 在 weights×(1−mastery) 上叠加域 η 薄弱提权（有观测域）。  
+题参：预生成 `insert_bank_item` 写 `meta.irt`；EvidenceBundle 从 items 回填 (a,d)。  
 红线：不得把 BKT mastery 直接当作事件成功概率；题参未标定时 η̂ 仅相对序有意义。
 
 ## Cultivate path
