@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""预出题库：缺口驱动选规格 + ready 抽取（BIG-TEACH-016）。"""
+"""预出题库：缺口驱动选规格 + 结合模型抽题（BKT + η + 质量）。"""
 from __future__ import annotations
 
 import json
 import os
 import re
-from typing import Any
+from typing import Any, Optional
 
 from learner.db import get_store
 
@@ -23,68 +23,97 @@ def live_fallback_enabled() -> bool:
     return os.environ.get("BANK_LIVE_FALLBACK", "0") == "1"
 
 
-def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
-    """返回 [(kp, score)]，score 越大越优先补货/推送。"""
-    from cultivate import _load_weights, _uid
-    from learner.kp_registry import syllabus_subject
+def _tech_boost_map(learner_id: str, *, limit: int = 30) -> dict[str, float]:
+    from modules.capability.select import TECH_FAIL_BOOST
 
-    weight_subj = syllabus_subject(subject)
-    weights = _load_weights()
-    kp_w = (weights.get(weight_subj) or {}).get("kp_weights") or {}
-    if not kp_w:
-        return []
-
-    mastery: dict[str, float] = {}
+    out: dict[str, float] = {}
     try:
-        from learner.bkt_db import DbBKTLogger
-
-        mastery = DbBKTLogger().get_all_kp_mastery(_uid()) or {}
-    except Exception:
-        mastery = {}
-
-    # 技巧失败加权
-    tech_boost: dict[str, float] = {}
-    try:
-        sig = get_store().recent_ability_signals(_uid(), limit=30)
+        sig = get_store().recent_ability_signals(learner_id, limit=limit)
         for row in sig.get("cdp_fail_recent") or []:
             kp = (row.get("kp") or "").strip()
             if kp:
-                tech_boost[kp] = tech_boost.get(kp, 0.0) + 0.15
-    except Exception:
-        pass
-
-    # 域 η 薄弱提权（有作答观测的域才提；不替代 BKT/weights）
-    domain_boosts: dict[str, float] = {}
-    try:
-        from modules.capability import (
-            build_learner_params,
-            weak_domain_boosts,
-            domain_boost_for_kp,
-        )
-        from modules.capability.select import eta_map_from_params
-
-        params = build_learner_params(get_store(), _uid(), days=90, persist_snapshot=False)
-        domain_boosts = weak_domain_boosts(eta_map_from_params(params))
+                out[kp] = out.get(kp, 0.0) + TECH_FAIL_BOOST
     except Exception as e:
-        print(f"[item_bank] domain η boost skipped: {e}")
-        domain_boosts = {}
+        print(f"[item_bank] tech_boost skipped: {e}")
+    return out
 
-    ranked: list[tuple[str, float]] = []
-    for kp, w in kp_w.items():
-        try:
-            ww = float(w)
-        except (TypeError, ValueError):
-            ww = 1.0
-        m = float(mastery.get(kp, 0.2))
-        score = ww * (1.0 - m) + tech_boost.get(kp, 0.0)
-        if domain_boosts:
-            try:
-                score += domain_boost_for_kp(str(kp), domain_boosts)
-            except Exception as e:
-                print(f"[item_bank] domain boost for {kp} skipped: {e}")
-        ranked.append((str(kp), score))
-    ranked.sort(key=lambda x: -x[1])
-    return ranked[:limit]
+
+def build_pick_context(
+    subject: str,
+    *,
+    learner_id: str = "",
+    days: int = 90,
+) -> "Any":
+    """组装结合模型 PickContext（weights + BKT + η + 技巧 + due）。"""
+    from cultivate import _load_weights, _uid
+    from learner.kp_registry import syllabus_subject, load_recent_picks
+    from modules.capability import (
+        PickContext,
+        build_learner_params,
+        weak_domain_boosts,
+        eta_map_from_params,
+    )
+
+    lid = (learner_id or "").strip() or _uid()
+    weight_subj = syllabus_subject(subject)
+    weights = _load_weights()
+    kp_w = (weights.get(weight_subj) or {}).get("kp_weights") or {}
+
+    mastery: dict[str, float] = {}
+    due: set[str] = set()
+    try:
+        from learner.bkt_db import DbBKTLogger
+
+        bkt = DbBKTLogger()
+        mastery = bkt.get_all_kp_mastery(lid) or {}
+        if hasattr(bkt, "get_due_kps"):
+            due = set(bkt.get_due_kps(lid) or set())
+    except Exception as e:
+        print(f"[item_bank] bkt for pick ctx skipped: {e}")
+
+    domain_boosts: dict[str, float] = {}
+    eta_map: dict[str, float] = {}
+    assumptions: list[str] = []
+    try:
+        params = build_learner_params(
+            get_store(), lid, learner_id=lid, days=days, persist_snapshot=False
+        )
+        eta_map = eta_map_from_params(params)
+        domain_boosts = weak_domain_boosts(eta_map)
+        assumptions = list(params.assumptions.to_list())
+        # mastery 以 store/BKT 为准；params.mastery 可补洞
+        for m in params.mastery:
+            if m.kp and m.kp not in mastery:
+                mastery[m.kp] = float(m.p_mastery)
+    except Exception as e:
+        print(f"[item_bank] η for pick ctx skipped: {e}")
+
+    recent: list[str] = []
+    try:
+        recent = load_recent_picks(weight_subj) or []
+    except Exception:
+        recent = []
+
+    return PickContext(
+        learner_id=lid,
+        subject=subject,
+        mastery=mastery,
+        kp_weights={str(k): float(v) for k, v in kp_w.items()},
+        tech_boost=_tech_boost_map(lid),
+        domain_boosts=domain_boosts,
+        due_kps=due,
+        recent_kps=list(recent),
+        eta_by_domain=eta_map,
+        assumptions=assumptions,
+    )
+
+
+def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
+    """返回 [(kp, score)]，score 越大越优先补货/推送（结合模型）。"""
+    from modules.capability import rank_kps
+
+    ctx = build_pick_context(subject)
+    return rank_kps(ctx, limit=limit)
 
 
 def pick_technique_for_kp(kp: str) -> str:
@@ -109,10 +138,7 @@ def pick_technique_for_kp(kp: str) -> str:
 
 
 def select_gap_spec(subject: str, *, skip_kps: set[str] | None = None) -> dict[str, str] | None:
-    """选缺口最大的 (kp[, technique])；科目 ready 已满则 None。
-
-    skip_kps：上一缺口出题失败时跳过，支持预生成回退次优缺口。
-    """
+    """选缺口最大的 (kp[, technique])；科目 ready 已满则 None。"""
     store = get_store()
     quota = bank_quota(subject)
     if store.count_ready(subject) >= quota:
@@ -131,9 +157,7 @@ def select_gap_spec(subject: str, *, skip_kps: set[str] | None = None) -> dict[s
         have = store.count_ready(subject, kp=kp, technique=tech) if tech else store.count_ready(
             subject, kp=kp
         )
-        # 每 KP 至少希望 1 道；缺口 = 1 - have（下限）再乘薄弱分
         gap = max(0, 1 - have)
-        # 同时看总分水位：薄弱分高且库存少优先
         metric = gap * 10 + score * (1.0 / (1 + have))
         if metric > best_gap:
             best_gap = metric
@@ -148,23 +172,59 @@ def pick_for_push(
     technique: str = "",
     learner_id: str | None = None,
 ) -> dict | None:
+    """结合模型抽 ready 题。
+
+    在候选集上打分：quality′ + KP需求(BKT+η+技巧+due) + prefer_kp/tech 软加成。
+    不再「无 KP 匹配就任意抽第一道」；decide 给出的 KP 只作偏好。
+    """
+    from modules.capability import pick_best_item
+
     store = get_store()
     excl = store.learner_seen_hashes(learner_id)
-    l1 = ""
-    if kp:
-        try:
-            from learner.kp_registry import get_l1, syllabus_subject
-
-            l1 = get_l1(syllabus_subject(subject), kp) or ""
-        except Exception:
-            l1 = ""
-    return store.pick_ready_item(
-        subject=subject,
-        kp=kp,
-        technique=technique,
-        l1=l1,
-        exclude_hashes=excl,
+    limit = int(os.environ.get("BANK_PICK_CANDIDATES", "60"))
+    candidates = store.list_ready_candidates(
+        subject=subject, exclude_hashes=excl, limit=limit
     )
+    if not candidates:
+        return None
+
+    try:
+        ctx = build_pick_context(subject, learner_id=learner_id or "")
+    except Exception as e:
+        print(f"[item_bank] pick ctx failed, quality-only fallback: {e}")
+        # 保底：沿用旧级联
+        l1 = ""
+        if kp:
+            try:
+                from learner.kp_registry import get_l1, syllabus_subject
+
+                l1 = get_l1(syllabus_subject(subject), kp) or ""
+            except Exception:
+                l1 = ""
+        return store.pick_ready_item(
+            subject=subject,
+            kp=kp,
+            technique=technique,
+            l1=l1,
+            exclude_hashes=excl,
+        )
+
+    best, sc = pick_best_item(
+        candidates,
+        ctx,
+        prefer_kp=kp or "",
+        prefer_technique=technique or "",
+    )
+    if best:
+        try:
+            print(
+                f"[item_bank] combined pick id={best.get('id')} kp={best.get('kp')} "
+                f"score={sc:.3f} prefer_kp={kp or '-'} eta_boosts="
+                f"{ {k: round(v, 3) for k, v in (ctx.domain_boosts or {}).items()} }"
+            )
+        except Exception:
+            pass
+    return best
 
 
 def validate_bank_payload(

@@ -308,12 +308,25 @@ def _dynamic_style_pcts(consecutive_failures: int, subject: str) -> tuple[int, i
 
 
 def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> str | None:
-    """按 weight×(1-mastery) 加权随机选题；同 L1 近 3 次不重复同一 L2。"""
+    """结合模型选题：weight×(1-mastery) + η域提权 + 技巧，再加权随机。"""
     if subject not in weights:
         return None
     kp_w = weights[subject].get("kp_weights") or {}
     if not kp_w:
         return None
+    try:
+        from modules.capability import weighted_choice_kp
+        from learner.item_bank import build_pick_context
+
+        ctx = build_pick_context(subject, learner_id=_uid())
+        # 确保 weights 与 decide 科目一致
+        ctx.kp_weights = {str(k): float(v) for k, v in kp_w.items()}
+        hit = weighted_choice_kp(ctx)
+        if hit:
+            return hit
+    except Exception as e:
+        print(f"[cultivate] combined KP pick skipped: {e}")
+
     mastery: dict[str, float] = {}
     try:
         if hasattr(bkt_log, "get_all_kp_mastery"):
@@ -338,10 +351,10 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
 
 
 def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
-    """基于 weights.json + BKT + 规则决定干预方案。
+    """基于结合模型（weights + BKT + 域η）+ 规则决定干预方案。
 
     选题优先级：
-    1. weight×(1-mastery) 加权随机（同 L1 近 3 次降权重复；到期提权）
+    1. 结合分加权随机（weight×(1-mastery)+η域提权+技巧；到期提权；近轮降权）
     2. 无 weights → 回退 BKT 最低掌握度
     """
     from learner.kp_registry import (

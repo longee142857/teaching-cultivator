@@ -36,7 +36,17 @@ from .service import (
     estimate_eta_for_learner,
     refresh_after_grade,
 )
-from .select import domain_boost_for_kp, weak_domain_boosts
+from .select import (
+    PickContext,
+    domain_boost_for_kp,
+    eta_map_from_params,
+    pick_best_item,
+    rank_kps,
+    score_kp_need,
+    score_ready_item,
+    weak_domain_boosts,
+    weighted_choice_kp,
+)
 
 __all__ = [
     "ADAPTER_ASSUMPTIONS",
@@ -50,6 +60,7 @@ __all__ = [
     "LearnerParams",
     "MasteryEntry",
     "ParamAssumptions",
+    "PickContext",
     "attempts_to_bundle",
     "build_irt_meta",
     "build_learner_params",
@@ -59,10 +70,16 @@ __all__ = [
     "domain_boost_for_kp",
     "estimate_eta_for_learner",
     "estimate_latent",
+    "eta_map_from_params",
     "irt_mle",
     "load_kp_l1_map",
     "map_kp_to_domain",
     "merge_irt_into_meta",
+    "pick_best_item",
+    "rank_kps",
     "refresh_after_grade",
+    "score_kp_need",
+    "score_ready_item",
     "weak_domain_boosts",
+    "weighted_choice_kp",
 ]

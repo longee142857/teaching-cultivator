@@ -1013,6 +1013,30 @@ class Store:
         )
         return {str(r[0]) for r in rows}
 
+    def list_ready_candidates(
+        self,
+        *,
+        subject: str,
+        exclude_hashes: set[str] | None = None,
+        limit: int = 60,
+    ) -> list[dict]:
+        """列出 ready 候选（供结合模型打分抽题）；排除已见 q_hash。"""
+        subj = (subject or "").strip()
+        excl = exclude_hashes or set()
+        rows = self._query(
+            """SELECT * FROM items
+               WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+               ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
+               LIMIT ?""",
+            (subj, int(limit)),
+        )
+        out: list[dict] = []
+        for r in rows:
+            if str(r["q_hash"]) in excl:
+                continue
+            out.append(self._item_dict(r))
+        return out
+
     def pick_ready_item(
         self,
         *,
