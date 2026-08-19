@@ -98,7 +98,7 @@ def build_pick_context(
         learner_id=lid,
         subject=subject,
         mastery=mastery,
-        kp_weights={str(k): float(v) for k, v in kp_w.items()},
+        kp_weights=_safe_weights(kp_w),
         tech_boost=_tech_boost_map(lid),
         domain_boosts=domain_boosts,
         due_kps=due,
@@ -106,6 +106,16 @@ def build_pick_context(
         eta_by_domain=eta_map,
         assumptions=assumptions,
     )
+
+
+def _safe_weights(kp_w: dict) -> dict[str, float]:
+    out: dict[str, float] = {}
+    for k, v in (kp_w or {}).items():
+        try:
+            out[str(k)] = float(v)
+        except (TypeError, ValueError):
+            out[str(k)] = 1.0
+    return out
 
 
 def weak_kp_ranked(subject: str, limit: int = 8) -> list[tuple[str, float]]:
@@ -183,16 +193,33 @@ def pick_for_push(
     excl = store.learner_seen_hashes(learner_id)
     limit = int(os.environ.get("BANK_PICK_CANDIDATES", "60"))
     candidates = store.list_ready_candidates(
-        subject=subject, exclude_hashes=excl, limit=limit
+        subject=subject,
+        exclude_hashes=excl,
+        limit=limit,
+        prefer_kp=kp or "",
     )
     if not candidates:
-        return None
+        # top-N 可能全被 exclude；回退旧级联（仍尊重 exclude）
+        l1 = ""
+        if kp:
+            try:
+                from learner.kp_registry import get_l1, syllabus_subject
+
+                l1 = get_l1(syllabus_subject(subject), kp) or ""
+            except Exception:
+                l1 = ""
+        return store.pick_ready_item(
+            subject=subject,
+            kp=kp,
+            technique=technique,
+            l1=l1,
+            exclude_hashes=excl,
+        )
 
     try:
         ctx = build_pick_context(subject, learner_id=learner_id or "")
     except Exception as e:
         print(f"[item_bank] pick ctx failed, quality-only fallback: {e}")
-        # 保底：沿用旧级联
         l1 = ""
         if kp:
             try:

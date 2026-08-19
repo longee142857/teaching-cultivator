@@ -320,7 +320,13 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
 
         ctx = build_pick_context(subject, learner_id=_uid())
         # 确保 weights 与 decide 科目一致
-        ctx.kp_weights = {str(k): float(v) for k, v in kp_w.items()}
+        safe_w: dict[str, float] = {}
+        for k, v in kp_w.items():
+            try:
+                safe_w[str(k)] = float(v)
+            except (TypeError, ValueError):
+                safe_w[str(k)] = 1.0
+        ctx.kp_weights = safe_w
         hit = weighted_choice_kp(ctx)
         if hit:
             return hit

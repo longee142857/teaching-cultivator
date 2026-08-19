@@ -1019,10 +1019,15 @@ class Store:
         subject: str,
         exclude_hashes: set[str] | None = None,
         limit: int = 60,
+        prefer_kp: str = "",
     ) -> list[dict]:
-        """列出 ready 候选（供结合模型打分抽题）；排除已见 q_hash。"""
+        """列出 ready 候选（供结合模型打分）；排除已见 q_hash。
+
+        prefer_kp：额外并入该 KP 下非 poor 库存，避免全局 top-N 挤掉 decide 意图。
+        """
         subj = (subject or "").strip()
         excl = exclude_hashes or set()
+        pref = (prefer_kp or "").strip()
         rows = self._query(
             """SELECT * FROM items
                WHERE status='ready' AND COALESCE(bank_subject, subject)=?
@@ -1030,12 +1035,28 @@ class Store:
                LIMIT ?""",
             (subj, int(limit)),
         )
-        out: list[dict] = []
+        by_id: dict[int, dict] = {}
         for r in rows:
             if str(r["q_hash"]) in excl:
                 continue
-            out.append(self._item_dict(r))
-        return out
+            d = self._item_dict(r)
+            by_id[int(d["id"])] = d
+        if pref:
+            extra = self._query(
+                """SELECT * FROM items
+                   WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+                     AND kp=?
+                     AND COALESCE(quality_tier, 'pending') != 'poor'
+                   ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
+                   LIMIT 40""",
+                (subj, pref),
+            )
+            for r in extra:
+                if str(r["q_hash"]) in excl:
+                    continue
+                d = self._item_dict(r)
+                by_id[int(d["id"])] = d
+        return list(by_id.values())
 
     def pick_ready_item(
         self,
