@@ -1,10 +1,12 @@
 """桥 — 前端 / DSH 调用面（通知与 IM 全量 UX 分离）。
 
 本轮提供：
-- ``LearnerBridge``：稳定方法集（params / active item / submit stub 契约）
+- ``LearnerBridge``：params / active item / practice desk / notify 深链
+- ``practice_service``：teaching-shell 对齐的 bootstrap / submit
 - ``mount_capability_routes``：挂到既有 system_api 白名单的新工具名
 
 旧 ``deliver.system_api`` 仍可用；新调用方优先本包。
+讲师 chat（tutor agent）本轮仅暴露 501 契约，不实现。
 """
 from __future__ import annotations
 
@@ -14,9 +16,17 @@ from typing import Any, Optional
 from modules.capability import CapabilityService, build_learner_params
 from modules.notify import build_deep_link, notify_new_item, get_default_channel
 
+from modules.bridge import practice_service
+from modules.bridge.practice_service import (
+    agent_manifest,
+    practice_bootstrap,
+    practice_get_item,
+    practice_submit,
+)
+
 
 class LearnerBridge:
-    """编排 store + capability；不直接发长文讲解。"""
+    """编排 store + capability + practice；不直接发长文讲解。"""
 
     def __init__(self, store=None, *, frontend_base: str | None = None):
         if store is None:
@@ -48,6 +58,27 @@ class LearnerBridge:
             return get_active_question(learner_id) or None
         except Exception:
             return None
+
+    def practice_bootstrap(self, learner_id: str, *, day: str | None = None) -> dict[str, Any]:
+        return practice_service.bootstrap(learner_id, day=day, store=self.store)
+
+    def practice_submit(
+        self,
+        learner_id: str,
+        *,
+        answer: str,
+        item: str | int | None = None,
+        push: str | int | None = None,
+        mode: str | None = None,
+    ) -> dict[str, Any]:
+        return practice_service.submit(
+            learner_id,
+            answer=answer,
+            item=item,
+            push=push,
+            store=self.store,
+            mode=mode,
+        )
 
     def notify_item_ready(
         self,
@@ -120,13 +151,22 @@ def capability_whitelist() -> dict[str, Any]:
     return {
         "get_learner_params": get_learner_params,
         "get_capability_evidence": get_capability_evidence,
+        "practice_bootstrap": practice_bootstrap,
+        "practice_get_item": practice_get_item,
+        "practice_submit": practice_submit,
+        "practice_agent_manifest": agent_manifest,
     }
 
 
 __all__ = [
     "LearnerBridge",
+    "agent_manifest",
     "build_learner_params",
     "capability_whitelist",
     "get_capability_evidence",
     "get_learner_params",
+    "practice_bootstrap",
+    "practice_get_item",
+    "practice_service",
+    "practice_submit",
 ]

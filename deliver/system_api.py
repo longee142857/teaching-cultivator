@@ -89,6 +89,9 @@ _READ_TOOLS: set[str] = {
     "build_report",
     "get_learner_params",
     "get_capability_evidence",
+    "practice_bootstrap",
+    "practice_get_item",
+    "practice_agent_manifest",
 }
 
 

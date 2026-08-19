@@ -59,7 +59,11 @@ def build_deep_link(
     if learner_id:
         q["learner"] = learner_id
     if item_id is not None:
-        q["item"] = str(item_id)
+        s = str(item_id).strip()
+        if s.isdigit():
+            q["item"] = f"i{s}"
+        else:
+            q["item"] = s
     if push_id is not None:
         q["push"] = str(push_id)
     suffix = f"?{urlencode(q)}" if q else ""

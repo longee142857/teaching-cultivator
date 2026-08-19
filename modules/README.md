@@ -7,9 +7,9 @@
 | 题目机制 | `modules/items/` | 出题、预生成、审判、质检 | facade + 契约 |
 | 存储 | `modules/store/` | SQLite SSOT | facade → `learner/db.py` |
 | 能力量化 | `modules/capability/` | BKT(L2) + IRT η(域) 统一参数 | **本轮核心重构** |
-| 桥 | `modules/bridge/` | 前端 / 未来 DSH 的 HTTP 契约 | 新 API 面 + 兼容旧 system_api |
+| 桥 | `modules/bridge/` | 前端 / 未来 DSH 的 HTTP 契约 | practice API + capability 工具；见 `docs/practice-api.md` |
 | 推送 | `modules/notify/` | **仅通知**（链到前端答题） | 新契约；IM 全量 UX 降级 |
-| 前端 | `modules/frontend/` | 答题 / 讲解 UI | 用户自有；本仓只留挂载点 |
+| 前端 | `modules/frontend/` | 答题 / 讲解 UI | **`teaching-shell.html` + `practice_web`**；tutor agent 501 stub |
 
 ## 依赖方向（禁止反向）
 
