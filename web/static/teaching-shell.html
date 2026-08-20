@@ -561,7 +561,7 @@
       <option value="teaching" selected>Teaching Shell · 练习台</option>
       <option value="brain">Capability Brain · 事件预测</option>
     </select>
-    <span class="hint">stu_1024 · 纸面线稿 · 未写云端</span>
+    <span class="hint">VPS practice API · LearnerParams</span>
   </div>
   <div class="app" id="app" data-od-id="app-shell">
     <aside class="rail" data-od-id="app-rail">
@@ -1665,7 +1665,10 @@
       var mod = document.getElementById("module-switch");
       if (mod) {
         mod.addEventListener("change", function () {
-          if (mod.value === "brain") location.href = "/capability-brain.html";
+          if (mod.value === "brain") {
+            var lid = (typeof state !== "undefined" && state.learner) ? state.learner : "stu_1024";
+            location.href = "/capability-brain.html?learner=" + encodeURIComponent(lid);
+          }
         });
       }
     })();

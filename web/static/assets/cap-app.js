@@ -47,7 +47,7 @@ function renderEvent(){
   const learnerEl = $('learnerChip');
   if (learnerEl) {
     learnerEl.textContent = 'learner=' + (MOCK.learner_id || '—') +
-      ' · LearnerParams=BKT(L2)+η · 本地 mock';
+      ' · LearnerParams=BKT(L2)+η · ' + (MOCK.source && String(MOCK.source).indexOf('VPS') >= 0 ? 'VPS live' : '本地 mock');
   }
 }
 
@@ -481,38 +481,53 @@ function frameLoop(){
 
 function init(){
   try {
-    renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
-    buildLeaders();
-    computeCardAnchors();
-    bindPageChrome();
-    bindSwipe();
-    bindPresets();
+    const start = function () {
+      renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
+      buildLeaders();
+      computeCardAnchors();
+      bindPageChrome();
+      bindSwipe();
+      bindPresets();
 
-    brain = window.createBrainPlate($('brain-plate'), {
-      onSelect: region => {
-        const meta = REGIONS[region];
-        if (!meta) return;
-        // 再点当前叶 → 回封面
-        if (pageIndex === meta.page) goPage(PAGE_MIN, 1);
-        else goPage(meta.page, meta.page > pageIndex ? -1 : 1);
-      },
-      onViewChange: setPresetButton
-    });
-    setPresetButton('left');
-    applyActive();
+      brain = window.createBrainPlate($('brain-plate'), {
+        onSelect: region => {
+          const meta = REGIONS[region];
+          if (!meta) return;
+          // 再点当前叶 → 回封面
+          if (pageIndex === meta.page) goPage(PAGE_MIN, 1);
+          else goPage(meta.page, meta.page > pageIndex ? -1 : 1);
+        },
+        onViewChange: setPresetButton
+      });
+      setPresetButton('left');
+      applyActive();
 
-    window.addEventListener('resize', onResize);
-    if (document.fonts && document.fonts.ready) {
-      Promise.race([
-        document.fonts.ready,
-        new Promise(resolve => setTimeout(resolve, 2500))
-      ]).then(computeCardAnchors);
-    }
-    requestAnimationFrame(frameLoop);
+      window.addEventListener('resize', onResize);
+      if (document.fonts && document.fonts.ready) {
+        Promise.race([
+          document.fonts.ready,
+          new Promise(resolve => setTimeout(resolve, 2500))
+        ]).then(computeCardAnchors);
+      }
+      requestAnimationFrame(frameLoop);
+    };
+
+    const live = (typeof window.loadLiveCapability === 'function')
+      ? window.loadLiveCapability().catch(function (err) {
+          console.warn('[capability-prob] live params fallback to mock', err);
+          return null;
+        })
+      : Promise.resolve(null);
+
+    live.then(function () { start(); }).catch(function (err) {
+      console.error('[capability-prob] init failed', err);
+      start();
+    }).finally(function () { dismissBoot(); });
+    return;
   } catch (err){
     console.error('[capability-prob] init failed', err);
   } finally {
-    dismissBoot();
+    /* dismissBoot called after live load */
   }
 }
 
