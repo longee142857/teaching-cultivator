@@ -27,6 +27,14 @@ TUTOR_BACKEND_URL=http://127.0.0.1:61900
 
 `deliver/practice_web.py`：未配置 `TUTOR_BACKEND_URL` 时仍返回 501；配置后透传 body + `X-Learner-Id`。
 
+公网（VPS，对齐双周卷）：
+
+1. Cloudflare DNS：`practice.longee.icu` A → VPS IP（橙云可开）
+2. nginx：`scripts/practice_web.nginx.conf.example`
+3. 进程：`PRACTICE_ALLOW_DEMO_SEED=0` + `TUTOR_BACKEND_URL=http://127.0.0.1:61900` 起 `python -m deliver.practice_web`
+4. DSH：加载 `integrations/dsh-mentor-team/host.js`（本机副本亦可 `D:\DSH\mentor-team`），HTTP 监听与 `TUTOR_BACKEND_URL` 一致
+5. 钉钉：`FRONTEND_BASE_URL=https://practice.longee.icu`
+
 也可以 nginx：
 
 ```nginx
