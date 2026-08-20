@@ -753,6 +753,11 @@ class Store:
             entry["item_type"] = r["item_type"] or "unknown"
             entry["status"] = r["status"] or "applied"
             entry["ts"] = r["answered_at"]
+            entry["answered_at"] = r["answered_at"]
+            if r["push_id"] is not None:
+                entry["push_id"] = int(r["push_id"])
+            if r["item_id"] is not None:
+                entry["item_id"] = int(r["item_id"])
             if r["credit"] is not None:
                 entry["credit"] = r["credit"]
             if r["confidence"] is not None:
@@ -1007,6 +1012,51 @@ class Store:
             (lid, int(limit)),
         )
         return {str(r[0]) for r in rows}
+
+    def list_ready_candidates(
+        self,
+        *,
+        subject: str,
+        exclude_hashes: set[str] | None = None,
+        limit: int = 60,
+        prefer_kp: str = "",
+    ) -> list[dict]:
+        """列出 ready 候选（供结合模型打分）；排除已见 q_hash。
+
+        prefer_kp：额外并入该 KP 下非 poor 库存，避免全局 top-N 挤掉 decide 意图。
+        """
+        subj = (subject or "").strip()
+        excl = exclude_hashes or set()
+        pref = (prefer_kp or "").strip()
+        rows = self._query(
+            """SELECT * FROM items
+               WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+               ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
+               LIMIT ?""",
+            (subj, int(limit)),
+        )
+        by_id: dict[int, dict] = {}
+        for r in rows:
+            if str(r["q_hash"]) in excl:
+                continue
+            d = self._item_dict(r)
+            by_id[int(d["id"])] = d
+        if pref:
+            extra = self._query(
+                """SELECT * FROM items
+                   WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+                     AND kp=?
+                     AND COALESCE(quality_tier, 'pending') != 'poor'
+                   ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
+                   LIMIT 40""",
+                (subj, pref),
+            )
+            for r in extra:
+                if str(r["q_hash"]) in excl:
+                    continue
+                d = self._item_dict(r)
+                by_id[int(d["id"])] = d
+        return list(by_id.values())
 
     def pick_ready_item(
         self,

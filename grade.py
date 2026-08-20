@@ -482,6 +482,14 @@ def grade_answer(
                     decay_kp_weight(subj, extracted_kp, reason=f"grade_correct:{extracted_kp}")
                 except Exception as e:
                     print(f"[grade] weight decay skipped: {e}")
+
+            # 能力参数：BKT 写回后刷新域 η 快照（capability-prob 对齐）
+            try:
+                from modules.capability import refresh_after_grade
+
+                refresh_after_grade(_uid(), persist_snapshot=True)
+            except Exception as e:
+                print(f"[grade] capability refresh skipped: {e}")
         else:
             # pending: 直写 answer-log，不更新 state；带 state 快照避免 get_kp_mastery 误回放
             from datetime import datetime, timezone

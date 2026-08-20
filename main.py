@@ -594,6 +594,17 @@ def main():
     except Exception as e:
         log(f"ops_web 跳过: {e}")
 
+    # 练习台 teaching-shell + Practice API（公网可经 nginx 反代 /practice）
+    try:
+        from deliver.practice_web import start_in_thread as start_practice_web
+
+        if start_practice_web():
+            log("practice_web 已启动")
+        else:
+            log("practice_web 未启动（PRACTICE_WEB_HTTP=0 或端口占用）")
+    except Exception as e:
+        log(f"practice_web 跳过: {e}")
+
     # 阻塞：DingTalk Stream 在主线程运行
     bot.start()
 

@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>高校每日练习 · Teaching Shell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #F4EDE0;
+      --surface: #F8F2E3;
+      --fg: #2B2118;
+      --muted: rgba(43,33,24,.62);
+      --border: rgba(43,33,24,.22);
+      --accent: #3A6B7C;
+      --font-display: "Source Serif 4", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
+      --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+      --ok: #3A6B7C;
+      --bad: #8B3A3A;
+      --warn: #7A5A2A;
+      --on-accent: #F4EDE0;
+      --soft-ok: rgba(58,107,124,.12);
+      --soft-bad: rgba(139,58,58,.12);
+      --hover: rgba(43,33,24,.06);
+      --radius: 2px;
+      --shadow: 0 10px 28px rgba(43,33,24,.10), 0 2px 6px rgba(43,33,24,.05);
+      --rail: 64px;
+      --ink: #2B2118;
+      --safe-t: env(safe-area-inset-top, 0px);
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --safe-l: env(safe-area-inset-left, 0px);
+      --safe-r: env(safe-area-inset-right, 0px);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; height: 100%; overflow: hidden;
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      background:
+        radial-gradient(130% 90% at 50% 0%, rgba(43,33,24,.05), transparent 55%),
+        var(--bg);
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.045'/></feComponentTransfer></filter><rect width='150' height='150' filter='url(%23n)'/></svg>");
+    }
+    .studio-bar, .app { position: relative; z-index: 1; }
+    button, input, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    h1, h2, h3, p { margin: 0; }
+    h1 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(24px, 2.4vw, 32px); line-height: 1.35; letter-spacing: 0;
+    }
+    h2 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(18px, 1.6vw, 22px); line-height: 1.4; letter-spacing: 0;
+    }
+    h3 { font-weight: 550; font-size: 15px; line-height: 1.45; }
+    .app {
+      height: calc(100dvh - 45px);
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+    .rail { display: none; }
+    .tabbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--border);
+      background: color-mix(in oklch, var(--surface) 88%, transparent);
+      backdrop-filter: blur(16px);
+      padding: 4px var(--safe-r) calc(6px + var(--safe-b)) var(--safe-l);
+      z-index: 20;
+    }
+    .tab-btn {
+      appearance: none; border: 0; background: transparent;
+      min-height: 48px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      color: var(--fg); font-size: 11px; font-weight: 550; letter-spacing: 0.02em;
+    }
+    .tab-btn svg { width: 22px; height: 22px; }
+    .tab-btn:hover { background: var(--hover); color: var(--fg); }
+    .tab-btn.is-active { color: var(--accent); }
+    .workspace { min-height: 0; min-width: 0; display: grid; grid-template-columns: 1fr; }
+    .recents { display: none; }
+    .stage {
+      min-height: 0; min-width: 0; height: 100%;
+      display: flex; flex-direction: column;
+      container-type: inline-size; container-name: stage;
+    }
+    .content {
+      flex: 1; min-height: 0;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 14px 16px 20px;
+    }
+    .app-header {
+      position: sticky; top: 0; z-index: 8;
+      padding: calc(10px + var(--safe-t)) 16px 12px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in oklch, var(--surface) 82%, transparent);
+      backdrop-filter: blur(18px);
+      display: grid; gap: 4px;
+    }
+    .brand-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .brand {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 16px; line-height: 1.35; letter-spacing: 0;
+    }
+    .meta {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.02em; color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .row { display: flex; gap: 8px; align-items: center; }
+    .row.between { justify-content: space-between; }
+    .wrap { flex-wrap: wrap; }
+
+    .pill {
+      display: inline-flex; align-items: center;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--fg); font-size: 12px; line-height: 1.35;
+      padding: 4px 8px; border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+    }
+    .pill.warn {
+      border-color: color-mix(in oklch, var(--warn) 40%, var(--border));
+      background: color-mix(in oklch, var(--warn) 10%, var(--surface));
+    }
+    .pill.ok {
+      border-color: color-mix(in oklch, var(--ok) 40%, var(--border));
+      background: color-mix(in oklch, var(--ok) 10%, var(--surface));
+    }
+
+    .btn {
+      appearance: none; display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 0 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--fg);
+      font-weight: 550; letter-spacing: 0.02em; text-decoration: none; width: 100%;
+    }
+    .btn:hover { background: var(--hover); color: var(--fg); }
+    .btn.primary {
+      background: var(--accent); border-color: var(--accent); color: var(--on-accent);
+    }
+    .btn.primary:hover {
+      background: color-mix(in oklch, var(--fg) 12%, var(--accent));
+      border-color: color-mix(in oklch, var(--fg) 12%, var(--accent));
+      color: var(--on-accent);
+    }
+    .btn.ghost { background: transparent; }
+    .btn.ghost:hover { background: var(--hover); color: var(--fg); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.primary:disabled:hover {
+      background: var(--accent); border-color: var(--accent); color: var(--on-accent);
+    }
+    .btn-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .btn-row.two { grid-template-columns: 1fr 1fr; }
+    .text-link {
+      appearance: none; border: 0; background: none;
+      padding: 8px 0; min-height: 44px; color: var(--fg);
+      text-decoration: underline; text-underline-offset: 3px;
+      font-size: 13px; letter-spacing: 0.02em; text-align: left; width: auto;
+    }
+    .text-link:hover { background: var(--hover); color: var(--fg); }
+
+    .tab-btn:focus-visible, .nav-btn:focus-visible, .btn:focus-visible,
+    .text-link:focus-visible, .slot-row:focus-visible, .backlog-item:focus-visible,
+    .fold-toggle:focus-visible, textarea:focus-visible, .recent-btn:focus-visible,
+    .rail-toggle:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px;
+    }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 8px; text-align: center; background: var(--bg);
+    }
+    .stat .n {
+      font-family: var(--font-mono); font-size: 20px; font-weight: 550;
+      line-height: 1.3; font-variant-numeric: tabular-nums;
+    }
+    .stat .t { font-size: 11px; letter-spacing: 0.02em; color: var(--muted); margin-top: 2px; }
+
+    .slot-row, .backlog-item {
+      appearance: none; width: 100%; text-align: left;
+      border: 1px solid var(--border); background: var(--surface);
+      border-radius: 8px; min-height: 64px;
+    }
+    .slot-row {
+      padding: 12px 14px; display: grid;
+      grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center;
+    }
+    .slot-row:hover, .backlog-item:hover { background: var(--hover); }
+    .slot-row.is-done { opacity: 0.7; }
+    .slot-row.is-overdue { border-color: color-mix(in oklch, var(--warn) 50%, var(--border)); }
+    .slot-title { font-weight: 550; font-size: 14px; line-height: 1.4; }
+    .slot-meta { font-size: 12px; color: var(--muted); line-height: 1.5; grid-column: 1 / 2; }
+    .slot-status {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+      color: var(--muted); justify-self: end; align-self: start; padding-top: 2px;
+    }
+    .slot-row.is-open .slot-status { color: var(--ok); }
+    .slot-row.is-overdue .slot-status { color: var(--warn); }
+    .backlog-item { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 52px; }
+    .bi-title { font-size: 13px; font-weight: 550; line-height: 1.4; }
+    .bi-meta { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .hint {
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 8px; padding: 12px 14px;
+      font-size: 13px; line-height: 1.7; color: var(--fg);
+    }
+    .math-block {
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 8px; padding: 14px 12px; overflow-x: auto; line-height: 1.5;
+    }
+    .math-block .katex-display { margin: 0.4em 0; }
+    .math-fallback { font-family: var(--font-mono); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
+    .stem-text { font-size: 16px; line-height: 1.75; max-width: 65ch; }
+
+    textarea.answer, textarea.composer {
+      width: 100%; resize: vertical; border: 1px solid var(--border);
+      background: var(--bg); padding: 12px; border-radius: 8px; line-height: 1.7;
+    }
+    textarea.answer { min-height: 128px; }
+    textarea.answer.is-invalid { border-color: var(--bad); }
+    textarea.composer { min-height: 44px; max-height: 120px; resize: none; }
+    textarea::placeholder { color: var(--muted); }
+    .field-error { font-size: 13px; color: var(--bad); line-height: 1.5; }
+
+    .desk-split {
+      display: grid; gap: 12px;
+      grid-template-columns: 1fr;
+      grid-template-areas: "stem" "progress" "answer";
+    }
+    .stem-card { grid-area: stem; }
+    .progress-card { grid-area: progress; }
+    .answer-card { grid-area: answer; }
+    .stem-card, .answer-card, .progress-card { min-width: 0; }
+    .side-rail { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+    .rail-item {
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.55;
+    }
+    .rail-item .k { color: var(--muted); font-size: 11px; letter-spacing: 0.02em; margin-bottom: 2px; }
+    .rail-item:last-child { grid-column: 1 / -1; }
+    .progress-track {
+      height: 6px; border-radius: 99px; overflow: hidden;
+      background: color-mix(in oklch, var(--fg) 8%, var(--bg));
+    }
+    .progress-fill { height: 100%; width: 0; background: color-mix(in oklch, var(--fg) 52%, var(--bg)); }
+
+    .result-banner { border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: grid; gap: 6px; }
+    .result-banner.ok { background: var(--soft-ok); border-color: color-mix(in oklch, var(--ok) 35%, var(--border)); }
+    .result-banner.bad { background: var(--soft-bad); border-color: color-mix(in oklch, var(--bad) 35%, var(--border)); }
+    .result-mark { font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.35; }
+    .result-mark.ok { color: var(--ok); }
+    .result-mark.bad { color: var(--bad); }
+
+    .fold { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .fold-toggle {
+      width: 100%; appearance: none; border: 0; background: var(--bg);
+      padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+      min-height: 44px; font-weight: 550; text-align: left; color: var(--fg);
+    }
+    .fold-toggle:hover { background: var(--hover); color: var(--fg); }
+    .fold-panel { display: none; padding: 12px 14px; font-size: 15px; line-height: 1.75; background: var(--surface); }
+    .fold.is-open .fold-panel { display: block; }
+    .fold.is-open .fold-toggle { border-bottom: 1px solid var(--border); }
+
+    .empty {
+      min-height: 52dvh; display: flex; flex-direction: column;
+      justify-content: center; gap: 12px; padding: 28px 16px; text-align: center;
+    }
+    .empty p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 28ch; margin-inline: auto; }
+    .mark-box {
+      width: 48px; height: 48px; margin: 0 auto; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--surface);
+      display: grid; place-items: center; color: var(--muted);
+    }
+
+    .query-strip {
+      font-family: var(--font-mono); font-size: 11px; line-height: 1.55;
+      letter-spacing: 0.01em; color: var(--muted);
+      border: 1px solid var(--border); background: var(--bg);
+      border-radius: 8px; padding: 8px 10px; word-break: break-all;
+    }
+    .dock {
+      border-top: 1px solid var(--border); background: var(--surface);
+      padding: 10px 16px calc(10px + var(--safe-b));
+    }
+    .app:not(.is-practice-dock) .practice-dock { display: none; }
+    .app:not(.is-tutor) .chat-dock { display: none; }
+    .chat-dock .composer-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+    .chat-dock .btn.primary { width: auto; min-width: 72px; padding-inline: 18px; }
+
+    .context-chip {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
+    }
+    .kicker {
+      font-size: 11px; letter-spacing: 0.02em;
+      color: var(--muted); font-family: var(--font-mono);
+    }
+
+    .thread { display: flex; flex-direction: column; gap: 16px; padding-bottom: 8px; }
+    .msg { display: grid; gap: 4px; max-width: min(72ch, 100%); }
+    .msg.is-user { margin-left: auto; }
+    .msg-who { font-size: 11px; letter-spacing: 0.02em; color: var(--muted); }
+    .msg-body { font-size: 15px; line-height: 1.75; }
+    .msg.is-user .msg-body {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px 12px 4px 12px; padding: 10px 12px; box-shadow: var(--shadow);
+    }
+    .pending { font-size: 13px; color: var(--muted); }
+    .stream-cursor {
+      display: inline-block; width: 2px; height: 0.95em;
+      background: var(--fg); margin-left: 2px; vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .nav-btn, .rail-toggle {
+      appearance: none; border: 0; background: transparent; color: var(--fg);
+      min-height: 44px; border-radius: 8px;
+    }
+    .nav-btn:hover, .rail-toggle:hover { background: var(--hover); color: var(--fg); }
+    .nav-btn.is-active { color: var(--accent); background: color-mix(in oklch, var(--accent) 8%, var(--surface)); }
+
+    @container stage (min-width: 640px) {
+      .desk-split {
+        grid-template-columns: minmax(0, 1fr) 220px;
+        grid-template-areas: "stem progress" "answer progress";
+        align-items: start;
+      }
+      .side-rail { grid-template-columns: 1fr; }
+      .rail-item:last-child { grid-column: auto; }
+      .btn-row.two { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (min-width: 768px) {
+      .app {
+        grid-template-columns: var(--rail) 1fr;
+        grid-template-rows: 1fr;
+      }
+      .app.is-expanded { --rail: 220px; }
+      .tabbar { display: none; }
+      .rail {
+        display: flex; flex-direction: column; gap: 8px;
+        padding: calc(12px + var(--safe-t)) 8px 12px calc(8px + var(--safe-l));
+        border-right: 1px solid var(--border);
+        background: color-mix(in oklch, var(--surface) 70%, transparent);
+        backdrop-filter: blur(18px);
+      }
+      .rail-toggle {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px; font-weight: 600; font-family: var(--font-display);
+        letter-spacing: 0; min-height: 48px;
+      }
+      .mark {
+        width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+        display: grid; place-items: center;
+        background: var(--fg); color: var(--surface);
+        font-size: 13px; font-weight: 600;
+      }
+      .rail-name { font-size: 14px; white-space: nowrap; overflow: hidden; }
+      .app:not(.is-expanded) .rail-name,
+      .app:not(.is-expanded) .nav-label { display: none; }
+      .rail nav { display: flex; flex-direction: column; gap: 4px; }
+      .nav-btn {
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 10px; width: 100%;
+        font-size: 14px; font-weight: 550; letter-spacing: 0.02em;
+      }
+      .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+      .app.is-tutor .workspace { grid-template-columns: 200px 1fr; }
+      .app.is-tutor .recents {
+        display: flex; flex-direction: column; gap: 6px;
+        padding: calc(12px + var(--safe-t)) 12px 12px;
+        border-right: 1px solid var(--border); background: var(--bg);
+      }
+      .recents h2 { font-size: 13px; color: var(--muted); font-weight: 550; letter-spacing: 0.04em; margin-bottom: 6px; }
+      .recent-btn {
+        appearance: none; width: 100%; text-align: left;
+        border: 1px solid transparent; background: transparent;
+        border-radius: 8px; padding: 10px 10px; min-height: 56px;
+        display: grid; gap: 2px;
+      }
+      .recent-btn:hover { background: var(--hover); color: var(--fg); }
+      .recent-btn.is-active { border-color: var(--border); background: var(--surface); box-shadow: var(--shadow); }
+      .recent-title { font-size: 13px; font-weight: 550; line-height: 1.4; }
+      .recent-preview { font-size: 12px; color: var(--muted); line-height: 1.45; }
+      .dock { padding-bottom: 12px; }
+      .app-header { padding-top: 12px; }
+      .content { padding: 18px 22px 24px; }
+    }
+
+    @media (min-width: 768px) and (max-height: 560px) {
+      h1 { font-size: 22px; }
+      .app-header { padding-block: 8px; }
+      .content { padding-block: 10px; }
+    }
+    @media (max-width: 767.98px) {
+      .content { padding-bottom: 16px; }
+      .dock { padding-bottom: 10px; }
+    }
+
+    /* hand-drawn sketch overrides */
+    .studio-bar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 8px 14px; border-bottom: 1px solid rgba(43,33,24,.36);
+      background: linear-gradient(180deg, rgba(249,243,231,.96), rgba(236,227,210,.9));
+      font-size: 12px;
+    }
+    .studio-bar label {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em;
+      color: var(--muted); text-transform: uppercase;
+    }
+    .studio-bar select {
+      appearance: none; font-family: var(--font-mono); font-size: 12px;
+      border: 1px solid rgba(43,33,24,.36); background: var(--surface); color: var(--fg);
+      padding: 6px 28px 6px 10px; min-height: 36px; border-radius: 2px;
+      background-image: linear-gradient(45deg, transparent 50%, var(--fg) 50%), linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+      background-position: calc(100% - 14px) 55%, calc(100% - 10px) 55%;
+      background-size: 4px 4px, 4px 4px; background-repeat: no-repeat;
+    }
+    .studio-bar .hint {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; color: var(--muted);
+    }
+    .app { height: calc(100dvh - 45px); }
+    .card, .slot-row, .backlog-item, .pill, .dock, .app-header, .tabbar, .rail, .msg.tutor, .msg.user, .chat-compose textarea {
+      border-radius: 2px !important;
+      box-shadow: 1px 2px 0 rgba(43,33,24,.04), 0 8px 20px rgba(43,33,24,.07) !important;
+    }
+    .card {
+      border: 1px solid rgba(43,33,24,.32) !important;
+      background: linear-gradient(180deg, rgba(249,243,231,.97), rgba(240,231,213,.95)) !important;
+      transform: rotate(-0.15deg);
+    }
+    .card:nth-child(even) { transform: rotate(0.12deg); }
+    .slot-row, .backlog-item {
+      border: 1px dashed rgba(43,33,24,.36) !important;
+      background: rgba(244,237,224,.72) !important;
+    }
+    .btn.primary {
+      background: var(--ink) !important;
+      color: var(--bg) !important;
+      border-radius: 2px !important;
+      box-shadow: 2px 2px 0 rgba(43,33,24,.18) !important;
+    }
+    .btn.primary:hover { filter: brightness(1.08); }
+    .progress-fill { background: var(--accent) !important; }
+    .mark {
+      background: var(--ink) !important; color: var(--bg) !important;
+      border-radius: 2px !important;
+    }
+    .tab-btn.is-active, .nav-btn.is-active { color: var(--bad) !important; }
+    .app-header {
+      background: linear-gradient(180deg, rgba(249,243,231,.92), rgba(236,227,210,.82)) !important;
+      border-bottom-color: rgba(43,33,24,.36) !important;
+    }
+    .hint strong { color: var(--bad); }
+
+    /* ---- 手划书页：练习台视图切换 ---- */
+    .stage { position: relative; }
+    .content {
+      perspective: 1400px;
+      touch-action: pan-y;
+    }
+    .flip-sheet {
+      transform-origin: left center;
+      will-change: transform, opacity;
+      transition:
+        transform .42s cubic-bezier(.22,.7,.2,1),
+        opacity .28s ease;
+    }
+    .flip-sheet.is-enter-right {
+      transform: translateX(28%) rotateY(48deg) scale(.98);
+      opacity: 0;
+    }
+    .flip-sheet.is-enter-left {
+      transform: translateX(-28%) rotateY(-48deg) scale(.98);
+      opacity: 0;
+    }
+    .flip-sheet.is-open {
+      transform: translateX(0) rotateY(0) scale(1);
+      opacity: 1;
+    }
+    .flip-sheet.is-exit-left {
+      transform: translateX(-42%) rotateY(-72deg) scale(.96);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .flip-sheet.is-exit-right {
+      transform: translateX(42%) rotateY(72deg) scale(.96);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .stage.is-swiping { cursor: grabbing; }
+    .stage.is-swiping .content { touch-action: none; }
+    .page-chrome {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 44px; padding: 0 12px 8px;
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in oklch, var(--surface) 82%, transparent);
+    }
+    .app.is-tutor .page-chrome { display: none; }
+    .page-nav {
+      width: 44px; height: 44px; flex: 0 0 auto;
+      border: 1px solid var(--border);
+      background: var(--surface); color: var(--fg);
+      font-size: 22px; line-height: 1; border-radius: var(--radius);
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .page-nav:hover { background: var(--hover); color: var(--fg); border-color: var(--fg); }
+    .page-nav:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .page-nav:disabled { opacity: .35; cursor: default; color: var(--muted); }
+    .page-dots { display: flex; align-items: center; gap: 8px; }
+    .page-dot {
+      width: 10px; height: 10px; padding: 0; border-radius: 50%;
+      border: 1px solid rgba(43,33,24,.4); background: transparent; cursor: pointer;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+    .page-dot.is-on { background: var(--bad); border-color: var(--bad); transform: scale(1.15); }
+    .page-dot:hover { border-color: var(--fg); }
+    .page-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .page-index {
+      min-width: 5.5em; text-align: right;
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .08em; color: var(--muted);
+    }
+    .flip-hint {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .08em; color: var(--muted);
+      margin-top: 2px;
+    }
+    .flip-hint b { color: var(--bad); font-weight: 550; letter-spacing: .12em; }
+
+  </style>
+</head>
+<body>
+  <div class="studio-bar" data-od-id="studio-bar">
+    <label for="module-switch">模块</label>
+    <select id="module-switch" aria-label="切换 Teaching / Capability">
+      <option value="teaching" selected>Teaching Shell · 练习台</option>
+      <option value="brain">Capability Brain · 事件预测</option>
+    </select>
+    <span class="hint">VPS practice API · LearnerParams</span>
+  </div>
+  <div class="app" id="app" data-od-id="app-shell">
+    <aside class="rail" data-od-id="app-rail">
+      <button type="button" class="rail-toggle" id="btn-rail-toggle" data-od-id="btn-rail-toggle" aria-label="展开或收起侧栏">
+        <span class="mark">练</span>
+        <span class="rail-name">高校练习</span>
+      </button>
+      <nav aria-label="产品导航">
+        <button type="button" class="nav-btn" data-nav="practice" data-od-id="nav-practice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>
+          <span class="nav-label">练习台</span>
+        </button>
+        <button type="button" class="nav-btn" data-nav="tutor" data-od-id="nav-tutor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg>
+          <span class="nav-label">讲师</span>
+        </button>
+      </nav>
+    </aside>
+
+    <div class="workspace" data-od-id="workspace">
+      <aside class="recents" id="recents" data-od-id="tutor-recents" aria-label="最近会话"></aside>
+      <div class="stage">
+        <header class="app-header" id="header" data-od-id="app-header"></header>
+        <div class="page-chrome" id="page-chrome" data-od-id="page-chrome" aria-label="练习页翻页">
+          <button type="button" class="page-nav" id="page-prev" data-od-id="page-prev" aria-label="上一页">‹</button>
+          <div class="page-dots" id="page-dots" role="tablist" aria-label="页码">
+            <button type="button" class="page-dot" data-page="today" role="tab" aria-label="今日入口"></button>
+            <button type="button" class="page-dot" data-page="desk" role="tab" aria-label="练习主台"></button>
+            <button type="button" class="page-dot" data-page="result" role="tab" aria-label="批改结果"></button>
+            <button type="button" class="page-dot" data-page="done" role="tab" aria-label="今日完成"></button>
+          </div>
+          <button type="button" class="page-nav" id="page-next" data-od-id="page-next" aria-label="下一页">›</button>
+          <span class="page-index mono" id="page-index" data-od-id="page-index">今日</span>
+        </div>
+        <div class="content" id="root" data-od-id="main-content"></div>
+        <footer class="dock practice-dock" id="practice-dock" data-od-id="practice-dock"></footer>
+        <footer class="dock chat-dock" id="chat-dock" data-od-id="chat-dock">
+          <form class="composer-row" id="composer-form" data-od-id="composer">
+            <label class="visually-hidden" for="composer-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">消息</label>
+            <textarea class="composer" id="composer-input" rows="1" placeholder="问这题卡住的步骤…" data-od-id="composer-input"></textarea>
+            <button type="submit" class="btn primary" data-od-id="btn-send">发送</button>
+          </form>
+        </footer>
+      </div>
+    </div>
+
+    <nav class="tabbar" data-od-id="tabbar" aria-label="底部导航">
+      <button type="button" class="tab-btn" data-nav="practice" data-od-id="tab-practice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>
+        练习台
+      </button>
+      <button type="button" class="tab-btn" data-nav="tutor" data-od-id="tab-tutor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg>
+        讲师
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var API_BASE = "";
+      var SLOTS = [];
+      var ITEMS = [];
+      var SERVER_WEAK_HINT = "";
+      var BOOT_READY = false;
+      var BOOT_ERROR = "";
+
+      function apiUrl(path) {
+        return (API_BASE || "") + path;
+      }
+      function apiHeaders(extra) {
+        var h = { "Accept": "application/json" };
+        if (extra) Object.keys(extra).forEach(function (k) { h[k] = extra[k]; });
+        if (typeof state !== "undefined" && state && state.learner) h["X-Learner-Id"] = state.learner;
+        return h;
+      }
+      function applyBootstrap(data) {
+        if (!data || !data.ok) {
+          BOOT_ERROR = (data && data.error) || "bootstrap_failed";
+          return false;
+        }
+        SLOTS = data.slots || [];
+        ITEMS = data.items || [];
+        SERVER_WEAK_HINT = data.weakHint || "";
+        if (data.answered) {
+          Object.keys(data.answered).forEach(function (id) {
+            state.answered[id] = data.answered[id];
+          });
+        }
+        BOOT_READY = true;
+        BOOT_ERROR = "";
+        return true;
+      }
+      function ensureItemFromServer(itemId, pushId) {
+        return fetch(apiUrl("/api/v1/practice/item?learner=" + encodeURIComponent(state.learner || "")
+          + (itemId ? "&item=" + encodeURIComponent(itemId) : "")
+          + (pushId ? "&push=" + encodeURIComponent(pushId) : "")), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          if (!data || !data.ok || !data.item) return null;
+          var it = data.item;
+          var ix = findItemIndex(it.id);
+          if (ix < 0) ITEMS.push(it);
+          else ITEMS[ix] = it;
+          if (data.result) state.answered[it.id] = data.result;
+          return it;
+        }).catch(function () { return null; });
+      }
+
+      var STORE = "teaching-shell-v2-state";
+      var SWIPE_THRESHOLD = 56;
+      var VIEW_ORDER = { today: 0, desk: 1, result: 2, done: 3, invalid: 4 };
+      var VIEW_LABEL = { today: "今日", desk: "主台", result: "批改", done: "完成", invalid: "失效" };
+      var flipDir = 0;
+      var flipBusy = false;
+      var appEl = document.getElementById("app");
+      var root = document.getElementById("root");
+      var headerEl = document.getElementById("header");
+      var recentsEl = document.getElementById("recents");
+      var practiceDock = document.getElementById("practice-dock");
+      var composerInput = document.getElementById("composer-input");
+      var stageEl = document.querySelector(".stage");
+      var streamTimer = null;
+
+      var state = {
+        mode: "practice",
+        view: "today",
+        learner: "stu_1024",
+        push: null,
+        index: 0,
+        answered: {},
+        draft: "",
+        lastResult: null,
+        explainOpen: false,
+        fromDeepLink: false,
+        error: "",
+        railExpanded: false,
+        contextItemId: null,
+        threads: {},
+        recents: [],
+        pending: false
+      };
+
+      function esc(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+      function escAttr(s) { return esc(s == null ? "" : s); }
+      function qs() { return new URLSearchParams(location.search); }
+      function currentItem() { return ITEMS[state.index] || null; }
+      function contextItem() { return itemById(state.contextItemId); }
+      function threadOf(id) {
+        var key = id || "general";
+        if (!state.threads[key]) state.threads[key] = [];
+        return state.threads[key];
+      }
+      function todayItems() { return ITEMS.filter(function (it) { return !it.backlog; }); }
+      function backlogItems() {
+        return ITEMS.filter(function (it) { return it.backlog && !state.answered[it.id]; });
+      }
+      function remainingCount() {
+        var list = todayItems(), n = 0, i;
+        for (i = 0; i < list.length; i++) if (!state.answered[list[i].id]) n++;
+        return n;
+      }
+      function doneCount() { return todayItems().length - remainingCount(); }
+      function progressPct() {
+        var list = todayItems();
+        if (!list.length) return 0;
+        return Math.round((doneCount() / list.length) * 100);
+      }
+      function itemById(id) {
+        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i];
+        return null;
+      }
+      function findItemIndex(id) {
+        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return i;
+        return -1;
+      }
+      function nextUnansweredIndex(from) {
+        var i;
+        for (i = from; i < ITEMS.length; i++) if (!state.answered[ITEMS[i].id]) return i;
+        for (i = 0; i < from; i++) if (!state.answered[ITEMS[i].id]) return i;
+        return -1;
+      }
+      function todayLabel() {
+        var d = new Date();
+        var mm = String(d.getMonth() + 1).padStart(2, "0");
+        var dd = String(d.getDate()).padStart(2, "0");
+        var w = ["日", "一", "二", "三", "四", "五", "六"][d.getDay()];
+        return mm + "-" + dd + " · 周" + w;
+      }
+      function weakHint() {
+        if (SERVER_WEAK_HINT) return SERVER_WEAK_HINT;
+        var weak = {}, keys, i;
+        Object.keys(state.answered).forEach(function (id) {
+          var r = state.answered[id];
+          if (!r || r.correct !== false) return;
+          for (i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) { weak[ITEMS[i].kp] = true; break; }
+        });
+        keys = Object.keys(weak);
+        return keys.length ? "近期易错：" + keys[0] : "完成今日最早未答槽";
+      }
+      function slotStatus(slot) {
+        var it = itemById(slot.itemId);
+        if (!it) return { key: "missing", label: "缺题" };
+        if (state.answered[it.id]) return { key: "done", label: "已完成" };
+        var h = new Date().getHours();
+        var open =
+          (slot.windowKey === "morning" && h >= 8 && h < 12) ||
+          (slot.windowKey === "afternoon" && h >= 12 && h < 18) ||
+          (slot.windowKey === "evening" && h >= 18 && h < 22);
+        if (open) return { key: "open", label: "时间窗内" };
+        if (
+          (slot.windowKey === "morning" && h < 8) ||
+          (slot.windowKey === "afternoon" && h < 12) ||
+          (slot.windowKey === "evening" && h < 18)
+        ) return { key: "soon", label: "未到窗" };
+        return { key: "overdue", label: "过窗覆盖中" };
+      }
+      function practicePath(item, push) {
+        return "/practice?learner=" + (state.learner || "") + (item ? "&item=" + item : "") + (push ? "&push=" + push : "");
+      }
+
+      function writeUrl() {
+        var p = new URLSearchParams();
+        var item = currentItem();
+        p.set("mode", state.mode);
+        p.set("view", state.view);
+        if (state.learner) p.set("learner", state.learner);
+        if ((state.view === "desk" || state.view === "result") && item) p.set("item", item.id);
+        if (state.mode === "tutor" && state.contextItemId) p.set("item", state.contextItemId);
+        if (state.push) p.set("push", state.push);
+        var q = p.toString();
+        history.replaceState(null, "", location.pathname + (q ? "?" + q : ""));
+      }
+      function persist() {
+        try {
+          localStorage.setItem(STORE, JSON.stringify({
+            mode: state.mode, view: state.view, learner: state.learner, index: state.index,
+            answered: state.answered, fromDeepLink: state.fromDeepLink, push: state.push,
+            lastResult: state.lastResult, railExpanded: state.railExpanded,
+            contextItemId: state.contextItemId, threads: state.threads, recents: state.recents
+          }));
+        } catch (e) {}
+      }
+      function restore() {
+        try {
+          var raw = localStorage.getItem(STORE);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+      }
+
+      function bumpRecent(item) {
+        if (!item) return;
+        state.recents = (state.recents || []).filter(function (r) { return r.id !== item.id; });
+        state.recents.unshift({ id: item.id, title: item.subject + " · " + item.title, subject: item.subject });
+        state.recents = state.recents.slice(0, 3);
+      }
+      function seedRecents() {
+        if (state.recents && state.recents.length) return;
+        state.recents = todayItems().map(function (it) {
+          return { id: it.id, title: it.subject + " · " + it.title, subject: it.subject };
+        });
+      }
+
+      function setSendEnabled(on) {
+        var btn = document.querySelector('[data-od-id="btn-send"]');
+        if (btn) btn.disabled = !on;
+      }
+      function setMode(mode) {
+        if (mode !== "tutor") {
+          stopStream();
+          state.pending = false;
+          setSendEnabled(true);
+        }
+        var prev = state.mode;
+        state.mode = mode;
+        if (mode === "tutor") seedRecents();
+        if (prev !== mode) flipDir = mode === "tutor" ? -1 : 1;
+        persist();
+        render({ animate: prev !== mode });
+      }
+      function setView(view, opts) {
+        opts = opts || {};
+        var prev = state.view;
+        if (opts.flipDir != null) {
+          flipDir = opts.flipDir;
+        } else if (VIEW_ORDER[view] != null && VIEW_ORDER[prev] != null && view !== prev) {
+          flipDir = VIEW_ORDER[view] > VIEW_ORDER[prev] ? -1 : 1;
+        } else {
+          flipDir = 0;
+        }
+        state.view = view;
+        if (typeof opts.index === "number") state.index = opts.index;
+        if (opts.resetDraft) { state.draft = ""; state.error = ""; }
+        if (opts.result !== undefined) state.lastResult = opts.result;
+        if (opts.explainOpen !== undefined) state.explainOpen = opts.explainOpen;
+        if (opts.fromDeepLink !== undefined) state.fromDeepLink = opts.fromDeepLink;
+        if (opts.push !== undefined) state.push = opts.push;
+        if (opts.learner) state.learner = opts.learner;
+        if (opts.error !== undefined) state.error = opts.error;
+        if (opts.answered) state.answered = opts.answered;
+        persist();
+        render({ animate: view !== prev || !!opts.forceFlip });
+      }
+      function openItemById(id, opts) {
+        opts = opts || {};
+        var idx = findItemIndex(id);
+        if (idx < 0) {
+          ensureItemFromServer(id, opts.push || state.push).then(function (it) {
+            if (!it) { setView("invalid", { push: opts.push || state.push }); return; }
+            state.mode = "practice";
+            setView("desk", {
+              index: findItemIndex(it.id), resetDraft: true,
+              fromDeepLink: !!opts.fromDeepLink, push: opts.push || null
+            });
+          });
+          return;
+        }
+        state.mode = "practice";
+        setView("desk", {
+          index: idx, resetDraft: true, fromDeepLink: !!opts.fromDeepLink, push: opts.push || null
+        });
+      }
+      function startToday() {
+        var left = remainingCount();
+        var bl = backlogItems();
+        if (left === 0 && bl.length) { openItemById(bl[0].id); return; }
+        if (left === 0) { setView("done"); return; }
+        setView("desk", { index: nextUnansweredIndex(0), resetDraft: true, fromDeepLink: false, push: null });
+      }
+      function submitAnswer() {
+        var item = currentItem();
+        if (!item) return;
+        var textAns = (state.draft || "").trim();
+        if (!textAns) {
+          state.error = "请先填写作答内容再提交。";
+          render();
+          var el = document.getElementById("answer-input");
+          if (el) el.focus();
+          return;
+        }
+        if (state.pending) return;
+        state.pending = true;
+        state.error = "";
+        render();
+        fetch(apiUrl("/api/v1/practice/submit"), {
+          method: "POST",
+          headers: apiHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({
+            learner: state.learner,
+            item: item.id,
+            push: item.pushId != null ? String(item.pushId) : (state.push || null),
+            answer: textAns
+          })
+        }).then(function (r) { return r.json().then(function (j) { return { okHttp: r.ok, body: j }; }); })
+          .then(function (pack) {
+            state.pending = false;
+            var data = pack.body || {};
+            if (!data.ok || !data.result) {
+              state.error = (data && data.error) || "提交失败，请稍后重试。";
+              render();
+              return;
+            }
+            var result = data.result;
+            state.answered[item.id] = result;
+            if (data.item) {
+              var ix = findItemIndex(item.id);
+              if (ix >= 0) ITEMS[ix] = data.item;
+            }
+            setView("result", { result: result, explainOpen: false, error: "" });
+          })
+          .catch(function (e) {
+            state.pending = false;
+            state.error = "网络错误：" + (e && e.message ? e.message : "submit_failed");
+            render();
+          });
+      }
+      function goNext() {
+        var next = nextUnansweredIndex(state.index + 1);
+        if (next === -1) { setView("done", { push: null, fromDeepLink: false }); return; }
+        setView("desk", { index: next, resetDraft: true, result: null, fromDeepLink: false });
+      }
+      function askTutor() {
+        stopStream();
+        state.pending = false;
+        setSendEnabled(true);
+        var item = currentItem();
+        state.mode = "tutor";
+        seedRecents();
+        if (item) {
+          state.contextItemId = item.id;
+          bumpRecent(item);
+        }
+        persist();
+        render();
+        composerInput.focus();
+      }
+
+      function tutorReply(item, userText) {
+        if (!item) {
+          return "我可以结合练习台里的题目讲解。打开一题后点「不懂，问讲师」，我会带着题干和知识点来答。";
+        }
+        return "我们看「" + item.title + "」，知识点是" + item.kp + "。" + item.explain + " 你刚问：「" + userText + "」。想从哪一步继续拆？";
+      }
+      function stopStream() {
+        if (streamTimer) { clearInterval(streamTimer); streamTimer = null; }
+      }
+      function startStream(full) {
+        var msgs = threadOf(state.contextItemId);
+        var msg = { role: "tutor", text: "", streaming: true };
+        msgs.push(msg);
+        state.pending = false;
+        renderChat();
+        var i = 0;
+        stopStream();
+        streamTimer = setInterval(function () {
+          if (state.mode !== "tutor") {
+            msg.streaming = false;
+            stopStream();
+            setSendEnabled(true);
+            return;
+          }
+          i += Math.max(1, Math.ceil(full.length / 48));
+          msg.text = full.slice(0, i);
+          if (i >= full.length) {
+            msg.streaming = false;
+            stopStream();
+            persist();
+            setSendEnabled(true);
+          }
+          patchLastMessage(msg);
+        }, 32);
+      }
+      function sendChat(text) {
+        var trimmed = (text || "").trim();
+        if (!trimmed || state.pending) return;
+        threadOf(state.contextItemId).push({ role: "user", text: trimmed });
+        var item = contextItem();
+        if (item) bumpRecent(item);
+        composerInput.value = "";
+        state.pending = true;
+        setSendEnabled(false);
+        persist();
+        renderChat();
+        fetch(apiUrl("/api/v1/tutor/chat"), {
+          method: "POST",
+          headers: apiHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({
+            learner: state.learner,
+            item: item ? item.id : state.contextItemId,
+            push: item && item.pushId != null ? String(item.pushId) : state.push,
+            message: trimmed,
+            threadId: state.contextItemId || "general"
+          })
+        }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+          .then(function (pack) {
+            if (state.mode !== "tutor") { state.pending = false; setSendEnabled(true); return; }
+            var msg;
+            if (pack.status === 501 || (pack.body && pack.body.error === "tutor_agent_not_wired")) {
+              msg = "讲师 agent 尚未接入。练习批改已走后端；对话接口契约见 /api/v1/agent/manifest。你刚才问：「" + trimmed + "」。";
+            } else if (pack.body && pack.body.reply) {
+              msg = pack.body.reply;
+            } else {
+              msg = tutorReply(item, trimmed);
+            }
+            startStream(msg);
+          })
+          .catch(function () {
+            if (state.mode !== "tutor") { state.pending = false; setSendEnabled(true); return; }
+            startStream("讲师服务暂时不可用。请先在练习台完成作答；agent 对接后可在此继续追问。");
+          });
+      }
+
+      function mountMath() {
+        root.querySelectorAll("[data-tex]").forEach(function (el) {
+          var tex = el.getAttribute("data-tex") || "";
+          if (!tex) return;
+          if (window.katex) {
+            try { katex.render(tex, el, { throwOnError: false, displayMode: true }); }
+            catch (e) { el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>"; }
+          } else {
+            el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>";
+          }
+        });
+      }
+
+      function renderHeader() {
+        if (state.mode === "tutor") {
+          var it = contextItem();
+          headerEl.innerHTML =
+            '<div class="context-chip" data-od-id="tutor-context">' +
+              '<span class="kicker">当前题目</span>' +
+              "<strong>" + esc(it ? it.subject + " · " + it.title : "未绑定题目") + "</strong>" +
+              '<span class="meta">' + esc(state.learner) + (it ? " · " + it.id : "") + "</span>" +
+            "</div>" +
+            '<div class="sub">' + esc(it ? it.kp : "可从练习台带入题干，或在左侧选择最近会话") + "</div>";
+          return;
+        }
+        var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
+        headerEl.innerHTML =
+          '<div class="brand-row">' +
+            '<div class="brand" data-od-id="brand">高校每日练习</div>' +
+            '<div class="meta" data-od-id="learner-meta">' + esc(state.learner) + "</div>" +
+          "</div>" +
+          '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
+          '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>';
+      }
+
+      function syncPageChrome() {
+        var chrome = document.getElementById("page-chrome");
+        if (!chrome) return;
+        var onPractice = state.mode === "practice";
+        chrome.hidden = !onPractice;
+        if (!onPractice) return;
+        var view = state.view === "invalid" ? "today" : state.view;
+        document.querySelectorAll(".page-dot").forEach(function (dot) {
+          var on = dot.getAttribute("data-page") === view;
+          dot.classList.toggle("is-on", on);
+          dot.setAttribute("aria-selected", String(on));
+        });
+        var idxEl = document.getElementById("page-index");
+        if (idxEl) idxEl.textContent = VIEW_LABEL[state.view] || "练习";
+        var prevBtn = document.getElementById("page-prev");
+        var nextBtn = document.getElementById("page-next");
+        if (prevBtn) prevBtn.disabled = state.view === "today";
+        if (nextBtn) {
+          var canFwd = state.view === "today" || state.view === "result" || state.view === "desk";
+          nextBtn.disabled = state.view === "done" || state.view === "invalid" || !canFwd;
+          if (state.view === "desk") nextBtn.disabled = true; // 主台需提交，不靠 › 跳过
+        }
+      }
+
+      function flipBack() {
+        if (state.mode !== "practice") return;
+        if (state.view === "desk" || state.view === "result" || state.view === "done" || state.view === "invalid") {
+          setView("today", { push: null, fromDeepLink: false, flipDir: 1 });
+        }
+      }
+      function flipForward() {
+        if (state.mode !== "practice") return;
+        if (state.view === "today") { startToday(); return; }
+        if (state.view === "result") { goNext(); return; }
+        // desk：需提交，不空翻
+      }
+      function goToPageDot(page) {
+        if (state.mode !== "practice") return;
+        if (page === "today") { setView("today", { push: null, fromDeepLink: false }); return; }
+        if (page === "desk") {
+          if (remainingCount() === 0 && !backlogItems().length) { setView("done"); return; }
+          startToday();
+          return;
+        }
+        if (page === "result") {
+          if (state.lastResult) setView("result");
+          else if (state.view !== "desk") startToday();
+          return;
+        }
+        if (page === "done") {
+          if (remainingCount() === 0) setView("done");
+          else setView("today");
+        }
+      }
+
+      function renderToday() {
+        var left = remainingCount();
+        var done = doneCount();
+        var backlog = backlogItems();
+        var slotHtml = SLOTS.map(function (slot) {
+          var it = itemById(slot.itemId);
+          var st = slotStatus(slot);
+          var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
+          var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 未缓存");
+          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : "");
+          return (
+            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId) + '">' +
+              '<div class="slot-title">' + esc(title) + "</div>" +
+              '<div class="slot-status">' + esc(st.label) + "</div>" +
+              '<div class="slot-meta">' + esc(meta) + "</div>" +
+            "</button>"
+          );
+        }).join("");
+        var backlogBody = backlog.length
+          ? backlog.map(function (it) {
+              return (
+                '<button type="button" class="backlog-item" data-od-id="backlog-' + escAttr(it.id) + '" data-item-id="' + escAttr(it.id) + '">' +
+                  '<div class="bi-title">' + esc(it.subject + " · " + it.title) + "</div>" +
+                  '<div class="bi-meta">' + esc("缓存日 " + it.day + " · " + it.kp) + "</div>" +
+                "</button>"
+              );
+            }).join("")
+          : '<p class="stem-text" style="margin:0;color:var(--muted)">暂无历史未答。</p>';
+        var cta = left === 0 ? (backlog.length ? "去历史未答" : "查看完成状态") : "从最早未答开始";
+        return (
+          '<div class="stack" data-od-id="view-today">' +
+            '<section class="card stack" data-od-id="task-bar">' +
+              '<div class="row between wrap"><h1 data-od-id="today-title">今日三槽</h1><span class="pill" data-od-id="date-pill">' + esc(todayLabel()) + "</span></div>" +
+              '<div class="stats" data-od-id="task-stats">' +
+                '<div class="stat"><div class="n">' + (SLOTS.length || 0) + '</div><div class="t">日缓存</div></div>' +
+                '<div class="stat"><div class="n">' + left + '</div><div class="t">今日剩余</div></div>' +
+                '<div class="stat"><div class="n">' + done + '</div><div class="t">今日完成</div></div>' +
+              "</div>" +
+              '<p class="hint" data-od-id="coverage-hint"><strong>时间覆盖</strong> — 数学 / 通信 / 复习各一槽；过窗未答仍可回补，不占用次日缓存。钉钉只发提醒与深链。LearnerParams（BKT+η）见模块下拉 → Capability Brain。</p>' +
+              '<div class="stack" data-od-id="slot-list">' + slotHtml + "</div>" +
+              '<p class="hint" data-od-id="weak-hint"><strong>薄弱提示</strong> — ' + esc(weakHint()) + "</p>" +
+              '<button type="button" class="btn primary" data-od-id="cta-start-today" id="btn-start">' + esc(cta) + "</button>" +
+              '<button type="button" class="text-link" data-od-id="link-sim-dingtalk" id="btn-sim-dingtalk">模拟钉钉提醒落地（通信槽）</button>' +
+            "</section>" +
+            '<section class="card stack" data-od-id="backlog-zone">' +
+              "<h2>历史未答</h2>" + backlogBody +
+            "</section>" +
+          "</div>"
+        );
+      }
+
+      function renderDesk() {
+        var item = currentItem();
+        if (!item) return renderInvalid();
+        var deep = state.fromDeepLink
+          ? '<section class="card stack" data-od-id="deeplink-banner"><h3>来自钉钉提醒，已直达本题</h3><div class="query-strip">' + esc(practicePath(item.id, state.push || "dingtalk")) + "</div></section>"
+          : "";
+        var err = state.error ? '<div class="field-error" data-od-id="answer-error" role="alert">' + esc(state.error) + "</div>" : "";
+        return (
+          '<div class="stack" data-od-id="view-desk">' + deep +
+            '<div class="desk-split">' +
+              '<section class="card stack stem-card" data-od-id="stem-zone">' +
+                '<div class="row wrap">' +
+                  '<span class="pill">' + esc(item.subject) + "</span>" +
+                  '<span class="pill warn">' + esc(item.kp) + "</span>" +
+                  '<span class="pill">' + esc(item.id) + "</span>" +
+                "</div>" +
+                '<h2 data-od-id="item-title">' + esc(item.title) + "</h2>" +
+                '<p class="stem-text" data-od-id="item-stem">' + esc(item.stem) + "</p>" +
+                '<div class="math-block" data-od-id="katex-formula" data-tex="' + escAttr(item.katex) + '"></div>' +
+              "</section>" +
+              '<aside class="card progress-card" data-od-id="progress-rail">' +
+                '<div class="side-rail">' +
+                  '<div class="rail-item"><div class="k">进度</div><div class="row between"><strong>' + doneCount() + "/" + todayItems().length + '</strong><span class="meta">' + progressPct() + '%</span></div><div class="progress-track" style="margin-top:6px"><div class="progress-fill" style="width:' + progressPct() + '%"></div></div></div>' +
+                  '<div class="rail-item"><div class="k">当前知识点</div><div>' + esc(item.kp) + "</div></div>" +
+                  '<div class="rail-item"><div class="k">薄弱提示</div><div>' + esc(weakHint()) + "</div></div>" +
+                "</div>" +
+              "</aside>" +
+              '<section class="card stack answer-card" data-od-id="answer-zone">' +
+                '<label for="answer-input"><h3>作答</h3></label>' +
+                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论。演示：0 / -1 / √2-1 判对；输入「错」判错。">' + esc(state.draft) + "</textarea>" +
+                err +
+                '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+              "</section>" +
+            "</div>" +
+          "</div>"
+        );
+      }
+
+      function renderResult() {
+        var item = currentItem();
+        var r = state.lastResult || { correct: false, comment: "—", explain: "—", submitted: "—" };
+        if (!item) return renderInvalid();
+        var ok = !!r.correct;
+        return (
+          '<div class="stack" data-od-id="view-result">' +
+            '<section class="card stack" data-od-id="result-zone">' +
+              '<div class="result-banner ' + (ok ? "ok" : "bad") + '" data-od-id="result-banner" role="status">' +
+                '<div class="result-mark ' + (ok ? "ok" : "bad") + '">' + (ok ? "正确" : "不正确") + "</div>" +
+                '<div class="stem-text" data-od-id="result-comment">' + esc(r.comment) + "</div>" +
+                '<div class="meta">' + esc(item.id + " · " + item.kp) + "</div>" +
+              "</div>" +
+              '<div class="hint" data-od-id="your-answer"><strong>你的作答</strong><br />' + esc(r.submitted) + "</div>" +
+              '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+            "</section>" +
+            '<section class="card" data-od-id="explain-fold" style="padding:0">' +
+              '<div class="fold' + (state.explainOpen ? " is-open" : "") + '">' +
+                '<button type="button" class="fold-toggle" id="btn-fold" data-od-id="btn-toggle-explain" aria-expanded="' + (state.explainOpen ? "true" : "false") + '"><span>查看讲解</span><span class="meta">' + (state.explainOpen ? "收起" : "展开") + "</span></button>" +
+                '<div class="fold-panel" data-od-id="explain-panel"><p>' + esc(r.explain || item.explain) + '</p><div class="math-block" style="margin-top:10px" data-od-id="explain-formula" data-tex="' + escAttr(item.katex) + '"></div></div>' +
+              "</div>" +
+            "</section>" +
+          "</div>"
+        );
+      }
+
+      function renderDone() {
+        return (
+          '<div class="empty" data-od-id="view-done">' +
+            '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>' +
+            '<h1 data-od-id="done-title">今日练习已完成</h1>' +
+            "<p data-od-id=\"done-copy\">今日三槽已提交。明日会写入新缓存；历史漏答仍可从入口回补。</p>" +
+            '<div class="stack" style="width:100%;max-width:280px;margin:0 auto"><button type="button" class="btn ghost" data-od-id="btn-done-home" id="btn-done-home">回到今日入口</button></div>' +
+          "</div>"
+        );
+      }
+      function renderInvalid() {
+        return (
+          '<div class="empty" data-od-id="view-invalid">' +
+            '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5M12 16h.01"/></svg></div>' +
+            '<h1 data-od-id="invalid-title">链接已失效</h1>' +
+            "<p data-od-id=\"invalid-copy\">推送可能过期，或题目编号不存在。请从今日入口重新进入。</p>" +
+            '<div class="query-strip" style="text-align:left;max-width:320px;margin-inline:auto">' + esc("/practice?learner=" + state.learner + "&item=unknown&push=expired") + "</div>" +
+            '<div class="stack" style="width:100%;max-width:280px;margin:0 auto"><button type="button" class="btn primary" data-od-id="btn-invalid-home" id="btn-invalid-home">回到今日入口</button></div>' +
+          "</div>"
+        );
+      }
+
+      function msgHtml(msg, last) {
+        var who = msg.role === "user" ? "你" : "讲师";
+        var cursor = msg.streaming ? '<span class="stream-cursor"></span>' : "";
+        return (
+          '<article class="msg' + (msg.role === "user" ? " is-user" : "") + '"' + (last ? ' data-od-id="last-msg"' : "") + ">" +
+            '<div class="msg-who">' + who + "</div>" +
+            '<div class="msg-body">' + esc(msg.text) + cursor + "</div>" +
+          "</article>"
+        );
+      }
+      function renderChatList() {
+        var msgs = threadOf(state.contextItemId);
+        if (!msgs.length && !state.pending) {
+          return (
+            '<div class="empty" data-od-id="view-tutor-empty">' +
+              '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg></div>' +
+              "<h1>问讲师</h1>" +
+              "<p>结合当前题目提问。回复为演示流式占位，不调用真实模型。</p>" +
+            "</div>"
+          );
+        }
+        var html = '<div class="thread" data-od-id="tutor-thread" aria-live="polite">';
+        msgs.forEach(function (m, i) { html += msgHtml(m, i === msgs.length - 1); });
+        if (state.pending) html += '<div class="pending" data-od-id="tutor-pending">讲师正在作答…</div>';
+        return html + "</div>";
+      }
+      function patchLastMessage(msg) {
+        var el = root.querySelector('[data-od-id="last-msg"] .msg-body');
+        if (el) el.innerHTML = esc(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
+        else renderChat();
+      }
+      function renderRecents() {
+        if (state.mode !== "tutor") { recentsEl.innerHTML = ""; return; }
+        var html = "<h2>最近会话</h2>";
+        (state.recents || []).slice(0, 3).forEach(function (r) {
+          var msgs = threadOf(r.id);
+          var last = msgs.length ? msgs[msgs.length - 1].text : "尚无消息";
+          var active = r.id === state.contextItemId ? " is-active" : "";
+          html +=
+            '<button type="button" class="recent-btn' + active + '" data-od-id="recent-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
+              '<div class="recent-title">' + esc(r.title) + "</div>" +
+              '<div class="recent-preview">' + esc(last.slice(0, 28)) + "</div>" +
+            "</button>";
+        });
+        recentsEl.innerHTML = html;
+        recentsEl.querySelectorAll("[data-thread-id]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.contextItemId = btn.getAttribute("data-thread-id");
+            persist();
+            render();
+          });
+        });
+      }
+      function renderChat() {
+        renderHeader();
+        renderRecents();
+        root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
+        root.scrollTop = root.scrollHeight;
+      }
+
+      function renderPracticeDock() {
+        if (state.mode !== "practice" || (state.view !== "desk" && state.view !== "result")) {
+          practiceDock.innerHTML = "";
+          return;
+        }
+        if (state.view === "desk") {
+          practiceDock.innerHTML =
+            '<div class="btn-row two">' +
+              '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today">返回今日</button>' +
+              '<button type="button" class="btn primary" data-od-id="btn-submit" id="btn-submit">提交</button>' +
+            "</div>";
+        } else {
+          var last = nextUnansweredIndex(state.index + 1) === -1;
+          practiceDock.innerHTML =
+            '<button type="button" class="btn primary" data-od-id="btn-next" id="btn-next">' + (last ? "完成今日" : "下一题") + "</button>";
+        }
+      }
+
+      function syncChrome() {
+        appEl.classList.toggle("is-expanded", !!state.railExpanded);
+        appEl.classList.toggle("is-tutor", state.mode === "tutor");
+        var dockOn = state.mode === "practice" && (state.view === "desk" || state.view === "result");
+        appEl.classList.toggle("is-practice-dock", dockOn);
+        document.querySelectorAll("[data-nav]").forEach(function (btn) {
+          var on = btn.getAttribute("data-nav") === state.mode;
+          btn.classList.toggle("is-active", on);
+          if (on) btn.setAttribute("aria-current", "page");
+          else btn.removeAttribute("aria-current");
+        });
+        syncPageChrome();
+        writeUrl();
+      }
+
+      function bindPractice() {
+        var start = document.getElementById("btn-start");
+        if (start) start.addEventListener("click", startToday);
+        var sim = document.getElementById("btn-sim-dingtalk");
+        if (sim) sim.addEventListener("click", function () {
+          (function () {
+            var slot = null;
+            for (var si = 0; si < SLOTS.length; si++) if (SLOTS[si].kind === "comm" && SLOTS[si].itemId) { slot = SLOTS[si]; break; }
+            if (!slot) for (var sj = 0; sj < SLOTS.length; sj++) if (SLOTS[sj].itemId) { slot = SLOTS[sj]; break; }
+            if (!slot || !slot.itemId) { state.error = "暂无通信槽题目可模拟落地。"; render(); return; }
+            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "stu_1024") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
+          })();
+        });
+        root.querySelectorAll("[data-item-id]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var id = btn.getAttribute("data-item-id");
+            if (id) openItemById(id);
+          });
+        });
+        var input = document.getElementById("answer-input");
+        if (input) {
+          input.addEventListener("input", function () {
+            state.draft = input.value;
+            if (state.error) {
+              state.error = "";
+              input.classList.remove("is-invalid");
+              var err = document.querySelector("[data-od-id='answer-error']");
+              if (err) err.remove();
+            }
+          });
+        }
+        var ask = document.getElementById("btn-ask-tutor");
+        if (ask) ask.addEventListener("click", askTutor);
+        var fold = document.getElementById("btn-fold");
+        if (fold) fold.addEventListener("click", function () { state.explainOpen = !state.explainOpen; render(); });
+        var doneHome = document.getElementById("btn-done-home");
+        if (doneHome) doneHome.addEventListener("click", function () { setView("today", { push: null }); });
+        var invalidHome = document.getElementById("btn-invalid-home");
+        if (invalidHome) invalidHome.addEventListener("click", function () { setView("today", { push: null, fromDeepLink: false }); });
+        var back = document.getElementById("btn-back-today");
+        if (back) back.addEventListener("click", function () { setView("today", { push: null, fromDeepLink: false }); });
+        var submit = document.getElementById("btn-submit");
+        if (submit) submit.addEventListener("click", submitAnswer);
+        var next = document.getElementById("btn-next");
+        if (next) next.addEventListener("click", goNext);
+      }
+
+      function render(opts) {
+        opts = opts || {};
+        syncChrome();
+        renderHeader();
+        renderRecents();
+        if (state.mode === "tutor") {
+          root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
+          practiceDock.innerHTML = "";
+          root.scrollTop = root.scrollHeight;
+          if (opts.animate && flipDir) {
+            var sheetT = root.querySelector(".flip-sheet");
+            if (sheetT) {
+              sheetT.classList.remove("is-open");
+              sheetT.classList.add(flipDir < 0 ? "is-enter-right" : "is-enter-left");
+              requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                  sheetT.classList.remove("is-enter-right", "is-enter-left");
+                  sheetT.classList.add("is-open");
+                });
+              });
+            }
+          }
+          return;
+        }
+        var html;
+        switch (state.view) {
+          case "today": html = renderToday(); break;
+          case "desk": html = renderDesk(); break;
+          case "result": html = renderResult(); break;
+          case "done": html = renderDone(); break;
+          case "invalid": html = renderInvalid(); break;
+          default: html = renderToday();
+        }
+        var enter = opts.animate && flipDir
+          ? (flipDir < 0 ? "is-enter-right" : "is-enter-left")
+          : "is-open";
+        root.innerHTML = '<div class="flip-sheet ' + enter + '" data-od-id="flip-sheet">' + html + "</div>";
+        renderPracticeDock();
+        bindPractice();
+        mountMath();
+        if (opts.animate && flipDir) {
+          var sheet = root.querySelector(".flip-sheet");
+          if (sheet) {
+            flipBusy = true;
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                sheet.classList.remove("is-enter-right", "is-enter-left");
+                sheet.classList.add("is-open");
+                window.setTimeout(function () { flipBusy = false; }, 420);
+              });
+            });
+          } else {
+            flipBusy = false;
+          }
+        }
+      }
+
+      function bindPageChrome() {
+        var prevBtn = document.getElementById("page-prev");
+        var nextBtn = document.getElementById("page-next");
+        if (prevBtn) prevBtn.addEventListener("click", flipBack);
+        if (nextBtn) nextBtn.addEventListener("click", flipForward);
+        document.querySelectorAll(".page-dot").forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            goToPageDot(dot.getAttribute("data-page"));
+          });
+        });
+      }
+
+      function bindSwipe() {
+        if (!stageEl) return;
+        var tracking = false, startX = 0, startY = 0, dx = 0, axis = null, pointerId = null, captured = false;
+
+        function onDown(e) {
+          if (e.button != null && e.button !== 0) return;
+          if (e.target.closest("button, a, input, textarea, select, .page-nav, .page-dot, .composer, .tabbar, .rail")) return;
+          tracking = true;
+          pointerId = e.pointerId;
+          startX = e.clientX; startY = e.clientY; dx = 0; axis = null; captured = false;
+        }
+        function onMove(e) {
+          if (!tracking || e.pointerId !== pointerId) return;
+          var mx = e.clientX - startX, my = e.clientY - startY;
+          if (!axis) {
+            if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+            axis = Math.abs(mx) > Math.abs(my) * 1.15 ? "x" : "y";
+            if (axis === "x") {
+              stageEl.classList.add("is-swiping");
+              if (!captured) {
+                try { stageEl.setPointerCapture(pointerId); captured = true; } catch (err) {}
+              }
+              e.preventDefault();
+            }
+          }
+          if (axis !== "x") return;
+          e.preventDefault();
+          dx = mx;
+          var sheet = root.querySelector(".flip-sheet.is-open");
+          if (sheet && state.mode === "practice") {
+            var t = Math.max(-1, Math.min(1, dx / 180));
+            sheet.style.transform = "translateX(" + (t * 36) + "%) rotateY(" + (t * 48) + "deg) scale(" + (1 - Math.abs(t) * 0.03) + ")";
+            sheet.style.opacity = String(1 - Math.abs(t) * 0.3);
+            sheet.style.transition = "none";
+          }
+        }
+        function onUp(e) {
+          if (!tracking || (pointerId != null && e.pointerId !== pointerId)) return;
+          tracking = false;
+          stageEl.classList.remove("is-swiping");
+          var sheet = root.querySelector(".flip-sheet");
+          if (sheet) {
+            sheet.style.transform = "";
+            sheet.style.opacity = "";
+            sheet.style.transition = "";
+          }
+          if (captured) {
+            try { stageEl.releasePointerCapture(pointerId); } catch (err) {}
+          }
+          captured = false; pointerId = null;
+          if (!flipBusy && axis === "x" && Math.abs(dx) >= SWIPE_THRESHOLD) {
+            if (dx < 0) flipForward();
+            else flipBack();
+          }
+          axis = null; dx = 0;
+        }
+        stageEl.addEventListener("pointerdown", onDown);
+        stageEl.addEventListener("pointermove", onMove, { passive: false });
+        stageEl.addEventListener("pointerup", onUp);
+        stageEl.addEventListener("pointercancel", onUp);
+
+        window.addEventListener("keydown", function (e) {
+          if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+          if (state.mode !== "practice") return;
+          if (e.key === "ArrowLeft") { e.preventDefault(); flipBack(); }
+          else if (e.key === "ArrowRight") { e.preventDefault(); flipForward(); }
+        });
+      }
+
+      function applyDeepLink(params, saved) {
+        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        var itemId = params.get("item");
+        var push = params.get("push");
+        var viewHint = params.get("view");
+        var modeHint = params.get("mode");
+        state.learner = learner;
+        state.push = push;
+        if (saved) {
+          // Prefer server answered from bootstrap; local cache only fills gaps / offline.
+          if (saved.answered) {
+            if (!BOOT_READY) state.answered = saved.answered;
+            else {
+              Object.keys(saved.answered).forEach(function (id) {
+                if (!state.answered[id]) state.answered[id] = saved.answered[id];
+              });
+            }
+          }
+          if (saved.threads) state.threads = saved.threads;
+          if (saved.recents) state.recents = saved.recents;
+          if (saved.railExpanded) state.railExpanded = saved.railExpanded;
+          if (saved.contextItemId) state.contextItemId = saved.contextItemId;
+        }
+        if (modeHint === "tutor") {
+          state.mode = "tutor";
+          if (itemId) state.contextItemId = itemId;
+          seedRecents();
+          render();
+          return;
+        }
+        state.mode = "practice";
+        if (viewHint === "done") { setView("done"); return; }
+        if (viewHint === "invalid") { setView("invalid"); return; }
+        if (viewHint === "today") { setView("today", { push: null, fromDeepLink: false }); return; }
+        if (viewHint === "result") {
+          var idxR = findItemIndex(itemId);
+          if (idxR < 0) { setView("invalid"); return; }
+          state.index = idxR;
+          var cached = state.answered[ITEMS[idxR].id];
+          setView("result", {
+            result: cached || { correct: true, comment: ITEMS[idxR].commentOk, explain: ITEMS[idxR].explain, submitted: "（示例作答）" },
+            fromDeepLink: !!push
+          });
+          return;
+        }
+        if (push || itemId) {
+          if (!itemId) { setView("invalid"); return; }
+          var idx = findItemIndex(itemId);
+          if (idx < 0 || push === "expired" || push === "bad") { setView("invalid"); return; }
+          setView("desk", { index: idx, resetDraft: true, fromDeepLink: true, push: push || "dingtalk" });
+          return;
+        }
+        if (viewHint === "desk") { setView("desk", { resetDraft: true }); return; }
+        if (saved && saved.view) {
+          state.mode = saved.mode || "practice";
+          state.index = typeof saved.index === "number" ? saved.index : 0;
+          state.fromDeepLink = !!saved.fromDeepLink;
+          state.push = saved.push || null;
+          state.lastResult = saved.lastResult || null;
+          setView(saved.view);
+          return;
+        }
+        setView("today");
+      }
+
+      document.querySelectorAll("[data-nav]").forEach(function (btn) {
+        btn.addEventListener("click", function () { setMode(btn.getAttribute("data-nav")); });
+      });
+      document.getElementById("btn-rail-toggle").addEventListener("click", function () {
+        state.railExpanded = !state.railExpanded;
+        persist();
+        syncChrome();
+      });
+      document.getElementById("composer-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        sendChat(composerInput.value);
+      });
+      composerInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendChat(composerInput.value);
+        }
+      });
+
+
+      function boot() {
+        var params = qs();
+        var saved = restore();
+        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        state.learner = learner;
+        fetch(apiUrl("/api/v1/practice/bootstrap?learner=" + encodeURIComponent(learner)), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          applyBootstrap(data);
+          var itemQ = params.get("item");
+          var pushQ = params.get("push");
+          var needFetch = !!(itemQ || pushQ) && findItemIndex(itemQ) < 0;
+          var cont = function () {
+            applyDeepLink(params, saved);
+            if (typeof bindPageChrome === "function") bindPageChrome();
+            if (typeof bindSwipe === "function") bindSwipe();
+            if (typeof bindGestures === "function") bindGestures();
+          };
+          if (needFetch) ensureItemFromServer(itemQ, pushQ).then(cont);
+          else cont();
+        }).catch(function (e) {
+          BOOT_ERROR = (e && e.message) || "network";
+          applyDeepLink(params, saved);
+          if (typeof bindPageChrome === "function") bindPageChrome();
+          if (typeof bindSwipe === "function") bindSwipe();
+          if (typeof bindGestures === "function") bindGestures();
+          if (!ITEMS.length) {
+            state.error = "无法连接练习 API（" + BOOT_ERROR + "）。请确认 practice_web 已启动。";
+            setView("today");
+          }
+        });
+      }
+      boot();
+
+      var mod = document.getElementById("module-switch");
+      if (mod) {
+        mod.addEventListener("change", function () {
+          if (mod.value === "brain") {
+            var lid = (typeof state !== "undefined" && state.learner) ? state.learner : "stu_1024";
+            location.href = "/capability-brain.html?learner=" + encodeURIComponent(lid);
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

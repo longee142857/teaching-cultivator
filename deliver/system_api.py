@@ -65,6 +65,14 @@ WHITELIST: dict[str, Callable[..., Any]] = {
     "grade_handwriting": T.grade_handwriting,
 }
 
+# 模块拆分后：能力参数 / EvidenceBundle（只读）
+try:
+    from modules.bridge import capability_whitelist
+
+    WHITELIST.update(capability_whitelist())
+except Exception:
+    pass
+
 # 只读工具：GET 放行；写工具仅 POST（避免 URL 泄露敏感参数）
 _READ_TOOLS: set[str] = {
     "list_recent_entries",
@@ -79,6 +87,11 @@ _READ_TOOLS: set[str] = {
     "get_exam_result",
     "show_solution",
     "build_report",
+    "get_learner_params",
+    "get_capability_evidence",
+    "practice_bootstrap",
+    "practice_get_item",
+    "practice_agent_manifest",
 }
 
 

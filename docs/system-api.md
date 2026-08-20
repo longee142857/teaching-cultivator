@@ -29,9 +29,11 @@ POST `/v1/call` 也可用 body `learner_id`。
 
 ### 读
 
-`list_recent_entries` · `find_record_entry` · `get_learner_snapshot` · `get_active_question` · `list_today_questions` · `list_knowledge_points` · `kb_query` · `list_exam_bank` · `get_exam_paper` · `get_exam_result` · `show_solution` · `build_report`
+`list_recent_entries` · `find_record_entry` · `get_learner_snapshot` · `get_active_question` · `list_today_questions` · `list_knowledge_points` · `kb_query` · `list_exam_bank` · `get_exam_paper` · `get_exam_result` · `show_solution` · `build_report` · `get_learner_params` · `get_capability_evidence`
 
-> `list_today_questions`：今日（Asia/Shanghai）可见推送题，带 `answered` 标记；排序固定推送时间升序（非未答优先）。
+> `list_today_questions`：今日（Asia/Shanghai）可见推送题，带 `answered` 标记；排序固定推送时间升序（非未答优先）。  
+> `get_learner_params`：统一能力快照（BKT L2 mastery + 域 η）；`get_capability_evidence`：EvidenceBundle（给 capability-prob）。  
+> 练习台结构化 API：`practice_bootstrap` / `practice_get_item` / `practice_submit` / `practice_agent_manifest`（详见 [`practice-api.md`](practice-api.md)；HTTP 亦可走 `:8768`）。
 
 ### 动作（写状态由系统闸）
 

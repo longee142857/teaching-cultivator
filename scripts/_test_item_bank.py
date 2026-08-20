@@ -10,6 +10,32 @@ from unittest.mock import patch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+_KL = os.path.join(ROOT, "knowledge-lib")
+if _KL not in sys.path:
+    sys.path.insert(0, _KL)
+
+
+def _ensure_cultivate_deps() -> None:
+    """本机/CI 可能缺 knowledge-system；为 import cultivate 提供最小 stub。"""
+    from types import ModuleType, SimpleNamespace
+
+    iv = ModuleType("intervention")
+
+    class InterventionDecision(SimpleNamespace):
+        pass
+
+    def decide_intervention(**kwargs):
+        return InterventionDecision(**kwargs)
+
+    iv.InterventionDecision = InterventionDecision
+    iv.decide_intervention = decide_intervention
+    sys.modules["intervention"] = iv
+
+    if "heartbeat_summary" not in sys.modules:
+        hb = ModuleType("heartbeat_summary")
+        hb.extract = lambda *a, **k: {}
+        sys.modules["heartbeat_summary"] = hb
+
 
 _fails = 0
 
@@ -305,6 +331,7 @@ def test_pregen_fallback_next_gap() -> None:
 
 def main() -> int:
     print("== item bank / CDP unit ==")
+    _ensure_cultivate_deps()
     test_schema_and_pick()
     test_cultivate_uses_bank_no_author()
     test_author_spec_inserts_ready()

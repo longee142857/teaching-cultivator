@@ -155,6 +155,18 @@ SYSTEM_API_HOST = os.environ.get("SYSTEM_API_HOST", "127.0.0.1")
 SYSTEM_API_PORT = int(os.environ.get("SYSTEM_API_PORT", "8770"))
 SYSTEM_API_TOKEN = os.environ.get("SYSTEM_API_TOKEN", "")
 
+# ── 练习台前端 + Practice API（teaching-shell；公网可经 nginx /practice）──
+PRACTICE_WEB_HOST = os.environ.get("PRACTICE_WEB_HOST", "127.0.0.1")
+PRACTICE_WEB_PORT = int(os.environ.get("PRACTICE_WEB_PORT", "8768"))
+PRACTICE_WEB_HTTP = os.environ.get("PRACTICE_WEB_HTTP", "1") == "1"
+PRACTICE_API_TOKEN = os.environ.get("PRACTICE_API_TOKEN", "")
+# llm | ref — CI/无密钥用 ref；生产默认 llm（失败自动 ref_fallback）
+PRACTICE_GRADE_MODE = os.environ.get("PRACTICE_GRADE_MODE", "llm")
+# 1=今日无推送时写入演示三槽（仅本地/联调）
+PRACTICE_ALLOW_DEMO_SEED = os.environ.get("PRACTICE_ALLOW_DEMO_SEED", "0") == "1"
+# DSH mentor-team base (e.g. http://127.0.0.1:61900); empty → tutor/chat stays 501
+TUTOR_BACKEND_URL = (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
+
 # ── Pi RPC 交互层（钉钉唤醒；扩展/session 在主机 Pi 家目录，不进本仓）──
 PI_RPC_ENABLED = os.environ.get("PI_RPC_ENABLED", "0") == "1"
 PI_RPC_HOST = os.environ.get("PI_RPC_HOST", "127.0.0.1")
