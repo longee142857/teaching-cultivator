@@ -18,7 +18,7 @@
     <option value="teaching">Teaching Shell · 练习台</option>
     <option value="brain" selected>Capability Brain · 事件预测</option>
   </select>
-  <span class="hint">LearnerParams ← VPS practice/params · 事件 P̂ 仍 mock</span>
+  <span class="hint">宽幅注记 · 多事件目录 · η/BKT ← VPS</span>
 </div>
 
 <div id="app">
@@ -40,9 +40,11 @@
     <div class="event-chip" data-od-id="event-chip">
       <div class="chip-row">
         <span class="chip-key mono">EVENT</span>
-        <span class="chip-id mono" id="eventId"></span>
+        <label class="sr-only" for="event-select">选择预测事件</label>
+        <select id="event-select" class="event-select mono" aria-label="选择预测事件"></select>
       </div>
       <span class="chip-title" id="eventTitle"></span>
+      <div class="chip-blurb mono" id="eventBlurb"></div>
       <div class="learner-chip mono" id="learnerChip"></div>
     </div>
 

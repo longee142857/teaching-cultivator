@@ -18,18 +18,17 @@
   }
 
   function mapEta(raw) {
-    const out = { calc: 0, linalg: 0, prob: 0 };
-    if (!raw) return out;
+    const out = {};
+    if (!raw) return { calc: 0, linalg: 0, prob: 0 };
     if (Array.isArray(raw)) {
       raw.forEach(function (e) {
         if (!e || e.domain == null) return;
-        const k = String(e.domain);
-        if (k in out) out[k] = Number(e.eta != null ? e.eta : 0);
+        out[String(e.domain)] = Number(e.eta != null ? e.eta : 0);
       });
       return out;
     }
     if (typeof raw === "object") {
-      Object.keys(out).forEach(function (k) {
+      Object.keys(raw).forEach(function (k) {
         const v = raw[k];
         if (typeof v === "number") out[k] = v;
         else if (v && typeof v === "object") out[k] = Number(v.eta != null ? v.eta : 0);
@@ -57,7 +56,7 @@
       });
     }
     rows.sort(function (a, b) { return a.p_mastery - b.p_mastery; });
-    if (rows.length) return rows.slice(0, 8);
+    if (rows.length) return rows.slice(0, 24);
     return (weak || []).map(function (w) {
       return { kp: w.kp, p_mastery: Number(w.p || 0), slot: "weak", domain: null };
     });
@@ -78,10 +77,11 @@
     window.MOCK.eta_hat = mapEta(p.eta || summary.eta || {});
     window.MOCK.eta_note = "域 η 来自 VPS teaching.db / ability_snapshots（相对序）";
     window.MOCK.bkt_l2 = mapBkt(p.mastery, summary.masteryWeak);
-    const liveAssumptions = Array.isArray(p.assumptions) ? p.assumptions.slice(0, 6) : [];
+    const liveAssumptions = Array.isArray(p.assumptions) ? p.assumptions.slice(0, 10) : [];
     window.MOCK.assumptions = [
       "η̂ / BKT 已接 VPS practice/params（learner=" + window.MOCK.learner_id + "）",
-      "事件 P̂ / 路径仍为本地 DAG mock，尚未跑 capability-prob 引擎",
+      "事件目录可切换；P̂ / 路径仍为本地 DAG mock",
+      "BKT 最多展示 24 个 KP（按掌握度升序）",
     ].concat(liveAssumptions);
     return window.MOCK;
   };

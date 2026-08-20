@@ -42,8 +42,24 @@ function dismissBoot(){
 }
 
 function renderEvent(){
-  $('eventId').textContent = MOCK.event_id;
+  const sel = $('event-select');
+  if (sel && !(sel.options && sel.options.length)) {
+    (window.EVENTS || []).forEach(function (ev) {
+      const opt = document.createElement('option');
+      opt.value = ev.id;
+      opt.textContent = ev.title;
+      sel.appendChild(opt);
+    });
+  }
+  if (sel) sel.value = MOCK.event_id;
   $('eventTitle').textContent = MOCK.event_title;
+  const blurb = $('eventBlurb');
+  if (blurb) {
+    const domains = (MOCK.event_domains || []).map(function (d) {
+      return (window.DOMAIN_LABEL && window.DOMAIN_LABEL[d]) || d;
+    }).join(' · ');
+    blurb.textContent = [MOCK.event_blurb || '', domains ? ('域: ' + domains) : ''].filter(Boolean).join(' · ');
+  }
   const learnerEl = $('learnerChip');
   if (learnerEl) {
     learnerEl.textContent = 'learner=' + (MOCK.learner_id || '—') +
@@ -52,15 +68,26 @@ function renderEvent(){
 }
 
 function renderEta(){
-  const rows = [
-    { key:'calc',   label:'微积分' },
-    { key:'linalg', label:'线代' },
-    { key:'prob',   label:'概率' }
-  ];
-  const maxAbs = Math.max(...rows.map(r => Math.abs(MOCK.eta_hat[r.key])), 0.001);
+  const labels = window.DOMAIN_LABEL || { calc:'微积分', linalg:'线代', prob:'概率', comm:'通信' };
+  const preferred = ['calc', 'linalg', 'prob', 'comm', 'signals'];
+  const keys = Object.keys(MOCK.eta_hat || {});
+  keys.sort(function (a, b) {
+    const ia = preferred.indexOf(a), ib = preferred.indexOf(b);
+    if (ia < 0 && ib < 0) return a.localeCompare(b);
+    if (ia < 0) return 1;
+    if (ib < 0) return -1;
+    return ia - ib;
+  });
+  const rows = keys.map(function (key) {
+    return { key: key, label: labels[key] || key };
+  });
+  if (!rows.length) {
+    rows.push({ key: 'calc', label: '微积分' }, { key: 'linalg', label: '线代' }, { key: 'prob', label: '概率' });
+  }
+  const maxAbs = Math.max(...rows.map(r => Math.abs(Number(MOCK.eta_hat[r.key]) || 0)), 0.001);
   const body = $('eta-body');
   body.innerHTML = rows.map(r => {
-    const v = MOCK.eta_hat[r.key];
+    const v = Number(MOCK.eta_hat[r.key]) || 0;
     const w = (Math.abs(v)/maxAbs*50).toFixed(2);
     const pos = v >= 0;
     return `<div class="eta-row" data-domain="${r.key}">
@@ -81,17 +108,17 @@ function renderEta(){
   if (bkt.length) {
     const bktHtml = bkt.map(row => {
       const pm = Math.round((row.p_mastery || 0) * 100);
-      const domainBit = row.domain ? (' · →' + row.domain) : ' · 不进本事件 DAG';
+      const domainBit = row.domain ? (' · →' + row.domain) : ' · 未映射域';
       return `<div class="bkt-row">
         <div class="bkt-head"><span class="bkt-kp">${row.kp}</span><span class="bkt-slot">${row.slot}</span></div>
         <div class="bkt-track"><i style="--w:${pm}%"></i></div>
-        <div class="bkt-meta">p_mastery ${row.p_mastery.toFixed(2)}${domainBit}</div>
+        <div class="bkt-meta">p_mastery ${Number(row.p_mastery).toFixed(2)}${domainBit}</div>
       </div>`;
     }).join('');
     body.insertAdjacentHTML('beforeend',
       `<div class="bkt-block">
-        <div class="bkt-title mono">TEACHING · BKT L2</div>
-        <div class="bkt-cap">练习选题用 · <b>≠</b> 事件 P̂</div>
+        <div class="bkt-title mono">TEACHING · BKT L2 · ${bkt.length} KP</div>
+        <div class="bkt-cap">练习选题用 · <b>≠</b> 事件 P̂ · 按掌握度升序</div>
         ${bktHtml}
       </div>`);
   }
@@ -351,6 +378,30 @@ function bindPresets(){
   });
 }
 
+function bindEventSelect(){
+  const sel = $('event-select');
+  if (!sel || sel.dataset.bound === '1') return;
+  sel.dataset.bound = '1';
+  sel.addEventListener('change', function () {
+    if (typeof window.applyEventToMock === 'function') window.applyEventToMock(sel.value);
+    try {
+      const q = new URLSearchParams(window.location.search || '');
+      q.set('event', sel.value);
+      window.history.replaceState({}, '', window.location.pathname + '?' + q.toString());
+    } catch (e) {}
+    renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
+    computeCardAnchors();
+  });
+}
+
+function preferEventFromUrl(){
+  try {
+    const q = new URLSearchParams(window.location.search || '');
+    const ev = (q.get('event') || '').trim();
+    if (ev && typeof window.applyEventToMock === 'function') window.applyEventToMock(ev);
+  } catch (e) {}
+}
+
 function bindPageChrome(){
   const prevBtn = $('page-prev');
   const nextBtn = $('page-next');
@@ -482,12 +533,14 @@ function frameLoop(){
 function init(){
   try {
     const start = function () {
+      preferEventFromUrl();
       renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
       buildLeaders();
       computeCardAnchors();
       bindPageChrome();
       bindSwipe();
       bindPresets();
+      bindEventSelect();
 
       brain = window.createBrainPlate($('brain-plate'), {
         onSelect: region => {
