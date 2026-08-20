@@ -43,15 +43,19 @@ function dismissBoot(){
 
 function renderEvent(){
   const sel = $('event-select');
-  if (sel && !(sel.options && sel.options.length)) {
+  if (sel) {
+    const cur = MOCK.event_id;
+    sel.innerHTML = '';
     (window.EVENTS || []).forEach(function (ev) {
       const opt = document.createElement('option');
       opt.value = ev.id;
-      opt.textContent = ev.title;
+      const tag = (ev.domains || []).indexOf('comm') >= 0 || (ev.domains || []).indexOf('signals') >= 0
+        ? '〔通〕' : ((ev.domains || []).indexOf('calc') >= 0 ? '〔数〕' : '');
+      opt.textContent = tag + (ev.title || ev.id);
       sel.appendChild(opt);
     });
+    if (cur) sel.value = cur;
   }
-  if (sel) sel.value = MOCK.event_id;
   $('eventTitle').textContent = MOCK.event_title;
   const blurb = $('eventBlurb');
   if (blurb) {

@@ -14,6 +14,11 @@ window.GATE_LABEL = {
   midterm_calc_gate: "微积分阶段测",
   review_catchup: "错题复盘清零",
   streak_7d: "7 日连做",
+  major_comm_gate: "专业课卷面",
+  information_theory_gate: "信息论基础",
+  channel_coding_gate: "信道编码",
+  random_process_gate: "随机过程",
+  sync_gate: "同步 / 载波恢复",
 };
 
 window.DOMAIN_LABEL = {
@@ -25,6 +30,72 @@ window.DOMAIN_LABEL = {
 };
 
 window.EVENTS = [
+  {
+    id: "grad_exam_major_pass",
+    title: "考研专业课通过",
+    blurb: "通信原理 / 信号系统主轴（专业课）",
+    domains: ["comm", "signals", "prob"],
+    p_hat: 0.318,
+    ci: [0.262, 0.381],
+    n_paths: 12,
+    top_paths: [
+      { passed_gates: ["nyquist_isi_gate", "modulation_gate", "major_comm_gate"], failed_gates: ["ofdm_unit_gate"], freq: 0.208 },
+      { passed_gates: ["information_theory_gate", "channel_coding_gate"], failed_gates: ["major_comm_gate"], freq: 0.176 },
+      { passed_gates: ["modulation_gate", "sync_gate"], failed_gates: ["nyquist_isi_gate"], freq: 0.141 },
+      { passed_gates: ["random_process_gate", "prob_mastery_gate"], failed_gates: ["major_comm_gate"], freq: 0.118 },
+      { passed_gates: ["major_comm_gate"], failed_gates: ["timed_mock_pass"], freq: 0.092 },
+    ],
+    bottlenecks: [
+      { node: "major_comm_gate", when_fail: 402, share: 0.356 },
+      { node: "ofdm_unit_gate", when_fail: 248, share: 0.219 },
+      { node: "channel_coding_gate", when_fail: 176, share: 0.156 },
+      { node: "nyquist_isi_gate", when_fail: 121, share: 0.107 },
+    ],
+  },
+  {
+    id: "comm_core_ready",
+    title: "通信核心模块就绪",
+    blurb: "调制 · 奈奎斯特/ISI · 同步联通",
+    domains: ["comm", "signals"],
+    p_hat: 0.401,
+    ci: [0.341, 0.464],
+    n_paths: 10,
+    top_paths: [
+      { passed_gates: ["modulation_gate", "nyquist_isi_gate", "sync_gate"], failed_gates: [], freq: 0.244 },
+      { passed_gates: ["modulation_gate", "nyquist_isi_gate"], failed_gates: ["sync_gate"], freq: 0.201 },
+      { passed_gates: ["nyquist_isi_gate"], failed_gates: ["modulation_gate"], freq: 0.155 },
+      { passed_gates: ["sync_gate"], failed_gates: ["nyquist_isi_gate"], freq: 0.118 },
+      { passed_gates: ["biweekly_comm_gate"], failed_gates: ["sync_gate"], freq: 0.086 },
+    ],
+    bottlenecks: [
+      { node: "sync_gate", when_fail: 286, share: 0.291 },
+      { node: "nyquist_isi_gate", when_fail: 214, share: 0.218 },
+      { node: "modulation_gate", when_fail: 168, share: 0.171 },
+      { node: "biweekly_comm_gate", when_fail: 99, share: 0.101 },
+    ],
+  },
+  {
+    id: "info_theory_pass",
+    title: "信息论单元通过",
+    blurb: "熵 / 互信息 / 信道容量",
+    domains: ["comm", "prob"],
+    p_hat: 0.356,
+    ci: [0.298, 0.419],
+    n_paths: 9,
+    top_paths: [
+      { passed_gates: ["information_theory_gate", "prob_mastery_gate"], failed_gates: [], freq: 0.262 },
+      { passed_gates: ["information_theory_gate"], failed_gates: ["channel_coding_gate"], freq: 0.198 },
+      { passed_gates: ["channel_coding_gate"], failed_gates: ["information_theory_gate"], freq: 0.154 },
+      { passed_gates: ["prob_mastery_gate"], failed_gates: ["information_theory_gate"], freq: 0.121 },
+      { passed_gates: ["random_process_gate"], failed_gates: ["information_theory_gate"], freq: 0.088 },
+    ],
+    bottlenecks: [
+      { node: "information_theory_gate", when_fail: 331, share: 0.338 },
+      { node: "channel_coding_gate", when_fail: 201, share: 0.205 },
+      { node: "prob_mastery_gate", when_fail: 148, share: 0.151 },
+      { node: "random_process_gate", when_fail: 96, share: 0.098 },
+    ],
+  },
   {
     id: "grad_exam_math_pass",
     title: "考研数学通过",

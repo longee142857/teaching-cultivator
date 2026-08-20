@@ -80,9 +80,42 @@
     const liveAssumptions = Array.isArray(p.assumptions) ? p.assumptions.slice(0, 10) : [];
     window.MOCK.assumptions = [
       "η̂ / BKT 已接 VPS practice/params（learner=" + window.MOCK.learner_id + "）",
-      "事件目录可切换；P̂ / 路径仍为本地 DAG mock",
+      "事件目录可切换；导师团可写入 /api/v1/capability/events",
       "BKT 最多展示 24 个 KP（按掌握度升序）",
     ].concat(liveAssumptions);
+
+    // Merge mentor-writable events (remote overrides same id)
+    try {
+      const er = await fetch("/api/v1/capability/events");
+      const ed = await er.json();
+      if (ed && ed.ok && Array.isArray(ed.events) && ed.events.length) {
+        window.mergeRemoteEvents(ed.events);
+      }
+    } catch (e) {}
     return window.MOCK;
+  };
+
+  window.mergeRemoteEvents = function mergeRemoteEvents(remoteList) {
+    const base = Array.isArray(window.EVENTS) ? window.EVENTS.slice() : [];
+    const byId = {};
+    base.forEach(function (e) { if (e && e.id) byId[e.id] = e; });
+    (remoteList || []).forEach(function (e) {
+      if (!e || !e.id) return;
+      byId[e.id] = Object.assign({}, byId[e.id] || {}, e);
+    });
+    // Prefer remote-first then remaining builtins: remotes first for visibility
+    const remoteIds = {};
+    (remoteList || []).forEach(function (e) { if (e && e.id) remoteIds[e.id] = true; });
+    const merged = [];
+    (remoteList || []).forEach(function (e) { if (e && e.id && byId[e.id]) merged.push(byId[e.id]); });
+    base.forEach(function (e) {
+      if (e && e.id && !remoteIds[e.id]) merged.push(byId[e.id]);
+    });
+    window.EVENTS = merged;
+    if (typeof window.applyEventToMock === "function") {
+      const cur = (window.MOCK && window.MOCK.event_id) || (merged[0] && merged[0].id);
+      window.applyEventToMock(cur);
+    }
+    return merged;
   };
 })();

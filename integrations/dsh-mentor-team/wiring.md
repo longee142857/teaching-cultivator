@@ -39,6 +39,11 @@ PRACTICE_API_BASE=http://127.0.0.1:8768 PORT=61900 \
   node integrations/dsh-mentor-team/standalone.mjs
 ```
 
+导师团可写 Capability Brain 事件（不批改、不出题）：
+
+- 对话：「写入事件：考研专业课通过 domains=comm,signals」
+- API：`GET/POST /api/v1/capability/events` → `data/capability_events.json`
+
 5. 钉钉：`FRONTEND_BASE_URL=https://practice.longee.icu`
 
 也可以 nginx：

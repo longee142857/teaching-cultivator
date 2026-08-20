@@ -126,6 +126,27 @@ def test_bootstrap_submit(tmp_db: str):
         tut = json.loads(r.read().decode())
         check(r.status == 501 and tut.get("error") == "tutor_agent_not_wired", "tutor stub")
 
+        conn.request(
+            "POST",
+            "/api/v1/capability/events",
+            body=json.dumps({
+                "title": "考研专业课通过",
+                "id": "grad_exam_major_pass",
+                "domains": ["comm", "signals", "prob"],
+                "p_hat": 0.32,
+                "author": "test",
+            }),
+            headers={"Content-Type": "application/json"},
+        )
+        r = conn.getresponse()
+        ev = json.loads(r.read().decode())
+        check(r.status == 200 and ev.get("ok") and ev.get("upserted", {}).get("id") == "grad_exam_major_pass", "event upsert")
+
+        conn.request("GET", "/api/v1/capability/events")
+        r = conn.getresponse()
+        el = json.loads(r.read().decode())
+        check(el.get("ok") and el.get("count", 0) >= 1, "event list")
+
         conn.request("GET", "/practice")
         r = conn.getresponse()
         html = r.read().decode("utf-8", errors="replace")

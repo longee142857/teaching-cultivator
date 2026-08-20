@@ -12,7 +12,7 @@ return {
     const ROSTER = [
       { id: 'auto', name: '团长', role: '自动分派', emoji: '🧭', tools: [] },
       { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_bootstrap', 'practice_get_item'] },
-      { id: 'assistant', name: '学习助教', role: '只读诊断 · 规划建议', emoji: '🧑‍🏫', tools: ['practice_bootstrap', 'get_learner_params'] },
+      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 事件写入', emoji: '🧑‍🏫', tools: ['practice_bootstrap', 'get_learner_params', 'capability_events'] },
     ]
 
     const PRACTICE_BASE = (typeof process !== 'undefined' && process.env && process.env.PRACTICE_API_BASE)
@@ -272,11 +272,20 @@ return {
 
       if (/批改|判分|对错|grade|判题|出题|命题|generate|变式|新题|再出一题/.test(msg)) {
         return {
-          reply: '这块由教学运行时负责：批改请到练习台提交作答（教学系统会批改并回写 BKT/η）；命题/变式由教学系统的定时或人工确认流程完成。我这边只做讲解、诊断与规划建议，不直接批改、不出题。',
-          citations: [{ n: 1, source: '边界约定', quote: 'DSH 讲师层只读；批改/命题硬闸在 teaching 运行时' }],
-          actions: ['讲这道题', '诊断薄弱点'],
+          reply: '这块由教学运行时负责：批改请到练习台提交作答（教学系统会批改并回写 BKT/η）；命题/变式由教学系统的定时或人工确认流程完成。我这边只做讲解、诊断与规划建议，不直接批改、不出题。\n\n例外：Capability Brain 的「事件」可由导师团写入（说「写入事件：考研专业课通过」）。',
+          citations: [{ n: 1, source: '边界约定', quote: '批改/命题硬闸在 teaching；事件目录可写' }],
+          actions: ['写入事件：考研专业课通过', '讲这道题', '诊断薄弱点'],
           delta: null,
         }
+      }
+
+      // 导师团写入 Brain 事件（允许写 capability catalog，不写题库）
+      if (/写入事件|新增事件|创建事件|登记事件|添加事件/.test(msg)) {
+        return { __eventWrite: true, message: msg }
+      }
+
+      if (/列出事件|有哪些事件|事件目录|事件列表/.test(msg)) {
+        return { __eventList: true, message: msg }
       }
 
       if (mentorId === 'assistant') {
@@ -373,8 +382,58 @@ return {
 
     function routeMentor(msg) {
       const m = String(msg || '')
+      if (/写入事件|新增事件|创建事件|登记事件|添加事件|列出事件|事件目录|事件列表/.test(m)) return 'assistant'
       if (/薄弱|诊断|能力|η|mastery|学情|掌握|计划|今日|复习|周报|安排|节奏|下一题|规划/.test(m)) return 'assistant'
       return 'lecturer'
+    }
+
+    function parseEventWrite(message) {
+      const msg = String(message || '')
+      let title = ''
+      const m1 = msg.match(/(?:写入|新增|创建|登记|添加)事件[：:\s]*([^\n]+)/)
+      if (m1) title = m1[1].trim()
+      // strip trailing kv pairs from title line
+      title = title.replace(/\b(id|domains|domain|p_hat|p)\s*=\s*\S+/gi, '').trim()
+      title = title.replace(/[，,]\s*$/, '').trim()
+      const idM = msg.match(/\bid\s*=\s*([A-Za-z0-9_\-]+)/i)
+      const domM = msg.match(/\bdomains?\s*=\s*([A-Za-z0-9_,\-]+)/i)
+      const pM = msg.match(/\bp_hat\s*=\s*([0-9.]+)/i) || msg.match(/\bp\s*=\s*([0-9.]+)/i)
+      let domains = []
+      if (domM) domains = domM[1].split(/[,，]/).map(function (s) { return s.trim() }).filter(Boolean)
+      if (!domains.length && /专业课|通信|OFDM|奈奎斯特|ISI|调制|信息论|信道/.test(msg + title)) {
+        domains = ['comm', 'signals']
+      }
+      if (!domains.length && /数学|微积分|线代/.test(msg + title)) domains = ['calc', 'linalg', 'prob']
+      if (!domains.length) domains = ['comm']
+      if (!title) title = /专业课/.test(msg) ? '考研专业课通过' : '导师写入事件'
+      const out = { title: title, domains: domains, author: 'mentor' }
+      if (idM) out.id = idM[1]
+      if (pM) out.p_hat = Number(pM[1])
+      if (/专业课/.test(title) && !idM) out.id = 'grad_exam_major_pass'
+      return out
+    }
+
+    async function listCapabilityEvents() {
+      const data = await fetchJson(PRACTICE_BASE + '/api/v1/capability/events', {})
+      if (data && data.ok && Array.isArray(data.events)) return data.events
+      return []
+    }
+
+    async function upsertCapabilityEvent(payload, mentorId) {
+      if (!web) return { ok: false, error: 'web_unavailable' }
+      try {
+        const body = Object.assign({}, payload || {}, { mentor: mentorId || 'assistant' })
+        const r = await web.fetch({
+          url: PRACTICE_BASE + '/api/v1/capability/events',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+        if (!(r && r.body && typeof r.body.content === 'string')) return { ok: false, error: 'empty_response' }
+        try { return JSON.parse(r.body.content) } catch (e) { return { ok: false, error: 'bad_json' } }
+      } catch (e) {
+        return { ok: false, error: String(e && e.message ? e.message : e) }
+      }
     }
 
     async function runChat(args) {
@@ -401,6 +460,75 @@ return {
         }
       }
       const out = compose(mentorId, msg, g, { item: itemId, forcedItem: forcedItem })
+      if (out && out.__eventList) {
+        const listed = await listCapabilityEvents()
+        const lines = ['Capability Brain 事件目录（内置 + 导师写入）：']
+        if (!listed.length) lines.push('（暂无远程写入；页面仍有内置事件）')
+        listed.slice(0, 20).forEach(function (e, i) {
+          lines.push((i + 1) + '. ' + (e.title || e.id) + '  [' + (e.id || '') + ']  域=' + ((e.domains || []).join(',') || '—') + (e.source === 'mentor' ? ' · mentor' : ''))
+        })
+        lines.push('')
+        lines.push('写入示例：「写入事件：考研专业课通过 domains=comm,signals」')
+        return {
+          ok: true,
+          mentor: { id: mentor.id, name: mentor.name, role: mentor.role, emoji: mentor.emoji },
+          routedFrom: routedFrom,
+          reply: lines.join('\n'),
+          citations: [{ n: 1, source: 'GET /api/v1/capability/events', quote: 'count=' + listed.length }],
+          actions: ['写入事件：考研专业课通过', '诊断薄弱点'],
+          streaming: false,
+          detached: !!g.detached,
+          groundKind: g.kind,
+          memoryCard: await loadCard(learnerId),
+        }
+      }
+      if (out && out.__eventWrite) {
+        const parsed = parseEventWrite(msg)
+        const saved = await upsertCapabilityEvent(parsed, mentorId)
+        if (!(saved && saved.ok)) {
+          return {
+            ok: true,
+            mentor: { id: mentor.id, name: mentor.name, role: mentor.role, emoji: mentor.emoji },
+            routedFrom: routedFrom,
+            reply: '事件写入失败：' + ((saved && saved.error) || 'unknown') + '\n可再说：写入事件：考研专业课通过 domains=comm,signals p_hat=0.32',
+            citations: [],
+            actions: ['列出事件', '写入事件：通信核心模块就绪'],
+            streaming: false,
+            detached: !!g.detached,
+            groundKind: g.kind,
+            memoryCard: await loadCard(learnerId),
+          }
+        }
+        const ev = saved.upserted || {}
+        const reply = [
+          (saved.replaced ? '已更新' : '已写入') + ' Brain 事件：',
+          '· 标题：' + (ev.title || ''),
+          '· id：' + (ev.id || ''),
+          '· 域：' + ((ev.domains || []).join(' · ') || '—'),
+          '· P̂(mock)：' + ev.p_hat,
+          '',
+          '打开：/capability-brain.html?event=' + encodeURIComponent(ev.id || ''),
+          '说明：可写事件目录；仍不能批改/出题。',
+        ].join('\n')
+        const card = await loadCard(learnerId)
+        applyDelta(card, { note: '写入事件 ' + (ev.title || ev.id) })
+        card.updatedAt = Date.now()
+        await saveCard(learnerId, card)
+        pushThread(learnerId, threadId, 'user', msg)
+        pushThread(learnerId, threadId, mentorId, reply)
+        return {
+          ok: true,
+          mentor: { id: mentor.id, name: mentor.name, role: mentor.role, emoji: mentor.emoji },
+          routedFrom: routedFrom,
+          reply: reply,
+          citations: [{ n: 1, source: 'POST /api/v1/capability/events', quote: ev.id || '' }],
+          actions: ['列出事件', '讲这道题'],
+          streaming: false,
+          detached: !!g.detached,
+          groundKind: g.kind,
+          memoryCard: card,
+        }
+      }
       const card = await loadCard(learnerId)
       applyDelta(card, out.delta)
       if (out.delta) { card.updatedAt = Date.now(); await saveCard(learnerId, card) }

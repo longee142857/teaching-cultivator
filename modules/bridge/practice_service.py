@@ -81,6 +81,16 @@ def agent_manifest() -> dict[str, Any]:
                 },
             }
         },
+        "capability": {
+            "events": {
+                "list": {"method": "GET", "path": "/api/v1/capability/events"},
+                "upsert": {
+                    "method": "POST",
+                    "path": "/api/v1/capability/events",
+                    "note": "mentor-writable event catalog for Brain",
+                },
+            }
+        },
         "system_api_tools": [
             "practice_bootstrap",
             "practice_get_item",
@@ -96,7 +106,7 @@ def agent_manifest() -> dict[str, Any]:
             "IM notify only; answers go through practice submit",
             "item public id is i{n}; push is integer push id",
             "tutor chat: set TUTOR_BACKEND_URL → proxy to integrations/dsh-mentor-team; else 501",
-            "DSH mentor-team is read-only (no grade / no generate)",
+            "DSH mentor-team is read-only for grade/generate; may write capability events",
         ],
     }
 

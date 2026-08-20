@@ -288,6 +288,12 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(200 if out.get("ok") else 400, out)
             return
 
+        if path in ("/api/v1/capability/events", "/api/v1/capability/event"):
+            from modules.bridge import capability_events as ce
+
+            self._json(200, ce.list_events())
+            return
+
         self._json(404, {"ok": False, "error": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
@@ -338,6 +344,20 @@ class PracticeHandler(BaseHTTPRequestHandler):
                     },
                 },
             )
+            return
+
+        if path in ("/api/v1/capability/events", "/api/v1/capability/event"):
+            from modules.bridge import capability_events as ce
+
+            action = str(body.get("action") or "upsert").strip().lower()
+            if action == "delete":
+                out = ce.delete_event(str(body.get("id") or body.get("event_id") or ""))
+                self._json(200 if out.get("ok") else 404, out)
+                return
+            author = str(body.get("author") or body.get("mentor") or self._learner(qs, body) or "mentor")
+            payload = body.get("event") if isinstance(body.get("event"), dict) else body
+            out = ce.upsert_event(payload, author=author)
+            self._json(200 if out.get("ok") else 400, out)
             return
 
         self._json(404, {"ok": False, "error": "not found"})
