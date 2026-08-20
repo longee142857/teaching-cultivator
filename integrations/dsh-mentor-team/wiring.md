@@ -32,7 +32,13 @@ TUTOR_BACKEND_URL=http://127.0.0.1:61900
 1. Cloudflare DNS：`practice.longee.icu` A → VPS IP（橙云可开）
 2. nginx：`scripts/practice_web.nginx.conf.example`
 3. 进程：`PRACTICE_ALLOW_DEMO_SEED=0` + `TUTOR_BACKEND_URL=http://127.0.0.1:61900` 起 `python -m deliver.practice_web`
-4. DSH：加载 `integrations/dsh-mentor-team/host.js`（本机副本亦可 `D:\DSH\mentor-team`），HTTP 监听与 `TUTOR_BACKEND_URL` 一致
+4. DSH：桌面 GUI 用 `host.js`+`client.js`；**VPS 无 GUI 时**用同目录 `standalone.mjs`：
+
+```bash
+PRACTICE_API_BASE=http://127.0.0.1:8768 PORT=61900 \
+  node integrations/dsh-mentor-team/standalone.mjs
+```
+
 5. 钉钉：`FRONTEND_BASE_URL=https://practice.longee.icu`
 
 也可以 nginx：
