@@ -164,6 +164,8 @@ PRACTICE_API_TOKEN = os.environ.get("PRACTICE_API_TOKEN", "")
 PRACTICE_GRADE_MODE = os.environ.get("PRACTICE_GRADE_MODE", "llm")
 # 1=今日无推送时写入演示三槽（仅本地/联调）
 PRACTICE_ALLOW_DEMO_SEED = os.environ.get("PRACTICE_ALLOW_DEMO_SEED", "0") == "1"
+# DSH mentor-team base (e.g. http://127.0.0.1:61900); empty → tutor/chat stays 501
+TUTOR_BACKEND_URL = (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
 
 # ── Pi RPC 交互层（钉钉唤醒；扩展/session 在主机 Pi 家目录，不进本仓）──
 PI_RPC_ENABLED = os.environ.get("PI_RPC_ENABLED", "0") == "1"

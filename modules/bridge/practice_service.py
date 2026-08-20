@@ -33,15 +33,24 @@ def allow_demo_seed() -> bool:
 
 
 def tutor_status() -> dict[str, Any]:
+    backend = (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
+    if backend:
+        return {
+            "enabled": True,
+            "reason": "proxied",
+            "backend": backend,
+            "hint": "POST /api/v1/tutor/chat proxies to TUTOR_BACKEND_URL (DSH mentor-team)",
+        }
     return {
         "enabled": False,
         "reason": "tutor_agent_not_wired",
-        "hint": "POST /api/v1/tutor/chat returns 501 until DSH/agent is attached",
+        "hint": "Set TUTOR_BACKEND_URL to attach DSH mentor-team; else 501",
     }
 
 
 def agent_manifest() -> dict[str, Any]:
-    """Stable surface for later agent / DSH wiring."""
+    """Stable surface for practice desk + optional DSH tutor proxy."""
+    wired = bool((os.environ.get("TUTOR_BACKEND_URL") or "").strip())
     return {
         "service": "teaching-practice",
         "version": 1,
@@ -55,13 +64,15 @@ def agent_manifest() -> dict[str, Any]:
             "chat": {
                 "method": "POST",
                 "path": "/api/v1/tutor/chat",
-                "status": "stub_501",
+                "status": "proxied" if wired else "stub_501",
+                "backend": "TUTOR_BACKEND_URL" if wired else None,
                 "request": {
                     "learner": "str",
                     "item": "str|null",
                     "push": "str|null",
                     "message": "str",
                     "threadId": "str|null",
+                    "mentor": "str?",
                 },
                 "response": {
                     "reply": "str",
@@ -84,7 +95,8 @@ def agent_manifest() -> dict[str, Any]:
         "notes": [
             "IM notify only; answers go through practice submit",
             "item public id is i{n}; push is integer push id",
-            "tutor agent deliberately not implemented this round",
+            "tutor chat: set TUTOR_BACKEND_URL → proxy to integrations/dsh-mentor-team; else 501",
+            "DSH mentor-team is read-only (no grade / no generate)",
         ],
     }
 

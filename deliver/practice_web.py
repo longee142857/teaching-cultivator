@@ -10,10 +10,13 @@ Routes (nginx may reverse-proxy /practice/ -> :8768):
   GET  /api/v1/practice/item?learner=&item=&push=
   GET  /api/v1/practice/params?learner=
   POST /api/v1/practice/submit
-  POST /api/v1/tutor/chat          -> 501 stub (agent later)
+  POST /api/v1/tutor/chat          -> proxy TUTOR_BACKEND_URL or 501 stub
 
 Auth: PRACTICE_API_TOKEN via Bearer / X-Practice-Token / ?token=
       (empty token → localhost-only trust, same as ops/exam)
+
+Tutor: set TUTOR_BACKEND_URL (e.g. http://127.0.0.1:61900) to proxy
+      POST /api/v1/tutor/chat to DSH mentor-team host; unset → 501.
 """
 from __future__ import annotations
 
@@ -21,6 +24,8 @@ import json
 import logging
 import os
 import threading
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
@@ -28,6 +33,66 @@ from urllib.parse import parse_qs, unquote, urlparse
 logger = logging.getLogger(__name__)
 
 _server: ThreadingHTTPServer | None = None
+
+
+def _tutor_backend_url() -> str:
+    try:
+        from config import TUTOR_BACKEND_URL
+
+        return (TUTOR_BACKEND_URL or "").strip().rstrip("/")
+    except Exception:
+        return (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
+
+
+def _proxy_tutor_chat(payload: dict[str, Any], learner: str) -> tuple[int, dict[str, Any]]:
+    """Forward tutor chat to DSH mentor-team. Returns (status, body)."""
+    base = _tutor_backend_url()
+    if not base:
+        return 0, {}
+    body = dict(payload or {})
+    if learner and not (body.get("learner") or body.get("learner_id")):
+        body["learner"] = learner
+    data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+    headers = {
+        "Content-Type": "application/json; charset=utf-8",
+        "Accept": "application/json",
+    }
+    if learner:
+        headers["X-Learner-Id"] = learner
+    req = urllib.request.Request(
+        f"{base}/api/v1/tutor/chat",
+        data=data,
+        headers=headers,
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            raw = resp.read().decode("utf-8", errors="replace")
+            try:
+                out = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                out = {"ok": False, "error": "tutor_backend_bad_json", "raw": raw[:500]}
+            if not isinstance(out, dict):
+                out = {"ok": False, "error": "tutor_backend_bad_shape", "raw": out}
+            return int(getattr(resp, "status", 200) or 200), out
+    except urllib.error.HTTPError as e:
+        raw = e.read().decode("utf-8", errors="replace") if e.fp else ""
+        try:
+            out = json.loads(raw) if raw else {"ok": False, "error": "tutor_backend_http_error"}
+        except json.JSONDecodeError:
+            out = {"ok": False, "error": "tutor_backend_http_error", "detail": raw[:500]}
+        if not isinstance(out, dict):
+            out = {"ok": False, "error": "tutor_backend_http_error"}
+        out.setdefault("ok", False)
+        return int(e.code or 502), out
+    except Exception as e:
+        logger.warning("tutor backend unreachable: %s", e)
+        return 502, {
+            "ok": False,
+            "error": "tutor_backend_unreachable",
+            "detail": str(e)[:300],
+            "backend": base,
+        }
 
 
 def _cfg() -> dict[str, Any]:
@@ -47,8 +112,7 @@ def _cfg() -> dict[str, Any]:
         }
     except Exception:
         return {
-            "host": os.environ.get("PRACTICE_WEB_HOST", "127.0.0.1"),
-            "port": int(os.environ.get("PRACTICE_WEB_PORT", "8768")),
+            "host": os.environ.get("PRACTICE_WEB_HOST", "127.0.0.1"),            "port": int(os.environ.get("PRACTICE_WEB_PORT", "8768")),
             "token": (os.environ.get("PRACTICE_API_TOKEN") or "").strip(),
             "enabled": os.environ.get("PRACTICE_WEB_HTTP", "1") == "1",
         }
@@ -242,14 +306,20 @@ class PracticeHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/v1/tutor/chat":
+            lid = self._learner(qs, body)
+            if _tutor_backend_url():
+                code, out = _proxy_tutor_chat(body, lid)
+                self._json(code or 502, out)
+                return
             self._json(
                 501,
                 {
                     "ok": False,
                     "error": "tutor_agent_not_wired",
+                    "hint": "Set TUTOR_BACKEND_URL to DSH mentor-team (see integrations/dsh-mentor-team/wiring.md)",
                     "contract": ps.agent_manifest()["tutor"]["chat"],
                     "echo": {
-                        "learner": self._learner(qs, body),
+                        "learner": lid,
                         "item": body.get("item"),
                         "push": body.get("push"),
                         "message": body.get("message") or body.get("text"),
