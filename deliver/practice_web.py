@@ -227,17 +227,29 @@ class PracticeHandler(BaseHTTPRequestHandler):
                 self._json(500, {"ok": False, "error": f"missing teaching-shell.html: {e}"})
             return
 
-        # static katex etc under /static/
-        if path.startswith("/static/"):
-            rel = path[len("/static/") :]
-            rel = rel.replace("..", "")
-            fp = os.path.join(static_dir(), rel)
+        if path in ("/capability-brain.html", "/capability-brain"):
+            fp = os.path.join(static_dir(), "capability-brain.html")
+            if os.path.isfile(fp):
+                with open(fp, "rb") as f:
+                    self._bytes(200, f.read(), "text/html; charset=utf-8")
+                return
+            self._json(404, {"ok": False, "error": "capability-brain.html missing"})
+            return
+
+        # /assets/* (brain) and /static/* (katex etc.)
+        if path.startswith("/assets/") or path.startswith("/static/"):
+            prefix = "/assets/" if path.startswith("/assets/") else "/static/"
+            rel = path[len(prefix) :].replace("..", "")
+            if path.startswith("/assets/"):
+                fp = os.path.join(static_dir(), "assets", rel)
+            else:
+                fp = os.path.join(static_dir(), rel)
             if os.path.isfile(fp):
                 ctype = "application/octet-stream"
                 if fp.endswith(".js"):
-                    ctype = "application/javascript"
+                    ctype = "application/javascript; charset=utf-8"
                 elif fp.endswith(".css"):
-                    ctype = "text/css"
+                    ctype = "text/css; charset=utf-8"
                 elif fp.endswith(".html"):
                     ctype = "text/html; charset=utf-8"
                 with open(fp, "rb") as f:
