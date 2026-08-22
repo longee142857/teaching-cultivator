@@ -243,6 +243,7 @@ def _call_grade_llm(
         return {
             "verdict": parsed["verdict"],
             "confidence": float(parsed.get("confidence", 0.6)),
+            "explanation": str(parsed.get("explanation") or "").strip(),
             "raw": raw,
             "from_fallback": False,
             "cdp_results": parsed.get("cdp_results") or [],
@@ -544,7 +545,8 @@ def grade_answer(
 
     return GradeResult(
         is_correct=is_correct,
-        feedback=raw,
+        # 结构化 verdict 时 raw 是 JSON 串，优先给人读的 explanation
+        feedback=grade_json.get("explanation") or raw,
         kp_name=extracted_kp,
         subject=subj,
         p_mastery_before=mastery_before,

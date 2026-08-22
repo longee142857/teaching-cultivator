@@ -11,8 +11,9 @@
   --ink-faint:rgba(43,33,24,.36);
   --line:rgba(43,33,24,.15);
   --line-strong:rgba(43,33,24,.36);
-  --red:#8B3A3A;
-  --red-soft:rgba(139,58,58,.13);
+  --red:#A0432F;
+  --red-soft:rgba(160,67,47,.13);
+  --rule-wave:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='6'><path d='M0 3.2 Q 7.5 1.4 15 3 T 30 3.1 T 45 2.9 T 60 3.2 T 75 3 T 90 3.1 T 105 2.9 T 120 3' fill='none' stroke='rgba(43,33,24,.32)' stroke-width='1.1' stroke-linecap='round'/></svg>");
   --cyan:#3A6B7C;
   --cyan-soft:rgba(58,107,124,.13);
   --shadow:0 14px 34px rgba(43,33,24,.11), 0 2px 6px rgba(43,33,24,.06);
@@ -41,10 +42,17 @@ body::before{
 
 /* ---------------- 顶栏 ---------------- */
 #topbar{
+  position:relative;
   display:flex; align-items:center; gap:18px;
   height:60px; padding:0 22px; flex:0 0 auto;
-  border-bottom:1px solid var(--line-strong);
+  border-bottom:1px solid transparent;
   background:linear-gradient(180deg, rgba(244,237,224,.92), rgba(236,227,210,.82));
+}
+#topbar::after{
+  content:''; position:absolute; left:0; right:0; bottom:-3px; height:6px;
+  background-image:var(--rule-wave); background-repeat:repeat-x;
+  background-position:left center; background-size:auto 6px;
+  pointer-events:none; z-index:1;
 }
 .brand{display:flex; align-items:center; gap:14px; flex:0 0 auto; padding-right:6px;}
 .brand-mark{color:var(--ink); display:grid; place-items:center; flex:0 0 auto;}
@@ -271,8 +279,8 @@ body::before{
   transition:background .15s, border-color .15s, transform .15s;
 }
 .page-dot.is-on{
-  background:var(--red);
-  border-color:var(--red);
+  background:var(--ink);
+  border-color:var(--ink);
   transform:scale(1.15);
 }
 .page-dot:hover{ border-color:var(--ink); }
@@ -354,8 +362,14 @@ body::before{
 #footbar{
   position:relative; z-index:3; flex:0 0 auto;
   display:flex; align-items:center; justify-content:space-between;
-  min-height:44px; padding:0 22px; border-top:1px solid var(--line-strong);
+  min-height:44px; padding:0 22px; border-top:1px solid transparent;
   background:linear-gradient(180deg, rgba(236,227,210,.86), rgba(231,221,203,.92));
+}
+#footbar::before{
+  content:''; position:absolute; left:0; right:0; top:-3px; height:6px;
+  background-image:var(--rule-wave); background-repeat:repeat-x;
+  background-position:left center; background-size:auto 6px;
+  pointer-events:none;
 }
 .assume-btn{
   appearance:none; border:none; background:transparent; cursor:pointer;
@@ -408,7 +422,7 @@ body::before{
   stroke-linecap:round;
 }
 .sv-region{
-  fill:rgba(139,58,58,.045);
+  fill:rgba(160,67,47,.045);
   stroke:none;
   cursor:pointer;
   pointer-events:none;
@@ -416,7 +430,7 @@ body::before{
 }
 .brain-view.is-on .sv-region{ pointer-events:all; }
 .sv-region:hover,
-.sv-region.is-active{ fill:rgba(139,58,58,.18); }
+.sv-region.is-active{ fill:rgba(160,67,47,.18); }
 .sv-region:focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
 .sv-sulcus{
   fill:none;
@@ -580,3 +594,7 @@ body::before{
   background-size: 4px 4px, 4px 4px; background-repeat:no-repeat;
 }
 .studio-bar .hint{ color:var(--ink-soft); font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; }
+
+/* ---- 嵌入 teaching-shell（iframe 模式） ---- */
+html.is-embedded .studio-bar{ display:none; }
+html.is-embedded, html.is-embedded body{ overflow:hidden; }

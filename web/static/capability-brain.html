@@ -144,6 +144,8 @@
 
 <script>
 (function () {
+  var EMBEDDED = new URLSearchParams(location.search).get('embed') === '1';
+  if (EMBEDDED) document.documentElement.classList.add('is-embedded');
   window.__capBootTimer = setTimeout(function () {
     var boot = document.getElementById('boot');
     if (boot && boot.isConnected) {
@@ -154,7 +156,12 @@
   var sel = document.getElementById('module-switch');
   if (sel) {
     sel.addEventListener('change', function () {
-      if (sel.value === 'teaching') location.href = '/practice';
+      if (sel.value !== 'teaching') return;
+      if (EMBEDDED && window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'cap-embed-exit' }, '*');
+      } else {
+        location.href = '/practice';
+      }
     });
   }
 })();
