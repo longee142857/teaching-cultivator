@@ -2,6 +2,15 @@
 
 Public guidance for humans and coding agents working in this repository.
 
+## 项目定位：维护期，只优化不叠仓（2026-08-22 起）
+
+本项目进入**维护期**：只做优化、修 bug、简化，**不再叠加新的功能层**。
+
+- 项目本体并不庞大；维护困难来自预想过多——旁路子系统、集成层、为假想需求预留的抽象越叠越多。
+- 新想法先过一道闸：**现有模块内能否解决？** 能 → 改现有代码；不能 → 默认不做，除非用户明确拍板且能说清删掉什么旧东西来换。
+- 禁止：新增集成目录（integrations/*）、新增旁路服务/端口、为"以后可能用到"留接口和配置项。
+- 鼓励：删死代码、合并重复路径、砍掉没人用的开关。
+
 ## Role of this repo
 
 Runtime for an adaptive exam-cultivation bot: schedule → decide → evidence-gated author → deliver → grade → mastery write-back. DingTalk is the primary IM channel.
