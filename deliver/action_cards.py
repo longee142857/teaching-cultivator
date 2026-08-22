@@ -111,9 +111,15 @@ def build_session_action_card(
     }
 
 
-def question_card_text(subject: str = "") -> str:
+def question_card_text(subject: str = "", *, with_deep_link: bool = False) -> str:
     subj = {"math": "数学", "comm": "通信", "review": "复盘"}.get(subject, "")
     head = f"**{subj}题已推送**" if subj else "**题目已就绪**"
+    if with_deep_link:
+        return (
+            f"{head}\n\n"
+            "请点下方按钮打开练习台作答（本题不在聊天里作答）。\n"
+            "讲解与批改结果也在前端查看。"
+        )
     return (
         f"{head}\n\n"
         "做完直接打字交答案；也可以点下面按钮：\n"
@@ -121,6 +127,14 @@ def question_card_text(subject: str = "") -> str:
         "- **换一道** → 同类再来一题\n"
         "- **太难了** → 下调难度"
     )
+
+
+def practice_open_buttons(deep_link: str) -> list[tuple[str, str]]:
+    """练习台深链按钮（https，非 dtmd）。"""
+    url = (deep_link or "").strip()
+    if not url.startswith("http"):
+        raise ValueError("practice deep_link must be http(s)")
+    return [("打开练习台", url)]
 
 
 def weekly_card_title() -> str:

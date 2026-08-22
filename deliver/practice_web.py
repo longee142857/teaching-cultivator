@@ -26,6 +26,7 @@ import os
 import threading
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
@@ -42,6 +43,53 @@ def _tutor_backend_url() -> str:
         return (TUTOR_BACKEND_URL or "").strip().rstrip("/")
     except Exception:
         return (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
+
+
+def _exam_papers() -> dict[str, Any]:
+    """List available biweekly exam papers with their token URLs."""
+    try:
+        from config import DATA_DIR
+
+        bank = os.path.join(DATA_DIR, "exam_bank")
+    except Exception:
+        bank = os.path.join(os.environ.get("DATA_DIR", "data"), "exam_bank")
+
+    now_dt = datetime.now(timezone.utc)
+    tokens_path = os.path.join(bank, "tokens.json")
+    index_path = os.path.join(bank, "index.json")
+    if not os.path.isfile(tokens_path):
+        return {"ok": True, "papers": []}
+    try:
+        tokens = json.loads(open(tokens_path, encoding="utf-8").read() or "{}")
+    except Exception:
+        tokens = {}
+    try:
+        index = json.loads(open(index_path, encoding="utf-8").read() or "{}")
+    except Exception:
+        index = {}
+    pid_meta = {p.get("id"): p for p in (index.get("papers") or [])}
+    out = []
+    for token, info in tokens.items():
+        if not isinstance(info, dict):
+            continue
+        exp = info.get("exp") or ""
+        try:
+            exp_dt = datetime.fromisoformat(exp.replace("Z", "+00:00"))
+            if exp_dt < now_dt:
+                continue
+        except Exception:
+            pass
+        pid = info.get("paper_id") or ""
+        meta = pid_meta.get(pid) or {}
+        out.append({
+            "id": pid,
+            "title": meta.get("title") or pid,
+            "subject": meta.get("subject") or "",
+            "n_questions": meta.get("n_questions") or 0,
+            "url": "/e/" + token,
+        })
+    out.sort(key=lambda x: x.get("id") or "", reverse=True)
+    return {"ok": True, "papers": out}
 
 
 def _proxy_tutor_chat(payload: dict[str, Any], learner: str) -> tuple[int, dict[str, Any]]:
@@ -132,6 +180,48 @@ class PracticeHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args) -> None:
         if os.environ.get("PRACTICE_WEB_VERBOSE") == "1":
             super().log_message(fmt, *args)
+
+    def _proxy_tutor_chat_sse(self, payload: dict[str, Any], learner: str) -> None:
+        """Stream SSE from the DSH mentor-team backend to the client (true streaming)."""
+        base = _tutor_backend_url()
+        if not base:
+            self._json(501, {"ok": False, "error": "tutor_agent_not_wired", "hint": "Set TUTOR_BACKEND_URL"})
+            return
+        body = dict(payload or {})
+        body["stream"] = True
+        if learner and not (body.get("learner") or body.get("learner_id")):
+            body["learner"] = learner
+        data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+        headers = {"Content-Type": "application/json; charset=utf-8", "Accept": "text/event-stream"}
+        if learner:
+            headers["X-Learner-Id"] = learner
+        req = urllib.request.Request(
+            f"{base}/api/v1/tutor/chat",
+            data=data,
+            headers=headers,
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+                self.send_header("Cache-Control", "no-cache")
+                self._cors()
+                self.end_headers()
+                while True:
+                    chunk = resp.read(2048)
+                    if not chunk:
+                        break
+                    try:
+                        self.wfile.write(chunk)
+                        self.wfile.flush()
+                    except (BrokenPipeError, OSError):
+                        break
+        except urllib.error.HTTPError as e:
+            self._json(502, {"ok": False, "error": "tutor_backend_http_error", "status": e.code})
+        except Exception as e:
+            logger.warning("tutor SSE backend error: %s", e)
+            self._json(502, {"ok": False, "error": "tutor_backend_unreachable", "detail": str(e)[:200]})
 
     def _cors(self) -> None:
         origin = os.environ.get("PRACTICE_CORS_ORIGIN", "").strip()
@@ -294,6 +384,10 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(200, ce.list_events())
             return
 
+        if path == "/api/v1/exam/papers":
+            self._json(200, _exam_papers())
+            return
+
         self._json(404, {"ok": False, "error": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
@@ -326,6 +420,9 @@ class PracticeHandler(BaseHTTPRequestHandler):
         if path == "/api/v1/tutor/chat":
             lid = self._learner(qs, body)
             if _tutor_backend_url():
+                if (self.headers.get("Accept") or "").find("text/event-stream") >= 0:
+                    self._proxy_tutor_chat_sse(body, lid)
+                    return
                 code, out = _proxy_tutor_chat(body, lid)
                 self._json(code or 502, out)
                 return

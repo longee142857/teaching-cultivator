@@ -52,7 +52,7 @@ def build_deep_link(
     push_id: Optional[int] = None,
 ) -> str:
     """前端深链；base_url 由 env FRONTEND_BASE_URL 提供。"""
-    base = (base_url or "").rstrip("/")
+    base = (base_url or "").strip().rstrip("/")
     if not base:
         return ""
     q: dict[str, str] = {}

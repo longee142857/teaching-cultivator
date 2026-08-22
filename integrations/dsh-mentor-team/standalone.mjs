@@ -35,10 +35,11 @@ const webServer = {
 }
 
 const web = {
-  async fetch({ url, headers, method, body }) {
+  async fetch({ url, headers, method, body, stream }) {
     const init = { method: method || 'GET', headers: headers || {} }
     if (body != null) init.body = typeof body === 'string' ? body : JSON.stringify(body)
     const r = await fetch(url, init)
+    if (stream) return { statusCode: r.status, raw: r }
     const text = await r.text()
     return { statusCode: r.status, body: { content: text } }
   },

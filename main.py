@@ -241,9 +241,37 @@ class TeachingBot:
                                 )
                         except Exception as _pe:
                             log(f"[pi-session] notify_new_push skip: {_pe}")
-                # 出题后跟发快捷按钮 ActionCard
+                # 出题后跟发通知卡：优先 FRONTEND 深链（练习台），无则旧快捷按钮
                 try:
-                    self.dingtalk.send_question_action_card(subject)
+                    deep_link = ""
+                    try:
+                        from modules.notify import build_deep_link
+
+                        base = (os.environ.get("FRONTEND_BASE_URL") or "").strip()
+                        item_id = push_id = None
+                        learner_for_link = oid or ""
+                        try:
+                            from learner.db import get_store
+
+                            _rec2 = get_store().get_latest_push(None)
+                            if _rec2:
+                                item_id = _rec2.get("item_id")
+                                push_id = _rec2.get("push_id") or _rec2.get("id")
+                        except Exception:
+                            pass
+                        if base:
+                            deep_link = build_deep_link(
+                                base,
+                                path="/practice",
+                                learner_id=learner_for_link,
+                                item_id=int(item_id) if item_id is not None else None,
+                                push_id=int(push_id) if push_id is not None else None,
+                            )
+                    except Exception as _le:
+                        log(f"[action-card] deep_link build skip: {_le}")
+                    self.dingtalk.send_question_action_card(
+                        subject, deep_link=deep_link
+                    )
                 except Exception as e:
                     log(f"[action-card] 出题卡失败: {e}")
                 log(f"[OK] {subject} 推送执行完毕")

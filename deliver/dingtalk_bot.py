@@ -778,15 +778,46 @@ class DingTalkBot:
             logger.error("send_push 失败: %s", e)
             return False
 
-    def send_question_action_card(self, subject: str = "") -> bool:
-        """主动推送：出题后的快捷按钮卡。"""
+    def send_question_action_card(
+        self, subject: str = "", *, deep_link: str = ""
+    ) -> bool:
+        """主动推送：出题后通知卡。
+
+        有 FRONTEND 深链时发「打开练习台」URL 按钮（答题在前端）；
+        否则回退旧 dtmd 快捷操作（聊天作答）。
+        """
         if not self.conversation_id:
             return False
-        from deliver.action_cards import QUESTION_ACTIONS, question_card_text
-        from deliver.dingtalk_media import get_access_token, send_group_action_card
+        from deliver.action_cards import (
+            QUESTION_ACTIONS,
+            practice_open_buttons,
+            question_card_text,
+        )
+        from deliver.dingtalk_media import (
+            get_access_token,
+            send_group_action_card,
+            send_group_action_card_urls,
+        )
 
+        link = (deep_link or "").strip()
         try:
             token = get_access_token(self.client_id, self.client_secret)
+            if link.startswith("http"):
+                ok = send_group_action_card_urls(
+                    access_token=token,
+                    robot_code=self.client_id,
+                    open_conversation_id=self.conversation_id,
+                    title="新练习题",
+                    text=question_card_text(subject, with_deep_link=True),
+                    buttons=practice_open_buttons(link),
+                )
+                logger.info(
+                    "question ActionCard deep-link: %s subject=%s link=%s",
+                    ok,
+                    subject,
+                    link[:80],
+                )
+                return ok
             ok = send_group_action_card(
                 access_token=token,
                 robot_code=self.client_id,
