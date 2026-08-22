@@ -1150,25 +1150,38 @@
           if (!reader) { msg.streaming = false; persist(); resolve({ sse: true }); return; }
           var decoder = new TextDecoder();
           var buf = "";
+          var evtType = "";
           function feed() {
             reader.read().then(function (step) {
-              if (step.done) { msg.streaming = false; persist(); resolve({ sse: true }); return; }
+              if (step.done) { msg.streaming = false; applyTutorMeta(msg); persist(); resolve({ sse: true }); return; }
               buf += decoder.decode(step.value, { stream: true });
               var idx;
               while ((idx = buf.indexOf("\n")) >= 0) {
                 var line = buf.slice(0, idx).trim();
                 buf = buf.slice(idx + 1);
-                if (line.indexOf("data:") === 0) {
-                  var payload = line.slice(5).trim();
-                  if (!payload) continue;
-                  try {
-                    var ev = JSON.parse(payload);
-                    if (ev && ev.text) { msg.text += ev.text; patchLastMessage(msg); }
-                    if (ev && ev.citations) msg.citations = ev.citations;
-                    if (ev && ev.detached !== undefined) state.tutorDetached = !!ev.detached;
-                    if (ev && ev.done) { msg.citations = ev.citations || msg.citations; msg.streaming = false; applyTutorMeta(msg); persist(); }
-                  } catch (e) {}
-                }
+                if (line.indexOf("event:") === 0) { evtType = line.slice(6).trim(); continue; }
+                if (line.indexOf("data:") !== 0) continue;
+                var payload = line.slice(5).trim();
+                if (!payload) continue;
+                try {
+                  var ev = JSON.parse(payload);
+                  if (ev && ev.text) { msg.text += ev.text; patchLastMessage(msg); }
+                  if (ev && ev.citations) msg.citations = ev.citations;
+                  if (ev && ev.detached !== undefined) state.tutorDetached = !!ev.detached;
+                  if (evtType === "error") {
+                    msg.text += (msg.text ? "\n" : "") + "[导师团] " + (ev.message || "unknown");
+                    patchLastMessage(msg);
+                  }
+                  if (evtType === "done") {
+                    // done.reply 是权威全文，防 delta 丢块
+                    if (ev && ev.reply) msg.text = ev.reply;
+                    msg.streaming = false;
+                    applyTutorMeta(msg);
+                    persist();
+                    renderChat();
+                  }
+                  evtType = "";
+                } catch (e) {}
               }
               feed();
             }).catch(function () {
