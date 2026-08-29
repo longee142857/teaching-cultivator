@@ -12,6 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+_kl = ROOT / "knowledge-lib"
+if _kl.is_dir():
+    sys.path.insert(0, str(_kl))
 os.chdir(ROOT)
 
 
@@ -323,7 +326,7 @@ def test_empty_day_and_capability(tmp_db: str):
     check("[0-9]{1,24}" in exam_html, "exam uid regex allows 20-digit")
 
 
-def _llm_ok(*_a, task_type="grade", **_k):
+def _llm_ok(_system, _user, task_type="grade", *_a, **_k):
     if task_type == "verify_grade":
         return json.dumps(
             {"agrees": True, "confidence": 0.9, "reasoning": "ok"},
@@ -335,7 +338,7 @@ def _llm_ok(*_a, task_type="grade", **_k):
     )
 
 
-def _llm_pending(*_a, task_type="grade", **_k):
+def _llm_pending(_system, _user, task_type="grade", *_a, **_k):
     if task_type == "verify_grade":
         return json.dumps(
             {"agrees": True, "confidence": 0.2, "reasoning": "unsure"},

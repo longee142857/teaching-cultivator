@@ -11,6 +11,9 @@ from unittest.mock import patch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+_kl = os.path.join(ROOT, "knowledge-lib")
+if os.path.isdir(_kl) and _kl not in sys.path:
+    sys.path.insert(0, _kl)
 
 import config as config_mod
 from learner import db as db_mod
