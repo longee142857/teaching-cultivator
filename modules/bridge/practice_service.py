@@ -660,6 +660,57 @@ def _ref_grade(item_row: dict, user_answer: str) -> tuple[bool, float | None, st
     return False, None, "与参考答案不一致（ref 模式）。"
 
 
+def _coerce_row_id(v) -> int | None:
+    n = parse_item_id(v)
+    if n is None:
+        n = parse_push_id(v)
+    return n if n and n > 0 else None
+
+
+def _resolve_submit_ids(row: dict, dto: dict, store) -> tuple[int | None, int | None]:
+    """Prefer desk DTO, then row, then question-hash item (empty-day / fromBank)."""
+    push_id = _coerce_row_id(dto.get("pushId") if dto else None) or _coerce_row_id(
+        row.get("push_id")
+    )
+    item_id = _coerce_row_id(dto.get("itemId") if dto else None) or _coerce_row_id(
+        row.get("item_id")
+    )
+    if item_id is None:
+        q = (row.get("question") or "").strip()
+        subj = (row.get("subject") or "").strip()
+        if q and hasattr(store, "get_item_by_question"):
+            try:
+                it = store.get_item_by_question(q, subj)
+            except Exception:
+                it = None
+            if it:
+                item_id = _coerce_row_id(it.get("id") or it.get("item_id"))
+    return push_id, item_id
+
+
+def _attempt_linked(store, learner_id: str, *, push_id, item_id) -> bool:
+    lid = (learner_id or "").strip()
+    if push_id:
+        try:
+            att = store.get_attempt_for_push(int(push_id))
+        except Exception:
+            att = None
+        if att and (att.get("user_id") or "") == lid:
+            return True
+    if item_id and hasattr(store, "get_attempts"):
+        try:
+            want = int(item_id)
+        except (TypeError, ValueError):
+            return False
+        for a in store.get_attempts(lid):
+            try:
+                if int(a.get("item_id") or 0) == want:
+                    return True
+            except (TypeError, ValueError):
+                continue
+    return False
+
+
 def _record_ref_attempt(
     *,
     learner_id: str,
@@ -724,8 +775,8 @@ def submit(
     if not got.get("ok"):
         return got
     dto = got["item"]
-    push_id = dto.get("pushId")
-    item_id = dto.get("itemId")
+    push_id = _coerce_row_id(dto.get("pushId"))
+    item_id = _coerce_row_id(dto.get("itemId"))
     # load authoritative row for question/answer
     row = store.get_push(int(push_id)) if push_id else None
     if row is None and item_id:
@@ -746,6 +797,7 @@ def submit(
     kp = (row.get("kp") or dto.get("kp") or "").strip()
     subject = (row.get("subject") or "").strip()
     explain = dto.get("explain") or explain_from_solution(row.get("solution") or {})
+    push_id, item_id = _resolve_submit_ids(row, dto, store)
 
     used_mode = mode
     result_dto: dict[str, Any]
@@ -757,7 +809,17 @@ def submit(
             try:
                 from grade import grade_answer as _grade
 
-                gr = _grade(question, ua, kp_name=kp, subject=subject)
+                try:
+                    gr = _grade(
+                        question,
+                        ua,
+                        kp_name=kp,
+                        subject=subject,
+                        item_id=item_id,
+                        push_id=push_id,
+                    )
+                except TypeError:
+                    gr = _grade(question, ua, kp_name=kp, subject=subject)
                 correct = bool(gr.is_correct) if gr.credit is None else False
                 if gr.credit is not None:
                     # partial → treat as not fully correct for shell boolean
@@ -781,8 +843,9 @@ def submit(
                     "masteryAfter": round(gr.p_mastery_after, 4),
                     "gradeMode": "llm",
                 }
-                # ensure attempt linked if grade path missed push
-                if push_id and not store.get_attempt_for_push(int(push_id)):
+                # grade_answer writes BKT+attempt; if it missed (no push / 未分类 /
+                # BKT exception) still persist item_id for empty-day / fromBank.
+                if not _attempt_linked(store, lid, push_id=push_id, item_id=item_id):
                     store.add_attempt_entry(
                         {
                             "user_id": lid,
@@ -803,8 +866,8 @@ def submit(
                 correct, credit, feedback = _ref_grade(row, ua)
                 _record_ref_attempt(
                     learner_id=lid,
-                    push_id=int(push_id) if push_id else None,
-                    item_id=int(item_id) if item_id else None,
+                    push_id=push_id,
+                    item_id=item_id,
                     kp=kp,
                     subject=subject,
                     correct=correct,
@@ -829,8 +892,8 @@ def submit(
             correct, credit, feedback = _ref_grade(row, ua)
             _record_ref_attempt(
                 learner_id=lid,
-                push_id=int(push_id) if push_id else None,
-                item_id=int(item_id) if item_id else None,
+                push_id=push_id,
+                item_id=item_id,
                 kp=kp,
                 subject=subject,
                 correct=correct,

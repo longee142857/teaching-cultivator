@@ -12,6 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+_kl = ROOT / "knowledge-lib"
+if _kl.is_dir():
+    sys.path.insert(0, str(_kl))
 os.chdir(ROOT)
 
 
@@ -137,6 +140,13 @@ def test_bootstrap_submit(tmp_db: str):
         mode="ref",
     )
     check(sub["ok"] and sub["result"]["correct"] is True, "ref grade correct")
+    store = _gs()
+    atts = [
+        a
+        for a in store.get_attempts("demo_learner")
+        if a.get("item_id") == math_item.get("itemId")
+    ]
+    check(atts and atts[-1].get("item_id") == math_item.get("itemId"), "demo submit writes item_id")
     boot2 = ps.bootstrap("demo_learner")
     check(math_item["id"] in boot2["answered"], "answered persisted")
 
@@ -317,6 +327,229 @@ def test_empty_day_and_capability(tmp_db: str):
     check("[0-9]{1,24}" in exam_html, "exam uid regex allows 20-digit")
 
 
+def _llm_ok(_system, _user, task_type="grade", *_a, **_k):
+    if task_type == "verify_grade":
+        return json.dumps(
+            {"agrees": True, "confidence": 0.9, "reasoning": "ok"},
+            ensure_ascii=False,
+        )
+    return json.dumps(
+        {"verdict": "correct", "confidence": 0.95, "explanation": "ok"},
+        ensure_ascii=False,
+    )
+
+
+def _llm_pending(_system, _user, task_type="grade", *_a, **_k):
+    if task_type == "verify_grade":
+        return json.dumps(
+            {"agrees": True, "confidence": 0.2, "reasoning": "unsure"},
+            ensure_ascii=False,
+        )
+    return json.dumps(
+        {"verdict": "correct", "confidence": 0.3, "explanation": "low"},
+        ensure_ascii=False,
+    )
+
+
+def _assert_last_item_id(store, learner: str, item_id: int, msg: str) -> None:
+    atts = store.get_attempts(learner)
+    check(atts, msg + " (has attempt)")
+    last = atts[-1]
+    check(last.get("item_id") is not None, msg + " (item_id not null)")
+    check(int(last["item_id"]) == int(item_id), f"{msg} (item_id={last.get('item_id')} want={item_id})")
+
+
+def test_submit_persists_item_id(tmp_db: str):
+    """Every practice submit path writes a non-null attempts.item_id."""
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "ref"
+
+    import importlib
+    from unittest.mock import patch
+
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+
+    importlib.reload(ps)
+    from learner.context import bind_learner
+    from modules.store import get_store
+
+    store = get_store()
+    q_bank = "空日补槽\n\n$$x+1=2$$\n\n求 x。"
+    iid = store.insert_bank_item(
+        subject="math",
+        question=q_bank,
+        answer="1",
+        kp="极限",
+        status="ready",
+        solution={"steps": [{"text": "移项"}], "final_answer": "1"},
+    )
+    q_push = "有推送题\n\n$$2+2=$$\n\n求值。"
+    iid_push = store.insert_bank_item(
+        subject="math",
+        question=q_push,
+        answer="4",
+        kp="极限",
+        status="ready",
+        solution={"final_answer": "4"},
+    )
+    pid = store.record_push_for_item(
+        item_id=iid_push,
+        learner_id="id_learner",
+        slot="math",
+        reason="test:push",
+    )
+
+    # 1) empty-day / fromBank: grade_answer applied (no push)
+    from grade import grade_answer
+
+    with bind_learner("id_learner", binding="personal"):
+        with patch("grade.call_llm", side_effect=_llm_ok), patch(
+            "learner.kp_registry.normalize_kp_for_grade", return_value="极限"
+        ), patch("learner.weights_ops.bump_kp_weight"), patch(
+            "learner.weights_ops.decay_kp_weight"
+        ):
+            r = grade_answer(q_bank, "1", kp_name="极限", subject="math")
+    check(r.status == "applied", "grade applied no-push")
+    _assert_last_item_id(store, "id_learner", iid, "grade_answer applied no-push")
+
+    # 2) empty-day: grade_answer pending (no push)
+    q_pend = "待审题\n\n$$3+3=$$\n\n求值。"
+    iid_pend = store.insert_bank_item(
+        subject="math", question=q_pend, answer="6", kp="极限", status="ready"
+    )
+    with bind_learner("id_learner", binding="personal"):
+        with patch("grade.call_llm", side_effect=_llm_pending), patch(
+            "learner.kp_registry.normalize_kp_for_grade", return_value="极限"
+        ):
+            r = grade_answer(q_pend, "6", kp_name="极限", subject="math")
+    check(r.status == "pending", f"grade pending no-push got {r.status}")
+    _assert_last_item_id(store, "id_learner", iid_pend, "grade_answer pending no-push")
+
+    # 3) submit ref, no push_id (bank-filled slot)
+    boot = ps.bootstrap("id_learner")
+    check(boot.get("ok"), "bootstrap for id tests")
+    bank_it = next(
+        (
+            i
+            for i in boot.get("items") or []
+            if i.get("itemId") == iid and not i.get("pushId")
+        ),
+        None,
+    )
+    if bank_it is None:
+        # already answered via grade_answer above — pick a fresh bank item
+        q_ref = "再补一题\n\n$$5-1=$$\n\n求值。"
+        iid_ref = store.insert_bank_item(
+            subject="comm",
+            question=q_ref,
+            answer="4",
+            kp="卷积",
+            status="ready",
+            solution={"final_answer": "4"},
+        )
+        sub = ps.submit("id_learner", answer="4", item=f"i{iid_ref}", push=None, mode="ref")
+        check(sub.get("ok"), "ref submit no-push ok")
+        _assert_last_item_id(store, "id_learner", iid_ref, "submit ref no-push")
+    else:
+        sub = ps.submit(
+            "id_learner",
+            answer="1",
+            item=bank_it["id"],
+            push=bank_it.get("pushId"),
+            mode="ref",
+        )
+        check(sub.get("ok"), "ref submit no-push ok")
+        _assert_last_item_id(store, "id_learner", iid, "submit ref no-push")
+
+    # 4) submit llm (mocked), no push_id
+    q_llm = "LLM 空日题\n\n$$7-3=$$\n\n求值。"
+    iid_llm = store.insert_bank_item(
+        subject="review",
+        question=q_llm,
+        answer="4",
+        kp="导数",
+        status="ready",
+        solution={"final_answer": "4"},
+    )
+    with patch("grade.call_llm", side_effect=_llm_ok), patch(
+        "learner.kp_registry.normalize_kp_for_grade", return_value="导数"
+    ), patch("learner.weights_ops.bump_kp_weight"), patch(
+        "learner.weights_ops.decay_kp_weight"
+    ):
+        sub = ps.submit(
+            "id_learner", answer="4", item=f"i{iid_llm}", push=None, mode="llm"
+        )
+    check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "llm", "llm submit no-push")
+    hits = [a for a in store.get_attempts("id_learner") if a.get("item_id") == iid_llm]
+    check(len(hits) == 1 and hits[0].get("item_id") == iid_llm, "submit llm no-push one row")
+
+    # 5) submit llm raises → ref_fallback, no push_id
+    q_fb = "回退题\n\n$$9-5=$$\n\n求值。"
+    iid_fb = store.insert_bank_item(
+        subject="math",
+        question=q_fb,
+        answer="4",
+        kp="极限",
+        status="ready",
+        solution={"final_answer": "4"},
+    )
+    with patch("grade.grade_answer", side_effect=RuntimeError("llm down")):
+        sub = ps.submit(
+            "id_learner", answer="4", item=f"i{iid_fb}", push=None, mode="llm"
+        )
+    check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "ref_fallback", "ref_fallback no-push")
+    _assert_last_item_id(store, "id_learner", iid_fb, "submit ref_fallback no-push")
+
+    # 6) submit ref with push
+    sub = ps.submit(
+        "id_learner", answer="4", item=f"i{iid_push}", push=pid, mode="ref"
+    )
+    check(sub.get("ok"), "ref submit with push")
+    hits = [
+        a
+        for a in store.get_attempts("id_learner")
+        if a.get("item_id") == iid_push and a.get("push_id") == pid
+    ]
+    check(hits and hits[-1].get("item_id") == iid_push, "submit ref with push item_id")
+
+    # 7) submit llm with push
+    q_llm_p = "有推送 LLM\n\n$$8/2=$$\n\n求值。"
+    iid_llm_p = store.insert_bank_item(
+        subject="math",
+        question=q_llm_p,
+        answer="4",
+        kp="极限",
+        status="ready",
+        solution={"final_answer": "4"},
+    )
+    pid2 = store.record_push_for_item(
+        item_id=iid_llm_p, learner_id="id_learner", slot="math", reason="test:llm-push"
+    )
+    with patch("grade.call_llm", side_effect=_llm_ok), patch(
+        "learner.kp_registry.normalize_kp_for_grade", return_value="极限"
+    ), patch("learner.weights_ops.bump_kp_weight"), patch(
+        "learner.weights_ops.decay_kp_weight"
+    ):
+        sub = ps.submit(
+            "id_learner", answer="4", item=f"i{iid_llm_p}", push=pid2, mode="llm"
+        )
+    check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "llm", "llm submit with push")
+    hits = [
+        a
+        for a in store.get_attempts("id_learner")
+        if a.get("item_id") == iid_llm_p
+    ]
+    check(len(hits) == 1 and hits[0].get("item_id") == iid_llm_p, "submit llm with push item_id")
+    check(hits[0].get("push_id") == pid2, "submit llm with push keeps push_id")
+
+
 def main():
     test_dto()
     with tempfile.TemporaryDirectory() as td:
@@ -325,6 +558,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t2.db")
         test_empty_day_and_capability(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t3.db")
+        test_submit_persists_item_id(db)
     print("ALL_OK")
 
 

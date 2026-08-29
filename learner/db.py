@@ -725,6 +725,27 @@ class Store:
             confidence = None
         answered_at = entry.get("ts") or now_utc_iso()
 
+        def _sql_id(v):
+            if v is None or v == "":
+                return None
+            try:
+                n = int(v)
+            except (TypeError, ValueError):
+                return None
+            return n if n > 0 else None
+
+        push_id = _sql_id(entry.get("push_id"))
+        item_id = _sql_id(entry.get("item_id"))
+        meta = dict(entry)
+        if push_id is not None:
+            meta["push_id"] = push_id
+        else:
+            meta.pop("push_id", None)
+        if item_id is not None:
+            meta["item_id"] = item_id
+        else:
+            meta.pop("item_id", None)
+
         def _do(conn) -> int:
             conn.execute(
                 """INSERT INTO attempts
@@ -732,11 +753,11 @@ class Store:
                     item_type, status, confidence, answered_at, meta)
                    VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
                 (
-                    user_id, entry.get("push_id"), entry.get("item_id"),
+                    user_id, push_id, item_id,
                     entry.get("knowledge_point") or "", correct, credit,
                     entry.get("item_type") or "unknown", entry.get("status") or "applied",
                     confidence, answered_at,
-                    json.dumps(entry, ensure_ascii=False),
+                    json.dumps(meta, ensure_ascii=False),
                 ),
             )
             return int(conn.execute("SELECT last_insert_rowid()").fetchone()[0])
