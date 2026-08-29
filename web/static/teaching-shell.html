@@ -206,6 +206,12 @@
     .btn.ghost { background: transparent; }
     .btn.ghost:hover { background: var(--hover); color: var(--fg); }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.is-busy::before {
+      content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 8px;
+      border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+      vertical-align: -2px; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .btn.primary:disabled:hover {
       background: var(--accent); border-color: var(--accent); color: var(--on-accent);
     }
@@ -1360,11 +1366,12 @@
         html = "<p>" + html + "</p>";
         html = html.replace(/@@MATH(\d+)@@/g, function (_, idx) {
           var item = placeholders[Number(idx)];
-          if (!item || typeof katex === "undefined") {
+          var K = window.katex;
+          if (!item || !K) {
             return "<code>" + esc(item ? item.tex : "") + "</code>";
           }
           try {
-            return katex.renderToString(item.tex, {
+            return K.renderToString(item.tex, {
               displayMode: !!item.display,
               throwOnError: false,
               strict: "ignore",
@@ -1378,6 +1385,11 @@
       }
       function renderStemHtml(item) {
         var stem = (item && item.stem) || "";
+        var title = (item && item.title) || "";
+        if (title && stem.indexOf(title) === 0) {
+          var rest = stem.slice(title.length).replace(/^[\s：:·。.\-—]+/, "");
+          if (rest) stem = rest;
+        }
         var html = '<div class="stem-body" data-od-id="item-stem">' + renderMathMarkdown(stem) + "</div>";
         var opts = (item && item.options) || [];
         if (opts.length) {
@@ -1397,7 +1409,7 @@
           var tex = el.getAttribute("data-tex") || "";
           if (!tex) return;
           if (window.katex) {
-            try { katex.render(tex, el, { throwOnError: false, displayMode: true }); }
+            try { window.katex.render(tex, el, { throwOnError: false, displayMode: true }); }
             catch (e) { el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>"; }
           } else {
             el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>";
@@ -1794,7 +1806,7 @@
           practiceDock.innerHTML =
             '<div class="btn-row two">' +
               '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today"' + (busy ? " disabled" : "") + ">返回今日</button>" +
-              '<button type="button" class="btn primary" data-od-id="btn-submit" id="btn-submit"' + (busy ? " disabled" : "") + ">" +
+              '<button type="button" class="btn primary' + (busy ? " is-busy" : "") + '" data-od-id="btn-submit" id="btn-submit"' + (busy ? " disabled" : "") + ">" +
                 (busy ? "讲师批改中…" : "提交") + "</button>" +
             "</div>";
         } else {

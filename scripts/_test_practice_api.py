@@ -215,6 +215,8 @@ def test_bootstrap_submit(tmp_db: str):
         check(r.status == 200 and "API_BASE" in html and "/api/v1/practice/submit" in html, "shell")
         check("ocr-zone" not in html, "shell hides OCR chrome")
         check("/static/katex/katex.min.js" in html, "shell uses local KaTeX")
+        font = ROOT / "web/static/katex/fonts/KaTeX_Main-Regular.woff2"
+        check(font.is_file() and font.stat().st_size > 1000, "local KaTeX font present")
         check("canonicalItemId" in html, "numeric item alias in URL parse")
         check("讲师批改中" in html, "submit shows grading wait")
         check("从题库补练" in html, "empty slot CTA")
