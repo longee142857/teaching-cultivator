@@ -39,7 +39,7 @@
     }
     * { box-sizing: border-box; }
     html, body {
-      margin: 0; height: 100%; overflow: hidden;
+      margin: 0; height: 100%;
       color: var(--fg);
       font-family: var(--font-body);
       font-size: 15px;
@@ -48,6 +48,9 @@
       background:
         radial-gradient(130% 90% at 50% 0%, rgba(43,33,24,.05), transparent 55%),
         var(--bg);
+    }
+    @media (max-width: 767.98px) {
+      html, body { overflow: hidden; }
     }
     body { display: flex; flex-direction: column; }
     body::before {
@@ -86,7 +89,8 @@
       appearance: none; border: 0; background: transparent;
       min-height: 48px; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 2px;
-      color: var(--fg); font-size: 11px; font-weight: 550; letter-spacing: 0.02em;
+      color: var(--muted); font-size: 11px; font-weight: 550; letter-spacing: 0.02em;
+      transition: color .16s ease, background .16s ease;
     }
     .tab-btn svg { width: 22px; height: 22px; }
     .tab-btn:hover { background: var(--hover); color: var(--fg); }
@@ -243,6 +247,8 @@
       grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center;
     }
     .slot-row:hover, .backlog-item:hover { background: var(--hover); }
+    .slot-row:disabled { opacity: 0.55; cursor: default; }
+    .slot-row:disabled:hover { background: var(--surface); }
     .slot-row.is-done { opacity: 0.7; }
     .slot-row.is-overdue { border-color: color-mix(in oklch, var(--warn) 50%, var(--border)); }
     .slot-title { font-weight: 550; font-size: 14px; line-height: 1.4; }
@@ -268,7 +274,27 @@
     }
     .math-block .katex-display { margin: 0.4em 0; }
     .math-fallback { font-family: var(--font-mono); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
-    .stem-text { font-size: 16px; line-height: 1.75; max-width: 65ch; }
+    .stem-text { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-body { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-body p { margin: 0.55em 0; }
+    .stem-body p:first-child { margin-top: 0; }
+    .stem-body .katex-display { margin: 0.75em 0; overflow-x: auto; overflow-y: hidden; }
+    .mcq-options {
+      list-style: none; margin: 14px 0 0; padding: 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .mcq-options li {
+      display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px;
+      align-items: start;
+      border: 1px dashed rgba(43,33,24,.28);
+      background: rgba(244,237,224,.55);
+      padding: 10px 12px;
+    }
+    .mcq-letter {
+      font-family: var(--font-mono); font-weight: 600;
+      color: var(--accent); padding-top: 1px;
+    }
+    .mcq-options .katex { font-size: 1.02em; }
 
     textarea.answer, textarea.composer {
       width: 100%; resize: vertical; border: 1px solid var(--border);
@@ -339,7 +365,14 @@
       min-height: 52dvh; display: flex; flex-direction: column;
       justify-content: center; gap: 12px; padding: 28px 16px; text-align: center;
     }
-    .empty p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 28ch; margin-inline: auto; }
+    .empty p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 32ch; margin-inline: auto; }
+    .empty .mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
+    .calm-note {
+      border: 1px dashed rgba(43,33,24,.28);
+      background: rgba(244,237,224,.5);
+      border-radius: 2px; padding: 12px 14px;
+      font-size: 13px; line-height: 1.7; color: var(--muted);
+    }
     .mark-box {
       width: 48px; height: 48px; margin: 0 auto; border-radius: 12px;
       border: 1px solid var(--border); background: var(--surface);
@@ -411,6 +444,7 @@
     .nav-btn, .rail-toggle {
       appearance: none; border: 0; background: transparent; color: var(--fg);
       min-height: 44px; border-radius: 8px;
+      transition: color .16s ease, background .16s ease;
     }
     .nav-btn:hover, .rail-toggle:hover { background: var(--hover); color: var(--fg); }
     .nav-btn.is-active { color: var(--accent); background: color-mix(in oklch, var(--accent) 8%, var(--surface)); }
@@ -427,17 +461,20 @@
     }
 
     @media (min-width: 768px) {
+      html, body { height: 100%; overflow: hidden; }
       .app {
+        --rail: 220px;
         grid-template-columns: var(--rail) 1fr;
         grid-template-rows: 1fr;
       }
-      .app.is-expanded { --rail: 220px; }
+      .app:not(.is-expanded) { --rail: 72px; }
       .tabbar { display: none; }
+      .content { max-width: 920px; margin-inline: auto; width: 100%; }
       .rail {
         display: flex; flex-direction: column; gap: 8px;
-        padding: calc(12px + var(--safe-t)) 8px 12px calc(8px + var(--safe-l));
+        padding: calc(16px + var(--safe-t)) 12px 16px calc(12px + var(--safe-l));
         border-right: 1px solid var(--border);
-        background: color-mix(in oklch, var(--surface) 70%, transparent);
+        background: color-mix(in oklch, var(--surface) 78%, transparent);
         backdrop-filter: blur(18px);
       }
       .rail-toggle {
@@ -479,8 +516,19 @@
       .recent-title { font-size: 13px; font-weight: 550; line-height: 1.4; }
       .recent-preview { font-size: 12px; color: var(--muted); line-height: 1.45; }
       .dock { padding-bottom: 12px; }
-      .app-header { padding-top: 12px; }
-      .content { padding: 18px 22px 24px; }
+      .app-header { padding-top: 16px; padding-inline: 22px; }
+      .content { padding: 22px 28px 32px; }
+      .card, .card:nth-child(even) { transform: none; }
+      .stack { gap: 16px; }
+      .today-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
+        gap: 16px;
+        align-items: start;
+      }
+    }
+    @media (min-width: 1100px) {
+      .content { max-width: 1040px; }
     }
 
     @media (min-width: 768px) and (max-height: 560px) {
@@ -575,28 +623,28 @@
       transform-origin: left center;
       will-change: transform, opacity;
       transition:
-        transform .42s cubic-bezier(.22,.7,.2,1),
-        opacity .28s ease;
+        transform .22s cubic-bezier(.22,.7,.2,1),
+        opacity .18s ease;
     }
     .flip-sheet.is-enter-right {
-      transform: translateX(28%) rotateY(48deg) scale(.98);
+      transform: translateX(10%) scale(.995);
       opacity: 0;
     }
     .flip-sheet.is-enter-left {
-      transform: translateX(-28%) rotateY(-48deg) scale(.98);
+      transform: translateX(-10%) scale(.995);
       opacity: 0;
     }
     .flip-sheet.is-open {
-      transform: translateX(0) rotateY(0) scale(1);
+      transform: translateX(0) scale(1);
       opacity: 1;
     }
     .flip-sheet.is-exit-left {
-      transform: translateX(-42%) rotateY(-72deg) scale(.96);
+      transform: translateX(-12%) scale(.99);
       opacity: 0;
       pointer-events: none;
     }
     .flip-sheet.is-exit-right {
-      transform: translateX(42%) rotateY(72deg) scale(.96);
+      transform: translateX(12%) scale(.99);
       opacity: 0;
       pointer-events: none;
     }
@@ -722,6 +770,8 @@
       var SERVER_WEAK_HINT = "";
       var BOOT_READY = false;
       var BOOT_ERROR = "";
+      var CAPABILITY = null;
+      var PLACEHOLDER_LEARNER = "stu_1024";
 
       function apiUrl(path) {
         return (API_BASE || "") + path;
@@ -735,11 +785,13 @@
       function applyBootstrap(data) {
         if (!data || !data.ok) {
           BOOT_ERROR = (data && data.error) || "bootstrap_failed";
+          CAPABILITY = (data && data.capability) || null;
           return false;
         }
         SLOTS = data.slots || [];
         ITEMS = data.items || [];
         SERVER_WEAK_HINT = data.weakHint || "";
+        CAPABILITY = data.capability || null;
         if (data.answered) {
           Object.keys(data.answered).forEach(function (id) {
             state.answered[id] = data.answered[id];
@@ -748,6 +800,29 @@
         BOOT_READY = true;
         BOOT_ERROR = "";
         return true;
+      }
+      function isPlaceholderLearner(id) {
+        var s = String(id || "").trim();
+        return !s || s === PLACEHOLDER_LEARNER;
+      }
+      function learnerFrom(params, saved) {
+        var q = ((params && params.get("learner")) || "").trim();
+        if (q && !isPlaceholderLearner(q)) return q;
+        var s = saved && saved.learner ? String(saved.learner).trim() : "";
+        if (s && !isPlaceholderLearner(s)) return s;
+        return q && !isPlaceholderLearner(q) ? q : "";
+      }
+      function calmError(msg) {
+        var s = String(msg || "").trim();
+        if (!s) return "";
+        if (/has no attribute|Traceback|AttributeError|TypeError|NoneType|internal/i.test(s)) {
+          return "部分数据暂时读不到，练习仍可继续。";
+        }
+        if (s === "bootstrap_failed" || s === "network") return "练习台暂时连不上，请稍后重试。";
+        return s;
+      }
+      function wideDesktop() {
+        return window.matchMedia && window.matchMedia("(min-width: 768px)").matches;
       }
       function ensureItemFromServer(itemId, pushId) {
         return fetch(apiUrl("/api/v1/practice/item?learner=" + encodeURIComponent(state.learner || "")
@@ -786,7 +861,7 @@
       var state = {
         mode: "practice",
         view: "today",
-        learner: "stu_1024",
+        learner: "",
         push: null,
         index: 0,
         answered: {},
@@ -795,7 +870,7 @@
         explainOpen: false,
         fromDeepLink: false,
         error: "",
-        railExpanded: false,
+        railExpanded: true,
         contextItemId: null,
         threads: {},
         recents: [],
@@ -863,8 +938,9 @@
       }
       function slotStatus(slot) {
         var it = itemById(slot.itemId);
-        if (!it) return { key: "missing", label: "缺题" };
+        if (!it) return { key: "missing", label: "今日未排程" };
         if (state.answered[it.id]) return { key: "done", label: "已完成" };
+        if (it.fromBank && !it.pushId) return { key: "open", label: "题库补练" };
         var h = new Date().getHours();
         var open =
           (slot.windowKey === "morning" && h >= 8 && h < 12) ||
@@ -896,8 +972,9 @@
       }
       function persist() {
         try {
+          var lid = isPlaceholderLearner(state.learner) ? "" : state.learner;
           localStorage.setItem(STORE, JSON.stringify({
-            mode: state.mode, view: state.view, learner: state.learner, index: state.index,
+            mode: state.mode, view: state.view, learner: lid, index: state.index,
             answered: state.answered, fromDeepLink: state.fromDeepLink, push: state.push,
             lastResult: state.lastResult, railExpanded: state.railExpanded,
             contextItemId: state.contextItemId, threads: state.threads, recents: state.recents
@@ -984,6 +1061,7 @@
         });
       }
       function startToday() {
+        if (!state.learner) { setView("today"); return; }
         var left = remainingCount();
         var bl = backlogItems();
         if (left === 0 && bl.length) { openItemById(bl[0].id); return; }
@@ -1201,6 +1279,59 @@
         renderChat();
       }
 
+      function renderMathMarkdown(src) {
+        var placeholders = [];
+        function stash(tex, display) {
+          var i = placeholders.length;
+          placeholders.push({ tex: tex, display: display });
+          return "@@MATH" + i + "@@";
+        }
+        var text = String(src || "");
+        text = text.replace(/\$\$([\s\S]+?)\$\$/g, function (_, tex) { return stash(String(tex).trim(), true); });
+        text = text.replace(/\\\[([\s\S]+?)\\\]/g, function (_, tex) { return stash(String(tex).trim(), true); });
+        text = text.replace(/\\\(([\s\S]+?)\\\)/g, function (_, tex) { return stash(String(tex).trim(), false); });
+        text = text.replace(/\$([^$\n]+?)\$/g, function (_, tex) { return stash(String(tex).trim(), false); });
+        var html = esc(text);
+        html = html.replace(/^###\s+(.+)$/gm, "<h3>$1</h3>");
+        html = html.replace(/^##\s+(.+)$/gm, "<h2>$1</h2>");
+        html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+        html = html.replace(/\n{2,}/g, "</p><p>");
+        html = "<p>" + html + "</p>";
+        html = html.replace(/@@MATH(\d+)@@/g, function (_, idx) {
+          var item = placeholders[Number(idx)];
+          if (!item || typeof katex === "undefined") {
+            return "<code>" + esc(item ? item.tex : "") + "</code>";
+          }
+          try {
+            return katex.renderToString(item.tex, {
+              displayMode: !!item.display,
+              throwOnError: false,
+              strict: "ignore",
+              trust: false
+            });
+          } catch (e) {
+            return "<code>" + esc(item.tex) + "</code>";
+          }
+        });
+        return html;
+      }
+      function renderStemHtml(item) {
+        var stem = (item && item.stem) || "";
+        var html = '<div class="stem-body" data-od-id="item-stem">' + renderMathMarkdown(stem) + "</div>";
+        var opts = (item && item.options) || [];
+        if (opts.length) {
+          html += '<ol class="mcq-options" data-od-id="item-options">';
+          opts.forEach(function (o) {
+            html += '<li><span class="mcq-letter">' + esc(o.letter) + "</span><div>" +
+              renderMathMarkdown(o.text || "") + "</div></li>";
+          });
+          html += "</ol>";
+        } else if (item && item.katex && !/\$|\\\[|\\\(/.test(stem)) {
+          html += '<div class="math-block" data-od-id="katex-formula" data-tex="' + escAttr(item.katex) + '"></div>';
+        }
+        return html;
+      }
       function mountMath() {
         root.querySelectorAll("[data-tex]").forEach(function (el) {
           var tex = el.getAttribute("data-tex") || "";
@@ -1231,10 +1362,11 @@
           return;
         }
         var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
+        var learnerMeta = state.learner ? esc(state.learner) : "未指定学员";
         headerEl.innerHTML =
           '<div class="brand-row">' +
             '<div class="brand" data-od-id="brand">高校每日练习</div>' +
-            '<div class="meta" data-od-id="learner-meta">' + esc(state.learner) + "</div>" +
+            '<div class="meta" data-od-id="learner-meta">' + learnerMeta + "</div>" +
           "</div>" +
           '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
           '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>';
@@ -1302,7 +1434,7 @@
           .then(function (r) { return r.json(); })
           .then(function (d) {
             if (!d || !d.ok || !(d.papers || []).length) {
-              el.innerHTML = '<p class="hint" style="margin:0">暂无可用双周卷。</p>';
+              el.innerHTML = '<p class="calm-note" style="margin:0">这期还没有可打开的双周卷。有卷时会显示在这里。</p>';
               return;
             }
             el.innerHTML = d.papers.map(function (p) {
@@ -1315,11 +1447,20 @@
             }).join("");
           })
           .catch(function () {
-            el.innerHTML = '<p class="hint" style="margin:0">双周卷加载失败，稍后再试。</p>';
+            el.innerHTML = '<p class="calm-note" style="margin:0">双周卷暂时打不开，稍后再试即可。</p>';
           });
       }
 
       function renderToday() {
+        if (!state.learner) {
+          return (
+            '<div class="empty" data-od-id="view-need-learner">' +
+              '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5M12 16h.01"/></svg></div>' +
+              "<h1>需要学员编号</h1>" +
+              '<p>请从钉钉提醒的练习链接进入，或在地址栏加上 <span class="mono">?learner=你的编号</span>。不会默认成演示学员。</p>' +
+            "</div>"
+          );
+        }
         var left = remainingCount();
         var done = doneCount();
         var backlog = backlogItems();
@@ -1327,10 +1468,10 @@
           var it = itemById(slot.itemId);
           var st = slotStatus(slot);
           var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
-          var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 未缓存");
-          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : "");
+          var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 今日未排程");
+          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : " · 可从题库补练");
           return (
-            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId) + '">' +
+            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '"' + (it ? "" : " disabled") + ">" +
               '<div class="slot-title">' + esc(title) + "</div>" +
               '<div class="slot-status">' + esc(st.label) + "</div>" +
               '<div class="slot-meta">' + esc(meta) + "</div>" +
@@ -1346,8 +1487,14 @@
                 "</button>"
               );
             }).join("")
-          : '<p class="stem-text" style="margin:0;color:var(--muted)">暂无历史未答。</p>';
+          : '<p class="calm-note" style="margin:0">没有历史未答。今日槽或题库补练可直接开做。</p>';
         var cta = left === 0 ? (backlog.length ? "去历史未答" : "查看完成状态") : "从最早未答开始";
+        var capErr = CAPABILITY && CAPABILITY.error
+          ? '<p class="calm-note" data-od-id="cap-hint">能力参数暂时读不到，薄弱提示可能不完整。练习仍可继续。</p>'
+          : "";
+        var bootNote = state.error
+          ? '<p class="calm-note" data-od-id="boot-error" role="status">' + esc(calmError(state.error)) + "</p>"
+          : "";
         return (
           '<div class="stack" data-od-id="view-today">' +
             '<section class="card stack" data-od-id="task-bar">' +
@@ -1357,19 +1504,22 @@
                 '<div class="stat"><div class="n">' + left + '</div><div class="t">今日剩余</div></div>' +
                 '<div class="stat"><div class="n">' + done + '</div><div class="t">今日完成</div></div>' +
               "</div>" +
+              bootNote + capErr +
               '<p class="hint" data-od-id="coverage-hint"><strong>时间覆盖</strong> — 数学 / 通信 / 复习各一槽；过窗未答仍可回补，不占用次日缓存。钉钉只发提醒与深链。LearnerParams（BKT+η）见模块下拉 → Capability Brain。</p>' +
               '<div class="stack" data-od-id="slot-list">' + slotHtml + "</div>" +
               '<p class="hint" data-od-id="weak-hint"><strong>薄弱提示</strong> — ' + esc(weakHint()) + "</p>" +
               '<button type="button" class="btn primary" data-od-id="cta-start-today" id="btn-start">' + esc(cta) + "</button>" +
               '<button type="button" class="text-link" data-od-id="link-sim-dingtalk" id="btn-sim-dingtalk">模拟钉钉提醒落地（通信槽）</button>' +
             "</section>" +
-            '<section class="card stack" data-od-id="exam-zone">' +
-              '<div class="row between wrap"><h2>双周卷</h2><span class="pill">H5</span></div>' +
-              '<div id="exam-list" data-od-id="exam-list"><p class="hint" style="margin:0">加载中…</p></div>' +
-            "</section>" +
-            '<section class="card stack" data-od-id="backlog-zone">' +
-              "<h2>历史未答</h2>" + backlogBody +
-            "</section>" +
+            '<div class="today-grid">' +
+              '<section class="card stack" data-od-id="exam-zone">' +
+                '<div class="row between wrap"><h2>双周卷</h2><span class="pill">H5</span></div>' +
+                '<div id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>' +
+              "</section>" +
+              '<section class="card stack" data-od-id="backlog-zone">' +
+                "<h2>历史未答</h2>" + backlogBody +
+              "</section>" +
+            "</div>" +
           "</div>"
         );
       }
@@ -1391,8 +1541,7 @@
                   '<span class="pill">' + esc(item.id) + "</span>" +
                 "</div>" +
                 '<h2 data-od-id="item-title">' + esc(item.title) + "</h2>" +
-                '<p class="stem-text" data-od-id="item-stem">' + esc(item.stem) + "</p>" +
-                '<div class="math-block" data-od-id="katex-formula" data-tex="' + escAttr(item.katex) + '"></div>' +
+                renderStemHtml(item) +
               "</section>" +
               '<aside class="card progress-card" data-od-id="progress-rail">' +
                 '<div class="side-rail">' +
@@ -1593,7 +1742,7 @@
         var on = state.mode === "brain";
         brainHost.hidden = !on;
         if (on && brainLoadedFor !== state.learner) {
-          brainFrame.src = "/capability-brain.html?embed=1&learner=" + encodeURIComponent(state.learner || "stu_1024");
+          brainFrame.src = "/capability-brain.html?embed=1&learner=" + encodeURIComponent(state.learner || "");
           brainLoadedFor = state.learner;
         }
       }
@@ -1625,7 +1774,7 @@
             for (var si = 0; si < SLOTS.length; si++) if (SLOTS[si].kind === "comm" && SLOTS[si].itemId) { slot = SLOTS[si]; break; }
             if (!slot) for (var sj = 0; sj < SLOTS.length; sj++) if (SLOTS[sj].itemId) { slot = SLOTS[sj]; break; }
             if (!slot || !slot.itemId) { state.error = "暂无通信槽题目可模拟落地。"; render(); return; }
-            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "stu_1024") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
+            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
           })();
         });
         root.querySelectorAll("[data-item-id]").forEach(function (btn) {
@@ -1702,7 +1851,7 @@
         renderPracticeDock();
         bindPractice();
         mountMath();
-        if (state.page === "today") fetchExamPapers();
+        if (state.view === "today") fetchExamPapers();
         if (opts.animate && flipDir) {
           var sheet = root.querySelector(".flip-sheet");
           if (sheet) {
@@ -1711,7 +1860,7 @@
               requestAnimationFrame(function () {
                 sheet.classList.remove("is-enter-right", "is-enter-left");
                 sheet.classList.add("is-open");
-                window.setTimeout(function () { flipBusy = false; }, 420);
+                window.setTimeout(function () { flipBusy = false; }, 240);
               });
             });
           } else {
@@ -1763,8 +1912,8 @@
           var sheet = root.querySelector(".flip-sheet.is-open");
           if (sheet && state.mode === "practice") {
             var t = Math.max(-1, Math.min(1, dx / 180));
-            sheet.style.transform = "translateX(" + (t * 36) + "%) rotateY(" + (t * 48) + "deg) scale(" + (1 - Math.abs(t) * 0.03) + ")";
-            sheet.style.opacity = String(1 - Math.abs(t) * 0.3);
+            sheet.style.transform = "translateX(" + (t * 18) + "%) scale(" + (1 - Math.abs(t) * 0.015) + ")";
+            sheet.style.opacity = String(1 - Math.abs(t) * 0.18);
             sheet.style.transition = "none";
           }
         }
@@ -1802,12 +1951,17 @@
       }
 
       function applyDeepLink(params, saved) {
-        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        var learner = learnerFrom(params, saved);
         var itemId = params.get("item");
         var push = params.get("push");
         var viewHint = params.get("view");
         var modeHint = params.get("mode");
         state.learner = learner;
+        if (!learner) {
+          state.mode = "practice";
+          setView("today", { push: null, fromDeepLink: false });
+          return;
+        }
         state.push = push;
         if (saved) {
           // Prefer server answered from bootstrap; local cache only fills gaps / offline.
@@ -1889,8 +2043,17 @@
       function boot() {
         var params = qs();
         var saved = restore();
-        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        var learner = learnerFrom(params, saved);
         state.learner = learner;
+        if (saved && typeof saved.railExpanded === "boolean") state.railExpanded = saved.railExpanded;
+        else state.railExpanded = wideDesktop();
+        if (!learner) {
+          applyDeepLink(params, saved);
+          if (typeof bindPageChrome === "function") bindPageChrome();
+          if (typeof bindSwipe === "function") bindSwipe();
+          if (typeof bindGestures === "function") bindGestures();
+          return;
+        }
         fetch(apiUrl("/api/v1/practice/bootstrap?learner=" + encodeURIComponent(learner)), {
           headers: apiHeaders()
         }).then(function (r) { return r.json(); }).then(function (data) {

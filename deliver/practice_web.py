@@ -228,7 +228,7 @@ class PracticeHandler(BaseHTTPRequestHandler):
         if origin:
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Practice-Token, X-Learner-Id")
-            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS")
 
     def _json(self, code: int, obj: dict) -> None:
         data = json.dumps(obj, ensure_ascii=False).encode("utf-8")
@@ -238,6 +238,8 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self._cors()
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         self.wfile.write(data)
 
     def _bytes(self, code: int, data: bytes, content_type: str) -> None:
@@ -247,6 +249,8 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self._cors()
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         self.wfile.write(data)
 
     def _authorized(self) -> bool:
@@ -289,6 +293,13 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_response(204)
         self._cors()
         self.end_headers()
+
+    def do_HEAD(self) -> None:  # noqa: N802
+        self._omit_body = True
+        try:
+            self.do_GET()
+        finally:
+            self._omit_body = False
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)

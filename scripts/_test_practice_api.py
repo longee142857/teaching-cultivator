@@ -24,16 +24,24 @@ def check(cond: bool, msg: str) -> None:
 def test_dto():
     from modules.bridge.practice_dto import (
         extract_katex,
+        extract_options,
+        extract_stem,
         parse_item_id,
         public_item_id,
         push_to_shell_item,
     )
+    from modules.bridge.practice_service import _eta_map, _iter_mastery
 
     check(public_item_id(12) == "i12", "public id")
     check(parse_item_id("i12") == 12, "parse i12")
     check(parse_item_id("12") == 12, "parse 12")
     katex = extract_katex(r"stem $$\lim x$$ tail")
     check("lim" in katex, "extract katex")
+    surface = "已知曲面 $$z=x^{2}+y^{2}.$$ 求过点的切平面。"
+    stem = extract_stem(surface)
+    check("z=x^{2}+y^{2}" in stem and "切平面" in stem, "stem keeps display math")
+    opts = extract_options("下列正确的是\nA. 可导\nB. 连续\nC. 可积\nD. 有界")
+    check([o["letter"] for o in opts] == ["A", "B", "C", "D"], "mcq options")
     dto = push_to_shell_item(
         {
             "push_id": 9,
@@ -50,6 +58,16 @@ def test_dto():
     check(dto["id"] == "i3" and dto["pushId"] == 9, "shell item ids")
     check("answer" not in dto, "no answer leak")
     check(dto["kind"] == "math", "kind math")
+    check("a_n" in (dto["stem"] or "") or "a_n" in (dto["katex"] or ""), "full problem math")
+
+    pairs = _iter_mastery(
+        [{"kp": "极限", "p_mastery": 0.31}, {"kp": "卷积", "p_mastery": 0.72}]
+    )
+    check(pairs[0] == ("极限", 0.31) and pairs[1][0] == "卷积", "mastery list shape")
+    pairs2 = _iter_mastery({"极限": {"p_mastery": 0.2}, "未分类": {"p": 0.1}})
+    check(pairs2 == [("极限", 0.2)], "mastery dict shape skips 未分类")
+    eta = _eta_map([{"domain": "calc", "eta": 0.4, "n_items": 2}])
+    check(eta.get("calc") == 0.4, "eta list → map")
 
 
 def test_bootstrap_submit(tmp_db: str):
@@ -151,8 +169,86 @@ def test_bootstrap_submit(tmp_db: str):
         r = conn.getresponse()
         html = r.read().decode("utf-8", errors="replace")
         check(r.status == 200 and "API_BASE" in html and "/api/v1/practice/submit" in html, "shell")
+
+        conn.request("HEAD", "/practice")
+        r = conn.getresponse()
+        head_body = r.read()
+        check(r.status == 200 and len(head_body) == 0, "HEAD /practice no body")
+        check(int(r.getheader("Content-Length") or 0) > 0, "HEAD Content-Length")
     finally:
         httpd.shutdown()
+
+
+def test_empty_day_and_capability(tmp_db: str):
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "ref"
+
+    import importlib
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+
+    importlib.reload(ps)
+    from modules.store import get_store
+
+    store = get_store()
+    store.set_mastery(
+        "cap_learner",
+        "极限",
+        {"p_mastery": 0.28, "opportunity_count": 4, "is_mastered": False},
+    )
+    store.set_mastery(
+        "cap_learner",
+        "卷积",
+        {"p_mastery": 0.81, "opportunity_count": 6, "is_mastered": True},
+    )
+    store.insert_bank_item(
+        subject="math",
+        question="曲面\n\n$$z=x^{2}+y^{2}.$$\n\n求过点的切平面。",
+        answer="切平面",
+        kp="极限",
+        status="ready",
+    )
+    store.insert_bank_item(
+        subject="comm",
+        question="系统输出\n\n$$y(t)=x*h$$\n\n写出卷积定义。",
+        answer="卷积",
+        kp="卷积",
+        status="ready",
+    )
+    store.insert_bank_item(
+        subject="review",
+        question="复习\n\n$$f'(x)=2x$$\n\n求 f(1)。",
+        answer="2",
+        kp="导数",
+        status="ready",
+    )
+
+    cap = ps._params_summary("cap_learner")
+    check("error" not in cap, "capability no list.items error")
+    check(any(w["kp"] == "极限" for w in cap.get("masteryWeak") or []), "masteryWeak from list")
+    check(isinstance(cap.get("eta"), dict), "eta is dict")
+
+    boot = ps.bootstrap("cap_learner")
+    check(boot["ok"], "empty-day bootstrap ok")
+    check((boot.get("capability") or {}).get("error") in (None, ""), "bootstrap capability clean")
+    check(any(s.get("itemId") for s in boot.get("slots") or []), "empty-day slots filled from bank")
+    today = [i for i in boot.get("items") or [] if not i.get("backlog")]
+    check(len(today) >= 1, "empty-day has reachable bank item")
+    check(any(i.get("fromBank") for i in today), "items marked fromBank")
+    math_it = next((i for i in today if i.get("kind") == "math"), today[0])
+    check(
+        "z=x^{2}+y^{2}" in (math_it.get("stem") or "")
+        or "z=x^{2}+y^{2}" in (math_it.get("katex") or ""),
+        "bank item keeps surface equation",
+    )
+    got = ps.get_item("cap_learner", item=math_it["id"])
+    check(got.get("ok") and got.get("item", {}).get("itemId"), "GET item without push")
 
 
 def main():
@@ -160,6 +256,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t.db")
         test_bootstrap_submit(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t2.db")
+        test_empty_day_and_capability(db)
     print("ALL_OK")
 
 

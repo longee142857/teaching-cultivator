@@ -123,20 +123,63 @@ def _store():
     return get_store()
 
 
+def _iter_mastery(mastery: Any) -> list[tuple[str, float]]:
+    """LearnerParams.to_dict() uses a list; older snapshots may still be a dict."""
+    out: list[tuple[str, float]] = []
+    if isinstance(mastery, dict):
+        for k, v in mastery.items():
+            kp = str(k or "").strip()
+            if not kp or kp == "未分类":
+                continue
+            try:
+                if isinstance(v, dict):
+                    p = float(v.get("p_mastery") or v.get("p") or 0)
+                else:
+                    p = float(v)
+            except (TypeError, ValueError):
+                continue
+            out.append((kp, p))
+        return out
+    if isinstance(mastery, (list, tuple)):
+        for entry in mastery:
+            if not isinstance(entry, dict):
+                continue
+            kp = str(entry.get("kp") or entry.get("knowledge_point") or "").strip()
+            if not kp or kp == "未分类":
+                continue
+            try:
+                p = float(entry.get("p_mastery") or entry.get("p") or 0)
+            except (TypeError, ValueError):
+                continue
+            out.append((kp, p))
+    return out
+
+
+def _eta_map(eta: Any) -> dict[str, Any]:
+    if isinstance(eta, dict):
+        out: dict[str, Any] = {}
+        for k, v in eta.items():
+            if isinstance(v, dict) and "eta" in v:
+                out[str(k)] = v.get("eta")
+            else:
+                out[str(k)] = v
+        return out
+    if isinstance(eta, (list, tuple)):
+        out = {}
+        for e in eta:
+            if isinstance(e, dict) and e.get("domain") is not None:
+                out[str(e["domain"])] = e.get("eta")
+        return out
+    return {}
+
+
 def _weak_hint(learner_id: str, params: dict | None = None) -> str:
     try:
         if params is None:
             from modules.bridge import LearnerBridge
 
             params = LearnerBridge(store=_store()).get_learner_params(learner_id)
-        mastery = params.get("mastery") or {}
-        weak = []
-        for kp, entry in mastery.items():
-            if not isinstance(entry, dict):
-                continue
-            p = float(entry.get("p_mastery") or entry.get("p") or 0)
-            if p < 0.45 and kp and kp != "未分类":
-                weak.append((p, kp))
+        weak = [(p, kp) for kp, p in _iter_mastery(params.get("mastery")) if p < 0.45]
         weak.sort()
         if weak:
             return f"近期易错：{weak[0][1]}"
@@ -153,23 +196,15 @@ def _params_summary(learner_id: str) -> dict[str, Any]:
         from modules.bridge import LearnerBridge
 
         full = LearnerBridge(store=_store()).get_learner_params(learner_id)
-        eta = full.get("eta") or full.get("domain_eta") or {}
-        mastery = full.get("mastery") or {}
-        top = sorted(
-            (
-                (k, float(v.get("p_mastery") or v.get("p") or 0))
-                for k, v in mastery.items()
-                if isinstance(v, dict)
-            ),
-            key=lambda x: x[1],
-        )[:5]
+        eta = _eta_map(full.get("eta") or full.get("domain_eta"))
+        top = sorted(_iter_mastery(full.get("mastery")), key=lambda x: x[1])[:5]
         return {
-            "eta": eta if isinstance(eta, dict) else {},
+            "eta": eta,
             "masteryWeak": [{"kp": k, "p": round(p, 3)} for k, p in top],
             "assumptions": full.get("assumptions") or {},
         }
-    except Exception as e:
-        return {"eta": {}, "masteryWeak": [], "error": str(e)}
+    except Exception:
+        return {"eta": {}, "masteryWeak": []}
 
 
 def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[str, Any]]:
@@ -298,6 +333,75 @@ def ensure_demo_seed(learner_id: str, *, store=None) -> bool:
     return True
 
 
+def _bank_item_as_row(item: dict, *, day: str, kind: str) -> dict[str, Any]:
+    return {
+        "push_id": None,
+        "item_id": int(item.get("id") or 0),
+        "question": item.get("question"),
+        "answer": item.get("answer"),
+        "subject": item.get("subject") or item.get("bank_subject") or kind,
+        "kp": item.get("kp"),
+        "solution": item.get("solution") or {},
+        "difficulty": item.get("difficulty"),
+        "slot": kind,
+        "day": day,
+        "answered": False,
+        "from_bank": True,
+    }
+
+
+def _pick_ready_for_kind(
+    kind: str,
+    learner_id: str,
+    *,
+    store,
+    exclude_ids: set[int],
+) -> dict | None:
+    """Fill an empty desk slot from the ready bank (no new service / no write)."""
+    subject = (kind or "").strip() or "math"
+    excl_hashes: set[str] = set()
+    if hasattr(store, "learner_seen_hashes"):
+        try:
+            excl_hashes = store.learner_seen_hashes(learner_id) or set()
+        except Exception:
+            excl_hashes = set()
+
+    def _accept(it: dict | None) -> dict | None:
+        if not it:
+            return None
+        try:
+            iid = int(it.get("id") or 0)
+        except (TypeError, ValueError):
+            return None
+        if not iid or iid in exclude_ids:
+            return None
+        return it
+
+    try:
+        from learner.item_bank import pick_for_push
+
+        hit = _accept(pick_for_push(subject, learner_id=learner_id or None))
+        if hit:
+            return hit
+    except Exception:
+        pass
+    if hasattr(store, "pick_ready_item"):
+        hit = _accept(store.pick_ready_item(subject=subject, exclude_hashes=excl_hashes))
+        if hit:
+            return hit
+    if hasattr(store, "list_ready_candidates"):
+        try:
+            for cand in store.list_ready_candidates(
+                subject=subject, exclude_hashes=excl_hashes, limit=20
+            ):
+                hit = _accept(cand)
+                if hit:
+                    return hit
+        except Exception:
+            pass
+    return None
+
+
 def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[str, Any]:
     lid = (learner_id or "").strip()
     if not lid:
@@ -347,13 +451,35 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
             continue
         _add(row, backlog=True)
 
-    # fill missing slot kinds from today extras already in by_kind
+    used_ids = {int(i.get("itemId") or 0) for i in items if i.get("itemId")}
+    filled_from_bank = False
+    for spec in SLOT_SPECS:
+        kind = spec["kind"]
+        if kind in by_kind:
+            continue
+        bank_item = _pick_ready_for_kind(kind, lid, store=store, exclude_ids=used_ids)
+        if not bank_item:
+            continue
+        dto = _add(_bank_item_as_row(bank_item, day=day, kind=kind), backlog=False)
+        dto["fromBank"] = True
+        by_kind[kind] = dto
+        try:
+            used_ids.add(int(dto.get("itemId") or 0))
+        except (TypeError, ValueError):
+            pass
+        filled_from_bank = True
+
     slots = build_slots(by_kind) if by_kind else empty_slots()
     # if today had pushes but kinds missing, still keep empty slot stubs
     if today_rows and not by_kind:
         slots = empty_slots()
 
     params = _params_summary(lid)
+    hint = _weak_hint(lid)
+    if filled_from_bank and not today_rows:
+        extra = "今日暂无排程推送，已从 ready 题库补入可练题目。"
+        hint = extra if hint.startswith("建议优先") else f"{extra} {hint}"
+
     return {
         "ok": True,
         "learner": lid,
@@ -361,10 +487,12 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
         "slots": slots,
         "items": items,
         "answered": answered_map,
-        "weakHint": _weak_hint(lid),
+        "weakHint": hint,
         "capability": params,
         "tutor": tutor_status(),
         "gradeMode": grade_mode(),
+        "emptyDay": bool(not today_rows),
+        "fromBank": filled_from_bank,
         "stats": {
             "cached": len(SLOT_SPECS),
             "today": len([i for i in items if not i.get("backlog")]),
@@ -374,6 +502,7 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
             "done": len(
                 [i for i in items if not i.get("backlog") and answered_map.get(i["id"])]
             ),
+            "fromBank": filled_from_bank,
         },
     }
 
