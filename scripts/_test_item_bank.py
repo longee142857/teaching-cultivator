@@ -84,6 +84,24 @@ def test_schema_and_pick() -> None:
         check(store.count_ready("math") == 1, "ready count 1")
         check(store.count_ready("math", kp="极限", technique="t_a") == 1, "ready by tech")
 
+        # poor ready must not inflate quota / gap count
+        poor_id = store.insert_bank_item(
+            subject="math",
+            question="差题占位",
+            answer="0",
+            kp="极限",
+            techniques=["t_a"],
+            solution=sol,
+            cdps=cdps,
+            status="ready",
+        )
+        store.apply_judge_verdict(poor_id, verdict="fail", reasons=["test"])
+        check(store.count_ready("math") == 1, "poor excluded from count_ready")
+        check(
+            store.count_ready("math", kp="极限", technique="t_a") == 1,
+            "poor excluded from count_ready by tech",
+        )
+
         # second item different kp
         store.insert_bank_item(
             subject="math",

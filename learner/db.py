@@ -880,26 +880,34 @@ class Store:
         return d
 
     def count_ready(self, subject: str, kp: str = "", technique: str = "") -> int:
+        """Count ready items for quota/gap fill.
+
+        Excludes quality_tier='poor' so rejected items do not block pregen.
+        Poor rows remain pickable via pick_ready_item / pick_for_push.
+        """
         subj = (subject or "").strip()
         kp = (kp or "").strip()
         tech = (technique or "").strip()
+        # pending + pass count toward quota; poor stays in bank but not quota
+        base = (
+            "status='ready' AND COALESCE(quality_tier, 'pending') != 'poor' "
+            "AND COALESCE(bank_subject, subject)=?"
+        )
         if tech:
             rows = self._query(
-                """SELECT COUNT(*) FROM items
-                   WHERE status='ready' AND COALESCE(bank_subject, subject)=?
-                     AND kp=? AND techniques LIKE ?""",
+                f"""SELECT COUNT(*) FROM items
+                   WHERE {base} AND kp=? AND techniques LIKE ?""",
                 (subj, kp, f'%"{tech}"%'),
             )
         elif kp:
             rows = self._query(
-                """SELECT COUNT(*) FROM items
-                   WHERE status='ready' AND COALESCE(bank_subject, subject)=? AND kp=?""",
+                f"""SELECT COUNT(*) FROM items
+                   WHERE {base} AND kp=?""",
                 (subj, kp),
             )
         else:
             rows = self._query(
-                """SELECT COUNT(*) FROM items
-                   WHERE status='ready' AND COALESCE(bank_subject, subject)=?""",
+                f"""SELECT COUNT(*) FROM items WHERE {base}""",
                 (subj,),
             )
         return int(rows[0][0]) if rows else 0
