@@ -59,6 +59,18 @@ def test_dto():
     check("answer" not in dto, "no answer leak")
     check(dto["kind"] == "math", "kind math")
     check("a_n" in (dto["stem"] or "") or "a_n" in (dto["katex"] or ""), "full problem math")
+    dto2 = push_to_shell_item(
+        {
+            "item_id": 126,
+            "subject": "math",
+            "kp": "多元函数",
+            "question": "曲面\n\n$$z=x^{2}+y^{2}.$$\n\n求过点的切平面。",
+            "answered": False,
+        }
+    )
+    check(dto2["title"] == "曲面", "title from first line")
+    check(not (dto2["stem"] or "").startswith("曲面"), "stem drops duplicate title")
+    check("z=x^{2}+y^{2}" in (dto2["stem"] or ""), "item 126-style equation stays")
 
     pairs = _iter_mastery(
         [{"kp": "极限", "p_mastery": 0.31}, {"kp": "卷积", "p_mastery": 0.72}]

@@ -469,7 +469,7 @@
       }
       .app:not(.is-expanded) { --rail: 72px; }
       .tabbar { display: none; }
-      .content { max-width: 920px; margin-inline: auto; width: 100%; }
+      .content { max-width: none; margin-inline: 0; width: 100%; }
       .rail {
         display: flex; flex-direction: column; gap: 8px;
         padding: calc(16px + var(--safe-t)) 12px 16px calc(12px + var(--safe-l));
@@ -528,7 +528,10 @@
       }
     }
     @media (min-width: 1100px) {
-      .content { max-width: 1040px; }
+      .content { padding-inline: 36px; }
+      .desk-split {
+        grid-template-columns: minmax(0, 1fr) 260px;
+      }
     }
 
     @media (min-width: 768px) and (max-height: 560px) {

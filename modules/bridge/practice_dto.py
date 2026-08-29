@@ -226,6 +226,12 @@ def push_to_shell_item(
     comment_ok, comment_bad = comments_for_item(explain=explain, answer="")
     ans_flag = row.get("answered") if answered is None else answered
     options = extract_options(question)
+    title = extract_title(question, kp)
+    stem = extract_stem(question)
+    if title and stem.startswith(title):
+        rest = stem[len(title) :].lstrip(" \t\n：:·。.")
+        if rest:
+            stem = rest
     out: dict[str, Any] = {
         "id": public_item_id(item_id),
         "itemId": item_id,
@@ -233,8 +239,8 @@ def push_to_shell_item(
         "kind": kind,
         "subject": subject_label(subject_raw, kind),
         "kp": kp or "未分类",
-        "title": extract_title(question, kp),
-        "stem": extract_stem(question),
+        "title": title,
+        "stem": stem,
         "katex": extract_katex(question),
         "options": options,
         "commentOk": comment_ok,
