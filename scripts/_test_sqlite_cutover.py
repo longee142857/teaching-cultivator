@@ -272,6 +272,12 @@ def _test_grade_links(store) -> None:
         attempts = store.get_attempts("grader")
         check(len(attempts) == 1, "one attempt written")
         check(attempts[0].get("push_id") == pid, f"attempt linked push_id {pid}")
+        push_row = store.get_push(pid)
+        check(
+            attempts[0].get("item_id") is not None
+            and attempts[0].get("item_id") == (push_row or {}).get("item_id"),
+            "attempt linked item_id from push",
+        )
         check(attempts[0].get("correct") is True, "attempt correct=True")
         st = store.get_mastery("grader", "函数极限与连续")
         check(st is not None and st.get("opportunity_count", 0) >= 1,
