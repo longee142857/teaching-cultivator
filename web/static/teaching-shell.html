@@ -314,6 +314,28 @@
     textarea.composer { min-height: 44px; max-height: 120px; resize: none; }
     textarea::placeholder { color: var(--muted); }
     .field-error { font-size: 13px; color: var(--bad); line-height: 1.5; }
+    .ocr-zone { display: grid; gap: 8px; }
+    .ocr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ocr-preview {
+      display: flex; gap: 10px; align-items: center;
+      border: 1px dashed var(--border); border-radius: 8px; padding: 8px 10px;
+      background: var(--bg);
+    }
+    .ocr-preview img {
+      width: 72px; height: 72px; object-fit: cover; border-radius: 6px; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--surface);
+    }
+    .ocr-meta { font-size: 12px; color: var(--muted); line-height: 1.55; min-width: 0; }
+    .ocr-meta strong { display: block; color: var(--fg); font-weight: 550; font-size: 13px; }
+    .ocr-modes { display: flex; gap: 6px; flex-wrap: wrap; }
+    .ocr-mode {
+      appearance: none; border: 1px solid var(--border); background: var(--bg);
+      color: var(--muted); border-radius: 999px; padding: 6px 12px; min-height: 32px;
+      font-size: 12px; font-weight: 550;
+    }
+    .ocr-mode.is-on {
+      border-color: var(--fg); background: var(--surface); color: var(--fg);
+    }
 
     .desk-split {
       display: grid; gap: 12px;
@@ -887,8 +909,12 @@
         contextItemId: null,
         threads: {},
         recents: [],
-        pending: false
+        pending: false,
+        ocrBusy: false,
+        ocrMsg: "",
+        ocrMode: "document"
       };
+      var ocrPayload = null;
 
       function esc(s) {
         return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -1058,7 +1084,13 @@
         }
         state.view = view;
         if (typeof opts.index === "number") state.index = opts.index;
-        if (opts.resetDraft) { state.draft = ""; state.error = ""; }
+        if (opts.resetDraft) {
+          state.draft = "";
+          state.error = "";
+          state.ocrBusy = false;
+          state.ocrMsg = "";
+          ocrPayload = null;
+        }
         if (opts.result !== undefined) state.lastResult = opts.result;
         if (opts.explainOpen !== undefined) state.explainOpen = opts.explainOpen;
         if (opts.fromDeepLink !== undefined) state.fromDeepLink = opts.fromDeepLink;
@@ -1125,6 +1157,117 @@
         if (left === 0 && bl.length) { openItemById(bl[0].id); return; }
         if (left === 0) { setView("done"); return; }
         setView("desk", { index: nextUnansweredIndex(0), resetDraft: true, fromDeepLink: false, push: null });
+      }
+      var OCR_ERR = {
+        empty_image: "请先选择手写图片。",
+        image_too_large: "图片过大，请换一张更清晰的近拍。",
+        payload_too_large: "图片过大，请换一张。",
+        simpletex_not_configured: "手写识别未配置，请改用手打。",
+        ocr_disabled: "手写识别已关闭，请改用手打。",
+        empty_ocr: "未识别出文字，请换一张更清晰、光线更好的图。",
+        unauthorized: "识别接口未授权。"
+      };
+      function ocrErrorText(code) {
+        var c = String(code || "");
+        if (OCR_ERR[c]) return OCR_ERR[c];
+        if (c.indexOf("http_") === 0) return "识别服务暂时不可用（" + c + "）。";
+        return c ? ("识别失败：" + c) : "识别失败，请稍后重试。";
+      }
+      function fileToOcrPayload(file, done) {
+        if (!file) { done(new Error("empty")); return; }
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var max = 1600;
+            var w = img.naturalWidth || img.width;
+            var h = img.naturalHeight || img.height;
+            var scale = Math.min(1, max / Math.max(w, h, 1));
+            var canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(w * scale));
+            canvas.height = Math.max(1, Math.round(h * scale));
+            canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+            var dataUrl = canvas.toDataURL("image/jpeg", 0.72);
+            var base = String(file.name || "answer").replace(/\.[^.]+$/, "");
+            done(null, { dataUrl: dataUrl, filename: base + ".jpg", name: file.name || "handwriting.jpg" });
+          } catch (e) {
+            done(e);
+          } finally {
+            URL.revokeObjectURL(url);
+          }
+        };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          var reader = new FileReader();
+          reader.onload = function () {
+            done(null, { dataUrl: String(reader.result || ""), filename: file.name || "answer.jpg", name: file.name || "handwriting.jpg" });
+          };
+          reader.onerror = function () { done(new Error("read")); };
+          reader.readAsDataURL(file);
+        };
+        img.src = url;
+      }
+      function pickOcrFile() {
+        var input = document.getElementById("ocr-file");
+        if (input) input.click();
+      }
+      function onOcrFilePicked(ev) {
+        var file = ev && ev.target && ev.target.files && ev.target.files[0];
+        if (!file) return;
+        state.ocrBusy = false;
+        state.ocrMsg = "正在读取图片…";
+        render();
+        fileToOcrPayload(file, function (err, payload) {
+          if (err || !payload || !payload.dataUrl) {
+            ocrPayload = null;
+            state.ocrMsg = "";
+            state.error = "无法读取这张图片，请换一张 JPG / PNG。";
+            render();
+            return;
+          }
+          ocrPayload = payload;
+          state.error = "";
+          state.ocrMsg = "已选图，点「识别」填入下方文本。";
+          render();
+        });
+      }
+      function runOcr() {
+        if (!ocrPayload || !ocrPayload.dataUrl || state.ocrBusy) return;
+        state.ocrBusy = true;
+        state.ocrMsg = state.ocrMode === "formula" ? "正在用标准公式模型识别…" : "正在整页识别…";
+        state.error = "";
+        render();
+        fetch(apiUrl("/api/v1/practice/ocr"), {
+          method: "POST",
+          headers: apiHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({
+            learner: state.learner,
+            image: ocrPayload.dataUrl,
+            filename: ocrPayload.filename || "answer.jpg",
+            mode: state.ocrMode === "formula" ? "formula" : "document"
+          })
+        }).then(function (r) { return r.json().then(function (j) { return { okHttp: r.ok, body: j }; }); })
+          .then(function (pack) {
+            state.ocrBusy = false;
+            var data = pack.body || {};
+            if (!data.ok || !String(data.text || "").trim()) {
+              state.ocrMsg = ocrErrorText(data.error);
+              state.error = state.ocrMsg;
+              render();
+              return;
+            }
+            state.draft = String(data.text).trim();
+            state.error = "";
+            var conf = (typeof data.conf === "number") ? (" · 置信 " + Math.round(data.conf * 100) + "%") : "";
+            state.ocrMsg = "识别完成" + conf + "。请核对后再点底部提交。";
+            render();
+          })
+          .catch(function (e) {
+            state.ocrBusy = false;
+            state.ocrMsg = "网络错误，识别未完成。";
+            state.error = "网络错误：" + (e && e.message ? e.message : "ocr_failed");
+            render();
+          });
       }
       function submitAnswer() {
         var item = currentItem();
@@ -1624,8 +1767,23 @@
                 "</div>" +
               "</aside>" +
               '<section class="card stack answer-card" data-od-id="answer-zone">' +
-                '<label for="answer-input"><h3>作答</h3></label>' +
-                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，提交后由 AI 讲师批改。"' + (state.pending ? " disabled" : "") + ">" + esc(state.draft) + "</textarea>" +
+                '<div class="row between wrap"><label for="answer-input"><h3>作答</h3></label><span class="pill">手写可拍照</span></div>' +
+                '<div class="ocr-zone" data-od-id="ocr-zone">' +
+                  '<input type="file" id="ocr-file" accept="image/*" hidden>' +
+                  '<div class="ocr-modes" data-od-id="ocr-modes">' +
+                    '<button type="button" class="ocr-mode' + (state.ocrMode !== "formula" ? " is-on" : "") + '" data-ocr-mode="document"' + (state.pending ? " disabled" : "") + '>整页识别</button>' +
+                    '<button type="button" class="ocr-mode' + (state.ocrMode === "formula" ? " is-on" : "") + '" data-ocr-mode="formula"' + (state.pending ? " disabled" : "") + '>公式加强</button>' +
+                  "</div>" +
+                  '<div class="ocr-actions">' +
+                    '<button type="button" class="btn ghost" id="btn-ocr-pick" data-od-id="btn-ocr-pick"' + (state.pending ? " disabled" : "") + '>' + (ocrPayload ? "更换图片" : "选择手写图片") + "</button>" +
+                    '<button type="button" class="btn ghost" id="btn-ocr-run" data-od-id="btn-ocr-run"' +
+                      (ocrPayload && !state.ocrBusy && !state.pending ? "" : " disabled") + ">" + (state.ocrBusy ? "识别中…" : "识别") + "</button>" +
+                  "</div>" +
+                  (ocrPayload
+                    ? '<div class="ocr-preview" data-od-id="ocr-preview"><img id="ocr-preview-img" alt="手写预览" src="' + escAttr(ocrPayload.dataUrl) + '"><div class="ocr-meta"><strong>' + esc(ocrPayload.name) + "</strong>" + esc(state.ocrMsg || (state.ocrMode === "formula" ? "标准公式模型 · 核对后再提交。" : "整页 markdown · 核对后再提交。")) + "</div></div>"
+                    : '<p class="hint" style="margin:0">演算纸用「整页识别」；只拍一条公式用「公式加强」。点「识别」填入下方文本，也可直接手打。</p>') +
+                "</div>" +
+                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，或先识别手写再核对。提交后由 AI 讲师批改。"' + (state.pending ? " disabled" : "") + ">" + esc(state.draft) + "</textarea>" +
                 err +
                 '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
               "</section>" +
@@ -1876,6 +2034,21 @@
             }
           });
         }
+        var ocrFile = document.getElementById("ocr-file");
+        if (ocrFile) ocrFile.addEventListener("change", onOcrFilePicked);
+        var ocrPick = document.getElementById("btn-ocr-pick");
+        if (ocrPick) ocrPick.addEventListener("click", pickOcrFile);
+        var ocrRun = document.getElementById("btn-ocr-run");
+        if (ocrRun) ocrRun.addEventListener("click", runOcr);
+        root.querySelectorAll("[data-ocr-mode]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            if (state.pending) return;
+            var m = btn.getAttribute("data-ocr-mode") || "document";
+            if (m === state.ocrMode) return;
+            state.ocrMode = m === "formula" ? "formula" : "document";
+            render();
+          });
+        });
         var ask = document.getElementById("btn-ask-tutor");
         if (ask) ask.addEventListener("click", askTutor);
         var fold = document.getElementById("btn-fold");

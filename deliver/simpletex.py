@@ -31,7 +31,7 @@ def _cfg():
         "app_secret": (SIMPLETEX_APP_SECRET or "").strip(),
         "uat": (SIMPLETEX_UAT or "").strip(),
         "base": (SIMPLETEX_API_BASE or DEFAULT_BASE).rstrip("/"),
-        "mode": (SIMPLETEX_OCR_MODE or "general").strip().lower(),
+        "mode": (SIMPLETEX_OCR_MODE or "document").strip().lower(),
     }
 
 
@@ -64,14 +64,26 @@ def _auth_headers(form_data: dict[str, Any]) -> dict[str, str]:
 
 
 def _endpoint(mode: str) -> tuple[str, dict[str, Any]]:
-    """返回 (path, 非文件表单字段)。"""
-    if mode in ("formula", "formula_std", "latex"):
+    """返回 (path, 非文件表单字段)。
+
+    官方文档：公式分轻量 /api/latex_ocr_turbo 与标准 /api/latex_ocr（效果更好）；
+    整页混排走通用 /api/simpletex_ocr，rec_mode=document 返回 markdown，
+    formula 返回 LaTeX，auto 自动检测（旧默认，演算纸常切错成单公式）。
+    """
+    m = (mode or "document").strip().lower()
+    if m in ("formula", "formula_std", "latex"):
         return "/api/latex_ocr", {}
-    if mode in ("formula_turbo", "turbo", "lightweight"):
+    if m in ("formula_turbo", "turbo", "lightweight"):
         return "/api/latex_ocr_turbo", {}
-    # general：整页/演算混排（免费量较少但更适合答卷）
+    # general / page / document → 整页 document；仅显式 auto 走自动检测
+    if m == "auto":
+        rec = "auto"
+    elif m in ("general_formula", "ocr_formula"):
+        rec = "formula"
+    else:
+        rec = "document"
     return "/api/simpletex_ocr", {
-        "rec_mode": "auto",
+        "rec_mode": rec,
         "enable_img_rot": "true",
     }
 
@@ -81,7 +93,7 @@ def _extract_text(payload: dict) -> str:
         return ""
     if payload.get("status") is False:
         return ""
-    # simpletex_ocr(general) 常用 res.info；latex_* 用 res.latex
+    # simpletex_ocr(document) 常用 res.info.markdown；latex_* 用 res.latex
     keys = ("latex", "markdown", "text", "content", "md", "info")
 
     def _pick(d: dict) -> str:
@@ -93,6 +105,11 @@ def _extract_text(payload: dict) -> str:
 
     res = payload.get("res")
     if isinstance(res, dict):
+        info = res.get("info")
+        if isinstance(info, dict):
+            md = info.get("markdown") or info.get("content") or info.get("text")
+            if isinstance(md, str) and md.strip() and md.strip() != "[EMPTY]":
+                return md.strip()
         hit = _pick(res)
         if hit:
             return hit
@@ -136,7 +153,7 @@ def ocr_image(
             "mode": mode,
         }
     c = _cfg()
-    use_mode = (mode or c["mode"] or "general").strip().lower()
+    use_mode = (mode or c["mode"] or "document").strip().lower()
     path, form = _endpoint(use_mode)
     url = c["base"] + path
     try:

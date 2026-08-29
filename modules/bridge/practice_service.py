@@ -69,13 +69,23 @@ def practice_ocr(
     if not _simpletex_ready():
         return {"ok": False, "error": "simpletex_not_configured", "text": ""}
     use_mode = (mode or "").strip().lower()
-    if use_mode in ("document", "page", "general", ""):
-        use_mode = "general"
+    # Keep document/page as document (整页 markdown); only formula* → latex_ocr.
+    # Empty mode → SimpleTex default (SIMPLETEX_OCR_MODE, usually document).
+    if use_mode in ("page", "general"):
+        use_mode = "document"
     elif use_mode in ("formula", "latex", "formula_std"):
         use_mode = "formula"
+    elif use_mode in ("formula_turbo", "turbo", "lightweight"):
+        use_mode = "formula_turbo"
+    elif use_mode == "":
+        use_mode = ""
     from deliver.simpletex import ocr_image
 
-    return ocr_image(data, filename=(filename or "answer.jpg").strip() or "answer.jpg", mode=use_mode)
+    return ocr_image(
+        data,
+        filename=(filename or "answer.jpg").strip() or "answer.jpg",
+        mode=use_mode or None,
+    )
 
 
 def tutor_status() -> dict[str, Any]:

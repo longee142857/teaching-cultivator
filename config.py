@@ -114,7 +114,8 @@ SIMPLETEX_APP_ID = os.environ.get("SIMPLETEX_APP_ID", "")
 SIMPLETEX_APP_SECRET = os.environ.get("SIMPLETEX_APP_SECRET", "")
 SIMPLETEX_API_BASE = os.environ.get("SIMPLETEX_API_BASE", "https://server.simpletex.cn")
 # general=整页混排(默认)；formula_turbo=轻量公式；formula=标准公式
-SIMPLETEX_OCR_MODE = os.environ.get("SIMPLETEX_OCR_MODE", "general")
+# document=整页混排(答卷默认)；formula=标准公式(更强)；formula_turbo=轻量公式；auto=通用自动检测
+SIMPLETEX_OCR_MODE = os.environ.get("SIMPLETEX_OCR_MODE", "document")
 SIMPLETEX_ENABLED = os.environ.get("SIMPLETEX_ENABLED", "1") == "1"
 
 # ── OpenRouter（可选遗留；默认审查已改走 DashScope，不走代理翻墙）──

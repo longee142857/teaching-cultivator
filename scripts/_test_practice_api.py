@@ -213,7 +213,8 @@ def test_bootstrap_submit(tmp_db: str):
         r = conn.getresponse()
         html = r.read().decode("utf-8", errors="replace")
         check(r.status == 200 and "API_BASE" in html and "/api/v1/practice/submit" in html, "shell")
-        check("ocr-zone" not in html, "shell hides OCR chrome")
+        check("ocr-zone" in html and "选择手写图片" in html, "shell exposes OCR chrome")
+        check("公式加强" in html and "整页识别" in html, "shell OCR mode toggle")
         check("/static/katex/katex.min.js" in html, "shell uses local KaTeX")
         font = ROOT / "web/static/katex/fonts/KaTeX_Main-Regular.woff2"
         check(font.is_file() and font.stat().st_size > 1000, "local KaTeX font present")
