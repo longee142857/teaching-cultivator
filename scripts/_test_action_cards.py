@@ -17,6 +17,15 @@ from deliver.action_cards import (
 )
 
 
+def test_question_card_notify_only():
+    t = question_card_text("math")
+    assert "数学题已推送" in t
+    assert "练习台" in t
+    assert "打字交答案" not in t
+    assert "换一道" not in t
+    print("OK question card notify-only")
+
+
 def test_dtmd_encodes_chinese():
     url = dtmd_send("我不会做")
     assert url.startswith("dtmd://dingtalkclient/sendMessage?content=")
@@ -56,6 +65,7 @@ def test_session_payload():
 
 if __name__ == "__main__":
     test_dtmd_encodes_chinese()
+    test_question_card_notify_only()
     test_group_param_four_buttons()
     test_group_param_three_buttons()
     test_session_payload()

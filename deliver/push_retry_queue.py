@@ -169,7 +169,7 @@ def _redeliver_saved(bot, subject: str, content: str) -> bool:
     """用已保存的内容重试推送。"""
     try:
         import deliver.bridge as db
-        bridge = bot._make_push_bridge()
+        bridge = bot._make_push_bridge(notify_only=True)
         orig = db.get_bridge
         db.get_bridge = lambda: bridge
         try:

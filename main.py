@@ -192,7 +192,7 @@ class TeachingBot:
         orig_db = db.get_bridge
         orig_cult = _cultivate.get_bridge
 
-        bridge = self._make_push_bridge()
+        bridge = self._make_push_bridge(notify_only=True)
         db.get_bridge = lambda: bridge
         _cultivate.get_bridge = lambda: bridge
         saved_content = ""
@@ -276,6 +276,7 @@ class TeachingBot:
                     self.dingtalk.send_question_action_card(
                         subject, deep_link=deep_link
                     )
+                    log(f"[notify] {subject} 钉钉仅通知，题干不发 IM link={bool(deep_link)}")
                 except Exception as e:
                     log(f"[action-card] 出题卡失败: {e}")
                 log(f"[OK] {subject} 推送执行完毕")
@@ -337,21 +338,27 @@ class TeachingBot:
         except Exception as e:
             log(f"[biweekly] 推送异常: {e}")
 
-    def _make_push_bridge(self):
-        """创建推送桥：钉钉 OpenAPI 优先 → webhook 回退 → stdout 兜底。"""
+    def _make_push_bridge(self, *, notify_only: bool = False):
+        """创建推送桥：钉钉 OpenAPI 优先 → webhook 回退 → stdout 兜底。
+
+        notify_only=True：只落库全文，不把题干发到 IM（每日出题走通知卡 + 练习台）。
+        """
 
         class _PushBridge:
-            def __init__(self, bot):
+            def __init__(self, bot, notify_only=False):
                 self.dd_bridge = DingTalkPushBridge(bot.dingtalk)
                 self.webhook = WecomWebhookBridge()
                 self.stdout = StdoutBridge()
                 self._bot = bot
+                self.notify_only = notify_only
 
             def send(self, content):
                 if not content:
                     return False
-                # 必须存全文：Agent 批改依赖 _last_question；截断会导致「题目被截断」误判
+                # 必须存全文：Agent / 练习台批改依赖 _last_question；截断会导致误判
                 self._bot._record_push(content)
+                if self.notify_only:
+                    return True
 
                 if self.dd_bridge.send(content):
                     return True
@@ -362,7 +369,7 @@ class TeachingBot:
                 self.stdout.send(content)
                 return False
 
-        return _PushBridge(self)
+        return _PushBridge(self, notify_only)
 
     def push_github_trending(self):
         """GitHub Trending 推送到钉钉。"""

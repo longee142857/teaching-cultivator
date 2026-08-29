@@ -781,25 +781,24 @@ class DingTalkBot:
     def send_question_action_card(
         self, subject: str = "", *, deep_link: str = ""
     ) -> bool:
-        """主动推送：出题后通知卡。
+        """主动推送：出题后短通知。不发送题干。
 
-        有 FRONTEND 深链时发「打开练习台」URL 按钮（答题在前端）；
-        否则回退旧 dtmd 快捷操作（聊天作答）。
+        有 FRONTEND 深链时发「打开练习台」；无链接触发短 markdown。
+        聊天作答按钮已停用；私聊 Pi 仍是备用通道。
         """
         if not self.conversation_id:
             return False
         from deliver.action_cards import (
-            QUESTION_ACTIONS,
             practice_open_buttons,
             question_card_text,
         )
         from deliver.dingtalk_media import (
             get_access_token,
-            send_group_action_card,
             send_group_action_card_urls,
         )
 
         link = (deep_link or "").strip()
+        text = question_card_text(subject, with_deep_link=True)
         try:
             token = get_access_token(self.client_id, self.client_secret)
             if link.startswith("http"):
@@ -808,26 +807,18 @@ class DingTalkBot:
                     robot_code=self.client_id,
                     open_conversation_id=self.conversation_id,
                     title="新练习题",
-                    text=question_card_text(subject, with_deep_link=True),
+                    text=text,
                     buttons=practice_open_buttons(link),
                 )
                 logger.info(
-                    "question ActionCard deep-link: %s subject=%s link=%s",
+                    "question ActionCard notify-only: %s subject=%s link=%s",
                     ok,
                     subject,
                     link[:80],
                 )
                 return ok
-            ok = send_group_action_card(
-                access_token=token,
-                robot_code=self.client_id,
-                open_conversation_id=self.conversation_id,
-                title="快捷操作",
-                text=question_card_text(subject),
-                buttons=QUESTION_ACTIONS,
-            )
-            logger.info("question ActionCard push: %s subject=%s", ok, subject)
-            return ok
+            logger.warning("question notify without deep_link, markdown fallback")
+            return self.send_push(text)
         except Exception as e:
             logger.error("question ActionCard failed: %s", e)
             return False
