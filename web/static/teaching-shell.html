@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/static/katex/katex.min.css" />
+  <script src="/static/katex/katex.min.js"></script>
   <style>
     :root {
       --bg: #F4EDE0;
@@ -39,7 +39,7 @@
     }
     * { box-sizing: border-box; }
     html, body {
-      margin: 0; height: 100%; overflow: hidden;
+      margin: 0; height: 100%;
       color: var(--fg);
       font-family: var(--font-body);
       font-size: 15px;
@@ -48,6 +48,9 @@
       background:
         radial-gradient(130% 90% at 50% 0%, rgba(43,33,24,.05), transparent 55%),
         var(--bg);
+    }
+    @media (max-width: 767.98px) {
+      html, body { overflow: hidden; }
     }
     body { display: flex; flex-direction: column; }
     body::before {
@@ -86,7 +89,8 @@
       appearance: none; border: 0; background: transparent;
       min-height: 48px; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 2px;
-      color: var(--fg); font-size: 11px; font-weight: 550; letter-spacing: 0.02em;
+      color: var(--muted); font-size: 11px; font-weight: 550; letter-spacing: 0.02em;
+      transition: color .16s ease, background .16s ease;
     }
     .tab-btn svg { width: 22px; height: 22px; }
     .tab-btn:hover { background: var(--hover); color: var(--fg); }
@@ -202,6 +206,12 @@
     .btn.ghost { background: transparent; }
     .btn.ghost:hover { background: var(--hover); color: var(--fg); }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.is-busy::before {
+      content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 8px;
+      border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+      vertical-align: -2px; animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .btn.primary:disabled:hover {
       background: var(--accent); border-color: var(--accent); color: var(--on-accent);
     }
@@ -243,6 +253,8 @@
       grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center;
     }
     .slot-row:hover, .backlog-item:hover { background: var(--hover); }
+    .slot-row:disabled { opacity: 0.55; cursor: default; }
+    .slot-row:disabled:hover { background: var(--surface); }
     .slot-row.is-done { opacity: 0.7; }
     .slot-row.is-overdue { border-color: color-mix(in oklch, var(--warn) 50%, var(--border)); }
     .slot-title { font-weight: 550; font-size: 14px; line-height: 1.4; }
@@ -268,7 +280,30 @@
     }
     .math-block .katex-display { margin: 0.4em 0; }
     .math-fallback { font-family: var(--font-mono); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
-    .stem-text { font-size: 16px; line-height: 1.75; max-width: 65ch; }
+    .stem-text { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-text .katex-display, .msg-body .katex-display, .fold-panel .katex-display {
+      margin: 0.5em 0; overflow-x: auto; overflow-y: hidden;
+    }
+    .stem-body { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-body p { margin: 0.55em 0; }
+    .stem-body p:first-child { margin-top: 0; }
+    .stem-body .katex-display { margin: 0.75em 0; overflow-x: auto; overflow-y: hidden; }
+    .mcq-options {
+      list-style: none; margin: 14px 0 0; padding: 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .mcq-options li {
+      display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px;
+      align-items: start;
+      border: 1px dashed rgba(43,33,24,.28);
+      background: rgba(244,237,224,.55);
+      padding: 10px 12px;
+    }
+    .mcq-letter {
+      font-family: var(--font-mono); font-weight: 600;
+      color: var(--accent); padding-top: 1px;
+    }
+    .mcq-options .katex { font-size: 1.02em; }
 
     textarea.answer, textarea.composer {
       width: 100%; resize: vertical; border: 1px solid var(--border);
@@ -305,7 +340,8 @@
     .result-banner { border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: grid; gap: 6px; }
     .result-banner.ok { background: var(--soft-ok); border-color: color-mix(in oklch, var(--ok) 35%, var(--border)); }
     .result-banner.bad { background: var(--soft-bad); border-color: color-mix(in oklch, var(--bad) 35%, var(--border)); }
-    .result-mark { font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.35; }
+    .result-mark { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.25; }
+    .result-verdict { font-size: 13px; color: var(--muted); }
     .result-mark.ok { color: var(--ok); }
     .result-mark.bad { color: var(--bad); }
     .result-banner.warn {
@@ -339,7 +375,14 @@
       min-height: 52dvh; display: flex; flex-direction: column;
       justify-content: center; gap: 12px; padding: 28px 16px; text-align: center;
     }
-    .empty p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 28ch; margin-inline: auto; }
+    .empty p { color: var(--muted); font-size: 15px; line-height: 1.75; max-width: 32ch; margin-inline: auto; }
+    .empty .mono { font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; }
+    .calm-note {
+      border: 1px dashed rgba(43,33,24,.28);
+      background: rgba(244,237,224,.5);
+      border-radius: 2px; padding: 12px 14px;
+      font-size: 13px; line-height: 1.7; color: var(--muted);
+    }
     .mark-box {
       width: 48px; height: 48px; margin: 0 auto; border-radius: 12px;
       border: 1px solid var(--border); background: var(--surface);
@@ -411,6 +454,7 @@
     .nav-btn, .rail-toggle {
       appearance: none; border: 0; background: transparent; color: var(--fg);
       min-height: 44px; border-radius: 8px;
+      transition: color .16s ease, background .16s ease;
     }
     .nav-btn:hover, .rail-toggle:hover { background: var(--hover); color: var(--fg); }
     .nav-btn.is-active { color: var(--accent); background: color-mix(in oklch, var(--accent) 8%, var(--surface)); }
@@ -427,17 +471,20 @@
     }
 
     @media (min-width: 768px) {
+      html, body { height: 100%; overflow: hidden; }
       .app {
+        --rail: 220px;
         grid-template-columns: var(--rail) 1fr;
         grid-template-rows: 1fr;
       }
-      .app.is-expanded { --rail: 220px; }
+      .app:not(.is-expanded) { --rail: 72px; }
       .tabbar { display: none; }
+      .content { max-width: none; margin-inline: 0; width: 100%; }
       .rail {
         display: flex; flex-direction: column; gap: 8px;
-        padding: calc(12px + var(--safe-t)) 8px 12px calc(8px + var(--safe-l));
+        padding: calc(16px + var(--safe-t)) 12px 16px calc(12px + var(--safe-l));
         border-right: 1px solid var(--border);
-        background: color-mix(in oklch, var(--surface) 70%, transparent);
+        background: color-mix(in oklch, var(--surface) 78%, transparent);
         backdrop-filter: blur(18px);
       }
       .rail-toggle {
@@ -479,8 +526,22 @@
       .recent-title { font-size: 13px; font-weight: 550; line-height: 1.4; }
       .recent-preview { font-size: 12px; color: var(--muted); line-height: 1.45; }
       .dock { padding-bottom: 12px; }
-      .app-header { padding-top: 12px; }
-      .content { padding: 18px 22px 24px; }
+      .app-header { padding-top: 16px; padding-inline: 22px; }
+      .content { padding: 22px 28px 32px; }
+      .card, .card:nth-child(even) { transform: none; }
+      .stack { gap: 16px; }
+      .today-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
+        gap: 16px;
+        align-items: start;
+      }
+    }
+    @media (min-width: 1100px) {
+      .content { padding-inline: 36px; }
+      .desk-split {
+        grid-template-columns: minmax(0, 1fr) 260px;
+      }
     }
 
     @media (min-width: 768px) and (max-height: 560px) {
@@ -575,28 +636,28 @@
       transform-origin: left center;
       will-change: transform, opacity;
       transition:
-        transform .42s cubic-bezier(.22,.7,.2,1),
-        opacity .28s ease;
+        transform .22s cubic-bezier(.22,.7,.2,1),
+        opacity .18s ease;
     }
     .flip-sheet.is-enter-right {
-      transform: translateX(28%) rotateY(48deg) scale(.98);
+      transform: translateX(10%) scale(.995);
       opacity: 0;
     }
     .flip-sheet.is-enter-left {
-      transform: translateX(-28%) rotateY(-48deg) scale(.98);
+      transform: translateX(-10%) scale(.995);
       opacity: 0;
     }
     .flip-sheet.is-open {
-      transform: translateX(0) rotateY(0) scale(1);
+      transform: translateX(0) scale(1);
       opacity: 1;
     }
     .flip-sheet.is-exit-left {
-      transform: translateX(-42%) rotateY(-72deg) scale(.96);
+      transform: translateX(-12%) scale(.99);
       opacity: 0;
       pointer-events: none;
     }
     .flip-sheet.is-exit-right {
-      transform: translateX(42%) rotateY(72deg) scale(.96);
+      transform: translateX(12%) scale(.99);
       opacity: 0;
       pointer-events: none;
     }
@@ -722,6 +783,8 @@
       var SERVER_WEAK_HINT = "";
       var BOOT_READY = false;
       var BOOT_ERROR = "";
+      var CAPABILITY = null;
+      var PLACEHOLDER_LEARNER = "stu_1024";
 
       function apiUrl(path) {
         return (API_BASE || "") + path;
@@ -735,11 +798,13 @@
       function applyBootstrap(data) {
         if (!data || !data.ok) {
           BOOT_ERROR = (data && data.error) || "bootstrap_failed";
+          CAPABILITY = (data && data.capability) || null;
           return false;
         }
         SLOTS = data.slots || [];
         ITEMS = data.items || [];
         SERVER_WEAK_HINT = data.weakHint || "";
+        CAPABILITY = data.capability || null;
         if (data.answered) {
           Object.keys(data.answered).forEach(function (id) {
             state.answered[id] = data.answered[id];
@@ -748,6 +813,29 @@
         BOOT_READY = true;
         BOOT_ERROR = "";
         return true;
+      }
+      function isPlaceholderLearner(id) {
+        var s = String(id || "").trim();
+        return !s || s === PLACEHOLDER_LEARNER;
+      }
+      function learnerFrom(params, saved) {
+        var q = ((params && params.get("learner")) || "").trim();
+        if (q && !isPlaceholderLearner(q)) return q;
+        var s = saved && saved.learner ? String(saved.learner).trim() : "";
+        if (s && !isPlaceholderLearner(s)) return s;
+        return q && !isPlaceholderLearner(q) ? q : "";
+      }
+      function calmError(msg) {
+        var s = String(msg || "").trim();
+        if (!s) return "";
+        if (/has no attribute|Traceback|AttributeError|TypeError|NoneType|internal/i.test(s)) {
+          return "部分数据暂时读不到，练习仍可继续。";
+        }
+        if (s === "bootstrap_failed" || s === "network") return "练习台暂时连不上，请稍后重试。";
+        return s;
+      }
+      function wideDesktop() {
+        return window.matchMedia && window.matchMedia("(min-width: 768px)").matches;
       }
       function ensureItemFromServer(itemId, pushId) {
         return fetch(apiUrl("/api/v1/practice/item?learner=" + encodeURIComponent(state.learner || "")
@@ -786,7 +874,7 @@
       var state = {
         mode: "practice",
         view: "today",
-        learner: "stu_1024",
+        learner: "",
         push: null,
         index: 0,
         answered: {},
@@ -795,7 +883,7 @@
         explainOpen: false,
         fromDeepLink: false,
         error: "",
-        railExpanded: false,
+        railExpanded: true,
         contextItemId: null,
         threads: {},
         recents: [],
@@ -829,12 +917,27 @@
         if (!list.length) return 0;
         return Math.round((doneCount() / list.length) * 100);
       }
+      function canonicalItemId(raw) {
+        var s = String(raw == null ? "" : raw).trim();
+        if (!s) return "";
+        if (/^i\d+$/i.test(s)) return "i" + s.slice(1);
+        if (/^\d+$/.test(s)) return "i" + s;
+        return s;
+      }
       function itemById(id) {
-        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i];
+        var want = canonicalItemId(id);
+        if (!want) return null;
+        for (var i = 0; i < ITEMS.length; i++) {
+          var it = ITEMS[i];
+          if (it.id === want || canonicalItemId(it.id) === want) return it;
+          if (it.itemId != null && ("i" + String(it.itemId)) === want) return it;
+        }
         return null;
       }
       function findItemIndex(id) {
-        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return i;
+        var it = itemById(id);
+        if (!it) return -1;
+        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i] === it || ITEMS[i].id === it.id) return i;
         return -1;
       }
       function nextUnansweredIndex(from) {
@@ -863,8 +966,9 @@
       }
       function slotStatus(slot) {
         var it = itemById(slot.itemId);
-        if (!it) return { key: "missing", label: "缺题" };
+        if (!it) return { key: "missing", label: "今日未排程" };
         if (state.answered[it.id]) return { key: "done", label: "已完成" };
+        if (it.fromBank && !it.pushId) return { key: "open", label: "题库补练" };
         var h = new Date().getHours();
         var open =
           (slot.windowKey === "morning" && h >= 8 && h < 12) ||
@@ -896,8 +1000,9 @@
       }
       function persist() {
         try {
+          var lid = isPlaceholderLearner(state.learner) ? "" : state.learner;
           localStorage.setItem(STORE, JSON.stringify({
-            mode: state.mode, view: state.view, learner: state.learner, index: state.index,
+            mode: state.mode, view: state.view, learner: lid, index: state.index,
             answered: state.answered, fromDeepLink: state.fromDeepLink, push: state.push,
             lastResult: state.lastResult, railExpanded: state.railExpanded,
             contextItemId: state.contextItemId, threads: state.threads, recents: state.recents
@@ -964,6 +1069,36 @@
         persist();
         render({ animate: view !== prev || !!opts.forceFlip });
       }
+      function pickSlotFromBank(kind) {
+        if (!kind || !state.learner || state.pending) return;
+        state.pending = true;
+        state.error = "";
+        fetch(apiUrl("/api/v1/practice/item?learner=" + encodeURIComponent(state.learner) + "&kind=" + encodeURIComponent(kind)), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          state.pending = false;
+          if (!data || !data.ok || !data.item) {
+            state.error = (data && (data.error || data.detail)) || "题库暂无该槽可补题目。";
+            render();
+            return;
+          }
+          var it = data.item;
+          var ix = findItemIndex(it.id);
+          if (ix < 0) ITEMS.push(it);
+          else ITEMS[ix] = it;
+          for (var i = 0; i < SLOTS.length; i++) {
+            if (SLOTS[i].kind === kind) {
+              SLOTS[i].itemId = it.id;
+              SLOTS[i].pushId = it.pushId;
+            }
+          }
+          openItemById(it.id);
+        }).catch(function (e) {
+          state.pending = false;
+          state.error = "题库补练暂时不可用" + (e && e.message ? "：" + e.message : "。");
+          render();
+        });
+      }
       function openItemById(id, opts) {
         opts = opts || {};
         var idx = findItemIndex(id);
@@ -984,6 +1119,7 @@
         });
       }
       function startToday() {
+        if (!state.learner) { setView("today"); return; }
         var left = remainingCount();
         var bl = backlogItems();
         if (left === 0 && bl.length) { openItemById(bl[0].id); return; }
@@ -1005,6 +1141,11 @@
         state.pending = true;
         state.error = "";
         render();
+        var submitBtn = document.getElementById("btn-submit");
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "讲师批改中…";
+        }
         fetch(apiUrl("/api/v1/practice/submit"), {
           method: "POST",
           headers: apiHeaders({ "Content-Type": "application/json" }),
@@ -1124,17 +1265,20 @@
           var msg;
           if (pack.status === 501 || (pack.body && pack.body.error === "tutor_agent_not_wired")) {
             msg = "讲师 agent 尚未接入。练习批改已走后端；对话接口契约见 /api/v1/agent/manifest。你刚才问：「" + trimmed + "」。";
-          } else if (pack.body && pack.body.reply) {
+          } else if (pack.body && pack.body.reply && pack.status < 500) {
             msg = pack.body.reply;
             applyTutorMeta(pack.body);
           } else {
-            msg = tutorReply(item, trimmed);
+            var err = (pack.body && (pack.body.error || pack.body.detail || pack.body.hint)) || "";
+            msg = err
+              ? String(err)
+              : ("讲师服务暂时不可用" + (pack.status ? "（" + pack.status + "）" : "") + "。");
           }
           startStream(msg);
         })
-          .catch(function () {
+          .catch(function (e) {
             if (state.mode !== "tutor") { state.pending = false; setSendEnabled(true); return; }
-            startStream("讲师服务暂时不可用。请先在练习台完成作答；agent 对接后可在此继续追问。");
+            startStream((e && e.message) ? String(e.message) : "讲师服务暂时不可用。");
           });
       }
 
@@ -1201,12 +1345,71 @@
         renderChat();
       }
 
+      function renderMathMarkdown(src) {
+        var placeholders = [];
+        function stash(tex, display) {
+          var i = placeholders.length;
+          placeholders.push({ tex: tex, display: display });
+          return "@@MATH" + i + "@@";
+        }
+        var text = String(src || "");
+        text = text.replace(/\$\$([\s\S]+?)\$\$/g, function (_, tex) { return stash(String(tex).trim(), true); });
+        text = text.replace(/\\\[([\s\S]+?)\\\]/g, function (_, tex) { return stash(String(tex).trim(), true); });
+        text = text.replace(/\\\(([\s\S]+?)\\\)/g, function (_, tex) { return stash(String(tex).trim(), false); });
+        text = text.replace(/\$([^$\n]+?)\$/g, function (_, tex) { return stash(String(tex).trim(), false); });
+        var html = esc(text);
+        html = html.replace(/^###\s+(.+)$/gm, "<h3>$1</h3>");
+        html = html.replace(/^##\s+(.+)$/gm, "<h2>$1</h2>");
+        html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+        html = html.replace(/\n{2,}/g, "</p><p>");
+        html = "<p>" + html + "</p>";
+        html = html.replace(/@@MATH(\d+)@@/g, function (_, idx) {
+          var item = placeholders[Number(idx)];
+          var K = window.katex;
+          if (!item || !K) {
+            return "<code>" + esc(item ? item.tex : "") + "</code>";
+          }
+          try {
+            return K.renderToString(item.tex, {
+              displayMode: !!item.display,
+              throwOnError: false,
+              strict: "ignore",
+              trust: false
+            });
+          } catch (e) {
+            return "<code>" + esc(item.tex) + "</code>";
+          }
+        });
+        return html;
+      }
+      function renderStemHtml(item) {
+        var stem = (item && item.stem) || "";
+        var title = (item && item.title) || "";
+        if (title && stem.indexOf(title) === 0) {
+          var rest = stem.slice(title.length).replace(/^[\s：:·。.\-—]+/, "");
+          if (rest) stem = rest;
+        }
+        var html = '<div class="stem-body" data-od-id="item-stem">' + renderMathMarkdown(stem) + "</div>";
+        var opts = (item && item.options) || [];
+        if (opts.length) {
+          html += '<ol class="mcq-options" data-od-id="item-options">';
+          opts.forEach(function (o) {
+            html += '<li><span class="mcq-letter">' + esc(o.letter) + "</span><div>" +
+              renderMathMarkdown(o.text || "") + "</div></li>";
+          });
+          html += "</ol>";
+        } else if (item && item.katex && !/\$|\\\[|\\\(/.test(stem)) {
+          html += '<div class="math-block" data-od-id="katex-formula" data-tex="' + escAttr(item.katex) + '"></div>';
+        }
+        return html;
+      }
       function mountMath() {
         root.querySelectorAll("[data-tex]").forEach(function (el) {
           var tex = el.getAttribute("data-tex") || "";
           if (!tex) return;
           if (window.katex) {
-            try { katex.render(tex, el, { throwOnError: false, displayMode: true }); }
+            try { window.katex.render(tex, el, { throwOnError: false, displayMode: true }); }
             catch (e) { el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>"; }
           } else {
             el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>";
@@ -1231,10 +1434,11 @@
           return;
         }
         var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
+        var learnerMeta = state.learner ? esc(state.learner) : "未指定学员";
         headerEl.innerHTML =
           '<div class="brand-row">' +
             '<div class="brand" data-od-id="brand">高校每日练习</div>' +
-            '<div class="meta" data-od-id="learner-meta">' + esc(state.learner) + "</div>" +
+            '<div class="meta" data-od-id="learner-meta">' + learnerMeta + "</div>" +
           "</div>" +
           '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
           '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>';
@@ -1302,7 +1506,7 @@
           .then(function (r) { return r.json(); })
           .then(function (d) {
             if (!d || !d.ok || !(d.papers || []).length) {
-              el.innerHTML = '<p class="hint" style="margin:0">暂无可用双周卷。</p>';
+              el.innerHTML = '<p class="calm-note" style="margin:0">这期还没有可打开的双周卷。有卷时会显示在这里。</p>';
               return;
             }
             el.innerHTML = d.papers.map(function (p) {
@@ -1315,11 +1519,20 @@
             }).join("");
           })
           .catch(function () {
-            el.innerHTML = '<p class="hint" style="margin:0">双周卷加载失败，稍后再试。</p>';
+            el.innerHTML = '<p class="calm-note" style="margin:0">双周卷暂时打不开，稍后再试即可。</p>';
           });
       }
 
       function renderToday() {
+        if (!state.learner) {
+          return (
+            '<div class="empty" data-od-id="view-need-learner">' +
+              '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5M12 16h.01"/></svg></div>' +
+              "<h1>需要学员编号</h1>" +
+              '<p>请从钉钉提醒的练习链接进入，或在地址栏加上 <span class="mono">?learner=你的编号</span>。不会默认成演示学员。</p>' +
+            "</div>"
+          );
+        }
         var left = remainingCount();
         var done = doneCount();
         var backlog = backlogItems();
@@ -1327,12 +1540,13 @@
           var it = itemById(slot.itemId);
           var st = slotStatus(slot);
           var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
-          var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 未缓存");
-          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : "");
+          var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 今日未排程");
+          var statusLabel = it ? st.label : "从题库补练";
+          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : " · 点此从 ready 题库抽一题");
           return (
-            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId) + '">' +
+            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '" data-slot-kind="' + escAttr(slot.kind) + '">' +
               '<div class="slot-title">' + esc(title) + "</div>" +
-              '<div class="slot-status">' + esc(st.label) + "</div>" +
+              '<div class="slot-status">' + esc(statusLabel) + "</div>" +
               '<div class="slot-meta">' + esc(meta) + "</div>" +
             "</button>"
           );
@@ -1346,8 +1560,14 @@
                 "</button>"
               );
             }).join("")
-          : '<p class="stem-text" style="margin:0;color:var(--muted)">暂无历史未答。</p>';
+          : '<p class="calm-note" style="margin:0">没有历史未答。今日槽或题库补练可直接开做。</p>';
         var cta = left === 0 ? (backlog.length ? "去历史未答" : "查看完成状态") : "从最早未答开始";
+        var capErr = CAPABILITY && CAPABILITY.error
+          ? '<p class="calm-note" data-od-id="cap-hint">能力参数暂时读不到，薄弱提示可能不完整。练习仍可继续。</p>'
+          : "";
+        var bootNote = state.error
+          ? '<p class="calm-note" data-od-id="boot-error" role="status">' + esc(calmError(state.error)) + "</p>"
+          : "";
         return (
           '<div class="stack" data-od-id="view-today">' +
             '<section class="card stack" data-od-id="task-bar">' +
@@ -1357,19 +1577,22 @@
                 '<div class="stat"><div class="n">' + left + '</div><div class="t">今日剩余</div></div>' +
                 '<div class="stat"><div class="n">' + done + '</div><div class="t">今日完成</div></div>' +
               "</div>" +
+              bootNote + capErr +
               '<p class="hint" data-od-id="coverage-hint"><strong>时间覆盖</strong> — 数学 / 通信 / 复习各一槽；过窗未答仍可回补，不占用次日缓存。钉钉只发提醒与深链。LearnerParams（BKT+η）见模块下拉 → Capability Brain。</p>' +
               '<div class="stack" data-od-id="slot-list">' + slotHtml + "</div>" +
               '<p class="hint" data-od-id="weak-hint"><strong>薄弱提示</strong> — ' + esc(weakHint()) + "</p>" +
               '<button type="button" class="btn primary" data-od-id="cta-start-today" id="btn-start">' + esc(cta) + "</button>" +
               '<button type="button" class="text-link" data-od-id="link-sim-dingtalk" id="btn-sim-dingtalk">模拟钉钉提醒落地（通信槽）</button>' +
             "</section>" +
-            '<section class="card stack" data-od-id="exam-zone">' +
-              '<div class="row between wrap"><h2>双周卷</h2><span class="pill">H5</span></div>' +
-              '<div id="exam-list" data-od-id="exam-list"><p class="hint" style="margin:0">加载中…</p></div>' +
-            "</section>" +
-            '<section class="card stack" data-od-id="backlog-zone">' +
-              "<h2>历史未答</h2>" + backlogBody +
-            "</section>" +
+            '<div class="today-grid">' +
+              '<section class="card stack" data-od-id="exam-zone">' +
+                '<div class="row between wrap"><h2>双周卷</h2><span class="pill">H5</span></div>' +
+                '<div id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>' +
+              "</section>" +
+              '<section class="card stack" data-od-id="backlog-zone">' +
+                "<h2>历史未答</h2>" + backlogBody +
+              "</section>" +
+            "</div>" +
           "</div>"
         );
       }
@@ -1391,8 +1614,7 @@
                   '<span class="pill">' + esc(item.id) + "</span>" +
                 "</div>" +
                 '<h2 data-od-id="item-title">' + esc(item.title) + "</h2>" +
-                '<p class="stem-text" data-od-id="item-stem">' + esc(item.stem) + "</p>" +
-                '<div class="math-block" data-od-id="katex-formula" data-tex="' + escAttr(item.katex) + '"></div>' +
+                renderStemHtml(item) +
               "</section>" +
               '<aside class="card progress-card" data-od-id="progress-rail">' +
                 '<div class="side-rail">' +
@@ -1403,7 +1625,7 @@
               "</aside>" +
               '<section class="card stack answer-card" data-od-id="answer-zone">' +
                 '<label for="answer-input"><h3>作答</h3></label>' +
-                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，提交后由 AI 讲师批改。">' + esc(state.draft) + "</textarea>" +
+                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，提交后由 AI 讲师批改。"' + (state.pending ? " disabled" : "") + ">" + esc(state.draft) + "</textarea>" +
                 err +
                 '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
               "</section>" +
@@ -1420,7 +1642,8 @@
         var ok = !!r.correct;
         var partial = !ok && !!r.partial;
         var markCls = ok ? "ok" : (partial ? "warn" : "bad");
-        var markText = ok ? "正确" : (partial ? "部分正确" : "不正确");
+        var markText = ok ? "通过" : (partial ? "部分通过" : "未通过");
+        var markSub = ok ? "作答正确" : (partial ? "部分正确" : "作答不正确");
         var gmLabel = GRADE_MODE_LABEL[r.gradeMode] || "";
         var gmChip = gmLabel
           ? '<span class="grade-chip' + (r.gradeMode === "llm" ? "" : " is-degraded") + '"' +
@@ -1436,7 +1659,8 @@
                 '<div class="row between wrap">' +
                   '<div class="result-mark ' + markCls + '">' + markText + "</div>" + gmChip +
                 "</div>" +
-                '<div class="stem-text" data-od-id="result-comment">' + esc(r.comment) + "</div>" +
+                '<div class="result-verdict">' + esc(markSub) + "</div>" +
+                '<div class="stem-text" data-od-id="result-comment">' + renderMathMarkdown(r.comment || "") + "</div>" +
                 '<div class="meta">' + masteryTxt + "</div>" +
               "</div>" +
               '<div class="hint" data-od-id="your-answer"><strong>你的作答</strong><br />' + esc(r.submitted) + "</div>" +
@@ -1445,7 +1669,9 @@
             '<section class="card" data-od-id="explain-fold" style="padding:0">' +
               '<div class="fold' + (state.explainOpen ? " is-open" : "") + '">' +
                 '<button type="button" class="fold-toggle" id="btn-fold" data-od-id="btn-toggle-explain" aria-expanded="' + (state.explainOpen ? "true" : "false") + '"><span>查看讲解</span><span class="meta">' + (state.explainOpen ? "收起" : "展开") + "</span></button>" +
-                '<div class="fold-panel" data-od-id="explain-panel"><p>' + esc(r.explain || item.explain) + '</p><div class="math-block" style="margin-top:10px" data-od-id="explain-formula" data-tex="' + escAttr(item.katex) + '"></div></div>' +
+                '<div class="fold-panel" data-od-id="explain-panel">' + renderMathMarkdown(r.explain || item.explain || "") +
+                  (item.katex ? '<div class="math-block" style="margin-top:10px" data-od-id="explain-formula" data-tex="' + escAttr(item.katex) + '"></div>' : "") +
+                "</div>" +
               "</div>" +
             "</section>" +
           "</div>"
@@ -1488,7 +1714,7 @@
         return (
           '<article class="msg' + (msg.role === "user" ? " is-user" : "") + '"' + (last ? ' data-od-id="last-msg"' : "") + ">" +
             '<div class="msg-who">' + who + "</div>" +
-            '<div class="msg-body">' + esc(msg.text) + cursor + "</div>" +
+            '<div class="msg-body">' + renderMathMarkdown(msg.text) + cursor + "</div>" +
             cites +
           "</article>"
         );
@@ -1511,7 +1737,7 @@
       }
       function patchLastMessage(msg) {
         var el = root.querySelector('[data-od-id="last-msg"] .msg-body');
-        if (el) el.innerHTML = esc(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
+        if (el) el.innerHTML = renderMathMarkdown(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
         else renderChat();
       }
       function renderTutorStrip() {
@@ -1576,10 +1802,12 @@
           return;
         }
         if (state.view === "desk") {
+          var busy = !!state.pending;
           practiceDock.innerHTML =
             '<div class="btn-row two">' +
-              '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today">返回今日</button>' +
-              '<button type="button" class="btn primary" data-od-id="btn-submit" id="btn-submit">提交</button>' +
+              '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today"' + (busy ? " disabled" : "") + ">返回今日</button>" +
+              '<button type="button" class="btn primary' + (busy ? " is-busy" : "") + '" data-od-id="btn-submit" id="btn-submit"' + (busy ? " disabled" : "") + ">" +
+                (busy ? "讲师批改中…" : "提交") + "</button>" +
             "</div>";
         } else {
           var last = nextUnansweredIndex(state.index + 1) === -1;
@@ -1593,7 +1821,7 @@
         var on = state.mode === "brain";
         brainHost.hidden = !on;
         if (on && brainLoadedFor !== state.learner) {
-          brainFrame.src = "/capability-brain.html?embed=1&learner=" + encodeURIComponent(state.learner || "stu_1024");
+          brainFrame.src = "/capability-brain.html?embed=1&learner=" + encodeURIComponent(state.learner || "");
           brainLoadedFor = state.learner;
         }
       }
@@ -1625,13 +1853,15 @@
             for (var si = 0; si < SLOTS.length; si++) if (SLOTS[si].kind === "comm" && SLOTS[si].itemId) { slot = SLOTS[si]; break; }
             if (!slot) for (var sj = 0; sj < SLOTS.length; sj++) if (SLOTS[sj].itemId) { slot = SLOTS[sj]; break; }
             if (!slot || !slot.itemId) { state.error = "暂无通信槽题目可模拟落地。"; render(); return; }
-            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "stu_1024") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
+            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
           })();
         });
-        root.querySelectorAll("[data-item-id]").forEach(function (btn) {
+        root.querySelectorAll("[data-item-id], [data-slot-kind]").forEach(function (btn) {
           btn.addEventListener("click", function () {
             var id = btn.getAttribute("data-item-id");
+            var kind = btn.getAttribute("data-slot-kind");
             if (id) openItemById(id);
+            else if (kind) pickSlotFromBank(kind);
           });
         });
         var input = document.getElementById("answer-input");
@@ -1702,7 +1932,11 @@
         renderPracticeDock();
         bindPractice();
         mountMath();
-        if (state.page === "today") fetchExamPapers();
+        if (state.view === "today") fetchExamPapers();
+        if (state.view === "result" || state.view === "desk") {
+          root.scrollTop = 0;
+          try { window.scrollTo(0, 0); } catch (e0) {}
+        }
         if (opts.animate && flipDir) {
           var sheet = root.querySelector(".flip-sheet");
           if (sheet) {
@@ -1711,7 +1945,7 @@
               requestAnimationFrame(function () {
                 sheet.classList.remove("is-enter-right", "is-enter-left");
                 sheet.classList.add("is-open");
-                window.setTimeout(function () { flipBusy = false; }, 420);
+                window.setTimeout(function () { flipBusy = false; }, 240);
               });
             });
           } else {
@@ -1763,8 +1997,8 @@
           var sheet = root.querySelector(".flip-sheet.is-open");
           if (sheet && state.mode === "practice") {
             var t = Math.max(-1, Math.min(1, dx / 180));
-            sheet.style.transform = "translateX(" + (t * 36) + "%) rotateY(" + (t * 48) + "deg) scale(" + (1 - Math.abs(t) * 0.03) + ")";
-            sheet.style.opacity = String(1 - Math.abs(t) * 0.3);
+            sheet.style.transform = "translateX(" + (t * 18) + "%) scale(" + (1 - Math.abs(t) * 0.015) + ")";
+            sheet.style.opacity = String(1 - Math.abs(t) * 0.18);
             sheet.style.transition = "none";
           }
         }
@@ -1802,12 +2036,17 @@
       }
 
       function applyDeepLink(params, saved) {
-        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        var learner = learnerFrom(params, saved);
         var itemId = params.get("item");
         var push = params.get("push");
         var viewHint = params.get("view");
         var modeHint = params.get("mode");
         state.learner = learner;
+        if (!learner) {
+          state.mode = "practice";
+          setView("today", { push: null, fromDeepLink: false });
+          return;
+        }
         state.push = push;
         if (saved) {
           // Prefer server answered from bootstrap; local cache only fills gaps / offline.
@@ -1824,6 +2063,7 @@
           if (saved.railExpanded) state.railExpanded = saved.railExpanded;
           if (saved.contextItemId) state.contextItemId = saved.contextItemId;
         }
+        itemId = canonicalItemId(itemId);
         if (modeHint === "tutor") {
           state.mode = "tutor";
           if (itemId) state.contextItemId = itemId;
@@ -1889,13 +2129,22 @@
       function boot() {
         var params = qs();
         var saved = restore();
-        var learner = params.get("learner") || (saved && saved.learner) || "stu_1024";
+        var learner = learnerFrom(params, saved);
         state.learner = learner;
+        if (saved && typeof saved.railExpanded === "boolean") state.railExpanded = saved.railExpanded;
+        else state.railExpanded = wideDesktop();
+        if (!learner) {
+          applyDeepLink(params, saved);
+          if (typeof bindPageChrome === "function") bindPageChrome();
+          if (typeof bindSwipe === "function") bindSwipe();
+          if (typeof bindGestures === "function") bindGestures();
+          return;
+        }
         fetch(apiUrl("/api/v1/practice/bootstrap?learner=" + encodeURIComponent(learner)), {
           headers: apiHeaders()
         }).then(function (r) { return r.json(); }).then(function (data) {
           applyBootstrap(data);
-          var itemQ = params.get("item");
+          var itemQ = canonicalItemId(params.get("item"));
           var pushQ = params.get("push");
           var needFetch = !!(itemQ || pushQ) && findItemIndex(itemQ) < 0;
           var cont = function () {

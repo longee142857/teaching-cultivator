@@ -11,10 +11,10 @@
       const raw = localStorage.getItem("teaching-shell-v2-state");
       if (raw) {
         const s = JSON.parse(raw);
-        if (s && s.learner) return String(s.learner);
+        if (s && s.learner && s.learner !== "stu_1024") return String(s.learner);
       }
     } catch (e) {}
-    return (window.MOCK && window.MOCK.learner_id) || "stu_1024";
+    return "";
   }
 
   function mapEta(raw) {
@@ -64,6 +64,7 @@
 
   window.loadLiveCapability = async function loadLiveCapability() {
     const learner = learnerFromPage();
+    if (!learner) throw new Error("missing learner");
     const r = await fetch("/api/v1/practice/params?learner=" + encodeURIComponent(learner), {
       headers: { "X-Learner-Id": learner },
     });

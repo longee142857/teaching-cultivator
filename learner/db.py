@@ -500,6 +500,14 @@ class Store:
         )
         return self._push_row(rows[0]) if rows else None
 
+    def get_newest_push(self) -> dict | None:
+        """Newest pushes row, any learner (boot restore / file-staleness)."""
+        rows = self._query(
+            self._PUSH_SELECT + "ORDER BY p.pushed_at DESC, p.id DESC LIMIT 1",
+            (),
+        )
+        return self._push_row(rows[0]) if rows else None
+
     def get_push(self, push_id: int) -> dict | None:
         rows = self._query(self._PUSH_SELECT + "WHERE p.id = ?", (int(push_id),))
         return self._push_row(rows[0]) if rows else None

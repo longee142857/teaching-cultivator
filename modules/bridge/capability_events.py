@@ -139,7 +139,6 @@ def list_events() -> dict[str, Any]:
     events = [e for e in (store.get("events") or []) if isinstance(e, dict) and e.get("id")]
     return {
         "ok": True,
-        "path": events_path(),
         "count": len(events),
         "events": events,
     }

@@ -135,14 +135,35 @@ def extract_title(question: str, kp: str = "") -> str:
     return (kp.split("·")[0].strip() if kp else "练习题")[:48]
 
 
+_OPTION_LINE_RE = re.compile(
+    r"(?:^|\n)\s*(?:\*\*)?([A-D])(?:\*\*)?[\.．、:：\)]\s*(.+?)(?=\n\s*(?:\*\*)?[A-D](?:\*\*)?[\.．、:：\)]|\n\n|\Z)",
+    re.S | re.I,
+)
+
+
+def extract_options(question: str) -> list[dict[str, str]]:
+    """A–D choices for MCQ stems (letter + text, math kept)."""
+    out: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for m in _OPTION_LINE_RE.finditer(question or ""):
+        letter = (m.group(1) or "").upper()
+        text = (m.group(2) or "").strip()
+        text = re.sub(r"[ \t]+\n", "\n", text).strip()
+        if not letter or not text or letter in seen:
+            continue
+        seen.add(letter)
+        out.append({"letter": letter, "text": text[:400]})
+    return out
+
+
 def extract_stem(question: str) -> str:
-    """Plain stem for the desk; strip display math blocks."""
+    """Stem for the desk. Keep math delimiters so the shell can KaTeX-render the full problem."""
     q = (question or "").strip()
-    q = re.sub(r"\$\$[\s\S]+?\$\$", "", q)
-    q = re.sub(r"\\\[[\s\S]+?\\\]", "", q)
     q = re.sub(r"^#+\s+.+$", "", q, flags=re.MULTILINE)
-    q = _WS_RE.sub(" ", q).strip()
-    return q[:600] if q else "请完成本题作答。"
+    q = _OPTION_LINE_RE.sub("", q)
+    q = re.sub(r"[ \t]+\n", "\n", q)
+    q = re.sub(r"\n{3,}", "\n\n", q).strip()
+    return q[:2000] if q else "请完成本题作答。"
 
 
 def explain_from_solution(solution: Any, answer: str = "") -> str:
@@ -204,6 +225,13 @@ def push_to_shell_item(
         )
     comment_ok, comment_bad = comments_for_item(explain=explain, answer="")
     ans_flag = row.get("answered") if answered is None else answered
+    options = extract_options(question)
+    title = extract_title(question, kp)
+    stem = extract_stem(question)
+    if title and stem.startswith(title):
+        rest = stem[len(title) :].lstrip(" \t\n：:·。.")
+        if rest:
+            stem = rest
     out: dict[str, Any] = {
         "id": public_item_id(item_id),
         "itemId": item_id,
@@ -211,14 +239,16 @@ def push_to_shell_item(
         "kind": kind,
         "subject": subject_label(subject_raw, kind),
         "kp": kp or "未分类",
-        "title": extract_title(question, kp),
-        "stem": extract_stem(question),
+        "title": title,
+        "stem": stem,
         "katex": extract_katex(question),
+        "options": options,
         "commentOk": comment_ok,
         "commentBad": comment_bad,
         "explain": explain,
         "day": row.get("day") or row.get("date") or "",
         "backlog": bool(backlog),
+        "fromBank": bool(row.get("from_bank") or row.get("fromBank")),
         "answered": bool(ans_flag),
         "difficulty": row.get("difficulty") or "",
         "slot": slot,
@@ -271,6 +301,7 @@ __all__ = [
     "empty_slots",
     "explain_from_solution",
     "extract_katex",
+    "extract_options",
     "extract_stem",
     "extract_title",
     "normalize_answer_text",

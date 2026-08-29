@@ -42,11 +42,11 @@
     <div id="gate" class="status" hidden>
       <label for="uidInput" style="display:block;margin-bottom:8px;font-weight:600;">输入你的编号进入试卷</label>
       <div style="display:flex;gap:10px;">
-        <input id="uidInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8"
-               placeholder="纯数字编号" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;" />
+        <input id="uidInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="24"
+               placeholder="纯数字编号（钉钉学员号可 20 位）" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;" />
         <button type="button" id="uidBtn" style="width:auto;padding:10px 20px;">进入</button>
       </div>
-      <p class="hint">编号由老师发给你（主学员填 01 或 1）。同一编号会恢复草稿；提交后按钉钉学员身份落盘，Cow 可查到批改记录。</p>
+      <p class="hint">编号由老师发给你。请填完整数字号（可至 20 位钉钉学员号），不要只用短号 1。同一编号会恢复草稿。</p>
     </div>
     <div id="draftNote" class="status" hidden>
       已恢复上次作答草稿
@@ -292,10 +292,10 @@
 
   uidBtn.addEventListener("click", function () {
     const v = String(uidInput.value || "").trim();
-    if (!/^[0-9]{1,8}$/.test(v)) {
+    if (!/^[0-9]{1,24}$/.test(v)) {
       boot.hidden = false;
       boot.className = "status err";
-      boot.textContent = "编号需为纯数字（例如 01）";
+      boot.textContent = "编号需为纯数字（1–24 位，钉钉学员号请填完整）";
       return;
     }
     enterWithUid(v);

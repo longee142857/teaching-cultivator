@@ -372,7 +372,7 @@ class ExamHandler(BaseHTTPRequestHandler):
 
     def _cors(self) -> None:
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def _json(self, code: int, obj: dict | list) -> None:
@@ -383,6 +383,8 @@ class ExamHandler(BaseHTTPRequestHandler):
         self._cors()
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         try:
             self.wfile.write(body)
         except BrokenPipeError:
@@ -395,6 +397,8 @@ class ExamHandler(BaseHTTPRequestHandler):
         self._cors()
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         self.wfile.write(data)
 
     def _read_json(self) -> dict:
@@ -421,6 +425,13 @@ class ExamHandler(BaseHTTPRequestHandler):
         self.send_response(204)
         self._cors()
         self.end_headers()
+
+    def do_HEAD(self) -> None:  # noqa: N802
+        self._omit_body = True
+        try:
+            self.do_GET()
+        finally:
+            self._omit_body = False
 
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path

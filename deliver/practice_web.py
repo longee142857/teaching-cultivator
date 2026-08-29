@@ -7,7 +7,7 @@ Routes (nginx may reverse-proxy /practice/ -> :8768):
   GET  /health           -> healthcheck
   GET  /api/v1/agent/manifest
   GET  /api/v1/practice/bootstrap?learner=
-  GET  /api/v1/practice/item?learner=&item=&push=
+  GET  /api/v1/practice/item?learner=&item=&push=&kind=
   GET  /api/v1/practice/params?learner=
   POST /api/v1/practice/submit
   POST /api/v1/tutor/chat          -> proxy TUTOR_BACKEND_URL or 501 stub
@@ -228,7 +228,7 @@ class PracticeHandler(BaseHTTPRequestHandler):
         if origin:
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Practice-Token, X-Learner-Id")
-            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS")
 
     def _json(self, code: int, obj: dict) -> None:
         data = json.dumps(obj, ensure_ascii=False).encode("utf-8")
@@ -238,6 +238,8 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self._cors()
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         self.wfile.write(data)
 
     def _bytes(self, code: int, data: bytes, content_type: str) -> None:
@@ -247,6 +249,8 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self._cors()
         self.end_headers()
+        if getattr(self, "_omit_body", False):
+            return
         self.wfile.write(data)
 
     def _authorized(self) -> bool:
@@ -263,11 +267,11 @@ class PracticeHandler(BaseHTTPRequestHandler):
         tok = (qs.get("token") or [""])[0].strip()
         return tok == expected and bool(tok)
 
-    def _read_json(self) -> dict:
+    def _read_json(self, max_bytes: int = 2_000_000) -> dict:
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0:
             return {}
-        raw = self.rfile.read(min(length, 2_000_000))
+        raw = self.rfile.read(min(length, int(max_bytes)))
         try:
             obj = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError):
@@ -289,6 +293,13 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.send_response(204)
         self._cors()
         self.end_headers()
+
+    def do_HEAD(self) -> None:  # noqa: N802
+        self._omit_body = True
+        try:
+            self.do_GET()
+        finally:
+            self._omit_body = False
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
@@ -368,7 +379,8 @@ class PracticeHandler(BaseHTTPRequestHandler):
             lid = self._learner(qs)
             item = (qs.get("item") or [""])[0].strip() or None
             push = (qs.get("push") or [""])[0].strip() or None
-            out = ps.get_item(lid, item=item, push=push)
+            kind = (qs.get("kind") or qs.get("slot") or [""])[0].strip() or None
+            out = ps.get_item(lid, item=item, push=push, kind=kind)
             self._json(200 if out.get("ok") else 404, out)
             return
 
@@ -400,9 +412,27 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(401, {"ok": False, "error": "unauthorized"})
             return
 
-        body = self._read_json()
+        body = self._read_json(4_000_000 if path.endswith("/ocr") else 2_000_000)
         qs = parse_qs(parsed.query)
         from modules.bridge import practice_service as ps
+
+        if path == "/api/v1/practice/ocr":
+            out = ps.practice_ocr(
+                image=str(body.get("image") or body.get("data_url") or ""),
+                filename=str(body.get("filename") or body.get("name") or ""),
+                mode=str(body.get("mode") or ""),
+            )
+            err = str(out.get("error") or "")
+            if out.get("ok"):
+                code = 200
+            elif err == "simpletex_not_configured":
+                code = 501
+            elif err in ("empty_image", "image_too_large", "payload_too_large"):
+                code = 400
+            else:
+                code = 502
+            self._json(code, out)
+            return
 
         if path == "/api/v1/practice/submit":
             lid = self._learner(qs, body)
