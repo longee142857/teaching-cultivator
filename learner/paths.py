@@ -6,8 +6,10 @@
 """
 from __future__ import annotations
 
+import json
 import os
 import re
+from datetime import datetime, timezone
 from typing import Optional
 
 import config as _cfg
@@ -125,3 +127,39 @@ def syllabus_path(subject: str) -> str:
 
 def legacy_kp_map_path() -> str:
     return os.path.join(_data_dir(), "legacy_kp_map.json")
+
+
+def parse_push_ts(raw: str):
+    s = (raw or "").strip()
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+
+
+def last_push_file_stale(path: str, db_ts: str = "") -> bool:
+    """True when last_push.json / last_class is older than the newest SQLite push."""
+    db_dt = parse_push_ts(db_ts)
+    if db_dt is None:
+        return False
+    file_dt = None
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        file_dt = parse_push_ts(
+            str((data or {}).get("timestamp") or (data or {}).get("pushed_at") or "")
+        )
+    except Exception:
+        file_dt = None
+    if file_dt is None:
+        try:
+            file_dt = datetime.fromtimestamp(os.path.getmtime(path), tz=timezone.utc)
+        except OSError:
+            return True
+    if db_dt.tzinfo and file_dt.tzinfo is None:
+        file_dt = file_dt.replace(tzinfo=db_dt.tzinfo)
+    if file_dt.tzinfo and db_dt.tzinfo is None:
+        db_dt = db_dt.replace(tzinfo=file_dt.tzinfo)
+    return file_dt < db_dt

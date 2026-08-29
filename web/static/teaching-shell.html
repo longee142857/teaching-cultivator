@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/static/katex/katex.min.css" />
+  <script src="/static/katex/katex.min.js"></script>
   <style>
     :root {
       --bg: #F4EDE0;
@@ -275,6 +275,9 @@
     .math-block .katex-display { margin: 0.4em 0; }
     .math-fallback { font-family: var(--font-mono); font-size: 13px; color: var(--muted); white-space: pre-wrap; word-break: break-word; }
     .stem-text { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-text .katex-display, .msg-body .katex-display, .fold-panel .katex-display {
+      margin: 0.5em 0; overflow-x: auto; overflow-y: hidden;
+    }
     .stem-body { font-size: 16px; line-height: 1.8; max-width: 68ch; }
     .stem-body p { margin: 0.55em 0; }
     .stem-body p:first-child { margin-top: 0; }
@@ -331,7 +334,8 @@
     .result-banner { border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: grid; gap: 6px; }
     .result-banner.ok { background: var(--soft-ok); border-color: color-mix(in oklch, var(--ok) 35%, var(--border)); }
     .result-banner.bad { background: var(--soft-bad); border-color: color-mix(in oklch, var(--bad) 35%, var(--border)); }
-    .result-mark { font-family: var(--font-display); font-weight: 600; font-size: 20px; line-height: 1.35; }
+    .result-mark { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 1.25; }
+    .result-verdict { font-size: 13px; color: var(--muted); }
     .result-mark.ok { color: var(--ok); }
     .result-mark.bad { color: var(--bad); }
     .result-banner.warn {
@@ -907,12 +911,27 @@
         if (!list.length) return 0;
         return Math.round((doneCount() / list.length) * 100);
       }
+      function canonicalItemId(raw) {
+        var s = String(raw == null ? "" : raw).trim();
+        if (!s) return "";
+        if (/^i\d+$/i.test(s)) return "i" + s.slice(1);
+        if (/^\d+$/.test(s)) return "i" + s;
+        return s;
+      }
       function itemById(id) {
-        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i];
+        var want = canonicalItemId(id);
+        if (!want) return null;
+        for (var i = 0; i < ITEMS.length; i++) {
+          var it = ITEMS[i];
+          if (it.id === want || canonicalItemId(it.id) === want) return it;
+          if (it.itemId != null && ("i" + String(it.itemId)) === want) return it;
+        }
         return null;
       }
       function findItemIndex(id) {
-        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return i;
+        var it = itemById(id);
+        if (!it) return -1;
+        for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i] === it || ITEMS[i].id === it.id) return i;
         return -1;
       }
       function nextUnansweredIndex(from) {
@@ -1044,6 +1063,36 @@
         persist();
         render({ animate: view !== prev || !!opts.forceFlip });
       }
+      function pickSlotFromBank(kind) {
+        if (!kind || !state.learner || state.pending) return;
+        state.pending = true;
+        state.error = "";
+        fetch(apiUrl("/api/v1/practice/item?learner=" + encodeURIComponent(state.learner) + "&kind=" + encodeURIComponent(kind)), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          state.pending = false;
+          if (!data || !data.ok || !data.item) {
+            state.error = (data && (data.error || data.detail)) || "题库暂无该槽可补题目。";
+            render();
+            return;
+          }
+          var it = data.item;
+          var ix = findItemIndex(it.id);
+          if (ix < 0) ITEMS.push(it);
+          else ITEMS[ix] = it;
+          for (var i = 0; i < SLOTS.length; i++) {
+            if (SLOTS[i].kind === kind) {
+              SLOTS[i].itemId = it.id;
+              SLOTS[i].pushId = it.pushId;
+            }
+          }
+          openItemById(it.id);
+        }).catch(function (e) {
+          state.pending = false;
+          state.error = "题库补练暂时不可用" + (e && e.message ? "：" + e.message : "。");
+          render();
+        });
+      }
       function openItemById(id, opts) {
         opts = opts || {};
         var idx = findItemIndex(id);
@@ -1086,6 +1135,11 @@
         state.pending = true;
         state.error = "";
         render();
+        var submitBtn = document.getElementById("btn-submit");
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "讲师批改中…";
+        }
         fetch(apiUrl("/api/v1/practice/submit"), {
           method: "POST",
           headers: apiHeaders({ "Content-Type": "application/json" }),
@@ -1205,17 +1259,20 @@
           var msg;
           if (pack.status === 501 || (pack.body && pack.body.error === "tutor_agent_not_wired")) {
             msg = "讲师 agent 尚未接入。练习批改已走后端；对话接口契约见 /api/v1/agent/manifest。你刚才问：「" + trimmed + "」。";
-          } else if (pack.body && pack.body.reply) {
+          } else if (pack.body && pack.body.reply && pack.status < 500) {
             msg = pack.body.reply;
             applyTutorMeta(pack.body);
           } else {
-            msg = tutorReply(item, trimmed);
+            var err = (pack.body && (pack.body.error || pack.body.detail || pack.body.hint)) || "";
+            msg = err
+              ? String(err)
+              : ("讲师服务暂时不可用" + (pack.status ? "（" + pack.status + "）" : "") + "。");
           }
           startStream(msg);
         })
-          .catch(function () {
+          .catch(function (e) {
             if (state.mode !== "tutor") { state.pending = false; setSendEnabled(true); return; }
-            startStream("讲师服务暂时不可用。请先在练习台完成作答；agent 对接后可在此继续追问。");
+            startStream((e && e.message) ? String(e.message) : "讲师服务暂时不可用。");
           });
       }
 
@@ -1472,11 +1529,12 @@
           var st = slotStatus(slot);
           var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
           var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 今日未排程");
-          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : " · 可从题库补练");
+          var statusLabel = it ? st.label : "从题库补练";
+          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : " · 点此从 ready 题库抽一题");
           return (
-            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '"' + (it ? "" : " disabled") + ">" +
+            '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '" data-slot-kind="' + escAttr(slot.kind) + '">' +
               '<div class="slot-title">' + esc(title) + "</div>" +
-              '<div class="slot-status">' + esc(st.label) + "</div>" +
+              '<div class="slot-status">' + esc(statusLabel) + "</div>" +
               '<div class="slot-meta">' + esc(meta) + "</div>" +
             "</button>"
           );
@@ -1555,7 +1613,7 @@
               "</aside>" +
               '<section class="card stack answer-card" data-od-id="answer-zone">' +
                 '<label for="answer-input"><h3>作答</h3></label>' +
-                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，提交后由 AI 讲师批改。">' + esc(state.draft) + "</textarea>" +
+                '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，提交后由 AI 讲师批改。"' + (state.pending ? " disabled" : "") + ">" + esc(state.draft) + "</textarea>" +
                 err +
                 '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
               "</section>" +
@@ -1572,7 +1630,8 @@
         var ok = !!r.correct;
         var partial = !ok && !!r.partial;
         var markCls = ok ? "ok" : (partial ? "warn" : "bad");
-        var markText = ok ? "正确" : (partial ? "部分正确" : "不正确");
+        var markText = ok ? "通过" : (partial ? "部分通过" : "未通过");
+        var markSub = ok ? "作答正确" : (partial ? "部分正确" : "作答不正确");
         var gmLabel = GRADE_MODE_LABEL[r.gradeMode] || "";
         var gmChip = gmLabel
           ? '<span class="grade-chip' + (r.gradeMode === "llm" ? "" : " is-degraded") + '"' +
@@ -1588,7 +1647,8 @@
                 '<div class="row between wrap">' +
                   '<div class="result-mark ' + markCls + '">' + markText + "</div>" + gmChip +
                 "</div>" +
-                '<div class="stem-text" data-od-id="result-comment">' + esc(r.comment) + "</div>" +
+                '<div class="result-verdict">' + esc(markSub) + "</div>" +
+                '<div class="stem-text" data-od-id="result-comment">' + renderMathMarkdown(r.comment || "") + "</div>" +
                 '<div class="meta">' + masteryTxt + "</div>" +
               "</div>" +
               '<div class="hint" data-od-id="your-answer"><strong>你的作答</strong><br />' + esc(r.submitted) + "</div>" +
@@ -1597,7 +1657,9 @@
             '<section class="card" data-od-id="explain-fold" style="padding:0">' +
               '<div class="fold' + (state.explainOpen ? " is-open" : "") + '">' +
                 '<button type="button" class="fold-toggle" id="btn-fold" data-od-id="btn-toggle-explain" aria-expanded="' + (state.explainOpen ? "true" : "false") + '"><span>查看讲解</span><span class="meta">' + (state.explainOpen ? "收起" : "展开") + "</span></button>" +
-                '<div class="fold-panel" data-od-id="explain-panel"><p>' + esc(r.explain || item.explain) + '</p><div class="math-block" style="margin-top:10px" data-od-id="explain-formula" data-tex="' + escAttr(item.katex) + '"></div></div>' +
+                '<div class="fold-panel" data-od-id="explain-panel">' + renderMathMarkdown(r.explain || item.explain || "") +
+                  (item.katex ? '<div class="math-block" style="margin-top:10px" data-od-id="explain-formula" data-tex="' + escAttr(item.katex) + '"></div>' : "") +
+                "</div>" +
               "</div>" +
             "</section>" +
           "</div>"
@@ -1640,7 +1702,7 @@
         return (
           '<article class="msg' + (msg.role === "user" ? " is-user" : "") + '"' + (last ? ' data-od-id="last-msg"' : "") + ">" +
             '<div class="msg-who">' + who + "</div>" +
-            '<div class="msg-body">' + esc(msg.text) + cursor + "</div>" +
+            '<div class="msg-body">' + renderMathMarkdown(msg.text) + cursor + "</div>" +
             cites +
           "</article>"
         );
@@ -1663,7 +1725,7 @@
       }
       function patchLastMessage(msg) {
         var el = root.querySelector('[data-od-id="last-msg"] .msg-body');
-        if (el) el.innerHTML = esc(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
+        if (el) el.innerHTML = renderMathMarkdown(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
         else renderChat();
       }
       function renderTutorStrip() {
@@ -1728,10 +1790,12 @@
           return;
         }
         if (state.view === "desk") {
+          var busy = !!state.pending;
           practiceDock.innerHTML =
             '<div class="btn-row two">' +
-              '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today">返回今日</button>' +
-              '<button type="button" class="btn primary" data-od-id="btn-submit" id="btn-submit">提交</button>' +
+              '<button type="button" class="btn ghost" data-od-id="btn-back-today" id="btn-back-today"' + (busy ? " disabled" : "") + ">返回今日</button>" +
+              '<button type="button" class="btn primary" data-od-id="btn-submit" id="btn-submit"' + (busy ? " disabled" : "") + ">" +
+                (busy ? "讲师批改中…" : "提交") + "</button>" +
             "</div>";
         } else {
           var last = nextUnansweredIndex(state.index + 1) === -1;
@@ -1780,10 +1844,12 @@
             applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
           })();
         });
-        root.querySelectorAll("[data-item-id]").forEach(function (btn) {
+        root.querySelectorAll("[data-item-id], [data-slot-kind]").forEach(function (btn) {
           btn.addEventListener("click", function () {
             var id = btn.getAttribute("data-item-id");
+            var kind = btn.getAttribute("data-slot-kind");
             if (id) openItemById(id);
+            else if (kind) pickSlotFromBank(kind);
           });
         });
         var input = document.getElementById("answer-input");
@@ -1855,6 +1921,10 @@
         bindPractice();
         mountMath();
         if (state.view === "today") fetchExamPapers();
+        if (state.view === "result" || state.view === "desk") {
+          root.scrollTop = 0;
+          try { window.scrollTo(0, 0); } catch (e0) {}
+        }
         if (opts.animate && flipDir) {
           var sheet = root.querySelector(".flip-sheet");
           if (sheet) {
@@ -1981,6 +2051,7 @@
           if (saved.railExpanded) state.railExpanded = saved.railExpanded;
           if (saved.contextItemId) state.contextItemId = saved.contextItemId;
         }
+        itemId = canonicalItemId(itemId);
         if (modeHint === "tutor") {
           state.mode = "tutor";
           if (itemId) state.contextItemId = itemId;
@@ -2061,7 +2132,7 @@
           headers: apiHeaders()
         }).then(function (r) { return r.json(); }).then(function (data) {
           applyBootstrap(data);
-          var itemQ = params.get("item");
+          var itemQ = canonicalItemId(params.get("item"));
           var pushQ = params.get("push");
           var needFetch = !!(itemQ || pushQ) && findItemIndex(itemQ) < 0;
           var cont = function () {

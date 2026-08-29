@@ -32,6 +32,52 @@ def allow_demo_seed() -> bool:
     return os.environ.get("PRACTICE_ALLOW_DEMO_SEED", "0") == "1"
 
 
+def _simpletex_ready() -> bool:
+    try:
+        from deliver.simpletex import is_configured
+
+        return bool(is_configured())
+    except Exception:
+        return False
+
+
+def _decode_ocr_image(raw: str) -> bytes:
+    import base64
+
+    s = (raw or "").strip()
+    if not s:
+        return b""
+    if s.startswith("data:"):
+        _, _, s = s.partition(",")
+    try:
+        return base64.b64decode(s, validate=False)
+    except Exception:
+        return b""
+
+
+def practice_ocr(
+    image: str = "",
+    filename: str = "",
+    mode: str = "",
+) -> dict[str, Any]:
+    """POST /api/v1/practice/ocr — existing SimpleTex client, no new OCR product."""
+    data = _decode_ocr_image(image)
+    if not data:
+        return {"ok": False, "error": "empty_image", "text": ""}
+    if len(data) > 3_500_000:
+        return {"ok": False, "error": "image_too_large", "text": ""}
+    if not _simpletex_ready():
+        return {"ok": False, "error": "simpletex_not_configured", "text": ""}
+    use_mode = (mode or "").strip().lower()
+    if use_mode in ("document", "page", "general", ""):
+        use_mode = "general"
+    elif use_mode in ("formula", "latex", "formula_std"):
+        use_mode = "formula"
+    from deliver.simpletex import ocr_image
+
+    return ocr_image(data, filename=(filename or "answer.jpg").strip() or "answer.jpg", mode=use_mode)
+
+
 def tutor_status() -> dict[str, Any]:
     backend = (os.environ.get("TUTOR_BACKEND_URL") or "").strip().rstrip("/")
     if backend:
@@ -58,6 +104,12 @@ def agent_manifest() -> dict[str, Any]:
             "bootstrap": {"method": "GET", "path": "/api/v1/practice/bootstrap"},
             "item": {"method": "GET", "path": "/api/v1/practice/item"},
             "submit": {"method": "POST", "path": "/api/v1/practice/submit"},
+            "ocr": {
+                "method": "POST",
+                "path": "/api/v1/practice/ocr",
+                "status": "simpletex" if _simpletex_ready() else "stub_501",
+                "backend": "deliver.simpletex",
+            },
             "params": {"method": "GET", "path": "/api/v1/practice/params"},
         },
         "tutor": {
@@ -512,6 +564,7 @@ def get_item(
     *,
     item: str | int | None = None,
     push: str | int | None = None,
+    kind: str | None = None,
     store=None,
 ) -> dict[str, Any]:
     lid = (learner_id or "").strip()
@@ -520,7 +573,9 @@ def get_item(
     store = store or _store()
     push_id = parse_push_id(push)
     item_id = parse_item_id(item)
+    slot_kind = (kind or "").strip().lower()
     row = None
+    from_bank = False
     if push_id is not None:
         row = store.get_push(push_id)
     if row is None and item_id is not None:
@@ -547,6 +602,11 @@ def get_item(
                     "slot": it.get("subject") or "",
                     "answered": False,
                 }
+    if row is None and slot_kind:
+        bank = _pick_ready_for_kind(slot_kind, lid, store=store, exclude_ids=set())
+        if bank:
+            row = _bank_item_as_row(bank, day=_today(), kind=slot_kind)
+            from_bank = True
     if row is None:
         return {"ok": False, "error": "item_not_found"}
     day = _today()
@@ -555,6 +615,8 @@ def get_item(
         row = dict(row)
         row["answered"] = store._push_answered(int(row["push_id"]), lid)
     dto = push_to_shell_item(row, backlog=backlog)
+    if from_bank or row.get("from_bank"):
+        dto["fromBank"] = True
     result = None
     if dto.get("answered") and dto.get("pushId"):
         att = store.get_attempt_for_push(int(dto["pushId"]))
@@ -813,13 +875,13 @@ def practice_bootstrap(user_id: str = "", day: str = "") -> dict[str, Any]:
     return bootstrap(uid, day=day or None)
 
 
-def practice_get_item(user_id: str = "", item: str = "", push: str = "") -> dict[str, Any]:
+def practice_get_item(user_id: str = "", item: str = "", push: str = "", kind: str = "") -> dict[str, Any]:
     uid = (user_id or "").strip()
     if not uid:
         from learner.context import current_user_id
 
         uid = current_user_id()
-    return get_item(uid, item=item or None, push=push or None)
+    return get_item(uid, item=item or None, push=push or None, kind=kind or None)
 
 
 def practice_submit(
@@ -852,6 +914,7 @@ __all__ = [
     "grade_mode",
     "practice_bootstrap",
     "practice_get_item",
+    "practice_ocr",
     "practice_submit",
     "submit",
     "tutor_status",

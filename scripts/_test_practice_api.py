@@ -30,7 +30,7 @@ def test_dto():
         public_item_id,
         push_to_shell_item,
     )
-    from modules.bridge.practice_service import _eta_map, _iter_mastery
+    from modules.bridge.practice_service import _eta_map, _iter_mastery, practice_ocr
 
     check(public_item_id(12) == "i12", "public id")
     check(parse_item_id("i12") == 12, "parse i12")
@@ -80,6 +80,20 @@ def test_dto():
     check(pairs2 == [("极限", 0.2)], "mastery dict shape skips 未分类")
     eta = _eta_map([{"domain": "calc", "eta": 0.4, "n_items": 2}])
     check(eta.get("calc") == 0.4, "eta list → map")
+    ocr_empty = practice_ocr("")
+    check(ocr_empty.get("error") == "empty_image", "ocr empty")
+    ocr_unwired = practice_ocr(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+    )
+    check(ocr_unwired.get("error") == "simpletex_not_configured", "ocr uses SimpleTex, unwired → 501 shape")
+    from learner.paths import last_push_file_stale
+
+    stale_path = os.path.join(tempfile.mkdtemp(), "last_push.json")
+    with open(stale_path, "w", encoding="utf-8") as f:
+        json.dump({"timestamp": "2026-07-28T08:00:00+08:00", "question": "old mcq"}, f)
+    check(last_push_file_stale(stale_path, "2026-08-12T08:00:00+08:00"), "old last_push skipped vs newer SQLite")
+    check(not last_push_file_stale(stale_path, "2026-07-01T00:00:00+08:00"), "newer file not skipped")
+    check(not last_push_file_stale(stale_path, ""), "no db ts → keep file fallback")
 
 
 def test_bootstrap_submit(tmp_db: str):
@@ -104,6 +118,10 @@ def test_bootstrap_submit(tmp_db: str):
 
     boot = ps.bootstrap("demo_learner")
     check(boot["ok"], "bootstrap ok")
+    from modules.store import get_store as _gs
+
+    newest = _gs().get_newest_push()
+    check(bool(newest and newest.get("question")), "newest push any-learner")
     check(len(boot["slots"]) == 3, "3 slots")
     check(len(boot["items"]) >= 3, f"items>={len(boot['items'])}")
     today = [i for i in boot["items"] if not i.get("backlog")]
@@ -176,11 +194,36 @@ def test_bootstrap_submit(tmp_db: str):
         r = conn.getresponse()
         el = json.loads(r.read().decode())
         check(el.get("ok") and el.get("count", 0) >= 1, "event list")
+        check("path" not in el, "events JSON has no filesystem path")
+
+        conn.request(
+            "POST",
+            "/api/v1/practice/ocr",
+            body=json.dumps({"image": "", "filename": "a.jpg"}),
+            headers={"Content-Type": "application/json"},
+        )
+        r = conn.getresponse()
+        ocr = json.loads(r.read().decode())
+        check(r.status == 400 and ocr.get("error") == "empty_image", "ocr empty image")
+
+        man_ocr = (man.get("manifest") or {}).get("practice", {}).get("ocr") or {}
+        check(man_ocr.get("path") == "/api/v1/practice/ocr", "manifest advertises ocr")
 
         conn.request("GET", "/practice")
         r = conn.getresponse()
         html = r.read().decode("utf-8", errors="replace")
         check(r.status == 200 and "API_BASE" in html and "/api/v1/practice/submit" in html, "shell")
+        check("ocr-zone" not in html, "shell hides OCR chrome")
+        check("/static/katex/katex.min.js" in html, "shell uses local KaTeX")
+        check("canonicalItemId" in html, "numeric item alias in URL parse")
+        check("讲师批改中" in html, "submit shows grading wait")
+        check("从题库补练" in html, "empty slot CTA")
+
+        nid = math_item.get("itemId")
+        conn.request("GET", "/api/v1/practice/item?learner=demo_learner&item=" + str(nid))
+        r = conn.getresponse()
+        gotn = json.loads(r.read().decode())
+        check(r.status == 200 and gotn.get("item", {}).get("id") == math_item["id"], "GET item numeric alias")
 
         conn.request("HEAD", "/practice")
         r = conn.getresponse()
@@ -261,6 +304,14 @@ def test_empty_day_and_capability(tmp_db: str):
     )
     got = ps.get_item("cap_learner", item=math_it["id"])
     check(got.get("ok") and got.get("item", {}).get("itemId"), "GET item without push")
+    got_num = ps.get_item("cap_learner", item=str(math_it["itemId"]))
+    check(got_num.get("ok") and got_num.get("item", {}).get("id") == math_it["id"], "GET item accepts bare 126")
+    picked = ps.get_item("cap_learner", kind="math")
+    check(picked.get("ok") and picked.get("item", {}).get("kind") == "math", "GET item kind=math picks ready")
+
+    exam_html = (ROOT / "web/static/exam.html").read_text(encoding="utf-8")
+    check('maxlength="24"' in exam_html, "exam uid maxlength allows 20-digit")
+    check("[0-9]{1,24}" in exam_html, "exam uid regex allows 20-digit")
 
 
 def main():

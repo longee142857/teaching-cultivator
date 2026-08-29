@@ -275,7 +275,7 @@ window.EVENTS = [
 ];
 
 window.MOCK = {
-  learner_id: "stu_1024",
+  learner_id: "",
   snapshot_id: "ability_snapshots.local.mock",
   source: "teaching.modules.capability",
   event_id: window.EVENTS[0].id,

@@ -17,6 +17,7 @@ logging.basicConfig(
 
 from config import DATA_DIR, DINGTALK_CLIENT_ID, DINGTALK_CLIENT_SECRET
 from learner import paths as P
+from learner.paths import last_push_file_stale
 from learner.context import bind_owner_schedule
 from deliver.push_retry_queue import enqueue_retry, process_retry_queue
 from deliver.dingtalk_bot import DingTalkBot, DingTalkPushBridge
@@ -144,11 +145,14 @@ class TeachingBot:
 
     def _restore_last_question(self):
         q = ""
+        db_ts = ""
         try:
             from learner.db import get_store
-            rec = get_store().get_latest_push(None)
+
+            rec = get_store().get_newest_push()
             if rec:
                 q = (rec.get("question") or "").strip()
+                db_ts = str(rec.get("pushed_at") or rec.get("timestamp") or "")
         except Exception:
             pass
         if not q:
@@ -156,7 +160,7 @@ class TeachingBot:
             if not os.path.exists(path):
                 path = P.last_push_path()
             try:
-                if os.path.exists(path):
+                if os.path.exists(path) and not last_push_file_stale(path, db_ts):
                     with open(path, encoding="utf-8") as f:
                         data = json.load(f)
                     q = (data.get("question") or "").strip()

@@ -42,11 +42,12 @@ body::before{
 
 /* ---------------- 顶栏 ---------------- */
 #topbar{
-  position:relative;
-  display:flex; align-items:center; gap:18px;
-  height:60px; padding:0 22px; flex:0 0 auto;
+  position:relative; z-index:8;
+  display:flex; align-items:flex-start; gap:18px;
+  min-height:60px; height:auto; padding:10px 22px; flex:0 0 auto;
   border-bottom:1px solid transparent;
   background:linear-gradient(180deg, rgba(244,237,224,.92), rgba(236,227,210,.82));
+  overflow:visible;
 }
 #topbar::after{
   content:''; position:absolute; left:0; right:0; bottom:-3px; height:6px;
@@ -67,7 +68,8 @@ body::before{
   border:1px solid var(--line-strong);
   border-left-width:1px;
   background:rgba(244,237,224,.72);
-  position:relative;
+  position:relative; z-index:2;
+  isolation:isolate;
 }
 .event-chip::before{
   content:''; position:absolute; left:-14px; top:8px; bottom:8px; width:1px;
@@ -80,7 +82,7 @@ body::before{
 .chip-title{font-size:13px; font-family:var(--font-display); letter-spacing:.01em;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .event-select{
-  flex:1; min-width:0;
+  flex:1; min-width:0; position:relative; z-index:3;
   border:1px solid var(--line-strong); background:var(--card); color:var(--ink);
   font-family:var(--font-mono); font-size:11px; letter-spacing:.03em;
   padding:4px 8px;
@@ -577,7 +579,7 @@ body::before{
 .bkt-track{ height:6px; background:rgba(43,33,24,.08); position:relative; }
 .bkt-track i{ position:absolute; left:0; top:0; bottom:0; width:var(--w); background:rgba(58,107,124,.35); border-left:1px solid var(--cyan); }
 .bkt-meta{ font-family:var(--font-mono); font-size:9.5px; color:var(--ink-soft); margin-top:3px; letter-spacing:.03em; }
-.learner-chip{ font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; color:var(--ink-soft); margin-top:4px; }
+.learner-chip{ font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; color:var(--ink-soft); margin-top:4px; position:relative; z-index:1; }
 .studio-bar{
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;
   padding:8px 16px; border-bottom:1px solid var(--line-strong);

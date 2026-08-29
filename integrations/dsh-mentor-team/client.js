@@ -43,10 +43,10 @@ function detectLearner() {
     const raw = localStorage.getItem('teaching-shell-v2-state')
     if (raw) {
       const s = JSON.parse(raw)
-      if (s && s.learner) return String(s.learner)
+      if (s && s.learner && s.learner !== 'stu_1024') return String(s.learner)
     }
   } catch (e) {}
-  return 'stu_1024'
+  return ''
 }
 
 return {

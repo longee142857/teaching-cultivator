@@ -569,22 +569,33 @@ function init(){
       requestAnimationFrame(frameLoop);
     };
 
+    start();
+    setTimeout(dismissBoot, 400);
+
     const live = (typeof window.loadLiveCapability === 'function')
-      ? window.loadLiveCapability().catch(function (err) {
+      ? Promise.race([
+          window.loadLiveCapability(),
+          new Promise(function (_, reject) {
+            setTimeout(function () { reject(new Error('live timeout')); }, 2000);
+          })
+        ]).catch(function (err) {
           console.warn('[capability-prob] live params fallback to mock', err);
           return null;
         })
       : Promise.resolve(null);
 
-    live.then(function () { start(); }).catch(function (err) {
-      console.error('[capability-prob] init failed', err);
-      start();
+    live.then(function (ok) {
+      if (!ok) return;
+      preferEventFromUrl();
+      renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
+      computeCardAnchors();
+    }).catch(function (err) {
+      console.warn('[capability-prob] live refresh skipped', err);
     }).finally(function () { dismissBoot(); });
     return;
   } catch (err){
     console.error('[capability-prob] init failed', err);
-  } finally {
-    /* dismissBoot called after live load */
+    dismissBoot();
   }
 }
 
