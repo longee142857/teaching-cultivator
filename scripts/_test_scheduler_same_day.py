@@ -19,7 +19,10 @@ sys.modules.setdefault("dingtalk_stream", MagicMock())
 
 from main import (  # noqa: E402
     PUSH_SLOTS,
+    _cultivate_consumed_key,
     _daily_slot_target,
+    _day_for_slot,
+    _merge_today_pushes_into_consumed,
     _next_scheduled_event,
     _note_event_fired,
     _start_biweekly_worker,
@@ -41,27 +44,43 @@ def _future_biweekly(now):
     return now.replace(hour=8, minute=0, second=0, microsecond=0) + datetime.timedelta(days=14)
 
 
-def _simulate_until(start, end, *, job_seconds, job_kinds=("github_push", "biweekly_exam")):
+def _simulate_until(
+    start,
+    end,
+    *,
+    job_seconds,
+    job_kinds=("github_push", "biweekly_exam"),
+    today_pushes=None,
+):
     """模拟 scheduler wait/fire 循环（含 30s 尾间隔）。job_seconds=长任务占用。"""
     now = start
     consumed: set = set()
     fired: list[tuple[datetime.datetime, str, str | None]] = []
+    skipped: list[tuple[datetime.datetime, str, str | None]] = []
     steps = 0
     with patch("learner.biweekly_exam.next_biweekly_slot", side_effect=_future_biweekly):
         while now < end and steps < 400:
             steps += 1
-            target, kind, payload = _next_scheduled_event(now, consumed=consumed)
+            target, kind, payload = _next_scheduled_event(
+                now, consumed=consumed, today_pushes=today_pushes,
+            )
             wait = (target - now).total_seconds()
             if wait >= 120:
                 now += datetime.timedelta(seconds=30)
                 continue
             if wait > 0:
                 now += datetime.timedelta(seconds=wait)
+            if kind == "cultivate" and payload:
+                _merge_today_pushes_into_consumed(consumed, now, today_pushes)
+                if _cultivate_consumed_key(payload, _day_for_slot(now)) in consumed:
+                    skipped.append((now, kind, payload))
+                    now += datetime.timedelta(seconds=30)
+                    continue
             fired.append((now, kind, payload))
             _note_event_fired(consumed, kind, payload, now)
             work = job_seconds if kind in job_kinds else 1
             now += datetime.timedelta(seconds=work + 30)
-    return fired
+    return fired, skipped
 
 
 def main():
@@ -93,7 +112,7 @@ def main():
           f"consumed Sunday math must not refire today (got {k2}/{p2} {t2})")
 
     # ── 3. 长任务从 08:00 压过 09:00：当日 math 仍会 fire ──
-    fired = _simulate_until(
+    fired, _skipped = _simulate_until(
         sun.replace(hour=7, minute=50),
         sun.replace(hour=12, minute=0),
         job_seconds=2 * 3600,
@@ -185,6 +204,73 @@ def main():
     )
     check(slot_old.date() == (sun + datetime.timedelta(days=1)).date(),
           f"without catch-up, slot still +1 day (got {slot_old.date()})")
+
+    # ── 7. 人工补发已落库 → 过点 09:00 不得再发（#5 consumed 洞）──
+    now_1016 = sun.replace(hour=10, minute=16)
+    manual_math = [{"subject": "math", "slot": "math", "item_id": 127}]
+    with patch("learner.biweekly_exam.next_biweekly_slot", side_effect=_future_biweekly):
+        t_dup, k_dup, p_dup = _next_scheduled_event(
+            now_1016, consumed=set(), today_pushes=manual_math,
+        )
+    math_again = (
+        k_dup == "cultivate" and p_dup == "math" and t_dup.date() == now_1016.date()
+    )
+    check(not math_again,
+          f"existing Sunday math push suppresses overdue 09:00 (got {k_dup}/{p_dup} {t_dup})")
+
+    fired_dup, skipped_dup = _simulate_until(
+        sun.replace(hour=7, minute=50),
+        sun.replace(hour=12, minute=0),
+        job_seconds=2 * 3600,
+        today_pushes=manual_math,
+    )
+    math_dup = [t for t, k, p in fired_dup if k == "cultivate" and p == "math"]
+    check(len(math_dup) == 0,
+          f"manual catch-up + scheduler recover must not both send (fired math={math_dup})")
+    check(any(k == "github_push" for _, k, _ in fired_dup),
+          "github 08:00 still fires when math is already pushed")
+
+    # 真 SQLite list_today_pushes：周日 10:12 已有 math → 10:16 不补发
+    import tempfile
+    import config as config_mod
+    from learner import db as db_mod
+    from learner.db import get_store, reset_store, utc_from_shanghai
+
+    with tempfile.TemporaryDirectory() as td:
+        db_path = os.path.join(td, "teaching.db")
+        with patch.object(config_mod, "DATA_DIR", td), \
+             patch.object(config_mod, "TEACHING_DB", db_path):
+            reset_store()
+            try:
+                store = get_store(db_path)
+                iid = store.insert_bank_item(
+                    subject="math",
+                    question="manual catch-up bank #127",
+                    answer="1",
+                    status="ready",
+                )
+                store.record_push_for_item(
+                    item_id=iid,
+                    learner_id=None,
+                    slot="math",
+                    pushed_at=utc_from_shanghai("2026-08-30", "10:12"),
+                )
+                rows = store.list_today_pushes(None, "2026-08-30")
+                check(any((r.get("subject") or "").lower() == "math" for r in rows),
+                      f"list_today_pushes has Sunday math (n={len(rows)})")
+                with patch("learner.biweekly_exam.next_biweekly_slot",
+                           side_effect=_future_biweekly):
+                    t_db, k_db, p_db = _next_scheduled_event(
+                        now_1016, consumed=set(), today_pushes=rows,
+                    )
+                db_math = (
+                    k_db == "cultivate" and p_db == "math"
+                    and t_db.date() == now_1016.date()
+                )
+                check(not db_math,
+                      f"SQLite Sunday math push blocks 09:00 catch-up (got {k_db}/{p_db} {t_db})")
+            finally:
+                reset_store()
 
     print("\n" + "=" * 60)
     if fails:
