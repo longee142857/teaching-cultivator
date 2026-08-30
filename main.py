@@ -496,8 +496,56 @@ def _load_today_pushes(now: datetime.datetime) -> list:
         return []
 
 
+def _biweekly_day_skips_cultivate(now: datetime.datetime) -> bool:
+    """隔周周日发卷日：跳过三槽日推（含发卷后 / 重启后同日）。
+
+    日历只信现有 biweekly_is_due + last_run，不另造周期。
+    发卷成功后 is_due 变 False，故 last_run 落在当天也视为跳过日。
+    """
+    day = _day_for_slot(now)
+    if day.weekday() != 6:
+        return False
+    try:
+        from learner.biweekly_exam import biweekly_is_due, load_state
+        from learner.db import shanghai_day
+    except Exception:
+        return False
+    try:
+        if biweekly_is_due(now):
+            return True
+    except Exception:
+        pass
+    try:
+        last = (load_state().get("last_run") or "").strip()
+        if not last:
+            return False
+        last_day = datetime.date.fromisoformat(shanghai_day(last))
+        return last_day == day
+    except Exception:
+        return False
+
+
+def _apply_biweekly_cultivate_skip(consumed: set, now: datetime.datetime) -> None:
+    """到期日把 math/comm/review 记为已跳过，同日补发也不能回填。"""
+    if not _biweekly_day_skips_cultivate(now):
+        return
+    day = _day_for_slot(now)
+    added = False
+    for _, subj in PUSH_SLOTS:
+        key = _cultivate_consumed_key(subj, day)
+        if key not in consumed:
+            consumed.add(key)
+            added = True
+    if added:
+        try:
+            log(f"[定时] 隔周卷日跳过日推 {day.isoformat()} math/comm/review")
+        except Exception:
+            pass
+
+
 def _refresh_consumed_from_db(consumed: set, now: datetime.datetime) -> None:
     _merge_today_pushes_into_consumed(consumed, now, _load_today_pushes(now))
+    _apply_biweekly_cultivate_skip(consumed, now)
 
 
 def _note_event_fired(
@@ -557,11 +605,13 @@ def _next_scheduled_event(
 
     consumed: 已在当日发出的 (kind, payload, date) 集合。
     today_pushes: list_today_pushes 行；已有同科日推视为已消费（含人工补发）。
+    隔周到期日（biweekly_is_due 或当日已 last_run）三槽视为已跳过。
     日推（cultivate）过点后仍属同一日历日且未消费时保持今日槽，不 +1 天。
     """
     consumed = consumed if consumed is not None else set()
     if today_pushes:
         _merge_today_pushes_into_consumed(consumed, now, today_pushes)
+    _apply_biweekly_cultivate_skip(consumed, now)
     candidates: list[tuple[datetime.datetime, str, str | None]] = []
 
     for time_str, subject in PUSH_SLOTS:
@@ -674,7 +724,7 @@ def scheduler_loop(bot: TeachingBot):
                 if kind == "cultivate":
                     _refresh_consumed_from_db(consumed, now)
                     if payload and _cultivate_consumed_key(payload, _day_for_slot(now)) in consumed:
-                        log(f"[跳过] {payload} 今日已有同科日推（含人工补发），不重复发送")
+                        log(f"[跳过] {payload} 今日日推已跳过或已发出，不重复发送")
                     else:
                         bot.push_cultivate(payload)
                         _note_event_fired(consumed, kind, payload, now)
