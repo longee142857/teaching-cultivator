@@ -434,16 +434,77 @@ WEEKLY_REPORT_SLOT = ("20:00", "sun")
 # 隔周周日 08:00 双周检测卷（与每日 github 08:00 错开到同日批次：见 scheduler）
 BIWEEKLY_EXAM_SLOT = ("08:00", "sun")
 
+# 组卷不堵 wait/fire 线程：同时只跑一个工作线程
+_biweekly_worker_lock = threading.Lock()
 
-def _next_scheduled_event(now: datetime.datetime):
-    """返回最近待触发的 (target_dt, kind, payload)。"""
+
+def _cultivate_consumed_key(subject: str, day: datetime.date) -> tuple:
+    return ("cultivate", subject, day)
+
+
+def _note_event_fired(
+    consumed: set,
+    kind: str,
+    payload: str | None,
+    now: datetime.datetime,
+) -> None:
+    """日推同日补触发去重：记下今天已发出的 cultivate 槽。"""
+    if kind == "cultivate" and payload:
+        consumed.add(_cultivate_consumed_key(payload, now.date()))
+
+
+def _daily_slot_target(
+    now: datetime.datetime,
+    time_str: str,
+    *,
+    kind: str,
+    payload: str | None,
+    consumed: set | None = None,
+    catch_up_same_day: bool = False,
+) -> datetime.datetime:
+    """日槽目标时刻。catch_up_same_day：过点但仍是今天、且未消费 → 立刻补，不滚到明天。"""
+    h, m = map(int, time_str.split(":"))
+    target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+    if target <= now:
+        key = (kind, payload, now.date())
+        if catch_up_same_day and consumed is not None and key not in consumed:
+            return target
+        target += datetime.timedelta(days=1)
+    return target
+
+
+def _start_biweekly_worker(bot: TeachingBot) -> None:
+    """双周组卷放到工作线程，避免堵住 09:00/15:00/19:00 日推。"""
+
+    def _run():
+        if not _biweekly_worker_lock.acquire(blocking=False):
+            log("[biweekly] 已有组卷线程在跑，跳过")
+            return
+        try:
+            bot.push_biweekly_exams()
+        except Exception as e:
+            log(f"[biweekly] 工作线程异常: {e}")
+        finally:
+            _biweekly_worker_lock.release()
+
+    threading.Thread(target=_run, name="biweekly-exam", daemon=True).start()
+
+
+def _next_scheduled_event(now: datetime.datetime, consumed: set | None = None):
+    """返回最近待触发的 (target_dt, kind, payload)。
+
+    consumed: 已在当日发出的 (kind, payload, date) 集合。
+    日推（cultivate）过点后仍属同一日历日且未消费时保持今日槽，不 +1 天。
+    """
+    consumed = consumed if consumed is not None else set()
     candidates: list[tuple[datetime.datetime, str, str | None]] = []
 
     for time_str, subject in PUSH_SLOTS:
-        h, m = map(int, time_str.split(":"))
-        target = now.replace(hour=h, minute=m, second=0, microsecond=0)
-        if target <= now:
-            target += datetime.timedelta(days=1)
+        target = _daily_slot_target(
+            now, time_str,
+            kind="cultivate", payload=subject,
+            consumed=consumed, catch_up_same_day=True,
+        )
         candidates.append((target, "cultivate", subject))
 
     for time_str, subj in PREGEN_SLOTS:
@@ -519,9 +580,12 @@ def _do_github_push(bot: TeachingBot | None = None):
 
 def scheduler_loop(bot: TeachingBot):
     """后台线程：到点触发题目推送或 GitHub 自动推送。"""
+    consumed: set = set()
     while True:
         now = datetime.datetime.now()
-        target, kind, payload = _next_scheduled_event(now)
+        today = now.date()
+        consumed = {k for k in consumed if len(k) > 2 and k[2] >= today}
+        target, kind, payload = _next_scheduled_event(now, consumed=consumed)
         wait = (target - now).total_seconds()
         label_map = {
             "cultivate": payload,
@@ -533,12 +597,16 @@ def scheduler_loop(bot: TeachingBot):
         }
         label = label_map.get(kind, kind)
         if wait < 120:
-            log(f"[定时] {label} 倒计时 {wait:.0f}s")
-            time.sleep(max(0, wait))
+            if wait > 0:
+                log(f"[定时] {label} 倒计时 {wait:.0f}s")
+                time.sleep(wait)
+            else:
+                log(f"[定时] {label} 同日补触发（已过 {-wait:.0f}s）")
             log(f"[触发] {label}")
             try:
                 if kind == "cultivate":
                     bot.push_cultivate(payload)
+                    _note_event_fired(consumed, kind, payload, now)
                     log(f"[OK] {payload} 完成")
                 elif kind == "pregen":
                     from cultivate_bank import run_pregen_slot
@@ -550,13 +618,13 @@ def scheduler_loop(bot: TeachingBot):
                     log(f"[OK] judge {payload} → {result}")
                 elif kind == "github_push":
                     _do_github_push(bot)
-                    # 与周日 08:00 同槽：若双周到期则一并发卷（防候选撞车丢事件）
+                    # 周日 08:00 同槽：组卷丢到工作线程，避免堵住当日 09:00 日推
                     if datetime.datetime.now().weekday() == 6:
-                        bot.push_biweekly_exams()
+                        _start_biweekly_worker(bot)
                 elif kind == "weekly_report":
                     bot.push_weekly_report()
                 elif kind == "biweekly_exam":
-                    bot.push_biweekly_exams()
+                    _start_biweekly_worker(bot)
             except Exception as e:
                 log(f"[失败] {label} 失败: {e}")
         # 消费推送重试队列（BIG-TEACH-012c #8）
