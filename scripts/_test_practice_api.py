@@ -7,6 +7,7 @@ import os
 import sys
 import tempfile
 import threading
+import time
 from http.client import HTTPConnection
 from pathlib import Path
 
@@ -230,6 +231,9 @@ def test_bootstrap_submit(tmp_db: str):
         check(font.is_file() and font.stat().st_size > 1000, "local KaTeX font present")
         check("canonicalItemId" in html, "numeric item alias in URL parse")
         check("讲师批改中" in html, "submit shows grading wait")
+        check("pollGradeUntilDone" in html, "shell polls until grade lands")
+        check("请勿重复提交" in html, "poll timeout does not say 提交失败")
+        check('status === "grading"' in html, "in-flight grading ≠ DB pending")
         check("从题库补练" in html, "empty slot CTA")
 
         nid = math_item.get("itemId")
@@ -349,6 +353,44 @@ def _llm_pending(_system, _user, task_type="grade", *_a, **_k):
         {"verdict": "correct", "confidence": 0.3, "explanation": "low"},
         ensure_ascii=False,
     )
+
+
+def _await_practice_grade(ps, learner: str, item, push=None, timeout: float = 4.0):
+    deadline = time.monotonic() + timeout
+    last = None
+    while time.monotonic() < deadline:
+        got = ps.get_item(learner, item=item, push=push)
+        last = got
+        r = (got or {}).get("result") or {}
+        if (
+            got.get("ok")
+            and r
+            and r.get("status") != "grading"
+            and not got.get("grading")
+        ):
+            return got
+        time.sleep(0.05)
+    return last
+
+
+def _submit_and_wait(ps, learner: str, **kwargs):
+    """Submit; if LLM open/proof returns pending, poll GET item until done."""
+    sub = ps.submit(learner, **kwargs)
+    if sub.get("pending") or sub.get("grading") or (
+        (sub.get("result") or {}).get("status") == "grading"
+    ):
+        got = _await_practice_grade(
+            ps, learner, kwargs.get("item"), kwargs.get("push")
+        )
+        if got and got.get("result"):
+            merged = dict(sub)
+            merged["ok"] = bool(got.get("ok"))
+            merged["result"] = got["result"]
+            merged["item"] = got.get("item") or sub.get("item")
+            merged.pop("pending", None)
+            merged.pop("grading", None)
+            return merged
+    return sub
 
 
 def _assert_last_item_id(store, learner: str, item_id: int, msg: str) -> None:
@@ -483,8 +525,8 @@ def test_submit_persists_item_id(tmp_db: str):
     ), patch("learner.weights_ops.bump_kp_weight"), patch(
         "learner.weights_ops.decay_kp_weight"
     ):
-        sub = ps.submit(
-            "id_learner", answer="4", item=f"i{iid_llm}", push=None, mode="llm"
+        sub = _submit_and_wait(
+            ps, "id_learner", answer="4", item=f"i{iid_llm}", push=None, mode="llm"
         )
     check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "llm", "llm submit no-push")
     hits = [a for a in store.get_attempts("id_learner") if a.get("item_id") == iid_llm]
@@ -501,8 +543,8 @@ def test_submit_persists_item_id(tmp_db: str):
         solution={"final_answer": "4"},
     )
     with patch("grade.grade_answer", side_effect=RuntimeError("llm down")):
-        sub = ps.submit(
-            "id_learner", answer="4", item=f"i{iid_fb}", push=None, mode="llm"
+        sub = _submit_and_wait(
+            ps, "id_learner", answer="4", item=f"i{iid_fb}", push=None, mode="llm"
         )
     check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "ref_fallback", "ref_fallback no-push")
     _assert_last_item_id(store, "id_learner", iid_fb, "submit ref_fallback no-push")
@@ -537,8 +579,13 @@ def test_submit_persists_item_id(tmp_db: str):
     ), patch("learner.weights_ops.bump_kp_weight"), patch(
         "learner.weights_ops.decay_kp_weight"
     ):
-        sub = ps.submit(
-            "id_learner", answer="4", item=f"i{iid_llm_p}", push=pid2, mode="llm"
+        sub = _submit_and_wait(
+            ps,
+            "id_learner",
+            answer="4",
+            item=f"i{iid_llm_p}",
+            push=pid2,
+            mode="llm",
         )
     check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "llm", "llm submit with push")
     hits = [
@@ -548,6 +595,144 @@ def test_submit_persists_item_id(tmp_db: str):
     ]
     check(len(hits) == 1 and hits[0].get("item_id") == iid_llm_p, "submit llm with push item_id")
     check(hits[0].get("push_id") == pid2, "submit llm with push keeps push_id")
+
+
+def test_async_grade_and_idempotent(tmp_db: str):
+    """Proof LLM submit returns pending; second click does not double-write."""
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "llm"
+
+    import importlib
+    from unittest.mock import patch
+
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+
+    importlib.reload(ps)
+    from grade import GradeResult
+    from modules.store import get_store
+
+    store = get_store()
+
+    # ref path: two submits → one attempt, second is already
+    q_ref = "幂级数\n\n$$\\sum x^n$$\n\n求半径。"
+    iid_ref = store.insert_bank_item(
+        subject="math",
+        question=q_ref,
+        answer="1",
+        kp="极限",
+        status="ready",
+        solution={"final_answer": "1"},
+    )
+    sub1 = ps.submit("idem_learner", answer="1", item=f"i{iid_ref}", push=None, mode="ref")
+    check(sub1.get("ok") and not sub1.get("pending"), "ref submit sync")
+    sub2 = ps.submit("idem_learner", answer="1", item=f"i{iid_ref}", push=None, mode="ref")
+    check(sub2.get("already"), "second ref submit already")
+    hits = [a for a in store.get_attempts("idem_learner") if a.get("item_id") == iid_ref]
+    check(len(hits) == 1, "ref resubmit does not add a second attempt")
+    got = ps.get_item("idem_learner", item=f"i{iid_ref}")
+    check(got.get("result") and got["item"].get("answered"), "GET item hydrates by item_id")
+
+    q_proof = "求证：循环码的生成多项式整除 x^n-1。"
+    iid_p = store.insert_bank_item(
+        subject="comm",
+        question=q_proof,
+        answer="g(x)|x^n-1",
+        kp="循环码",
+        status="ready",
+    )
+    gate = threading.Event()
+    started = threading.Event()
+    calls = {"n": 0}
+
+    def slow_grade(*_a, **_k):
+        calls["n"] += 1
+        started.set()
+        if not gate.wait(timeout=5):
+            raise RuntimeError("grade gate timeout")
+        return GradeResult(
+            is_correct=False,
+            feedback="生成多项式整除 x^n-1 的证明要点。",
+            kp_name="循环码",
+            subject="comm",
+            credit=0.5,
+            item_type="proof_outline",
+            status="applied",
+            confidence=0.9,
+            p_mastery_before=0.2,
+            p_mastery_after=0.25,
+        )
+
+    with patch("grade.grade_answer", side_effect=slow_grade):
+        t0 = time.monotonic()
+        sub_p = ps.submit(
+            "idem_learner",
+            answer="设 g(x) 为生成多项式，则…",
+            item=f"i{iid_p}",
+            push=None,
+            mode="llm",
+        )
+        elapsed = time.monotonic() - t0
+        check(sub_p.get("ok") and sub_p.get("pending"), "proof llm submit returns pending")
+        check((sub_p.get("result") or {}).get("status") == "grading", "pending status=grading")
+        check(elapsed < 1.0, f"pending returns quickly ({elapsed:.3f}s)")
+        check(started.wait(2), "worker started before gate release")
+        mid = [a for a in store.get_attempts("idem_learner") if a.get("item_id") == iid_p]
+        check(len(mid) == 0, "no attempt until lecturer grade finishes")
+        sub_again = ps.submit(
+            "idem_learner",
+            answer="另一份解答",
+            item=f"i{iid_p}",
+            push=None,
+            mode="llm",
+        )
+        check(sub_again.get("pending") or sub_again.get("grading"), "inflight second click pending")
+        check(calls["n"] == 1, "second click does not start another grade")
+        gate.set()
+        landed = _await_practice_grade(ps, "idem_learner", f"i{iid_p}", timeout=4.0)
+    check(landed and (landed.get("result") or {}).get("credit") == 0.5, "poll sees 半对")
+    check((landed.get("result") or {}).get("partial"), "hydrated result marks partial")
+    hits_p = [a for a in store.get_attempts("idem_learner") if a.get("item_id") == iid_p]
+    check(len(hits_p) == 1, "async proof writes one attempt")
+    sub3 = ps.submit(
+        "idem_learner",
+        answer="请再批一次",
+        item=f"i{iid_p}",
+        push=None,
+        mode="llm",
+    )
+    check(sub3.get("already"), "after grade, resubmit is already")
+    hits_p2 = [a for a in store.get_attempts("idem_learner") if a.get("item_id") == iid_p]
+    check(len(hits_p2) == 1, "already path does not insert another attempt")
+
+    q_mcq = "下列正确的是\nA. 可导\nB. 连续\nC. 可积\nD. 有界"
+    iid_m = store.insert_bank_item(
+        subject="math", question=q_mcq, answer="A", kp="极限", status="ready"
+    )
+
+    def fast_grade(*_a, **_k):
+        return GradeResult(
+            is_correct=True,
+            feedback="选 A。",
+            kp_name="极限",
+            subject="math",
+            item_type="mcq",
+            status="applied",
+            confidence=0.95,
+        )
+
+    with patch("grade.grade_answer", side_effect=fast_grade):
+        sub_m = ps.submit(
+            "idem_learner", answer="A", item=f"i{iid_m}", push=None, mode="llm"
+        )
+    check(sub_m.get("ok") and not sub_m.get("pending"), "mcq llm stays synchronous")
+    check((sub_m.get("result") or {}).get("gradeMode") == "llm", "mcq llm gradeMode")
 
 
 def main():
@@ -561,6 +746,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t3.db")
         test_submit_persists_item_id(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t4.db")
+        test_async_grade_and_idempotent(db)
     print("ALL_OK")
 
 

@@ -1289,6 +1289,76 @@
           submitBtn.disabled = true;
           submitBtn.textContent = "讲师批改中…";
         }
+        var GRADE_POLL_MS = 2000;
+        var GRADE_DEADLINE_MS = 8 * 60 * 1000;
+        function gradeStillRunning(data) {
+          if (!data) return false;
+          if (data.pending || data.grading) return true;
+          return !!(data.result && data.result.status === "grading");
+        }
+        function resultReady(data) {
+          var r = data && data.result;
+          if (!r) return false;
+          if (r.status === "grading") return false;
+          return true;
+        }
+        function applySubmitResult(data) {
+          state.pending = false;
+          var result = data.result;
+          state.answered[item.id] = result;
+          if (data.item) {
+            var ix = findItemIndex(item.id);
+            if (ix >= 0) ITEMS[ix] = data.item;
+          }
+          setView("result", { result: result, explainOpen: false, error: "" });
+        }
+        function pollGradeUntilDone(startedAt) {
+          function tick() {
+            if (Date.now() - startedAt > GRADE_DEADLINE_MS) {
+              state.pending = false;
+              state.error = "批改仍在进行，请勿重复提交。稍后从今日入口查看结果。";
+              render();
+              return;
+            }
+            var q = "/api/v1/practice/item?learner=" + encodeURIComponent(state.learner || "")
+              + "&item=" + encodeURIComponent(item.id);
+            if (item.pushId != null) q += "&push=" + encodeURIComponent(String(item.pushId));
+            fetch(apiUrl(q), { headers: apiHeaders() })
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                if (resultReady(data) && !gradeStillRunning(data)) {
+                  state.answered[item.id] = data.result;
+                  if (data.item) {
+                    var ix = findItemIndex(item.id);
+                    if (ix >= 0) ITEMS[ix] = data.item;
+                  }
+                  var cur = currentItem();
+                  if (state.pending && cur && cur.id === item.id && (state.view === "desk" || state.view === "result")) {
+                    applySubmitResult(data);
+                  } else {
+                    state.pending = false;
+                    render();
+                  }
+                  return;
+                }
+                setTimeout(tick, GRADE_POLL_MS);
+              })
+              .catch(function () {
+                setTimeout(tick, GRADE_POLL_MS);
+              });
+          }
+          setTimeout(tick, GRADE_POLL_MS);
+        }
+        function shouldPollAfterSubmit(pack) {
+          var data = pack.body || {};
+          if (gradeStillRunning(data)) return true;
+          if (resultReady(data)) return false;
+          var st = pack.status || 0;
+          if (st === 401 || st === 403 || st === 400) return false;
+          if (st >= 500 || st === 408 || st === 504 || st === 0) return true;
+          if (!pack.okHttp) return true;
+          return false;
+        }
         fetch(apiUrl("/api/v1/practice/submit"), {
           method: "POST",
           headers: apiHeaders({ "Content-Type": "application/json" }),
@@ -1298,28 +1368,28 @@
             push: item.pushId != null ? String(item.pushId) : (state.push || null),
             answer: textAns
           })
-        }).then(function (r) { return r.json().then(function (j) { return { okHttp: r.ok, body: j }; }); })
-          .then(function (pack) {
-            state.pending = false;
-            var data = pack.body || {};
-            if (!data.ok || !data.result) {
-              state.error = (data && data.error) || "提交失败，请稍后重试。";
-              render();
-              return;
-            }
-            var result = data.result;
-            state.answered[item.id] = result;
-            if (data.item) {
-              var ix = findItemIndex(item.id);
-              if (ix >= 0) ITEMS[ix] = data.item;
-            }
-            setView("result", { result: result, explainOpen: false, error: "" });
-          })
-          .catch(function (e) {
-            state.pending = false;
-            state.error = "网络错误：" + (e && e.message ? e.message : "submit_failed");
-            render();
+        }).then(function (r) {
+          return r.text().then(function (t) {
+            var j = null;
+            try { j = t ? JSON.parse(t) : null; } catch (e) { j = null; }
+            return { okHttp: r.ok, status: r.status, body: j };
           });
+        }).then(function (pack) {
+          var data = pack.body || {};
+          if (resultReady(data) && !gradeStillRunning(data)) {
+            applySubmitResult(data);
+            return;
+          }
+          if (shouldPollAfterSubmit(pack)) {
+            pollGradeUntilDone(Date.now());
+            return;
+          }
+          state.pending = false;
+          state.error = (data && data.error) || "提交失败，请稍后重试。";
+          render();
+        }).catch(function () {
+          pollGradeUntilDone(Date.now());
+        });
       }
       function goNext() {
         var next = nextUnansweredIndex(state.index + 1);

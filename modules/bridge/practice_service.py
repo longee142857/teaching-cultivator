@@ -4,13 +4,28 @@ Grading modes (env ``PRACTICE_GRADE_MODE``):
 - ``llm`` (default): call ``grade.grade_answer`` (writes BKT + attempt)
 - ``ref``: compare to item.answer / solution.final_answer (offline / CI)
 
+LLM open/proof (解答) submits return ``pending`` immediately and grade on a
+daemon thread; the desk polls ``GET /item`` until the attempt is in SQLite.
+MCQ and ``ref`` stay in-request. A second submit for an already-stored
+learner+item attempt returns ``already`` and does not write another row.
+
 Tutor chat is intentionally stubbed (``tutor_enabled=False``).
 """
 from __future__ import annotations
 
+import logging
 import os
+import threading
+import time
 from datetime import datetime, timedelta
 from typing import Any, Optional
+
+log = logging.getLogger("practice")
+
+# In-process lecturer-grade jobs. Keyed by learner|item|push so a second
+# click cannot start another LLM grade while the first is still running.
+_GRADE_JOBS: dict[str, dict[str, Any]] = {}
+_GRADE_JOBS_LOCK = threading.Lock()
 
 from modules.bridge.practice_dto import (
     SLOT_SPECS,
@@ -273,7 +288,6 @@ def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[s
     if not attempt:
         return None
     correct = attempt.get("correct")
-    submitted = ""
     meta = attempt
     if isinstance(attempt.get("meta"), dict):
         meta = attempt["meta"]
@@ -281,19 +295,151 @@ def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[s
         meta.get("user_answer")
         or meta.get("submitted")
         or meta.get("answer")
+        or attempt.get("user_answer")
         or ""
     )
-    feedback = meta.get("feedback") or meta.get("comment") or ""
+    feedback = (
+        meta.get("feedback")
+        or meta.get("comment")
+        or attempt.get("feedback")
+        or ""
+    )
     if not feedback:
         feedback = item_dto["commentOk"] if correct else item_dto["commentBad"]
-    return {
-        "correct": bool(correct) if correct is not None else False,
+    try:
+        credit = float(attempt["credit"]) if attempt.get("credit") is not None else None
+    except (TypeError, ValueError):
+        credit = None
+    if credit is None:
+        try:
+            credit = float(meta["credit"]) if meta.get("credit") is not None else None
+        except (TypeError, ValueError):
+            credit = None
+    correct_b = bool(correct) if correct is not None else False
+    # Shell shows 部分通过 when !correct && partial (e.g. credit 0.5 半对).
+    partial = (not correct_b) and credit is not None and credit > 0
+    reason = str(attempt.get("update_reason") or meta.get("update_reason") or "")
+    if "practice_ref" in reason:
+        grade_mode_s = "ref_fallback" if "LLM" in str(feedback) else "ref"
+    else:
+        grade_mode_s = (
+            attempt.get("gradeMode")
+            or meta.get("gradeMode")
+            or attempt.get("grade_mode")
+            or "llm"
+        )
+    mb = attempt.get("mastery_before") or meta.get("mastery_before")
+    ma = attempt.get("mastery_after") or meta.get("mastery_after")
+    out: dict[str, Any] = {
+        "correct": correct_b,
+        "partial": partial,
         "comment": feedback,
         "explain": item_dto.get("explain") or "",
         "submitted": submitted,
         "status": attempt.get("status") or meta.get("status") or "applied",
-        "credit": attempt.get("credit"),
-        "kp": attempt.get("knowledge_point") or item_dto.get("kp"),
+        "credit": credit,
+        "kp": attempt.get("knowledge_point") or meta.get("knowledge_point") or item_dto.get("kp"),
+        "gradeMode": grade_mode_s,
+    }
+    if isinstance(mb, (int, float)):
+        out["masteryBefore"] = round(float(mb), 4)
+    if isinstance(ma, (int, float)):
+        out["masteryAfter"] = round(float(ma), 4)
+    return out
+
+
+def _grade_job_key(lid: str, item_id, push_id) -> str:
+    def _n(v) -> str:
+        if v is None or v == "":
+            return ""
+        try:
+            return str(int(v))
+        except (TypeError, ValueError):
+            return str(v)
+
+    return f"{lid}|{_n(item_id)}|{_n(push_id)}"
+
+
+def _is_grade_inflight(lid: str, item_id, push_id) -> bool:
+    key = _grade_job_key(lid, item_id, push_id)
+    with _GRADE_JOBS_LOCK:
+        return key in _GRADE_JOBS
+
+
+def _find_learner_attempt(
+    store,
+    lid: str,
+    *,
+    push_id=None,
+    item_id=None,
+) -> Optional[dict[str, Any]]:
+    """Latest attempt for this learner on a push and/or item.
+
+    Prefer the push row when present; otherwise scan attempts by item_id
+    (get_attempts is chronological ASC, so the last match is the latest).
+    """
+    lid = (lid or "").strip()
+    if push_id:
+        try:
+            att = store.get_attempt_for_push(int(push_id))
+        except Exception:
+            att = None
+        if att and (att.get("user_id") or "") == lid:
+            return att
+    if item_id is None or item_id == "" or not hasattr(store, "get_attempts"):
+        return None
+    try:
+        want = int(item_id)
+    except (TypeError, ValueError):
+        return None
+    last: Optional[dict[str, Any]] = None
+    for a in store.get_attempts(lid):
+        try:
+            if int(a.get("item_id") or 0) == want:
+                last = a
+        except (TypeError, ValueError):
+            continue
+    return last
+
+
+def _item_looks_mcq(dto: dict, question: str = "") -> bool:
+    opts = dto.get("options") or []
+    if isinstance(opts, list) and len(opts) >= 2:
+        return True
+    q = (question or "").strip()
+    if not q:
+        q = str(dto.get("stem") or dto.get("question") or "")
+    if not q.strip():
+        return False
+    try:
+        from grade import _detect_item_type
+
+        return _detect_item_type(q) == "mcq"
+    except Exception:
+        return False
+
+
+def _should_grade_async(mode: str, dto: dict, question: str = "") -> bool:
+    """LLM open/proof items: return pending and grade off-request.
+
+    Multiple-choice stays in the request (cheap, existing tests).
+    """
+    if str(mode or "").strip().lower() != "llm":
+        return False
+    return not _item_looks_mcq(dto, question)
+
+
+def _pending_grade_result(*, explain: str = "", submitted: str = "") -> dict[str, Any]:
+    return {
+        "status": "grading",
+        "correct": False,
+        "partial": False,
+        "comment": "讲师批改中…",
+        "explain": explain or "",
+        "submitted": submitted or "",
+        "gradeMode": "llm",
+        "credit": None,
+        "kp": "",
     }
 
 
@@ -486,13 +632,14 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
             return dto
         seen.add(pid)
         items.append(dto)
-        if dto.get("answered") and dto.get("pushId"):
-            att = store.get_attempt_for_push(int(dto["pushId"]))
-            # filter by user
-            if att and (att.get("user_id") or "") == lid:
-                r = _attempt_result_dto(att, dto)
-                if r:
-                    answered_map[pid] = r
+        att = _find_learner_attempt(
+            store, lid, push_id=dto.get("pushId"), item_id=dto.get("itemId")
+        )
+        if att:
+            r = _attempt_result_dto(att, dto)
+            if r:
+                answered_map[pid] = r
+                dto["answered"] = True
         return dto
 
     for row in today_rows:
@@ -628,11 +775,25 @@ def get_item(
     if from_bank or row.get("from_bank"):
         dto["fromBank"] = True
     result = None
-    if dto.get("answered") and dto.get("pushId"):
-        att = store.get_attempt_for_push(int(dto["pushId"]))
-        if att and (att.get("user_id") or "") == lid:
-            result = _attempt_result_dto(att, dto)
-    return {"ok": True, "item": dto, "result": result, "tutor": tutor_status()}
+    att = _find_learner_attempt(
+        store, lid, push_id=dto.get("pushId"), item_id=dto.get("itemId")
+    )
+    if att:
+        dto = dict(dto)
+        dto["answered"] = True
+        result = _attempt_result_dto(att, dto)
+    grading = _is_grade_inflight(lid, dto.get("itemId"), dto.get("pushId"))
+    out: dict[str, Any] = {
+        "ok": True,
+        "item": dto,
+        "result": result,
+        "tutor": tutor_status(),
+    }
+    if grading and result is None:
+        out["grading"] = True
+        out["pending"] = True
+        out["result"] = _pending_grade_result(explain=dto.get("explain") or "")
+    return out
 
 
 def _ref_grade(item_row: dict, user_answer: str) -> tuple[bool, float | None, str]:
@@ -689,26 +850,7 @@ def _resolve_submit_ids(row: dict, dto: dict, store) -> tuple[int | None, int | 
 
 
 def _attempt_linked(store, learner_id: str, *, push_id, item_id) -> bool:
-    lid = (learner_id or "").strip()
-    if push_id:
-        try:
-            att = store.get_attempt_for_push(int(push_id))
-        except Exception:
-            att = None
-        if att and (att.get("user_id") or "") == lid:
-            return True
-    if item_id and hasattr(store, "get_attempts"):
-        try:
-            want = int(item_id)
-        except (TypeError, ValueError):
-            return False
-        for a in store.get_attempts(lid):
-            try:
-                if int(a.get("item_id") or 0) == want:
-                    return True
-            except (TypeError, ValueError):
-                continue
-    return False
+    return _find_learner_attempt(store, learner_id, push_id=push_id, item_id=item_id) is not None
 
 
 def _record_ref_attempt(
@@ -751,6 +893,264 @@ def _record_ref_attempt(
     except Exception:
         pass
     return aid
+
+
+def _execute_llm_grade(
+    *,
+    lid: str,
+    store,
+    dto: dict,
+    row: dict,
+    ua: str,
+    push_id,
+    item_id,
+    kp: str,
+    subject: str,
+    explain: str,
+) -> dict[str, Any]:
+    """Run lecturer grade in-process. Caller must bind_learner."""
+    from grade import grade_answer as _grade
+
+    question = (row.get("question") or "").strip()
+    try:
+        gr = _grade(
+            question,
+            ua,
+            kp_name=kp,
+            subject=subject,
+            item_id=item_id,
+            push_id=push_id,
+        )
+    except TypeError:
+        gr = _grade(question, ua, kp_name=kp, subject=subject)
+    comment = gr.feedback or (
+        dto["commentOk"] if gr.is_correct else dto["commentBad"]
+    )
+    if gr.credit is not None:
+        comment = f"部分正确。{comment}"
+    result_dto = {
+        "correct": bool(gr.is_correct) and gr.credit is None,
+        "partial": gr.credit is not None,
+        "comment": comment,
+        "explain": explain,
+        "submitted": ua,
+        "status": gr.status,
+        "credit": gr.credit,
+        "confidence": gr.confidence,
+        "kp": gr.kp_name or kp,
+        "masteryBefore": round(gr.p_mastery_before, 4),
+        "masteryAfter": round(gr.p_mastery_after, 4),
+        "gradeMode": "llm",
+    }
+    # grade_answer writes BKT+attempt; if it missed (no push / 未分类 /
+    # BKT exception) still persist item_id for empty-day / fromBank.
+    if not _attempt_linked(store, lid, push_id=push_id, item_id=item_id):
+        store.add_attempt_entry(
+            {
+                "user_id": lid,
+                "push_id": push_id,
+                "item_id": item_id,
+                "knowledge_point": result_dto["kp"],
+                "correct": result_dto["correct"],
+                "credit": gr.credit,
+                "item_type": gr.item_type,
+                "status": gr.status,
+                "confidence": gr.confidence,
+                "feedback": comment,
+                "user_answer": ua,
+            }
+        )
+    return result_dto
+
+
+def _execute_ref_fallback(
+    *,
+    lid: str,
+    store,
+    dto: dict,
+    row: dict,
+    ua: str,
+    push_id,
+    item_id,
+    kp: str,
+    subject: str,
+    explain: str,
+    err: BaseException,
+) -> dict[str, Any]:
+    correct, credit, feedback = _ref_grade(row, ua)
+    _record_ref_attempt(
+        learner_id=lid,
+        push_id=push_id,
+        item_id=item_id,
+        kp=kp,
+        subject=subject,
+        correct=correct,
+        credit=credit,
+        feedback=f"{feedback}（LLM 不可用：{err}）",
+        user_answer=ua,
+        store=store,
+    )
+    return {
+        "correct": correct,
+        "partial": False,
+        "comment": feedback if correct else dto["commentBad"],
+        "explain": explain,
+        "submitted": ua,
+        "status": "applied",
+        "credit": credit,
+        "kp": kp,
+        "gradeMode": "ref_fallback",
+        "warning": f"llm_failed:{err}",
+    }
+
+
+def _grade_llm_or_fallback(
+    *,
+    lid: str,
+    store,
+    dto: dict,
+    row: dict,
+    ua: str,
+    push_id,
+    item_id,
+    kp: str,
+    subject: str,
+    explain: str,
+) -> dict[str, Any]:
+    try:
+        return _execute_llm_grade(
+            lid=lid,
+            store=store,
+            dto=dto,
+            row=row,
+            ua=ua,
+            push_id=push_id,
+            item_id=item_id,
+            kp=kp,
+            subject=subject,
+            explain=explain,
+        )
+    except Exception as e:
+        return _execute_ref_fallback(
+            lid=lid,
+            store=store,
+            dto=dto,
+            row=row,
+            ua=ua,
+            push_id=push_id,
+            item_id=item_id,
+            kp=kp,
+            subject=subject,
+            explain=explain,
+            err=e,
+        )
+
+
+def _run_async_llm_grade(
+    *,
+    key: str,
+    lid: str,
+    store,
+    dto: dict,
+    row: dict,
+    ua: str,
+    push_id,
+    item_id,
+    kp: str,
+    subject: str,
+    explain: str,
+) -> None:
+    try:
+        from learner.context import bind_learner
+
+        with bind_learner(lid, binding="personal"):
+            _grade_llm_or_fallback(
+                lid=lid,
+                store=store,
+                dto=dto,
+                row=row,
+                ua=ua,
+                push_id=push_id,
+                item_id=item_id,
+                kp=kp,
+                subject=subject,
+                explain=explain,
+            )
+    except Exception:
+        log.exception("practice async grade failed learner=%s item=%s", lid, item_id)
+    finally:
+        with _GRADE_JOBS_LOCK:
+            _GRADE_JOBS.pop(key, None)
+
+
+def _start_async_llm_grade(
+    *,
+    lid: str,
+    store,
+    dto: dict,
+    row: dict,
+    ua: str,
+    push_id,
+    item_id,
+    kp: str,
+    subject: str,
+    explain: str,
+) -> bool:
+    """Register in-flight job and start daemon worker. False if already running."""
+    key = _grade_job_key(lid, item_id, push_id)
+    with _GRADE_JOBS_LOCK:
+        if key in _GRADE_JOBS:
+            return False
+        _GRADE_JOBS[key] = {"started": time.time()}
+    t = threading.Thread(
+        target=_run_async_llm_grade,
+        kwargs={
+            "key": key,
+            "lid": lid,
+            "store": store,
+            "dto": dto,
+            "row": row,
+            "ua": ua,
+            "push_id": push_id,
+            "item_id": item_id,
+            "kp": kp,
+            "subject": subject,
+            "explain": explain,
+        },
+        name="practice-grade",
+        daemon=True,
+    )
+    t.start()
+    return True
+
+
+def _submit_done(
+    dto: dict,
+    result: dict,
+    *,
+    already: bool = False,
+    pending: bool = False,
+    lid: str = "",
+) -> dict[str, Any]:
+    if pending:
+        dto = dict(dto)
+        dto["answered"] = False
+    elif already or (result and result.get("status") != "grading"):
+        dto = dict(dto)
+        dto["answered"] = True
+    out: dict[str, Any] = {
+        "ok": True,
+        "item": dto,
+        "result": result,
+        "capability": _params_summary(lid) if lid else {},
+        "tutor": tutor_status(),
+    }
+    if already:
+        out["already"] = True
+    if pending:
+        out["pending"] = True
+        out["grading"] = True
+    return out
 
 
 def submit(
@@ -799,95 +1199,59 @@ def submit(
     explain = dto.get("explain") or explain_from_solution(row.get("solution") or {})
     push_id, item_id = _resolve_submit_ids(row, dto, store)
 
-    used_mode = mode
-    result_dto: dict[str, Any]
+    existing = _find_learner_attempt(store, lid, push_id=push_id, item_id=item_id)
+    if existing:
+        result = _attempt_result_dto(existing, dto) or _pending_grade_result(
+            explain=explain, submitted=str(existing.get("user_answer") or ua)
+        )
+        return _submit_done(dto, result, already=True, lid=lid)
+
+    if _is_grade_inflight(lid, item_id, push_id):
+        return _submit_done(
+            dto,
+            _pending_grade_result(explain=explain, submitted=ua),
+            pending=True,
+            lid=lid,
+        )
+
+    # Open / proof LLM grades: return pending so a 120s gateway cannot
+    # map a later-written attempt to 提交失败. MCQ and ref stay in-request.
+    if _should_grade_async(mode, dto, question) and item_id:
+        _start_async_llm_grade(
+            lid=lid,
+            store=store,
+            dto=dto,
+            row=row,
+            ua=ua,
+            push_id=push_id,
+            item_id=item_id,
+            kp=kp,
+            subject=subject,
+            explain=explain,
+        )
+        return _submit_done(
+            dto,
+            _pending_grade_result(explain=explain, submitted=ua),
+            pending=True,
+            lid=lid,
+        )
 
     from learner.context import bind_learner
 
     with bind_learner(lid, binding="personal"):
         if mode == "llm":
-            try:
-                from grade import grade_answer as _grade
-
-                try:
-                    gr = _grade(
-                        question,
-                        ua,
-                        kp_name=kp,
-                        subject=subject,
-                        item_id=item_id,
-                        push_id=push_id,
-                    )
-                except TypeError:
-                    gr = _grade(question, ua, kp_name=kp, subject=subject)
-                correct = bool(gr.is_correct) if gr.credit is None else False
-                if gr.credit is not None:
-                    # partial → treat as not fully correct for shell boolean
-                    correct = False
-                comment = gr.feedback or (
-                    dto["commentOk"] if gr.is_correct else dto["commentBad"]
-                )
-                if gr.credit is not None:
-                    comment = f"部分正确。{comment}"
-                result_dto = {
-                    "correct": bool(gr.is_correct) and gr.credit is None,
-                    "partial": gr.credit is not None,
-                    "comment": comment,
-                    "explain": explain,
-                    "submitted": ua,
-                    "status": gr.status,
-                    "credit": gr.credit,
-                    "confidence": gr.confidence,
-                    "kp": gr.kp_name or kp,
-                    "masteryBefore": round(gr.p_mastery_before, 4),
-                    "masteryAfter": round(gr.p_mastery_after, 4),
-                    "gradeMode": "llm",
-                }
-                # grade_answer writes BKT+attempt; if it missed (no push / 未分类 /
-                # BKT exception) still persist item_id for empty-day / fromBank.
-                if not _attempt_linked(store, lid, push_id=push_id, item_id=item_id):
-                    store.add_attempt_entry(
-                        {
-                            "user_id": lid,
-                            "push_id": push_id,
-                            "item_id": item_id,
-                            "knowledge_point": result_dto["kp"],
-                            "correct": result_dto["correct"],
-                            "credit": gr.credit,
-                            "item_type": gr.item_type,
-                            "status": gr.status,
-                            "confidence": gr.confidence,
-                            "feedback": comment,
-                            "user_answer": ua,
-                        }
-                    )
-            except Exception as e:
-                used_mode = "ref_fallback"
-                correct, credit, feedback = _ref_grade(row, ua)
-                _record_ref_attempt(
-                    learner_id=lid,
-                    push_id=push_id,
-                    item_id=item_id,
-                    kp=kp,
-                    subject=subject,
-                    correct=correct,
-                    credit=credit,
-                    feedback=f"{feedback}（LLM 不可用：{e}）",
-                    user_answer=ua,
-                    store=store,
-                )
-                result_dto = {
-                    "correct": correct,
-                    "partial": False,
-                    "comment": feedback if correct else dto["commentBad"],
-                    "explain": explain,
-                    "submitted": ua,
-                    "status": "applied",
-                    "credit": credit,
-                    "kp": kp,
-                    "gradeMode": used_mode,
-                    "warning": f"llm_failed:{e}",
-                }
+            result_dto = _grade_llm_or_fallback(
+                lid=lid,
+                store=store,
+                dto=dto,
+                row=row,
+                ua=ua,
+                push_id=push_id,
+                item_id=item_id,
+                kp=kp,
+                subject=subject,
+                explain=explain,
+            )
         else:
             correct, credit, feedback = _ref_grade(row, ua)
             _record_ref_attempt(
@@ -914,13 +1278,7 @@ def submit(
                 "gradeMode": "ref",
             }
 
-    return {
-        "ok": True,
-        "item": dto,
-        "result": result_dto,
-        "capability": _params_summary(lid),
-        "tutor": tutor_status(),
-    }
+    return _submit_done(dto, result_dto, lid=lid)
 
 
 def get_params(learner_id: str) -> dict[str, Any]:
