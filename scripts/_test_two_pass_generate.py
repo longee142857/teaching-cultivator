@@ -6,17 +6,22 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from decide.router import select_model, REASONING_EFFORT_MAX
+from decide.router import select_model, REASONING_EFFORT_DEFAULT
 from prompts.prompt_builder import PromptBuilder
 
 
 def test_model_tiers():
-    for t in ("author", "generate", "grade", "explain"):
+    for t in ("generate", "grade", "explain"):
         cfg = select_model(t)
-        assert cfg.model == "deepseek-v4-pro", t
+        assert cfg.model == "deepseek-v4-flash", t
         assert cfg.provider == "deepseek", t
         assert cfg.thinking is True, t
-        assert cfg.effort == REASONING_EFFORT_MAX == "max", t
+        assert cfg.effort == REASONING_EFFORT_DEFAULT == "high", t
+    cfg_author = select_model("author")
+    assert cfg_author.model == "deepseek-v4-pro"
+    assert cfg_author.provider == "deepseek"
+    assert cfg_author.thinking is True
+    assert cfg_author.effort == REASONING_EFFORT_DEFAULT == "high"
     for t in ("polish", "orchestrate"):
         cfg = select_model(t)
         assert cfg.model == "deepseek-v4-flash", t
@@ -25,7 +30,7 @@ def test_model_tiers():
     flash = select_model("other")
     assert flash.model == "deepseek-v4-flash"
     assert flash.thinking is False
-    print("OK model tiers (pro author/grade; flash polish)")
+    print("OK model tiers (flash grade/generate/explain; pro author; flash polish)")
 
 
 def test_polish_template():

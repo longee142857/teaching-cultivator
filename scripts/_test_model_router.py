@@ -24,11 +24,18 @@ def main() -> None:
     fails: list[str] = []
 
     print("\n=== select_model matrix ===")
-    for t in ("author", "generate", "grade", "explain"):
+    for t in ("generate", "grade", "explain"):
         cfg = select_model(t)
         check(cfg.provider == "deepseek", f"{t} provider=deepseek", fails)
-        check(cfg.model == MODEL_PRO, f"{t} model=pro", fails)
+        check(cfg.model == MODEL_FLASH, f"{t} model=flash", fails)
         check(cfg.thinking is True, f"{t} thinking on", fails)
+        check(cfg.effort == "high", f"{t} effort=high", fails)
+
+    cfg_author = select_model("author")
+    check(cfg_author.provider == "deepseek", "author provider=deepseek", fails)
+    check(cfg_author.model == MODEL_PRO, "author model=pro", fails)
+    check(cfg_author.thinking is True, "author thinking on", fails)
+    check(cfg_author.effort == "high", "author effort=high", fails)
 
     for t in ("polish", "orchestrate"):
         cfg = select_model(t)
@@ -45,7 +52,7 @@ def main() -> None:
     check(cfg_agent.provider == "deepseek", "agent provider=deepseek", fails)
     check(cfg_agent.model == AGENT_MODEL, "agent model=AGENT_MODEL", fails)
     check(cfg_agent.thinking is True, "agent thinking on", fails)
-    check(cfg_agent.effort == "max", "agent effort=max", fails)
+    check(cfg_agent.effort == "high", "agent effort=high", fails)
 
     print("\n=== call_llm deepseek author ===")
     with patch("decide.router._post_deepseek") as mock_ds:
@@ -62,6 +69,23 @@ def main() -> None:
             fails,
         )
         check("reasoning_effort" in payload, "author has reasoning_effort", fails)
+        check(payload.get("reasoning_effort") == "high", "author effort high", fails)
+
+    print("\n=== call_llm deepseek grade flash ===")
+    with patch("decide.router._post_deepseek") as mock_ds:
+        mock_ds.return_value = {
+            "choices": [{"message": {"content": "graded"}}]
+        }
+        out = call_llm("sys", "usr", "grade")
+        check(out == "graded", "grade content", fails)
+        payload = mock_ds.call_args[0][0]
+        check(payload["model"] == MODEL_FLASH, "grade payload model flash", fails)
+        check(
+            payload.get("thinking", {}).get("type") == "enabled",
+            "grade thinking enabled",
+            fails,
+        )
+        check(payload.get("reasoning_effort") == "high", "grade effort high", fails)
 
     print("\n=== call_llm polish flash ===")
     with patch("decide.router._post_deepseek") as mock_ds:
@@ -118,7 +142,7 @@ def main() -> None:
             "agent thinking enabled",
             fails,
         )
-        check(payload.get("reasoning_effort") == "max", "agent effort max", fails)
+        check(payload.get("reasoning_effort") == "high", "agent effort high", fails)
         check("tools" in payload, "agent has tools", fails)
 
     print("\n=== TeachingAgent._call_llm wiring ===")
