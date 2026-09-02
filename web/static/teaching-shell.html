@@ -313,6 +313,18 @@
     textarea.answer.is-invalid { border-color: var(--bad); }
     textarea.composer { min-height: 44px; max-height: 120px; resize: none; }
     textarea::placeholder { color: var(--muted); }
+    .answer-preview-wrap { display: grid; gap: 8px; }
+    .answer-preview {
+      min-height: 72px;
+    }
+    .answer-preview.is-empty {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .answer-preview .katex-display {
+      margin: 0.4em 0; overflow-x: auto; overflow-y: hidden;
+    }
     .field-error { font-size: 13px; color: var(--bad); line-height: 1.5; }
     .ocr-zone { display: grid; gap: 8px; }
     .ocr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -1260,7 +1272,7 @@
             state.draft = String(data.text).trim();
             state.error = "";
             var conf = (typeof data.conf === "number") ? (" · 置信 " + Math.round(data.conf * 100) + "%") : "";
-            state.ocrMsg = "识别完成" + conf + "。请核对后再点底部提交。";
+            state.ocrMsg = "识别完成" + conf + "。请对照下方预览与手写，改原文后提交。";
             render();
           })
           .catch(function (e) {
@@ -1620,6 +1632,7 @@
       }
       function mountMath() {
         root.querySelectorAll("[data-tex]").forEach(function (el) {
+          if (el.id === "answer-preview") return;
           var tex = el.getAttribute("data-tex") || "";
           if (!tex) return;
           if (window.katex) {
@@ -1629,6 +1642,39 @@
             el.innerHTML = '<div class="math-fallback">' + esc(tex) + "</div>";
           }
         });
+      }
+      function draftHasMathDelimiters(src) {
+        return /\$\$|\\\[|\\\(|\$[^$\n]/.test(String(src || ""));
+      }
+      function paintDraftPreview() {
+        var el = document.getElementById("answer-preview");
+        if (!el) return;
+        var src = String(state.draft || "");
+        var trimmed = src.trim();
+        el.classList.toggle("is-empty", !trimmed);
+        el.removeAttribute("data-tex");
+        if (!trimmed) {
+          el.innerHTML = "预览将显示在这里。识别或手打后可对照手写核对。提交仍用上方原文，不是预览 HTML。";
+          return;
+        }
+        try {
+          if (draftHasMathDelimiters(src)) {
+            el.innerHTML = renderMathMarkdown(src);
+            return;
+          }
+          el.setAttribute("data-tex", trimmed);
+          if (window.katex) {
+            try {
+              window.katex.render(trimmed, el, { throwOnError: false, displayMode: true });
+            } catch (e1) {
+              el.innerHTML = '<div class="math-fallback">' + esc(trimmed) + "</div>";
+            }
+          } else {
+            el.innerHTML = '<div class="math-fallback">' + esc(trimmed) + "</div>";
+          }
+        } catch (e) {
+          el.innerHTML = '<div class="math-fallback">' + esc(trimmed) + "</div>";
+        }
       }
 
       function renderHeader() {
@@ -1852,9 +1898,14 @@
                   "</div>" +
                   (ocrPayload
                     ? '<div class="ocr-preview" data-od-id="ocr-preview"><img id="ocr-preview-img" alt="手写预览" src="' + escAttr(ocrPayload.dataUrl) + '"><div class="ocr-meta"><strong>' + esc(ocrPayload.name) + "</strong>" + esc(state.ocrMsg || (state.ocrMode === "formula" ? "标准公式模型 · 核对后再提交。" : "整页 markdown · 核对后再提交。")) + "</div></div>"
-                    : '<p class="hint" style="margin:0">演算纸用「整页识别」；只拍一条公式用「公式加强」。点「识别」填入下方文本，也可直接手打。</p>') +
+                    : '<p class="hint" style="margin:0">演算纸用「整页识别」；只拍一条公式用「公式加强」。点「识别」填入下方原文，预览在文本框下，也可直接手打。</p>') +
                 "</div>" +
+                '<label class="hint" style="margin:0;padding:0;border:0;background:transparent" for="answer-input">原文（可改）</label>' +
                 '<textarea class="answer' + (state.error ? " is-invalid" : "") + '" id="answer-input" data-od-id="answer-input" placeholder="写出推导与结论，或先识别手写再核对。提交后由 AI 讲师批改。"' + (state.pending ? " disabled" : "") + ">" + esc(state.draft) + "</textarea>" +
+                '<div class="answer-preview-wrap" data-od-id="answer-preview-wrap">' +
+                  '<div class="row between wrap"><h3 id="answer-preview-label">预览</h3><span class="pill">对照手写</span></div>' +
+                  '<div class="answer-preview math-block" id="answer-preview" data-od-id="answer-preview" aria-live="polite"></div>' +
+                "</div>" +
                 err +
                 '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
               "</section>" +
@@ -2097,6 +2148,7 @@
         if (input) {
           input.addEventListener("input", function () {
             state.draft = input.value;
+            paintDraftPreview();
             if (state.error) {
               state.error = "";
               input.classList.remove("is-invalid");
@@ -2188,6 +2240,7 @@
         renderPracticeDock();
         bindPractice();
         mountMath();
+        paintDraftPreview();
         if (state.view === "today") fetchExamPapers();
         lastPaintKey = key;
         // Same-view refresh (fold 讲解 / OCR / pending) must keep scroll.

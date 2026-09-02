@@ -237,6 +237,9 @@ def test_bootstrap_submit(tmp_db: str):
         check("从题库补练" in html, "empty slot CTA")
         check("sameScreen" in html and "keepY" in html, "same-view render keeps scroll")
         check("window.scrollTo(0, 0)" in html, "view-change still may scroll to top")
+        check("answer-preview" in html and "paintDraftPreview" in html, "OCR/source live KaTeX preview")
+        check("throwOnError: false" in html, "preview KaTeX fails soft")
+        check("提交仍用上方原文" in html, "submit uses edited source not HTML")
 
         nid = math_item.get("itemId")
         conn.request("GET", "/api/v1/practice/item?learner=demo_learner&item=" + str(nid))
