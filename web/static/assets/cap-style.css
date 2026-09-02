@@ -678,6 +678,16 @@ body{ overflow:auto; }
 .kp-track i{ display:block; height:100%; width:var(--w,0%); background:var(--ink); }
 .kp-row.is-weak .kp-track i{ background:var(--red); }
 .kp-empty{ padding:8px 10px; border:1px dashed var(--line); color:var(--ink-soft); font-size:11px; }
+.kp-pager{
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  margin-top:8px; padding:8px 0 2px;
+}
+.kp-page-btn{
+  width:32px; height:32px; border:1px solid var(--line-strong);
+  background:var(--card); color:var(--ink); font-size:16px; cursor:pointer;
+}
+.kp-page-btn:disabled{ opacity:.35; cursor:default; color:var(--ink-faint); }
+.kp-page-ind{ font-size:10px; color:var(--ink-soft); letter-spacing:.06em; }
 .mastery-strong summary{ cursor:pointer; font-family:var(--font-display); font-weight:600; font-size:15px; list-style:none; padding:6px 0; }
 .mastery-strong summary::-webkit-details-marker{ display:none; }
 .mastery-strong summary::after{ content:'＋展开'; float:right; font-family:var(--font-mono); font-size:10px; color:var(--ink-soft); }

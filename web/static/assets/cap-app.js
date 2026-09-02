@@ -448,6 +448,32 @@ function kpRowHtml(r){
   '</div>';
 }
 
+const emptyNote = '<div class="kp-empty mono">暂无；掌握度来自 teaching LearnerParams。</div>';
+
+const KP_PAGE_SIZE = 12;
+const kpPage = { weak: 1, mid: 1, strong: 1 };
+
+function paginate(list, group){
+  const total = list.length;
+  if (!total) return { rows: [], page: 1, pages: 0, total: 0 };
+  const pages = Math.ceil(total / KP_PAGE_SIZE);
+  let page = kpPage[group] || 1;
+  if (page > pages) page = pages;
+  if (page < 1) page = 1;
+  kpPage[group] = page;
+  const start = (page - 1) * KP_PAGE_SIZE;
+  return { rows: list.slice(start, start + KP_PAGE_SIZE), page: page, pages: pages, total: total };
+}
+
+function pagerHtml(group, info){
+  if (info.pages <= 1) return '';
+  return '<div class="kp-pager" data-group="' + group + '">' +
+    '<button type="button" class="kp-page-btn mono" data-kp-prev="' + group + '"' + (info.page <= 1 ? ' disabled' : '') + ' aria-label="上一页">‹</button>' +
+    '<span class="kp-page-ind mono">' + info.page + ' / ' + info.pages + ' · 共 ' + info.total + '</span>' +
+    '<button type="button" class="kp-page-btn mono" data-kp-next="' + group + '"' + (info.page >= info.pages ? ' disabled' : '') + ' aria-label="下一页">›</button>' +
+  '</div>';
+}
+
 function renderMastery(){
   const rows = kpRows();
   const weak = rows.filter(function (r) { return r.p < MASTERY_WEAK; });
@@ -505,13 +531,33 @@ function renderMastery(){
     ds.innerHTML = html;
   }
 
-  const emptyNote = '<div class="kp-empty mono">暂无；掌握度来自 teaching LearnerParams。</div>';
   const kw = $('kp-weak'), km = $('kp-mid'), ks = $('kp-strong');
-  if (kw) kw.innerHTML = weak.length ? weak.map(kpRowHtml).join('') : emptyNote;
-  if (km) km.innerHTML = mid.length ? mid.map(kpRowHtml).join('') : emptyNote;
-  if (ks) ks.innerHTML = strong.length ? strong.map(kpRowHtml).join('') : emptyNote;
+  const iw = paginate(weak, 'weak'), im = paginate(mid, 'mid'), is = paginate(strong, 'strong');
+  if (kw) {
+    kw.innerHTML = weak.length ? iw.rows.map(kpRowHtml).join('') + pagerHtml('weak', iw) : emptyNote;
+  }
+  if (km) {
+    km.innerHTML = mid.length ? im.rows.map(kpRowHtml).join('') + pagerHtml('mid', im) : emptyNote;
+  }
+  if (ks) {
+    ks.innerHTML = strong.length ? is.rows.map(kpRowHtml).join('') + pagerHtml('strong', is) : emptyNote;
+  }
   const sc = $('strong-cap');
-  if (sc) sc.textContent = strong.length ? (strong.length + ' 个 · p ≥ 0.70') : '';
+  if (sc) sc.textContent = strong.length ? (strong.length + ' 个 · p ≥ 0.70' + (is.pages > 1 ? ' · 第 ' + is.page + '/' + is.pages + ' 页' : '')) : '';
+}
+
+function bindMasteryPager(){
+  const panel = $('mastery-panel');
+  if (!panel || panel.dataset.pagerBound === '1') return;
+  panel.dataset.pagerBound = '1';
+  panel.addEventListener('click', function (e) {
+    const prev = e.target.closest('[data-kp-prev]');
+    const next = e.target.closest('[data-kp-next]');
+    const g = prev ? prev.getAttribute('data-kp-prev') : (next ? next.getAttribute('data-kp-next') : null);
+    if (!g) return;
+    kpPage[g] = (kpPage[g] || 1) + (prev ? -1 : 1);
+    renderMastery();
+  });
 }
 
 // ── 页签 ──
@@ -689,6 +735,7 @@ function init(){
       bindPresets();
       bindEventSelect();
       bindViewTabs();
+      bindMasteryPager();
       setTab(activeTab);
 
       brain = window.createBrainPlate($('brain-plate'), {
