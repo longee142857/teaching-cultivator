@@ -45,18 +45,31 @@
         const kp = w.kp || w.knowledge_point || w.id;
         const p = Number(w.p != null ? w.p : w.p_mastery);
         if (!kp || Number.isNaN(p)) return;
-        rows.push({ kp: String(kp), p_mastery: p, slot: w.slot || w.domain || "—", domain: w.domain || null });
+        rows.push({
+          kp: String(kp),
+          p_mastery: p,
+          slot: w.slot || w.domain || "—",
+          domain: w.domain || null,
+          opportunity_count: (w.opportunity_count != null ? Number(w.opportunity_count) : null)
+        });
       });
     } else if (mastery && typeof mastery === "object") {
       Object.keys(mastery).forEach(function (kp) {
         const v = mastery[kp];
         const p = typeof v === "number" ? v : Number(v && (v.p_mastery != null ? v.p_mastery : v.p));
         if (Number.isNaN(p)) return;
-        rows.push({ kp: kp, p_mastery: p, slot: (v && v.domain) || "—", domain: (v && v.domain) || null });
+        rows.push({
+          kp: kp,
+          p_mastery: p,
+          slot: (v && v.domain) || "—",
+          domain: (v && v.domain) || null,
+          opportunity_count: (v && v.opportunity_count != null ? Number(v.opportunity_count) : null)
+        });
       });
     }
     rows.sort(function (a, b) { return a.p_mastery - b.p_mastery; });
-    if (rows.length) return rows.slice(0, 24);
+    // 掌握度页需要尽量完整；事件页已降级，展示上限放宽到 80
+    if (rows.length) return rows.slice(0, 80);
     return (weak || []).map(function (w) {
       return { kp: w.kp, p_mastery: Number(w.p || 0), slot: "weak", domain: null };
     });
@@ -82,7 +95,7 @@
     window.MOCK.assumptions = [
       "η̂ / BKT 已接 VPS practice/params（learner=" + window.MOCK.learner_id + "）",
       "事件目录可切换；导师团可写入 /api/v1/capability/events",
-      "BKT 最多展示 24 个 KP（按掌握度升序）",
+      "BKT 已接 VPS practice/params（展示上限 80 KP）",
     ].concat(liveAssumptions);
 
     // Merge mentor-writable events (remote overrides same id)

@@ -889,10 +889,10 @@ return {
           '· 标题：' + (ev.title || ''),
           '· id：' + (ev.id || ''),
           '· 域：' + ((ev.domains || []).join(' · ') || '—'),
-          '· P̂(mock)：' + ev.p_hat,
+          '· P̂：' + ev.p_hat + (ev.estimate === 'placeholder' ? '（占位）' : '（口述）'),
           '',
-          '打开：/capability-brain.html?event=' + encodeURIComponent(ev.id || ''),
-          '说明：可写事件目录；仍不能批改/出题。',
+          '打开：/capability-brain.html?event=' + encodeURIComponent(ev.id || '') + '&tab=events',
+          '说明：已登记目录项；P̂ 为占位/口述，不会按当前 BKT 重算。',
         ].join('\n')
         const card = await loadCard(learnerId)
         applyDelta(card, { note: '写入事件 ' + (ev.title || ev.id) })

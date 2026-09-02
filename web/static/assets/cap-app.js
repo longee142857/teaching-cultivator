@@ -14,6 +14,7 @@ const REGION_ORDER = ['frontal','parietal','temporal','occipital'];
 const PAGE_MIN = -1; // 封面
 const PAGE_MAX = 3;
 const SWIPE_THRESHOLD = 56;
+let activeTab = "mastery";
 
 const $ = id => document.getElementById(id);
 const stage = $('stage');
@@ -206,6 +207,7 @@ function renderBottlenecks(){
 
 function renderAssumptions(){
   $('assume-count').textContent = MOCK.assumptions.length;
+  $('assume-count').textContent = MOCK.assumptions.length;
   $('assume-list').innerHTML = MOCK.assumptions
     .map((a, i) => `<li data-n="${String(i+1).padStart(2,'0')}">${a}</li>`).join('');
   const btn = $('assume-toggle'), panel = $('assumptions');
@@ -238,6 +240,7 @@ function stepPage(delta){
 }
 
 function applyActive(){
+  if (activeTab !== 'events') return;
   const region = regionForPage(pageIndex);
   const domain = region ? REGIONS[region].domain : null;
   const isCover = pageIndex < 0;
@@ -403,7 +406,141 @@ function preferEventFromUrl(){
     const q = new URLSearchParams(window.location.search || '');
     const ev = (q.get('event') || '').trim();
     if (ev && typeof window.applyEventToMock === 'function') window.applyEventToMock(ev);
+    const tab = (q.get('tab') || '').trim();
+    if (tab === 'events') setTab('events');
   } catch (e) {}
+}
+
+// ── 掌握度优先视图 ──
+const MASTERY_WEAK = 0.45;
+const MASTERY_STRONG = 0.70;
+
+function kpRows(){
+  return (window.MOCK && Array.isArray(MOCK.bkt_l2) ? MOCK.bkt_l2 : [])
+    .map(function (r) {
+      return {
+        kp: r.kp || r.knowledge_point || '',
+        p: Number(r.p_mastery != null ? r.p_mastery : r.p) || 0,
+        slot: r.slot || '',
+        domain: r.domain || null,
+        opp: (r.opportunity_count != null ? Number(r.opportunity_count) : null)
+      };
+    })
+    .filter(function (r) { return r.kp; })
+    .sort(function (a, b) { return a.p - b.p; });
+}
+
+function domainLabel(d){ return (window.DOMAIN_LABEL && window.DOMAIN_LABEL[d]) || d; }
+
+function kpRowHtml(r){
+  const pctTxt = Math.round(r.p * 1000) / 10;
+  const w = Math.max(2, Math.min(100, Math.round(r.p * 100)));
+  const dom = r.domain ? domainLabel(r.domain) : '未映射';
+  const opp = (r.opp != null) ? (' · ' + r.opp + ' 次') : '';
+  const band = r.p < MASTERY_WEAK ? 'weak' : (r.p < MASTERY_STRONG ? 'mid' : 'strong');
+  return '<div class="kp-row is-' + band + '" data-domain="' + (r.domain || '') + '">' +
+    '<div class="kp-top">' +
+      '<span class="kp-name">' + String(r.kp) + '</span>' +
+      '<span class="kp-meta mono">' + dom + opp + '</span>' +
+      '<span class="kp-val mono">' + r.p.toFixed(2) + '</span>' +
+    '</div>' +
+    '<div class="kp-track"><i style="--w:' + w + '%"></i></div>' +
+  '</div>';
+}
+
+function renderMastery(){
+  const rows = kpRows();
+  const weak = rows.filter(function (r) { return r.p < MASTERY_WEAK; });
+  const mid = rows.filter(function (r) { return r.p >= MASTERY_WEAK && r.p < MASTERY_STRONG; });
+  const strong = rows.filter(function (r) { return r.p >= MASTERY_STRONG; });
+
+  const meta = $('mastery-meta');
+  if (meta) {
+    const src = (MOCK.source && String(MOCK.source).indexOf('VPS') >= 0) ? 'VPS live' : '本地 mock';
+    meta.textContent = 'learner=' + (MOCK.learner_id || '—') + ' · BKT p_mastery · 练习选题用 · ≠ 事件 P̂ · ' + src;
+  }
+  const stats = $('mastery-stats');
+  if (stats) {
+    const total = rows.length;
+    const weakPct = total ? Math.round(weak.length / total * 100) : 0;
+    stats.innerHTML =
+      '<div class="mstat"><span class="mstat-n mono">' + weak.length + '</span><span class="mstat-t">薄弱</span></div>' +
+      '<div class="mstat"><span class="mstat-n mono">' + mid.length + '</span><span class="mstat-t">进行中</span></div>' +
+      '<div class="mstat"><span class="mstat-n mono">' + strong.length + '</span><span class="mstat-t">已掌握</span></div>' +
+      '<div class="mstat"><span class="mstat-n mono">' + total + '</span><span class="mstat-t">全部 KP</span></div>';
+  }
+
+  // 分域摘要（仅统计已映射 domain 的）
+  const byDom = {};
+  rows.forEach(function (r) {
+    if (!r.domain) return;
+    (byDom[r.domain] = byDom[r.domain] || []).push(r.p);
+  });
+  const order = ['calc', 'linalg', 'prob', 'comm', 'signals'];
+  const domKeys = Object.keys(byDom).sort(function (a, b) {
+    const ia = order.indexOf(a), ib = order.indexOf(b);
+    if (ia < 0 && ib < 0) return a.localeCompare(b);
+    if (ia < 0) return 1;
+    if (ib < 0) return -1;
+    return ia - ib;
+  });
+  const unmapped = rows.filter(function (r) { return !r.domain; });
+  const ds = $('domain-summary');
+  if (ds) {
+    let html = domKeys.map(function (d) {
+      const arr = byDom[d];
+      const avg = arr.reduce(function (a, b) { return a + b; }, 0) / Math.max(1, arr.length);
+      const w = Math.max(2, Math.min(100, Math.round(avg * 100)));
+      return '<div class="dom-row">' +
+        '<div class="dom-head"><span class="dom-name">' + domainLabel(d) + '</span><span class="dom-meta mono">' + arr.length + ' KP · 均值 ' + avg.toFixed(2) + '</span></div>' +
+        '<div class="dom-track"><i style="--w:' + w + '%"></i></div>' +
+      '</div>';
+    }).join('');
+    if (unmapped.length) {
+      html += '<div class="dom-row is-unmapped"><div class="dom-head"><span class="dom-name">未映射域</span><span class="dom-meta mono">' + unmapped.length + ' KP · 已在下方按 p 排序</span></div></div>';
+    }
+    if (!domKeys.length && !unmapped.length) {
+      html = '<div class="dom-empty">暂无掌握度数据（先做题或接 VPS）。</div>';
+    }
+    ds.innerHTML = html;
+  }
+
+  const emptyNote = '<div class="kp-empty mono">暂无；掌握度来自 teaching LearnerParams。</div>';
+  const kw = $('kp-weak'), km = $('kp-mid'), ks = $('kp-strong');
+  if (kw) kw.innerHTML = weak.length ? weak.map(kpRowHtml).join('') : emptyNote;
+  if (km) km.innerHTML = mid.length ? mid.map(kpRowHtml).join('') : emptyNote;
+  if (ks) ks.innerHTML = strong.length ? strong.map(kpRowHtml).join('') : emptyNote;
+  const sc = $('strong-cap');
+  if (sc) sc.textContent = strong.length ? (strong.length + ' 个 · p ≥ 0.70') : '';
+}
+
+// ── 页签 ──
+function setTab(tab){
+  activeTab = tab === 'events' ? 'events' : 'mastery';
+  document.querySelectorAll('.view-tab').forEach(function (b) {
+    const on = b.dataset.tab === activeTab;
+    b.classList.toggle('is-on', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  if (stage) stage.classList.toggle('is-events', activeTab === 'events');
+  const mp = $('mastery-panel');
+  const es = $('event-stage');
+  if (mp) mp.hidden = activeTab !== 'mastery';
+  if (es) es.hidden = activeTab !== 'events';
+  try {
+    const q = new URLSearchParams(window.location.search || '');
+    if (activeTab === 'events') q.set('tab', 'events'); else q.delete('tab');
+    window.history.replaceState({}, '', window.location.pathname + (q.toString() ? ('?' + q.toString()) : ''));
+  } catch (e) {}
+  requestAnimationFrame(function () {
+    if (activeTab === 'events') { computeCardAnchors(); updateLeaders(); }
+  });
+}
+
+function bindViewTabs(){
+  document.querySelectorAll('.view-tab').forEach(function (b) {
+    b.addEventListener('click', function () { setTab(b.dataset.tab); });
+  });
 }
 
 function bindPageChrome(){
@@ -420,6 +557,7 @@ function bindPageChrome(){
 }
 
 function bindSwipe(){
+  if (!stage) return;
   let tracking = false;
   let startX = 0;
   let startY = 0;
@@ -452,7 +590,8 @@ function bindSwipe(){
 
   function onDown(e){
     if (e.button != null && e.button !== 0) return;
-    if (e.target.closest('.page-nav, .page-dot, .preset, .assume-btn, #assumptions, .studio-bar, a, input, select, textarea, button, .sv-region')) return;
+    if (e.target.closest('.page-nav, .page-dot, .preset, .assume-btn, #assumptions, .studio-bar, a, input, select, textarea, button, .sv-region, .view-tab, .mastery-panel')) return;
+    if (activeTab !== 'events') return;
     tracking = true;
     pointerId = e.pointerId;
     startX = e.clientX;
@@ -509,6 +648,7 @@ function bindSwipe(){
   stage.addEventListener('pointercancel', onUp);
 
   window.addEventListener('keydown', (e) => {
+    if (activeTab !== 'events') return;
     if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
       e.preventDefault();
@@ -524,12 +664,13 @@ function bindSwipe(){
 }
 
 function onResize(){
+  if (activeTab !== 'events') return;
   computeCardAnchors();
   leaders.setAttribute('viewBox', `0 0 ${stage.clientWidth} ${stage.clientHeight}`);
 }
 
 function frameLoop(){
-  if (brain) anchorScreens = brain.getAnchors();
+  if (brain && activeTab === 'events') anchorScreens = brain.getAnchors();
   updateLeaders();
   requestAnimationFrame(frameLoop);
 }
@@ -539,12 +680,15 @@ function init(){
     const start = function () {
       preferEventFromUrl();
       renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
+      renderMastery();
       buildLeaders();
       computeCardAnchors();
       bindPageChrome();
       bindSwipe();
       bindPresets();
       bindEventSelect();
+      bindViewTabs();
+      setTab(activeTab);
 
       brain = window.createBrainPlate($('brain-plate'), {
         onSelect: region => {
@@ -588,7 +732,8 @@ function init(){
       if (!ok) return;
       preferEventFromUrl();
       renderEvent(); renderEta(); renderProb(); renderPaths(); renderBottlenecks(); renderAssumptions();
-      computeCardAnchors();
+      renderMastery();
+      if (activeTab === 'events') computeCardAnchors();
     }).catch(function (err) {
       console.warn('[capability-prob] live refresh skipped', err);
     }).finally(function () { dismissBoot(); });

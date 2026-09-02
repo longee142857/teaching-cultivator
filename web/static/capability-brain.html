@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>能力概率 · Brain Prediction Console</title>
-<meta name="description" content="capability-prob 事件预测控制台 —— 对齐 teaching LearnerParams · 本地 mock">
+<title>能力掌握 · Brain Prediction Console</title>
+<meta name="description" content="能力掌握总览 —— 先答「还剩哪些不会」，事件目录仅作占位">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -57,7 +57,39 @@
     </nav>
   </header>
 
+  <nav class="view-tabs" id="view-tabs" data-od-id="view-tabs" aria-label="视图">
+    <button type="button" class="view-tab is-on mono" data-tab="mastery" aria-pressed="true">掌握度</button>
+    <button type="button" class="view-tab mono" data-tab="events" aria-pressed="false">事件目录（占位）</button>
+  </nav>
   <main id="stage" class="stage is-cover" data-od-id="stage">
+    <section id="mastery-panel" data-od-id="mastery-panel" aria-label="掌握度总览">
+      <div class="mastery-head">
+        <div>
+          <h1 class="mastery-title">掌握度总览</h1>
+          <p class="mastery-sub mono" id="mastery-meta">BKT p_mastery · 练习选题用 · ≠ 事件 P̂</p>
+        </div>
+        <div class="mastery-stats" id="mastery-stats"></div>
+      </div>
+      <div class="domain-summary" id="domain-summary" data-od-id="domain-summary"></div>
+      <section class="mastery-group" data-od-id="mastery-weak">
+        <h2 class="group-title">薄弱 <span class="group-cap mono">p &lt; 0.45 · 最弱在前</span></h2>
+        <div class="kp-list" id="kp-weak"></div>
+      </section>
+      <section class="mastery-group" data-od-id="mastery-mid">
+        <h2 class="group-title">进行中 <span class="group-cap mono">0.45 – 0.70</span></h2>
+        <div class="kp-list" id="kp-mid"></div>
+      </section>
+      <details class="mastery-group mastery-strong" data-od-id="mastery-strong">
+        <summary>已掌握 <span class="group-cap mono" id="strong-cap"></span></summary>
+        <div class="kp-list" id="kp-strong"></div>
+      </details>
+      <details class="brain-fold" data-od-id="brain-fold">
+        <summary class="mono">显示脑图（装饰）与四叶注记</summary>
+        <p class="fold-hint">旧舞台在下方，需切到「事件目录（占位）」页签使用。</p>
+      </details>
+    </section>
+    <div id="event-stage" hidden data-od-id="event-stage">
+      <div class="event-banner">事件目录（占位）：下方 P̂ / 路径为内置 mock 或导师登记，<b>不按当前 BKT 实时推算</b>。</div>
     <div id="orbit-ring" aria-hidden="true"></div>
     <svg id="brain-plate" data-od-id="brain-plate" viewBox="0 0 480 380" role="img" aria-label="预测脑平面墨线图"></svg>
     <svg id="leaders" data-od-id="leader-lines" aria-hidden="true"></svg>
@@ -119,6 +151,7 @@
       <span class="hint-key">SWIPE</span>
       左右滑动翻页 · 点脑叶可直达
     </p>
+    </div>
   </main>
 
   <footer id="footbar" data-od-id="footbar">
@@ -130,7 +163,7 @@
         <ol id="assume-list"></ol>
       </div>
     </div>
-    <div class="disclaimer" data-od-id="disclaimer">概率预测 · 非预言 · BKT≠P̂ · 见假设</div>
+    <div class="disclaimer" data-od-id="disclaimer">掌握度=BKT · 事件 P̂ 为占位/mock · 非实时推算 · 见假设</div>
   </footer>
 </div>
 

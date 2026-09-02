@@ -67,6 +67,7 @@ def _normalize_event(raw: dict[str, Any], *, source: str = "mentor") -> dict[str
     except (TypeError, ValueError):
         p_hat = 0.4
     p_hat = max(0.05, min(0.95, p_hat))
+    p_hat_explicit = raw.get("p_hat") is not None or raw.get("p") is not None
     ci = raw.get("ci")
     if not (isinstance(ci, (list, tuple)) and len(ci) == 2):
         lo = max(0.02, p_hat - 0.06)
@@ -77,6 +78,7 @@ def _normalize_event(raw: dict[str, Any], *, source: str = "mentor") -> dict[str
 
     top_paths = raw.get("top_paths") if isinstance(raw.get("top_paths"), list) else []
     bottlenecks = raw.get("bottlenecks") if isinstance(raw.get("bottlenecks"), list) else []
+    paths_explicit = bool(top_paths)
     if not top_paths:
         gates = [f"{d}_mastery_gate" if d in ("calc", "linalg", "prob") else f"{d}_unit_gate" for d in domains[:3]]
         top_paths = [
@@ -91,6 +93,9 @@ def _normalize_event(raw: dict[str, Any], *, source: str = "mentor") -> dict[str
             {"node": "timed_mock_pass", "when_fail": 140, "share": 0.18},
         ]
 
+    # 诚实标记：导师只写标题/域时，P̂ 与路径都是占位，不是根据 BKT 实时推算
+    placeholder = (not p_hat_explicit) or (not paths_explicit)
+
     return {
         "id": eid,
         "title": title,
@@ -102,6 +107,11 @@ def _normalize_event(raw: dict[str, Any], *, source: str = "mentor") -> dict[str
         "n_paths": int(raw.get("n_paths") or max(6, len(top_paths) + 3)),
         "top_paths": top_paths,
         "bottlenecks": bottlenecks,
+        "estimate": "placeholder" if placeholder else "manual",
+        "estimate_note": (
+            "P̂ / 路径为占位，未按当前 BKT 推算" if placeholder
+            else "导师手工填写 P̂；仍未接事件引擎"
+        ),
         "source": source,
         "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "author": str(raw.get("author") or raw.get("mentor") or "mentor").strip() or "mentor",
