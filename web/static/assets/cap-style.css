@@ -606,7 +606,9 @@ html.is-embedded, html.is-embedded body{ overflow:hidden; }
    ============================================================ */
 body{ overflow:auto; }
 #app{ min-height:100vh; height:auto; }
-#stage{ overflow-y:auto; overflow-x:hidden; }
+#stage{ display:flex; flex-direction:column; }
+#stage:not(.is-events){ overflow-y:auto; overflow-x:hidden; }
+#stage.is-events{ overflow:hidden; }
 
 .view-tabs{
   display:flex; gap:0; margin-left:auto; flex:0 0 auto;
@@ -625,7 +627,16 @@ body{ overflow:auto; }
   max-width:860px; margin:0 auto; padding:18px 18px 28px;
 }
 #stage.is-events #mastery-panel{ display:none; }
-#event-stage{ position:absolute; inset:0; }
+/* 事件页签：event-stage 撑起 stage，内部保持旧舞台的绝对定位上下文 */
+#event-stage{ position:relative; flex:1 1 auto; min-height:100%; }
+#event-stage > *{ pointer-events:auto; }
+#event-stage > #brain-plate,
+#event-stage > #leaders,
+#event-stage > .page-deck{ pointer-events:none; }
+/* 事件页签时，旧舞台的可交互区域仍由自身规则控制 */
+#event-stage #brain-plate .brain-view.is-on{ pointer-events:auto; }
+#event-stage .page-deck .page-chrome,
+#event-stage .page-deck .card.page.is-open{ pointer-events:auto; }
 .event-banner{
   position:relative; z-index:6; margin:12px auto 0; max-width:860px; padding:10px 14px;
   border:1px dashed var(--line-strong); background:rgba(244,237,224,.9);

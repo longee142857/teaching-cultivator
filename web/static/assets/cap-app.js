@@ -527,6 +527,7 @@ function setTab(tab){
   const es = $('event-stage');
   if (mp) mp.hidden = activeTab !== 'mastery';
   if (es) es.hidden = activeTab !== 'events';
+  if (activeTab === 'events') { applyActive(); }
   try {
     const q = new URLSearchParams(window.location.search || '');
     if (activeTab === 'events') q.set('tab', 'events'); else q.delete('tab');
