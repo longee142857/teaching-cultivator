@@ -60,8 +60,9 @@ Grading: `grade` → `verify_grade` → apply|pending → mastery write-back whe
 
 | Role | Default model | Channel |
 |------|---------------|---------|
-| Agent (chat / tools) | `deepseek-v4-flash` + thinking max | DeepSeek direct (0731 agentic refresh) |
-| author / grade / explain | `deepseek-v4-pro` + thinking | DeepSeek direct |
+| Agent (chat / tools) | `deepseek-v4-flash` + thinking high | DeepSeek direct (0731 agentic refresh) |
+| grade / generate / explain | `deepseek-v4-flash` + thinking high | DeepSeek direct |
+| author（双周卷组卷） | `deepseek-v4-pro` + thinking high | DeepSeek direct |
 | review_item / verify_grade | `qwen-plus` | DashScope 北京直连（失败回退 DeepSeek Flash） |
 | polish / orchestrate | `deepseek-v4-flash` | DeepSeek direct |
 

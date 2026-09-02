@@ -38,15 +38,20 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
     """给定任务类型，返回 {model, provider, thinking, effort}。
 
     矩阵：
-      author/grade/explain/generate → DeepSeek Pro + thinking max
-      polish/orchestrate              → DeepSeek Flash（文案）
-      review_item/verify_grade        → REVIEWER_PROVIDER（默认 dashscope/qwen-plus）
-      agent                           → DeepSeek Flash + thinking max
+      grade/generate/explain → DeepSeek Flash + thinking high
+      author                 → DeepSeek Pro + thinking high（双周卷组卷）
+      polish/orchestrate     → DeepSeek Flash（文案，无 thinking）
+      review_item/verify_grade → REVIEWER_PROVIDER（默认 dashscope/qwen-plus）
+      agent                  → DeepSeek Flash + thinking（effort 默认 high）
     """
     _ = difficulty  # 保留签名兼容
-    if task_type in ("grade", "generate", "explain", "author"):
+    if task_type in ("grade", "generate", "explain"):
         return ModelConfig(
-            MODEL_PRO, provider="deepseek", thinking=True, effort=REASONING_EFFORT_MAX
+            MODEL_FLASH, provider="deepseek", thinking=True, effort=REASONING_EFFORT_DEFAULT
+        )
+    if task_type == "author":
+        return ModelConfig(
+            MODEL_PRO, provider="deepseek", thinking=True, effort=REASONING_EFFORT_DEFAULT
         )
     if task_type in ("polish", "orchestrate"):
         return ModelConfig(
@@ -63,7 +68,7 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
         effort = (
             AGENT_REASONING_EFFORT
             if AGENT_REASONING_EFFORT in ("high", "max")
-            else REASONING_EFFORT_MAX
+            else REASONING_EFFORT_DEFAULT
         )
         return ModelConfig(
             AGENT_MODEL or MODEL_FLASH,
@@ -192,7 +197,7 @@ def call_llm(
         if cfg.thinking:
             payload["thinking"] = {"type": "enabled"}
             payload["reasoning_effort"] = (
-                effort if effort in ("high", "max") else REASONING_EFFORT_MAX
+                effort if effort in ("high", "max") else REASONING_EFFORT_DEFAULT
             )
         else:
             payload["thinking"] = {"type": "disabled"}
@@ -273,7 +278,7 @@ def call_deepseek_chat(
     use_thinking = AGENT_THINKING if thinking is None else thinking
     effort = reasoning_effort or AGENT_REASONING_EFFORT
     if effort not in ("high", "max"):
-        effort = REASONING_EFFORT_MAX
+        effort = REASONING_EFFORT_DEFAULT
     payload: dict = {
         "model": model or AGENT_MODEL or MODEL_FLASH,
         "messages": messages,

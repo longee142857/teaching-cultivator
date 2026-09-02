@@ -34,9 +34,9 @@ AGENT_MODEL = os.environ.get("AGENT_MODEL", "deepseek-v4-flash")
 # 审查异厂：默认阿里云百炼（北京）qwen-plus；可改 REVIEWER_PROVIDER=openrouter|deepseek
 REVIEWER_PROVIDER = (os.environ.get("REVIEWER_PROVIDER") or "dashscope").strip().lower()
 REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen-plus")
-# Agent thinking：官方 Agent 评测用 max；设 AGENT_THINKING=0 可关
+# Agent thinking：默认 high（非 max）；设 AGENT_THINKING=0 可关
 AGENT_THINKING = os.environ.get("AGENT_THINKING", "1") == "1"
-AGENT_REASONING_EFFORT = os.environ.get("AGENT_REASONING_EFFORT", "max")
+AGENT_REASONING_EFFORT = os.environ.get("AGENT_REASONING_EFFORT", "high")
 
 # ── 可选：外置知识库根目录（RAG 回填 / Chroma 查询辅助脚本）──
 KB_PATH = os.environ.get("KB_PATH", "")
