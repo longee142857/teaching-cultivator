@@ -881,6 +881,7 @@
       var VIEW_LABEL = { today: "今日", desk: "主台", result: "批改", done: "完成", invalid: "失效" };
       var flipDir = 0;
       var flipBusy = false;
+      var lastPaintKey = "";
       var appEl = document.getElementById("app");
       var root = document.getElementById("root");
       var headerEl = document.getElementById("header");
@@ -2135,12 +2136,24 @@
         if (next) next.addEventListener("click", goNext);
       }
 
+      function paintKey() {
+        var it = "";
+        if (state.mode === "practice" && (state.view === "desk" || state.view === "result")) {
+          var cur = currentItem();
+          it = (cur && cur.id) || "";
+        }
+        return state.mode + ":" + state.view + ":" + it;
+      }
       function render(opts) {
         opts = opts || {};
+        var key = paintKey();
+        var sameScreen = !opts.forceScroll && lastPaintKey !== "" && key === lastPaintKey;
+        var keepY = sameScreen ? (root.scrollTop || 0) : 0;
         syncChrome();
         renderHeader();
         renderRecents();
         if (state.mode === "tutor") {
+          lastPaintKey = key;
           root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
           practiceDock.innerHTML = "";
           root.scrollTop = root.scrollHeight;
@@ -2176,7 +2189,12 @@
         bindPractice();
         mountMath();
         if (state.view === "today") fetchExamPapers();
-        if (state.view === "result" || state.view === "desk") {
+        lastPaintKey = key;
+        // Same-view refresh (fold 讲解 / OCR / pending) must keep scroll.
+        // Leaving desk/result (or switching the item) still jumps to top.
+        if (sameScreen) {
+          root.scrollTop = keepY;
+        } else if (state.view === "result" || state.view === "desk") {
           root.scrollTop = 0;
           try { window.scrollTo(0, 0); } catch (e0) {}
         }

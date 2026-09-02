@@ -235,6 +235,8 @@ def test_bootstrap_submit(tmp_db: str):
         check("请勿重复提交" in html, "poll timeout does not say 提交失败")
         check('status === "grading"' in html, "in-flight grading ≠ DB pending")
         check("从题库补练" in html, "empty slot CTA")
+        check("sameScreen" in html and "keepY" in html, "same-view render keeps scroll")
+        check("window.scrollTo(0, 0)" in html, "view-change still may scroll to top")
 
         nid = math_item.get("itemId")
         conn.request("GET", "/api/v1/practice/item?learner=demo_learner&item=" + str(nid))
