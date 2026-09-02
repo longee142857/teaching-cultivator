@@ -149,6 +149,11 @@
       display: grid; gap: 4px;
     }
     .brand-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .brand-row .brand-toggle {
+      appearance: none; border: 0; background: none; padding: 0;
+      font: inherit; color: inherit; cursor: pointer; display: flex; align-items: baseline; gap: 6px;
+    }
+    .brand-row .brand-toggle .fold-mark { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
     .brand {
       font-family: var(--font-display); font-weight: 600;
       font-size: 16px; line-height: 1.35; letter-spacing: 0;
@@ -578,9 +583,12 @@
       .studio-bar { padding: 5px 12px; gap: 8px; }
       .studio-bar .hint { display: none; }
       .studio-bar select { min-height: 32px; padding-top: 4px; padding-bottom: 4px; font-size: 11px; }
-      .app-header { padding: calc(6px + var(--safe-t)) 14px 6px; gap: 0; }
+      .app-header { padding: calc(4px + var(--safe-t)) 12px 4px; gap: 0; }
       .app-header .sub, .app-header .flip-hint { display: none; }
-      .brand { font-size: 15px; }
+      .app-header .meta { font-size: 10px; }
+      .brand { font-size: 14px; }
+      .brand-row { gap: 6px; }
+      .app-header.is-collapsed { padding-block: calc(3px + var(--safe-t)) 3px; }
       .page-chrome { min-height: 38px; padding: 0 10px 2px; }
       .page-nav { width: 38px; height: 38px; font-size: 19px; }
       [data-od-id="coverage-hint"] { display: none; }
@@ -910,7 +918,7 @@
         contextItemId: null,
         threads: {},
         recents: [],
-        pending: false,
+        headerCollapsed: true,
         ocrBusy: false,
         ocrMsg: "",
         ocrMode: "document"
@@ -1032,7 +1040,8 @@
             mode: state.mode, view: state.view, learner: lid, index: state.index,
             answered: state.answered, fromDeepLink: state.fromDeepLink, push: state.push,
             lastResult: state.lastResult, railExpanded: state.railExpanded,
-            contextItemId: state.contextItemId, threads: state.threads, recents: state.recents
+            contextItemId: state.contextItemId, threads: state.threads, recents: state.recents,
+            headerCollapsed: !!state.headerCollapsed
           }));
         } catch (e) {}
       }
@@ -1632,6 +1641,7 @@
       }
 
       function renderHeader() {
+        headerEl.classList.toggle("is-collapsed", !!state.headerCollapsed);
         if (state.mode === "tutor") {
           var it = contextItem();
           var badge = state.tutorDetached === true
@@ -1649,13 +1659,24 @@
         }
         var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
         var learnerMeta = state.learner ? esc(state.learner) : "未指定学员";
+        var collapsed = !!state.headerCollapsed;
         headerEl.innerHTML =
           '<div class="brand-row">' +
-            '<div class="brand" data-od-id="brand">高校每日练习</div>' +
+            '<button type="button" class="brand-toggle" data-od-id="brand-toggle" aria-expanded="' + (collapsed ? "false" : "true") + '" aria-label="' + (collapsed ? "展开页头" : "收起页头") + '">' +
+              '<span class="brand" data-od-id="brand">高校每日练习</span>' +
+              '<span class="fold-mark">' + (collapsed ? "＋" : "−") + "</span>" +
+            "</button>" +
             '<div class="meta" data-od-id="learner-meta">' + learnerMeta + "</div>" +
           "</div>" +
-          '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
-          '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>';
+          (collapsed ? "" :
+            '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
+            '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>');
+      }
+
+      function toggleHeader() {
+        state.headerCollapsed = !state.headerCollapsed;
+        persist();
+        renderHeader();
       }
 
       function syncPageChrome() {
@@ -2323,6 +2344,7 @@
           if (saved.recents) state.recents = saved.recents;
           if (saved.railExpanded) state.railExpanded = saved.railExpanded;
           if (saved.contextItemId) state.contextItemId = saved.contextItemId;
+          if (saved.headerCollapsed !== undefined) state.headerCollapsed = !!saved.headerCollapsed;
         }
         itemId = canonicalItemId(itemId);
         if (modeHint === "tutor") {
@@ -2361,6 +2383,7 @@
           state.fromDeepLink = !!saved.fromDeepLink;
           state.push = saved.push || null;
           state.lastResult = saved.lastResult || null;
+          if (saved.headerCollapsed !== undefined) state.headerCollapsed = !!saved.headerCollapsed;
           setView(saved.view);
           return;
         }
@@ -2369,6 +2392,10 @@
 
       document.querySelectorAll("[data-nav]").forEach(function (btn) {
         btn.addEventListener("click", function () { setMode(btn.getAttribute("data-nav")); });
+      });
+      headerEl.addEventListener("click", function (e) {
+        var t = e.target.closest('[data-od-id="brand-toggle"]');
+        if (t) toggleHeader();
       });
       document.getElementById("btn-rail-toggle").addEventListener("click", function () {
         state.railExpanded = !state.railExpanded;
