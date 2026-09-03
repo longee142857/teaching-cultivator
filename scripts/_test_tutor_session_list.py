@@ -31,6 +31,20 @@ def list_tutor_sessions(recents, threads, today):
     return out
 
 
+def preview_text(raw: str) -> str:
+    """Mirror teaching-shell.html previewText (strip newlines + LaTeX markers)."""
+    s = "" if raw is None else str(raw)
+    s = re.sub(r"\$\$[\s\S]*?\$\$", " ", s)
+    s = re.sub(r"\\\[[\s\S]*?\\\]", " ", s)
+    s = re.sub(r"\\\([\s\S]*?\\\)", " ", s)
+    s = re.sub(r"\$[^$\n]+\$", " ", s)
+    s = re.sub(r"\\[a-zA-Z]+", " ", s)
+    s = re.sub(r"[{}]", " ", s)
+    s = re.sub(r"[\r\n]+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
 def main() -> int:
     fails = 0
 
@@ -63,6 +77,36 @@ def main() -> int:
     check("if (arr.length > 40) arr.splice(0, arr.length - 40)" in host, "host T1 40 msgs/thread left in place")
     bump = re.search(r"function bumpRecent\([\s\S]*?\n      \}", html)
     check(bump is not None and "slice(0, 3)" not in bump.group(0), "bumpRecent body has no slice(0, 3)")
+
+    check("function previewText" in html, "preview sanitizer")
+    check("previewText(msgs[msgs.length - 1].text)" in html, "sidebar uses sanitizer not raw slice")
+    check("last.slice(0, 28)" not in html, "no raw 28-char last-message slice")
+    prev = re.search(r"\.recent-preview\s*\{[^}]+\}", html)
+    check(
+        prev is not None
+        and "-webkit-line-clamp: 2" in prev.group(0)
+        and "min-width: 0" in prev.group(0)
+        and "overflow: hidden" in prev.group(0)
+        and "text-overflow: ellipsis" in prev.group(0)
+        and "display: -webkit-box" in prev.group(0)
+        and "-webkit-box-orient: vertical" in prev.group(0),
+        "recent-preview two-line clamp + min-width:0",
+    )
+    btn = re.search(r"\.recent-btn\s*\{[^}]+\}", html)
+    check(btn is not None and "min-width: 0" in btn.group(0), "recent-btn min-width:0")
+    chip = re.search(r"\.tutor-chip \.tc-title,\s*\n\s*\.tutor-chip \.tc-sub\s*\{[^}]+\}", html)
+    check(
+        chip is not None and "-webkit-line-clamp: 2" in chip.group(0) and "min-width: 0" in chip.group(0),
+        "mobile chip title/sub two-line clamp",
+    )
+
+    latex = "看这步\n$$\\frac{1}{2}x$$\n再算 $e^{i\\pi}$ 即可"
+    cleaned = preview_text(latex)
+    check("\n" not in cleaned, "newlines stripped")
+    check("\\frac" not in cleaned and "$$" not in cleaned and "$" not in cleaned,
+          f"latex markers stripped, got {cleaned!r}")
+    check("看这步" in cleaned and "再算" in cleaned, f"prose kept {cleaned!r}")
+    check(preview_text("$$\\frac{a}{b}$$") == "", "pure formula becomes empty (UI fallback 公式)")
 
     return fails
 
