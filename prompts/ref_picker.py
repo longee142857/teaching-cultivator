@@ -94,9 +94,9 @@ class RefPicker:
 @lru_cache(maxsize=8)
 def _match_tokens_for_subject(subject: str) -> dict[str, set[str]]:
     """formal_l2 -> set of match tokens (formal + aliases + legacy keys that map to it)."""
-    from learner.kp_registry import load_legacy_map, load_syllabus
+    from learner.kp_registry import load_legacy_map, load_syllabus, syllabus_subject
 
-    subj = "math" if subject == "review" else subject
+    subj = syllabus_subject(subject) or (subject if subject in ("math", "comm") else "")
     syl = load_syllabus(subj)
     kps = syl.get("kps") or {}
     out: dict[str, set[str]] = {}
@@ -119,9 +119,9 @@ def _match_tokens_for_subject(subject: str) -> dict[str, set[str]]:
 
 def _normalize_query_kp(subject: str, kp: str) -> tuple[str | None, set[str]]:
     """Return (formal_l2 or None, query_tokens)."""
-    from learner.kp_registry import list_kps, load_legacy_map, load_syllabus, resolve_kp
+    from learner.kp_registry import list_kps, load_legacy_map, load_syllabus, resolve_kp, syllabus_subject
 
-    subj = "math" if subject == "review" else subject
+    subj = syllabus_subject(subject) or (subject if subject in ("math", "comm") else "")
     raw = (kp or "").strip()
     if not raw:
         return None, set()
@@ -162,9 +162,9 @@ def _entry_matches_kp(subject: str, entry: dict, kp: str) -> bool:
 
     # entry tags may be informal; map each tag via resolve and compare formal
     if formal:
-        from learner.kp_registry import list_kps, resolve_kp
+        from learner.kp_registry import list_kps, resolve_kp, syllabus_subject
 
-        subj = "math" if subject == "review" else subject
+        subj = syllabus_subject(subject) or (subject if subject in ("math", "comm") else "")
         weights = {k: 1.0 for k in list_kps(subj)}
         for t in tag_set:
             resolved = resolve_kp(subj, t, weights)
@@ -181,8 +181,10 @@ def _entry_matches_kp(subject: str, entry: dict, kp: str) -> bool:
 
 def _load_yaml_by_subject(subject: str) -> list[dict]:
     """Load YAML seed questions for a subject (returns [] on any error)."""
-    subj_map = {"math": "math", "comm": "comm", "review": "math"}
-    subj_dir = subj_map.get(subject, "math")
+    subj_map = {"math": "math", "comm": "comm"}
+    subj_dir = subj_map.get(subject, subject if subject in ("math", "comm") else "")
+    if not subj_dir:
+        return []
     yaml_dir = os.path.join(DAILY_RECORD_DIR, "structured", subj_dir)
     if not os.path.isdir(yaml_dir):
         return []

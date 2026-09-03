@@ -47,44 +47,6 @@ def _uid() -> str:
     return current_user_id()
 
 
-def _opt_id(v) -> int | None:
-    """Coerce a push/item id; 0 / blank / junk → None (not a valid FK)."""
-    if v is None or v == "":
-        return None
-    try:
-        n = int(v)
-    except (TypeError, ValueError):
-        return None
-    return n if n > 0 else None
-
-
-def _resolve_attempt_ids(
-    question: str,
-    *,
-    item_id=None,
-    push_id=None,
-    bank_item: dict | None = None,
-) -> tuple[int | None, int | None]:
-    """Explicit ids → matching push → item row found by question hash."""
-    pid = _opt_id(push_id)
-    iid = _opt_id(item_id)
-    if pid is None or iid is None:
-        try:
-            from learner.db import get_store
-
-            resolved = get_store().resolve_push_for_question(_uid(), question)
-            if resolved:
-                if pid is None:
-                    pid = _opt_id(resolved[0])
-                if iid is None:
-                    iid = _opt_id(resolved[1])
-        except Exception:
-            pass
-    if iid is None and isinstance(bank_item, dict):
-        iid = _opt_id(bank_item.get("id") or bank_item.get("item_id"))
-    return pid, iid
-
-
 def _detect_item_type(question: str) -> str:
     """粗分 MCQ / blank / proof_outline / open，供题型 G 与 Δ 帽使用。"""
     q = question or ""
@@ -151,8 +113,35 @@ def _find_reference_answer(kp_name: str) -> str:
 
 
 def _infer_subject(explicit: str, kp_name: str) -> str:
-    if explicit in ("math", "comm", "review"):
-        return "math" if explicit == "review" else explicit
+    if explicit in ("math", "comm"):
+        return explicit
+    from learner.kp_registry import content_subject_for_kp, item_content_subject
+
+    if explicit == "review":
+        try:
+            from learner.db import get_store
+            from learner.context import current_user_id
+            sid = current_user_id() or ""
+        except Exception:
+            sid = ""
+        try:
+            lp = get_store().get_latest_push(sid or None)
+            if lp:
+                iid = lp.get("item_id")
+                if iid:
+                    it = get_store().get_item(int(iid))
+                    cs = item_content_subject(it)
+                    if cs in ("math", "comm"):
+                        return cs
+                subj = (lp.get("subject") or "").strip()
+                if subj in ("math", "comm"):
+                    return subj
+        except Exception:
+            pass
+        cs = content_subject_for_kp(kp_name)
+        if cs in ("math", "comm"):
+            return cs
+        return "math"
     # DB 权威（BIG-TEACH-013）
     try:
         from learner.db import get_store
@@ -167,7 +156,15 @@ def _infer_subject(explicit: str, kp_name: str) -> str:
             if subj in ("math", "comm"):
                 return subj
             if subj == "review":
-                return "math"
+                iid = lp.get("item_id")
+                if iid:
+                    it = get_store().get_item(int(iid))
+                    cs = item_content_subject(it)
+                    if cs in ("math", "comm"):
+                        return cs
+                cs = content_subject_for_kp(kp_name)
+                if cs:
+                    return cs
     except Exception:
         pass
     # 旧文件兼容（迁移前）
@@ -179,18 +176,15 @@ def _infer_subject(explicit: str, kp_name: str) -> str:
                 if subj in ("math", "comm"):
                     return subj
                 if subj == "review":
-                    return "math"
+                    cs = content_subject_for_kp(kp_name)
+                    if cs:
+                        return cs
         except Exception:
             pass
     # 按能 resolve 到哪边猜
-    try:
-        from learner.kp_registry import resolve_kp
-        if resolve_kp("math", kp_name):
-            return "math"
-        if resolve_kp("comm", kp_name):
-            return "comm"
-    except Exception:
-        pass
+    cs = content_subject_for_kp(kp_name)
+    if cs:
+        return cs
     return "math"
 
 
@@ -392,15 +386,8 @@ def grade_answer(
     user_answer: str,
     kp_name: str = "",
     subject: str = "",
-    *,
-    item_id: int | None = None,
-    push_id: int | None = None,
 ) -> GradeResult:
-    """批改用户作答，更新 BKT（按考纲 L2），返回结果。
-
-    item_id / push_id 可选：练习台已知题号时传入，避免无 push 的题库补槽
-    写出 attempts.item_id 为空。未传则按题干反查 push / items。
-    """
+    """批改用户作答，更新 BKT（按考纲 L2），返回结果。"""
     q = (question or "").strip()
     ua = (user_answer or "").strip()
     if not q:
@@ -422,21 +409,16 @@ def grade_answer(
 
     ref_answer = _find_reference_answer(kp_name)
 
-    bank_item: dict | None = None
     item_cdps: list = []
     try:
         from learner.db import get_store
-        bank_item = get_store().get_item_by_question(q, subject or "")
-        if bank_item:
-            item_cdps = list(bank_item.get("cdps") or [])
-            if not ref_answer and bank_item.get("answer"):
-                ref_answer = bank_item.get("answer") or ""
+        item = get_store().get_item_by_question(q, subject or "")
+        if item:
+            item_cdps = list(item.get("cdps") or [])
+            if not ref_answer and item.get("answer"):
+                ref_answer = item.get("answer") or ""
     except Exception:
-        bank_item = None
         item_cdps = []
-    attempt_push_id, attempt_item_id = _resolve_attempt_ids(
-        q, item_id=item_id, push_id=push_id, bank_item=bank_item
-    )
 
     # ── Structured grade LLM → verifier → apply/pending (BIG-TEACH-012a #7a) ──
     grade_json = _call_grade_llm(q, ua, ref_answer, cdps=item_cdps or None)
@@ -520,11 +502,18 @@ def grade_answer(
             # 未分类不是有效 L2，不写 BKT 状态（权重 bump/decay 已跳过）
             if extracted_kp and extracted_kp != "未分类":
                 try:
+                    from learner.db import get_store
+                    resolved = get_store().resolve_push_for_question(_uid(), q)
+                    push_id = resolved[0] if resolved else None
+                    item_id = resolved[1] if resolved else None
+                except Exception:
+                    push_id = item_id = None
+                try:
                     bkt.record(
                         _uid(), extracted_kp, rec_correct, kc,
                         subject=subj, item_type=item_type, credit=credit,
                         status="applied", overrides=_kp_overrides,
-                        push_id=attempt_push_id, item_id=attempt_item_id,
+                        push_id=push_id, item_id=item_id,
                         cdp_results=cdp_results or None,
                         confidence=round(effective_conf, 4),
                         user_answer=ua,
@@ -591,10 +580,10 @@ def grade_answer(
             try:
                 from learner.db import get_store
                 store = get_store()
-                if attempt_push_id is not None:
-                    pending_entry["push_id"] = attempt_push_id
-                if attempt_item_id is not None:
-                    pending_entry["item_id"] = attempt_item_id
+                resolved = store.resolve_push_for_question(_uid(), q)
+                if resolved:
+                    pending_entry["push_id"] = resolved[0]
+                    pending_entry["item_id"] = resolved[1]
                 store.add_attempt_entry(pending_entry)
                 if cdp_results:
                     from learner.item_bank import learner_cdp_fail_summary

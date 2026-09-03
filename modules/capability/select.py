@@ -180,15 +180,15 @@ def pick_best_item(
 ) -> tuple[Optional[dict], float]:
     if not items:
         return None, 0.0
-    pool = items
+    pool = [
+        it for it in items if (it.get("quality_tier") or "") == "pass"
+    ]
+    if not pool:
+        return None, 0.0
     pref_kp = (prefer_kp or "").strip()
     if pref_kp:
-        # 有非 poor 的 prefer KP 库存时，先在该 KP 内结合打分（decide 意图）
         matched = [
-            it
-            for it in items
-            if (it.get("kp") or "").strip() == pref_kp
-            and (it.get("quality_tier") or "") != "poor"
+            it for it in pool if (it.get("kp") or "").strip() == pref_kp
         ]
         if matched:
             pool = matched

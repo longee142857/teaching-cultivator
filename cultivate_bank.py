@@ -58,19 +58,40 @@ def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
     return {"ok": False, "error": last_error, "subject": subject}
 
 
+def _sanitize_ref_source(content_subj: str, raw: str) -> str:
+    """来源标签必须与内容科目一致；对不上留空。"""
+    s = (raw or "").strip()
+    if not s:
+        return ""
+    if content_subj == "math":
+        return s if "数学一" in s else ""
+    if content_subj == "comm":
+        return s if "通信原理" in s else ""
+    return ""
+
+
 def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     """对单个缺口规格出题；失败返回 ok=False，供上层回退次优缺口。"""
     store = get_store()
     force_kp = (spec.get("kp") or "").strip()
     force_tech = (spec.get("technique") or "").strip()
+    content_subj = (spec.get("content_subject") or "").strip().lower()
+    if subject == "review":
+        from learner.kp_registry import content_subject_for_kp
+
+        content_subj = content_subj or content_subject_for_kp(force_kp) or "math"
+        gen_subject = content_subj
+    else:
+        gen_subject = subject
+        content_subj = subject if subject in ("math", "comm") else content_subj
 
     from cultivate import (
         assess_state,
         decide,
         generate,
         get_last_answer,
-        _last_ref_source,
-        _last_item_form,
+        get_last_ref_source,
+        get_last_item_form,
         _bkt_available,
     )
     from learner.kp_registry import parse_l3_from_reason
@@ -79,7 +100,7 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     if not _bkt_available:
         return {"ok": False, "error": "bkt_unavailable", "subject": subject}
 
-    state = assess_state(subject)
+    state = assess_state(gen_subject if gen_subject in ("math", "comm") else subject)
     decision = decide(subject, state["bkt_log"])
     ability = getattr(decision, "ability_goal", "") or ""
     diff = getattr(decision, "difficulty", "intermediate") or "intermediate"
@@ -87,11 +108,11 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
 
     if force_kp:
         # 强制 L2 时必须挂上 [l3=…]，否则 generate 在 RAG_STRICT 下直接 abort
-        from learner.kp_registry import pick_l3, syllabus_subject, list_l3_for_l2
+        from learner.kp_registry import pick_l3, list_l3_for_l2
         from learner.ability_cycle import encode_ability_reason
 
         l2 = force_kp.split("[")[0].strip()
-        weight_subj = syllabus_subject(subject)
+        weight_subj = content_subj if content_subj in ("math", "comm") else gen_subject
         l3_id = pick_l3(weight_subj, l2) if l2 else None
         if not l3_id and l2 and not list_l3_for_l2(weight_subj, l2):
             # 缺口 KP 不在考纲 / 无 L3：回退 decide 已选 L3
@@ -106,17 +127,21 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
         reason = f"{l2} [l3={l3_id}]"
         if ability:
             reason = f"{reason} {encode_ability_reason(ability)}"
+        if content_subj in ("math", "comm"):
+            reason = f"{reason} [content_subject={content_subj}]"
         decision = InterventionDecision(
             type=dtype, difficulty=diff, reason=reason, priority=3, ability_goal=ability
         )
     elif decision.type == "defer":
         return {"ok": False, "error": "defer", "reason": decision.reason, "subject": subject}
 
-    content = generate(subject, decision, source="bank")
+    content = generate(gen_subject, decision, source="bank")
     if not content:
         return {"ok": False, "error": "generate_failed", "subject": subject, "kp": force_kp}
 
     answer = get_last_answer() or ""
+    ref_source = _sanitize_ref_source(content_subj, get_last_ref_source())
+    item_form = get_last_item_form() or ""
     structured = structure_item_via_llm(content, answer, force_kp or decision.reason)
     techniques = list(structured.get("techniques") or [])
     if force_tech and force_tech not in techniques:
@@ -161,7 +186,7 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     kp = kp.split("[")[0].strip()
     l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "") or ""
 
-    meta = {"source": "pregen", "technique_hint": force_tech}
+    meta = {"source": "pregen", "technique_hint": force_tech, "content_subject": content_subj}
     try:
         from modules.capability import merge_irt_into_meta
 
@@ -176,9 +201,9 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
         difficulty=diff,
         kp=kp,
         l3_id=l3_id,
-        item_form=_last_item_form or "",
+        item_form=item_form,
         ability_goal=ability,
-        ref_source=_last_ref_source or "",
+        ref_source=ref_source,
         techniques=techniques,
         solution=solution,
         cdps=cdps,
@@ -197,15 +222,14 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
 
 
 PREGEN_SLOTS: list[tuple[str, str]] = [
+    ("00:30", "math"),
     ("01:00", "math"),
-    ("02:30", "math"),
-    ("04:00", "comm"),
-    ("05:30", "math"),
-    ("07:00", "comm"),
-    ("11:00", "review"),
-    ("13:00", "math"),
-    ("16:30", "comm"),
-    ("21:00", "fill"),
+    ("01:30", "comm"),
+    ("02:00", "math"),
+    ("02:30", "comm"),
+    ("03:00", "review"),
+    ("03:30", "review"),
+    ("04:00", "fill"),
 ]
 
 
@@ -223,3 +247,40 @@ def run_pregen_slot(subject_or_fill: str) -> dict[str, Any]:
         return {"ok": True, "skipped": True, "reason": "all_full"}
     candidates.sort(key=lambda x: -x[0])
     return pregenerate_one(candidates[0][1], max_items=1)
+
+
+def sanitize_stored_ref_sources(store=None) -> dict[str, Any]:
+    """清洗已入库题的串科来源（只改 ref_source，不动题干/已推送正文）。"""
+    store = store or get_store()
+    from learner.kp_registry import item_content_subject
+
+    def _do(conn) -> dict[str, Any]:
+        rows = conn.execute(
+            "SELECT * FROM items WHERE COALESCE(ref_source, '') != ''"
+        ).fetchall()
+        samples: list[dict] = []
+        n = 0
+        for r in rows:
+            d = store._item_dict(r)
+            cs = item_content_subject(d)
+            old = (d.get("ref_source") or "").strip()
+            new = _sanitize_ref_source(cs, old)
+            if new == old:
+                continue
+            conn.execute(
+                "UPDATE items SET ref_source=? WHERE id=?",
+                (new, int(d["id"])),
+            )
+            n += 1
+            if len(samples) < 12:
+                samples.append(
+                    {
+                        "id": int(d["id"]),
+                        "old": old,
+                        "content_subject": cs,
+                        "kp": d.get("kp") or "",
+                    }
+                )
+        return {"ok": True, "cleared": n, "samples": samples}
+
+    return store._txn(_do)

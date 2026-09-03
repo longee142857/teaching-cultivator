@@ -984,34 +984,27 @@ class Store:
         return d
 
     def count_ready(self, subject: str, kp: str = "", technique: str = "") -> int:
-        """Count ready items for quota/gap fill.
-
-        Excludes quality_tier='poor' so rejected items do not block pregen.
-        Poor rows remain pickable via pick_ready_item / pick_for_push.
-        """
+        """只数 ready + quality_tier=pass（pending/poor 不占配额、不可抽）。"""
         subj = (subject or "").strip()
         kp = (kp or "").strip()
         tech = (technique or "").strip()
-        # pending + pass count toward quota; poor stays in bank but not quota
-        base = (
-            "status='ready' AND COALESCE(quality_tier, 'pending') != 'poor' "
+        pass_clause = (
+            "status='ready' AND COALESCE(quality_tier, 'pending')='pass' "
             "AND COALESCE(bank_subject, subject)=?"
         )
         if tech:
             rows = self._query(
-                f"""SELECT COUNT(*) FROM items
-                   WHERE {base} AND kp=? AND techniques LIKE ?""",
+                f"SELECT COUNT(*) FROM items WHERE {pass_clause} AND kp=? AND techniques LIKE ?",
                 (subj, kp, f'%"{tech}"%'),
             )
         elif kp:
             rows = self._query(
-                f"""SELECT COUNT(*) FROM items
-                   WHERE {base} AND kp=?""",
+                f"SELECT COUNT(*) FROM items WHERE {pass_clause} AND kp=?",
                 (subj, kp),
             )
         else:
             rows = self._query(
-                f"""SELECT COUNT(*) FROM items WHERE {base}""",
+                f"SELECT COUNT(*) FROM items WHERE {pass_clause}",
                 (subj,),
             )
         return int(rows[0][0]) if rows else 0
@@ -1141,16 +1134,17 @@ class Store:
         limit: int = 60,
         prefer_kp: str = "",
     ) -> list[dict]:
-        """列出 ready 候选（供结合模型打分）；排除已见 q_hash。
+        """列出 ready+pass 候选（供结合模型打分）；排除已见 q_hash。
 
-        prefer_kp：额外并入该 KP 下非 poor 库存，避免全局 top-N 挤掉 decide 意图。
+        prefer_kp：额外并入该 KP 下 pass 库存，避免全局 top-N 挤掉 decide 意图。
         """
         subj = (subject or "").strip()
         excl = exclude_hashes or set()
         pref = (prefer_kp or "").strip()
         rows = self._query(
             """SELECT * FROM items
-               WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+               WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
+                 AND COALESCE(bank_subject, subject)=?
                ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
                LIMIT ?""",
             (subj, int(limit)),
@@ -1164,9 +1158,9 @@ class Store:
         if pref:
             extra = self._query(
                 """SELECT * FROM items
-                   WHERE status='ready' AND COALESCE(bank_subject, subject)=?
+                   WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
+                     AND COALESCE(bank_subject, subject)=?
                      AND kp=?
-                     AND COALESCE(quality_tier, 'pending') != 'poor'
                    ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
                    LIMIT 40""",
                 (subj, pref),
@@ -1187,10 +1181,7 @@ class Store:
         l1: str = "",
         exclude_hashes: set[str] | None = None,
     ) -> dict | None:
-        """按契约顺序抽 ready 题：KP+technique → KP → L1 → 任意。
-
-        同档内优先 quality_score 高（pass > pending > poor），劣质题仍可被抽但权重低。
-        """
+        """按契约抽 ready+pass：KP+technique → KP → L1 → None（不扩到任意题）。"""
         subj = (subject or "").strip()
         kp = (kp or "").strip()
         tech = (technique or "").strip()
@@ -1201,31 +1192,28 @@ class Store:
 
         def _fetch(sql: str, params: tuple) -> dict | None:
             rows = self._query(sql, params)
-            # 加权：在匹配集中按 score 选；确定性实现 = 最高分优先，同分 id 升序
             scored: list[tuple[float, dict]] = []
             for r in rows:
                 if not _ok(r):
                     continue
                 d = self._item_dict(r)
+                if (d.get("quality_tier") or "") != "pass":
+                    continue
                 try:
                     sc = float(d.get("quality_score") if d.get("quality_score") is not None else 1.0)
                 except (TypeError, ValueError):
                     sc = 1.0
-                # poor 再乘一次软衰减，进一步减小被抽概率
-                if (d.get("quality_tier") or "") == "poor":
-                    sc = min(sc, 0.12)
                 scored.append((sc, d))
             if not scored:
                 return None
             scored.sort(key=lambda x: (-x[0], int(x[1].get("id") or 0)))
-            # 若最高分是 poor 且存在更高档，已在排序体现；若全是 poor，仍返回最优者
             return scored[0][1]
 
         base = (
             "SELECT * FROM items WHERE status='ready' "
+            "AND COALESCE(quality_tier, 'pending')='pass' "
             "AND COALESCE(bank_subject, subject)=? "
         )
-        # 多取一些再按 quality_score 排序挑选
         order = " ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC LIMIT 40"
 
         if kp and tech:
@@ -1240,30 +1228,42 @@ class Store:
             if hit:
                 return hit
         if l1:
-            rows = self._query(
-                """SELECT i.* FROM items i
-                   JOIN knowledge_nodes kn ON kn.l2=i.kp AND kn.subject=?
-                   WHERE i.status='ready' AND COALESCE(i.bank_subject,i.subject)=?
-                     AND kn.l1=?
-                   ORDER BY COALESCE(i.quality_score, 1.0) DESC, i.id ASC LIMIT 40""",
-                (subj if subj != "review" else "math", subj, l1),
-            )
+            rows = self._query(base + order, (subj,))
             scored: list[tuple[float, dict]] = []
+            from learner.kp_registry import get_l1, item_content_subject
+
             for r in rows:
                 if not _ok(r):
                     continue
                 d = self._item_dict(r)
+                cs = item_content_subject(d) or (
+                    "math" if subj == "review" else subj
+                )
+                if (get_l1(cs, (d.get("kp") or "").strip()) or "") != l1:
+                    continue
                 try:
                     sc = float(d.get("quality_score") if d.get("quality_score") is not None else 1.0)
                 except (TypeError, ValueError):
                     sc = 1.0
-                if (d.get("quality_tier") or "") == "poor":
-                    sc = min(sc, 0.12)
                 scored.append((sc, d))
             if scored:
                 scored.sort(key=lambda x: (-x[0], int(x[1].get("id") or 0)))
                 return scored[0][1]
-        return _fetch(base + order, (subj,))
+        return None
+
+    def quarantine_poor_ready(self, *, min_judge_count: int = 0) -> int:
+        """把 ready+poor 标成 quarantine（不删题，picker 不可见）。"""
+        def _do(conn) -> int:
+            cur = conn.execute(
+                """UPDATE items SET status='quarantine'
+                   WHERE status='ready'
+                     AND COALESCE(quality_tier, '')='poor'
+                     AND COALESCE(judge_count, 0) >= ?""",
+                (int(min_judge_count),),
+            )
+            return int(cur.rowcount or 0)
+
+        return int(self._txn(_do))
 
     def list_items_for_judge(self, *, max_reviews: int = 2, limit: int = 3) -> list[dict]:
         """待审判：ready 且 judge_count < max_reviews；优先 pending，再 poor（给第二次机会）。"""

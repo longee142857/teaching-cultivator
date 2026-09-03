@@ -66,9 +66,11 @@ def _audit(result: RagResult) -> None:
 
 def resolve_unit_queries(subject: str, unit_id: str) -> tuple[list[str], list[str]]:
     """从 syllabus L3 或 L2 解析 (queries, source_allow)。"""
-    from learner.kp_registry import load_syllabus
+    from learner.kp_registry import load_syllabus, syllabus_subject, content_subject_for_kp
 
-    subj = "math" if subject == "review" else subject
+    subj = syllabus_subject(subject) or content_subject_for_kp(unit_id)
+    if subj not in ("math", "comm"):
+        subj = subject if subject in ("math", "comm") else ""
     syl = load_syllabus(subj)
     kps = syl.get("kps") or {}
 
@@ -369,7 +371,11 @@ def rag_retrieve(
     """
     _ = ability_goal
     n = int(N if N is not None else DEFAULT_N)
-    subj = "math" if subject == "review" else subject
+    from learner.kp_registry import syllabus_subject, content_subject_for_kp
+
+    subj = syllabus_subject(subject) or content_subject_for_kp(unit_id or "")
+    if subj not in ("math", "comm"):
+        subj = subject if subject in ("math", "comm") else ""
     if subj not in ("math", "comm") or not (unit_id or "").strip():
         r = RagResult(
             ok=False, hit_count=0, N=n, reason="invalid_subject_or_unit",

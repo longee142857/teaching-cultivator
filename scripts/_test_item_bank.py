@@ -47,6 +47,10 @@ def check(cond: bool, msg: str) -> None:
         _fails += 1
 
 
+def _mark_pass(store, item_id: int) -> None:
+    store.apply_judge_verdict(int(item_id), verdict="pass", reasons=["test"], confidence=1.0)
+
+
 def test_schema_and_pick() -> None:
     from learner.db import Store
     from learner.item_bank import validate_bank_payload, align_cdp_results, pick_for_push
@@ -81,29 +85,13 @@ def test_schema_and_pick() -> None:
             status="ready",
         )
         check(iid > 0, "insert bank item")
+        check(store.count_ready("math") == 0, "pending not counted as pass")
+        _mark_pass(store, iid)
         check(store.count_ready("math") == 1, "ready count 1")
         check(store.count_ready("math", kp="极限", technique="t_a") == 1, "ready by tech")
 
-        # poor ready must not inflate quota / gap count
-        poor_id = store.insert_bank_item(
-            subject="math",
-            question="差题占位",
-            answer="0",
-            kp="极限",
-            techniques=["t_a"],
-            solution=sol,
-            cdps=cdps,
-            status="ready",
-        )
-        store.apply_judge_verdict(poor_id, verdict="fail", reasons=["test"])
-        check(store.count_ready("math") == 1, "poor excluded from count_ready")
-        check(
-            store.count_ready("math", kp="极限", technique="t_a") == 1,
-            "poor excluded from count_ready by tech",
-        )
-
         # second item different kp
-        store.insert_bank_item(
+        iid2 = store.insert_bank_item(
             subject="math",
             question="级数题干乙",
             answer="1",
@@ -113,11 +101,12 @@ def test_schema_and_pick() -> None:
             cdps=cdps,
             status="ready",
         )
+        _mark_pass(store, iid2)
 
         hit = store.pick_ready_item(subject="math", kp="极限", technique="t_a")
         check(hit and hit["kp"] == "极限", "pick KP+tech")
         hit2 = store.pick_ready_item(subject="math", kp="不存在的KP")
-        check(hit2 is not None and hit2.get("subject") == "math", "pick widens to any ready")
+        check(hit2 is None, "unknown KP does not widen to any ready")
 
         # push for item
         pid = store.record_push_for_item(item_id=iid, learner_id="u1", reason="极限")
@@ -253,6 +242,11 @@ def test_cultivate_uses_bank_no_author() -> None:
             solution=sol,
             cdps=cdps,
         )
+        # pending 不可抽；过审后走 bank
+        pending_hit = store.pick_ready_item(subject="math", kp="极限")
+        check(pending_hit is None, "pending not pickable")
+        rows = store._query("SELECT id FROM items WHERE question=?", ("银行题干",))
+        _mark_pass(store, rows[0][0])
 
         called = {"generate": 0}
 
@@ -272,12 +266,20 @@ def test_cultivate_uses_bank_no_author() -> None:
              patch("cultivate.deliver", return_value=True), \
              patch("cultivate._save_last_push"), \
              patch("cultivate._bkt_available", True), \
+             patch("cultivate.DATA_DIR", td), \
+             patch("cultivate.DAILY_RECORD_DIR", td), \
              patch("learner.item_bank.pick_technique_for_kp", return_value="t"):
             from cultivate import _cultivate_inner
             with bind_learner("staff1", binding="schedule"):
                 _cultivate_inner("math")
         check(called["generate"] == 0, "cultivate bank path zero author")
         check(store.count_rows("pushes") == 1, "cultivate created push")
+        qdir = os.path.join(td, "sync-queue")
+        qfiles = [f for f in os.listdir(qdir) if f.endswith(".md")] if os.path.isdir(qdir) else []
+        check(len(qfiles) == 1, "bank path wrote sync-queue")
+        if qfiles:
+            body = open(os.path.join(qdir, qfiles[0]), encoding="utf-8").read()
+            check("银行题干" in body, "sync-queue contains bank question")
 
 
 def test_author_spec_inserts_ready() -> None:
@@ -307,8 +309,8 @@ def test_author_spec_inserts_ready() -> None:
              patch("cultivate.decide", return_value=decision), \
              patch("cultivate.generate", return_value="题干内容X"), \
              patch("cultivate.get_last_answer", return_value="答案X"), \
-             patch("cultivate._last_ref_source", ""), \
-             patch("cultivate._last_item_form", ""), \
+             patch("cultivate.get_last_ref_source", return_value="2024年数学一"), \
+             patch("cultivate.get_last_item_form", return_value="mcq"), \
              patch("cultivate._bkt_available", True), \
              patch("learner.kp_registry.pick_l3", return_value="math.calc.limit.def"), \
              patch("learner.kp_registry.list_l3_for_l2", return_value=[{"id": "x"}]), \
@@ -316,7 +318,12 @@ def test_author_spec_inserts_ready() -> None:
             spec = {"kp": "函数极限与连续", "technique": "t_a", "subject": "math"}
             r = _author_spec("math", spec)
         check(r.get("ok") is True, "author_spec ok")
-        check(store.count_ready("math") == 1, "item inserted ready")
+        check(store.count_ready("math") == 0, "inserted pending not counted")
+        iid = r.get("item_id")
+        check(iid and store.get_item(iid), "item inserted")
+        it = store.get_item(iid)
+        check((it.get("ref_source") or "") == "2024年数学一", "math ref kept")
+        check((it.get("meta") or {}).get("content_subject") == "math", "content_subject math")
 
 
 def test_pregen_fallback_next_gap() -> None:
@@ -347,13 +354,180 @@ def test_pregen_fallback_next_gap() -> None:
         check(calls["n"] == 2, "author tried A(fail) then B(ok)")
 
 
+def test_offpeak_slots_and_ref_gate() -> None:
+    from cultivate_bank import PREGEN_SLOTS, _sanitize_ref_source
+    from cultivate_judge import JUDGE_SLOTS
+    from learner.kp_registry import parse_content_subject_from_reason
+    from orchestrate import _strip_bank_transition
+
+    hours = [t for t, _ in PREGEN_SLOTS]
+    check(hours == ["00:30", "01:00", "01:30", "02:00", "02:30", "03:00", "03:30", "04:00"],
+          f"pregen off-peak slots (got {hours})")
+    check(JUDGE_SLOTS == ["05:30", "08:30"], f"judge slots {JUDGE_SLOTS}")
+    check(_sanitize_ref_source("math", "2024年通信原理") == "", "math rejects comm source")
+    check(_sanitize_ref_source("comm", "2024年数学一") == "", "comm rejects math source")
+    check(_sanitize_ref_source("math", "2024年数学一") == "2024年数学一", "math keeps 数学一")
+    check(_sanitize_ref_source("comm", "2023年通信原理") == "2023年通信原理", "comm keeps 通信原理")
+    check(parse_content_subject_from_reason("极限: x [content_subject=comm]") == "comm",
+          "parse content_subject")
+    stripped = _strip_bank_transition("上一题你刚做完极限。\n\n求 lim x→0 sinx/x")
+    check(not stripped.startswith("上一题") and "sinx" in stripped, "strip fake transition")
+    check("11:00" not in hours, "no 11:00 peak pregen")
+
+
+def test_pick_rejects_pending_poor_and_sanitizes_stored_ref() -> None:
+    """回归：pending/poor 不得抽；存量串科标签要清掉。"""
+    from learner.db import Store
+    from learner.item_bank import pick_for_push
+    from cultivate_bank import sanitize_stored_ref_sources
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+        cdps = [
+            {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+            {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+        ]
+        pending = store.insert_bank_item(
+            subject="math", question="pending题", answer="1", kp="极限",
+            techniques=["t"], solution=sol, cdps=cdps,
+        )
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store):
+            check(pick_for_push("math", kp="极限") is None, "pick_for_push skips pending")
+        _mark_pass(store, pending)
+        poor = store.insert_bank_item(
+            subject="math", question="poor题", answer="1", kp="极限",
+            techniques=["t"], solution=sol, cdps=cdps,
+        )
+        store.apply_judge_verdict(poor, verdict="fail", reasons=["x"], confidence=1.0)
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store):
+            hit = pick_for_push("math", kp="极限")
+        check(hit and int(hit["id"]) == pending, "pick_for_push only pass not poor")
+
+        comm = store.insert_bank_item(
+            subject="comm",
+            question="通信题串科源",
+            answer="1",
+            kp="随机过程",
+            ref_source="2024年数学一",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "comm"},
+        )
+        math_ok = store.insert_bank_item(
+            subject="math",
+            question="数学题正确源",
+            answer="1",
+            kp="极限",
+            ref_source="2023年数学一",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "math"},
+        )
+        r = sanitize_stored_ref_sources(store)
+        check(r.get("cleared") >= 1, f"cleared mismatched refs ({r})")
+        check((store.get_item(comm).get("ref_source") or "") == "", "comm dropped 数学一 tag")
+        check((store.get_item(math_ok).get("ref_source") or "") == "2023年数学一", "matching tag kept")
+
+
+def test_review_walk_uses_next_stocked_kp() -> None:
+    """review 第一薄弱点无库存时，按序走到有 pass 的 KP；单科不走。"""
+    from learner.db import Store
+    from learner.item_bank import pick_for_push, pick_for_push_walk
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+        cdps = [
+            {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+            {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+        ]
+        rid = store.insert_bank_item(
+            subject="review",
+            question="复习极限题",
+            answer="1",
+            kp="函数极限与连续",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "math"},
+        )
+        _mark_pass(store, rid)
+
+        def fake_ranked(subject, limit=8):
+            if subject == "comm":
+                return [("循环码与CRC", 3.8), ("M进制调制MASK/MPSK/MQAM", 2.3)]
+            return [("数字特征", 1.8)]
+
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked):
+            check(
+                pick_for_push("review", kp="循环码与CRC") is None,
+                "hard filter still empty on CRC with only calc pass",
+            )
+            hit = pick_for_push_walk("review", kp="循环码与CRC")
+            check(hit and int(hit["id"]) == rid, "review walk lands on stocked 函数极限")
+            check(
+                pick_for_push_walk("math", kp="循环码与CRC") is None,
+                "math does not walk across KPs",
+            )
+
+
+def test_author_spec_drops_cross_subject_ref() -> None:
+    from learner.db import Store
+    from types import SimpleNamespace
+    from cultivate_bank import _author_spec
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        decision = SimpleNamespace(
+            type="push", difficulty="basic",
+            reason="函数极限与连续 [l3=math.calc.limit.def] [ability=recognize]",
+            ability_goal="recognize",
+        )
+        structured = {
+            "techniques": ["t_a"],
+            "solution": {"steps": [{"id": "s1", "text": "步骤"}],
+                         "final_answer": "答案", "techniques_used": ["t_a"]},
+            "cdps": [{"id": "c1", "prompt": "p", "expected": "e", "technique": "t_a", "depends_on": []},
+                     {"id": "c2", "prompt": "p2", "expected": "e2", "technique": "t_a", "depends_on": ["c1"]}],
+        }
+        with patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("cultivate_bank.get_store", return_value=store), \
+             patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+             patch("cultivate.decide", return_value=decision), \
+             patch("cultivate.generate", return_value="题干内容Y"), \
+             patch("cultivate.get_last_answer", return_value="答案Y"), \
+             patch("cultivate.get_last_ref_source", return_value="2024年通信原理"), \
+             patch("cultivate.get_last_item_form", return_value="mcq"), \
+             patch("cultivate._bkt_available", True), \
+             patch("learner.kp_registry.pick_l3", return_value="math.calc.limit.def"), \
+             patch("learner.kp_registry.list_l3_for_l2", return_value=[{"id": "x"}]), \
+             patch("cultivate_bank.structure_item_via_llm", return_value=structured):
+            spec = {"kp": "函数极限与连续", "technique": "t_a", "subject": "math"}
+            r = _author_spec("math", spec)
+        check(r.get("ok") is True, "author_spec ok with mismatched ref")
+        it = store.get_item(r.get("item_id"))
+        check(it and (it.get("ref_source") or "") == "", "mismatched 通信原理 dropped")
+
+
 def main() -> int:
     print("== item bank / CDP unit ==")
     _ensure_cultivate_deps()
     test_schema_and_pick()
     test_cultivate_uses_bank_no_author()
     test_author_spec_inserts_ready()
+    test_author_spec_drops_cross_subject_ref()
     test_pregen_fallback_next_gap()
+    test_offpeak_slots_and_ref_gate()
+    test_pick_rejects_pending_poor_and_sanitizes_stored_ref()
+    test_review_walk_uses_next_stocked_kp()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")

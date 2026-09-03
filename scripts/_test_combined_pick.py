@@ -167,12 +167,16 @@ def test_pick_for_push_combined():
             hit = item_bank.pick_for_push("math", learner_id="u_pick")
             assert hit is not None
             assert hit["kp"] == "矩阵与初等变换", hit
-            # soft prefer 可拉回 calc
+            # hard L2：prefer 极限只抽该 KP，不再跨到弱项抢戏
             hit2 = item_bank.pick_for_push(
                 "math", kp="极限", learner_id="u_pick"
             )
             assert hit2 is not None
             assert hit2["kp"] == "极限", hit2
+            hit3 = item_bank.pick_for_push(
+                "math", kp="不存在的KP名", learner_id="u_pick"
+            )
+            assert hit3 is None, hit3
         print("ok pick_for_push_combined", hit["kp"], "prefer→", hit2["kp"])
     finally:
         _cleanup(path)

@@ -238,7 +238,7 @@ def generate_question(subject: str, kp_hint: str = "") -> str:
 
     store = get_store()
     try:
-        store.record_push_for_item(
+        push_id = store.record_push_for_item(
             item_id=int(item["id"]),
             learner_id=_db_sid() or None,
             slot=subject,
@@ -250,12 +250,20 @@ def generate_question(subject: str, kp_hint: str = "") -> str:
 
     content = item.get("question") or ""
     answer = item.get("answer") or ""
+    ref_source = item.get("ref_source") or ""
+    try:
+        from cultivate import enqueue_sync_from_push
+        enqueue_sync_from_push(
+            store, push_id, subject, decision, content, answer, ref_source
+        )
+    except Exception:
+        pass
     _save_last_push(
         subject,
         decision,
         content,
         answer,
-        item.get("ref_source") or "",
+        ref_source,
         kp=kp,
         source="personal",
     )

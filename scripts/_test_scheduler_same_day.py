@@ -103,6 +103,9 @@ def _simulate_until(
 def main():
     sun = datetime.datetime(2026, 8, 30, 0, 0, 0)  # Sunday
     check(sun.weekday() == 6, "2026-08-30 is Sunday")
+    from cultivate_bank import PREGEN_SLOTS
+    check("11:00" not in [t for t, _ in PREGEN_SLOTS], "PREGEN_SLOTS has no 11:00")
+    check(all(t < "09:00" for t, _ in PREGEN_SLOTS), "all pregen before 09:00")
 
     # ── 1. 过点同日：09:00 保持当天，不 +1 天 ──
     now = sun.replace(hour=10, minute=0)
@@ -166,13 +169,35 @@ def main():
 
     # ── 5. 其它槽位仍按原规则滚动（github / judge / weekly 不被这次改坏）──
     with _sched_patches():
-        # 已消费当日三槽后，10:00 应走向 11:00 pregen，而不是再发 math
+        # 已消费当日三槽后，10:00 应走向次日 00:30 pregen（白天无补货）
         all_done = set()
         for _, subj in PUSH_SLOTS:
             _note_event_fired(all_done, "cultivate", subj, now)
         t_n, k_n, p_n = _next_scheduled_event(now, consumed=all_done)
-    check(k_n == "pregen" and t_n.date() == sun.date() and t_n.hour == 11,
-          f"after daily pushes, next is Sunday 11:00 pregen (got {k_n}/{p_n} {t_n})")
+    check(
+        k_n == "weekly_report" and t_n.date() == sun.date() and t_n.hour == 20,
+        f"after daily pushes, next is Sunday 20:00 weekly (got {k_n}/{p_n} {t_n})",
+    )
+
+    mon_1030 = datetime.datetime(2026, 8, 31, 10, 30, 0)
+    with _sched_patches():
+        all_mon = set()
+        for _, subj in PUSH_SLOTS:
+            _note_event_fired(all_mon, "cultivate", subj, mon_1030)
+        t_peak, k_peak, p_peak = _next_scheduled_event(mon_1030, consumed=all_mon)
+    peak_now = (
+        k_peak in ("pregen", "judge", "bank_judge")
+        and t_peak.date() == mon_1030.date()
+        and 9 <= t_peak.hour < 18
+    )
+    check(not peak_now,
+          f"weekday 10:30 after pushes has no same-day peak pregen/judge (got {k_peak}/{p_peak} {t_peak})")
+
+    mon_0815 = datetime.datetime(2026, 8, 31, 8, 15, 0)
+    with _sched_patches():
+        t_j, k_j, p_j = _next_scheduled_event(mon_0815)
+    check(k_j == "judge" and t_j.hour == 8 and t_j.minute == 30 and t_j.date() == mon_0815.date(),
+          f"Monday 08:15 next is 08:30 judge (got {k_j}/{p_j} {t_j})")
 
     mon_morning = datetime.datetime(2026, 8, 31, 7, 0, 0)
     with _sched_patches():

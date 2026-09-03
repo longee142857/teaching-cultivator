@@ -103,6 +103,14 @@ def get_last_answer() -> str:
     return _last_answer
 
 
+def get_last_ref_source() -> str:
+    return _last_ref_source
+
+
+def get_last_item_form() -> str:
+    return _last_item_form
+
+
 def _save_last_push(subject: str, decision: InterventionDecision, content: str,
                     answer: str = "", ref_source: str = "", kp: str = "",
                     *, source: str = ""):
@@ -370,11 +378,34 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
     target_kp = None
     target_val = 0.0  # mastery for the selected KP
     kc = None
-    # review 与 math 共用考纲/weights（与 rag_retrieve 一致）
-    weight_subj = syllabus_subject(subject)
+    content_subj = ""
+    if subject == "review":
+        ranked: list[tuple[float, str, str]] = []
+        try:
+            from learner.item_bank import weak_kp_ranked
 
-    # ── 优先从 weights 选题（含 review→math）──
-    if weight_subj in ("math", "comm") and weight_subj in weights:
+            for subj in ("math", "comm"):
+                try:
+                    for kp, sc in weak_kp_ranked(subj, limit=8):
+                        ranked.append((float(sc), kp, subj))
+                except Exception:
+                    pass
+        except Exception:
+            ranked = []
+        ranked.sort(key=lambda x: -x[0])
+        if ranked:
+            target_kp = ranked[0][1]
+            content_subj = ranked[0][2]
+            weight_subj = content_subj
+        else:
+            weight_subj = "math"
+            content_subj = "math"
+    else:
+        weight_subj = syllabus_subject(subject) or subject
+        content_subj = weight_subj if weight_subj in ("math", "comm") else ""
+
+    # ── 优先从 weights 选题（review 已用两科结合分，跳过单科抽）──
+    if subject != "review" and weight_subj in ("math", "comm") and weight_subj in weights:
         kp_from_w = _pick_kp_from_weights(weights, weight_subj, bkt_log)
         if kp_from_w:
             target_kp = kp_from_w
@@ -469,6 +500,10 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
     pref = get_difficulty_pref(subject)
     if pref:
         decision.difficulty = pref
+    if content_subj in ("math", "comm"):
+        tag = f"[content_subject={content_subj}]"
+        if tag not in (decision.reason or ""):
+            decision.reason = f"{decision.reason} {tag}"
     return decision
 
 
@@ -552,7 +587,24 @@ def generate(subject: str, decision: InterventionDecision, *,
              source: str = "schedule",
              exam_allow_low_rag: bool = False) -> str:
     """出题契约 → 编排质检/文案 → 可发送正文（Phase C）。"""
-    topic_desc = TOPIC_MAP.get(subject, subject)
+    from learner.kp_registry import (
+        parse_l3_from_reason, is_valid_l3_id, pick_l3, syllabus_subject,
+        parse_content_subject_from_reason, content_subject_for_kp,
+    )
+
+    kp_hint = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
+    kp_name = (kp_hint or "").split("[")[0].strip()
+    gen_subj = subject
+    if subject == "review":
+        gen_subj = (
+            parse_content_subject_from_reason(decision.reason)
+            or content_subject_for_kp(kp_name)
+            or "math"
+        )
+    elif subject not in ("math", "comm"):
+        gen_subj = content_subject_for_kp(kp_name) or "math"
+
+    topic_desc = TOPIC_MAP.get(gen_subj, TOPIC_MAP.get(subject, subject))
     difficulty_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
     diff = difficulty_map.get(decision.difficulty, "中等")
     intervention_map = {"push": "出题", "explain": "讲解概念", "review": "复诊错题", "defer": "", "escalate": ""}
@@ -563,15 +615,15 @@ def generate(subject: str, decision: InterventionDecision, *,
 
     tpl_type = decision.type if decision.type in ("push", "explain", "review") else "explain"
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
-    subject_map = {"math": "数学一", "comm": "通信原理", "review": "数学一（错题复盘）"}
-    subject_cn = subject_map.get(subject, subject)
+    subject_map = {"math": "数学一", "comm": "通信原理", "review": "错题复盘"}
+    subject_cn = subject_map.get(gen_subj, subject_map.get(subject, subject))
 
-    # ── RefPicker：选 YAML 锚点 ──
+    # ── RefPicker：选 YAML 锚点（跟 content_subject，不把 review 折成 math）──
     global _last_ref_source
     _last_ref_source = ""
     ref_entry = None
     try:
-        picker = RefPicker(subject)
+        picker = RefPicker(gen_subj)
         ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
         if ref_entry:
             src = ref_entry.get("source", {})
@@ -583,10 +635,9 @@ def generate(subject: str, decision: InterventionDecision, *,
         pass
 
     # ── L3 硬闸 (BIG-TEACH-011c) ──
-    from learner.kp_registry import parse_l3_from_reason, is_valid_l3_id, pick_l3, syllabus_subject
     # reason 可能含 [l3=…][ability=…]；L2 名取方括号前
     kp = (kp or "").split("[")[0].strip()
-    l3_subj = syllabus_subject(subject)
+    l3_subj = gen_subj if gen_subj in ("math", "comm") else (syllabus_subject(subject) or "math")
     l3_id = parse_l3_from_reason(decision.reason)
     if l3_id and not is_valid_l3_id(l3_subj, l3_id):
         print(f"[cultivate] l3_id '{l3_id}' not in syllabus — treated as miss")
@@ -614,7 +665,7 @@ def generate(subject: str, decision: InterventionDecision, *,
         else:
             unit_id = l3_id
 
-        rag = rag_retrieve(subject, unit_id, top_k=4, N=2)
+        rag = rag_retrieve(gen_subj, unit_id, top_k=4, N=2)
         print(
             f"[cultivate] rag_retrieve ok={rag.ok} hit={rag.hit_count} "
             f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
@@ -626,7 +677,7 @@ def generate(subject: str, decision: InterventionDecision, *,
                 if retry_l3 and retry_l3 != l3_id:
                     print(f"[cultivate] retry alternate L3: {retry_l3}")
                     unit_id = retry_l3
-                    rag = rag_retrieve(subject, unit_id, top_k=4, N=2)
+                    rag = rag_retrieve(gen_subj, unit_id, top_k=4, N=2)
                     print(
                         f"[cultivate] rag_retrieve (retry) ok={rag.ok} hit={rag.hit_count} "
                         f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
@@ -673,7 +724,7 @@ def generate(subject: str, decision: InterventionDecision, *,
     else:
         last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
         _last_item_form = (
-            ability_to_item_form(ability_goal, last_form=last_form or None, subject=subject)
+            ability_to_item_form(ability_goal, last_form=last_form or None, subject=gen_subj)
             if ability_goal else "mcq"
         )
 
@@ -809,16 +860,51 @@ def record(subject: str, content: str, decision: InterventionDecision, answer: s
     except Exception as e:
         print(f"[cultivate] MD export failed (DB ok): {e}")
 
+    enqueue_sync_from_push(
+        store, push_id, subject, decision, content, answer, ref_source
+    )
+
+
+
+def _enqueue_sync_md(
+    day: str,
+    now: str,
+    num: int,
+    subject: str,
+    decision: InterventionDecision,
+    content: str,
+    answer: str = "",
+    ref_source: str = "",
+) -> None:
+    """Best-effort：写 sync-queue 供本机 sync_teaching.py 拉取。"""
     try:
         block = _build_md_block(day, now, num, subject, decision, content, answer, ref_source)
-        SYNC_QUEUE_DIR = os.path.join(DATA_DIR, "sync-queue")
-        os.makedirs(SYNC_QUEUE_DIR, exist_ok=True)
-        qpath = os.path.join(SYNC_QUEUE_DIR, f"{day}-{num:03d}.md")
+        sync_dir = os.path.join(DATA_DIR, "sync-queue")
+        os.makedirs(sync_dir, exist_ok=True)
+        qpath = os.path.join(sync_dir, f"{day}-{int(num):03d}.md")
         with open(qpath, "w", encoding="utf-8") as f:
             f.write("\n" + block.lstrip("\n").rstrip() + "\n\n")
     except Exception as e:
         print(f"[cultivate] sync-queue export failed (DB ok): {e}")
 
+
+def enqueue_sync_from_push(
+    store,
+    push_id: int,
+    subject: str,
+    decision: InterventionDecision,
+    content: str,
+    answer: str = "",
+    ref_source: str = "",
+) -> None:
+    """按已落库 push 的 day/seq 写入 sync-queue（bank 抽题与 live record 共用）。"""
+    from learner.db import shanghai_hhmm
+
+    push = store.get_push(push_id) or {}
+    day = push.get("day") or datetime.date.today().isoformat()
+    num = int(push.get("seq") or 1)
+    now = shanghai_hhmm(push.get("pushed_at") or "") or datetime.datetime.now().strftime("%H:%M")
+    _enqueue_sync_md(day, now, num, subject, decision, content, answer, ref_source)
 
 
 def _build_md_block(day: str, now: str, num: int, subject: str,
@@ -869,7 +955,7 @@ def _cultivate_inner(subject: str):
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
     kp = kp.split("[")[0].strip()
 
-    from learner.item_bank import pick_for_push, live_fallback_enabled, pick_technique_for_kp
+    from learner.item_bank import pick_for_push_walk, live_fallback_enabled, pick_technique_for_kp
     from learner.db import get_store
 
     tech = pick_technique_for_kp(kp)
@@ -877,7 +963,18 @@ def _cultivate_inner(subject: str):
         sid = _uid()
     except Exception:
         sid = ""
-    item = pick_for_push(subject, kp=kp, technique=tech, learner_id=sid or None)
+    item = pick_for_push_walk(subject, kp=kp, technique=tech, learner_id=sid or None)
+    if item:
+        actual = (item.get("kp") or "").strip()
+        if actual and actual != kp:
+            print(
+                f"[cultivate] {subject}: inventory walk {kp} -> {actual} "
+                f"(item {item.get('id')})"
+            )
+            reason = decision.reason or ""
+            if reason.startswith(kp):
+                decision.reason = actual + reason[len(kp):]
+            kp = actual
     if not item:
         if not live_fallback_enabled():
             print(
@@ -950,13 +1047,16 @@ def _cultivate_inner(subject: str):
     except Exception as e:
         print(f"[cultivate] {subject}: last_push mirror failed: {e}")
 
-    # MD export (best-effort)
+    # MD export + 本机同步队列（best-effort；bank 路径以前漏了 sync-queue）
     try:
         from scripts.export_daily_md import export_month
         from learner.db import shanghai_day
         export_month(shanghai_day(None)[:7], out_dir=DAILY_RECORD_DIR)
     except Exception:
         pass
+    enqueue_sync_from_push(
+        store, push_id, subject, decision, content, answer, ref_source
+    )
 
     if deliver(content):
         print(

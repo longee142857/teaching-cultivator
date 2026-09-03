@@ -11,12 +11,13 @@ from learner.db import get_store
 from quality_gate import check_draft_answer, text_contaminated
 
 
-# 与推送 09/15/19、pregen 错开：上午推送前扫一轮，傍晚再扫一轮
-JUDGE_SLOTS: list[str] = ["08:30", "17:30"]
+# 与推送 09/15/19 错开：全部放在官方空闲凌晨（05:30 扫夜题，08:30 赶 09:00 前审完）
+JUDGE_SLOTS: list[str] = ["05:30", "08:30"]
 
 POOR_SCORE = float(os.environ.get("BANK_JUDGE_POOR_SCORE", "0.12"))
-MAX_PER_SLOT = int(os.environ.get("BANK_JUDGE_MAX_PER_SLOT", "3"))
+MAX_PER_SLOT = int(os.environ.get("BANK_JUDGE_MAX_PER_SLOT", "8"))
 MAX_REVIEWS = int(os.environ.get("BANK_JUDGE_MAX_REVIEWS", "2"))
+MORNING_MAX = int(os.environ.get("BANK_JUDGE_MAX_MORNING", "16"))
 
 
 def _machine_issues(item: dict) -> list[str]:
@@ -207,13 +208,33 @@ def judge_one_item(item: dict, *, use_llm: bool = True) -> dict[str, Any]:
     return {"ok": True, **applied, "phase": "llm", "llm": llm}
 
 
-def run_judge_slot(*, max_items: int | None = None, use_llm: bool = True) -> dict[str, Any]:
+def run_judge_slot(*, max_items: int | None = None, use_llm: bool = True, slot: str = "") -> dict[str, Any]:
     """调度入口：每槽最多审 N 道；每题最多 MAX_REVIEWS 次。"""
-    limit = int(max_items if max_items is not None else MAX_PER_SLOT)
+    store = get_store()
+    try:
+        n_q = store.quarantine_poor_ready(min_judge_count=MAX_REVIEWS)
+        if n_q:
+            print(f"[judge] quarantined {n_q} exhausted poor items")
+    except Exception as e:
+        print(f"[judge] quarantine skipped: {e}")
+    try:
+        from cultivate_bank import sanitize_stored_ref_sources
+
+        cleaned = sanitize_stored_ref_sources(store)
+        if cleaned.get("cleared"):
+            print(f"[judge] sanitized ref_source on {cleaned['cleared']} items")
+    except Exception as e:
+        print(f"[judge] ref sanitize skipped: {e}")
+
+    if max_items is not None:
+        limit = int(max_items)
+    elif (slot or "") == "08:30":
+        limit = max(MAX_PER_SLOT, MORNING_MAX)
+    else:
+        limit = MAX_PER_SLOT
     if limit < 1:
         return {"ok": False, "error": "max_items_lt_1"}
 
-    store = get_store()
     items = store.list_items_for_judge(max_reviews=MAX_REVIEWS, limit=limit)
     if not items:
         return {"ok": True, "skipped": True, "reason": "nothing_to_judge", "reviewed": []}

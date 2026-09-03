@@ -407,15 +407,14 @@ try:
     PREGEN_SLOTS = list(_PREGEN_SLOTS)
 except Exception:
     PREGEN_SLOTS = [
+        ("00:30", "math"),
         ("01:00", "math"),
-        ("02:30", "math"),
-        ("04:00", "comm"),
-        ("05:30", "math"),
-        ("07:00", "comm"),
-        ("11:00", "review"),
-        ("13:00", "math"),
-        ("16:30", "comm"),
-        ("21:00", "fill"),
+        ("01:30", "comm"),
+        ("02:00", "math"),
+        ("02:30", "comm"),
+        ("03:00", "review"),
+        ("03:30", "review"),
+        ("04:00", "fill"),
     ]
 
 # 审判层：每日两次质检题库（劣质题压低抽题权重）
@@ -423,7 +422,7 @@ try:
     from cultivate_judge import JUDGE_SLOTS as _JUDGE_SLOTS
     JUDGE_SLOTS = list(_JUDGE_SLOTS)
 except Exception:
-    JUDGE_SLOTS = ["08:30", "17:30"]
+    JUDGE_SLOTS = ["05:30", "08:30"]
 
 _WEEKDAY_MAP = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
 
@@ -568,12 +567,20 @@ def _daily_slot_target(
     consumed: set | None = None,
     catch_up_same_day: bool = False,
 ) -> datetime.datetime:
-    """日槽目标时刻。catch_up_same_day：过点但仍是今天、且未消费 → 立刻补，不滚到明天。"""
+    """日槽目标时刻。catch_up_same_day：过点但仍是今天、且未消费 → 立刻补，不滚到明天。
+    已消费/已跳过的今日槽（含尚未到点的未来槽）一律滚到明天，避免隔周跳过日仍排出 15:00/19:00。
+    """
     h, m = map(int, time_str.split(":"))
     target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+    key = (kind, payload, _day_for_slot(now))
+    if consumed is not None and key in consumed:
+        if target <= now:
+            target += datetime.timedelta(days=1)
+        else:
+            target += datetime.timedelta(days=1)
+        return target
     if target <= now:
-        key = (kind, payload, _day_for_slot(now))
-        if catch_up_same_day and consumed is not None and key not in consumed:
+        if catch_up_same_day:
             return target
         target += datetime.timedelta(days=1)
     return target
@@ -641,7 +648,7 @@ def _next_scheduled_event(
         from cultivate_judge import JUDGE_SLOTS as _JUDGE_SLOTS
         judge_slots = list(_JUDGE_SLOTS)
     except Exception:
-        judge_slots = ["08:30", "17:30"]
+        judge_slots = ["05:30", "08:30"]
     for time_str in judge_slots:
         h, m = map(int, time_str.split(":"))
         target = now.replace(hour=h, minute=m, second=0, microsecond=0)
@@ -735,7 +742,7 @@ def scheduler_loop(bot: TeachingBot):
                     log(f"[OK] pregen {payload} → {result}")
                 elif kind == "judge":
                     from cultivate_judge import run_judge_slot
-                    result = run_judge_slot()
+                    result = run_judge_slot(slot=payload or "")
                     log(f"[OK] judge {payload} → {result}")
                 elif kind == "github_push":
                     _do_github_push(bot)

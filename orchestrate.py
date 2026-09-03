@@ -158,6 +158,20 @@ def _log_gate_event(
     )
 
 
+def _strip_bank_transition(text: str) -> str:
+    """题库预生成不得以「上一题」假衔接；剥首段后若剩余足够则采用。"""
+    t = (text or "").strip()
+    if not t.startswith("上一题"):
+        return t
+    parts = re.split(r"\n\s*\n", t, maxsplit=1)
+    if len(parts) == 2 and len(parts[1].strip()) >= 8:
+        return parts[1].strip()
+    nl = t.find("\n")
+    if nl != -1 and len(t[nl:].strip()) >= 8:
+        return t[nl:].strip()
+    return t
+
+
 def _memory_digest(max_chars: int = 600) -> str:
     try:
         from agent.memory_blocks import MemoryBlocks
@@ -196,7 +210,10 @@ def _polish_or_orchestrate(
     from math_format import split_question_answer, normalize_markdown_body
 
     builder = PromptBuilder()
-    digest = _memory_digest()
+    if source == "bank":
+        digest = "（题库预生成：禁止衔接上一题，不得以「上一题」开头）"
+    else:
+        digest = _memory_digest()
     try:
         system, user = builder.build_orchestrate(
             draft_body=draft,
@@ -211,6 +228,8 @@ def _polish_or_orchestrate(
         if leaked:
             print("[orchestrate] leaked answer — stripped")
         out = normalize_markdown_body(body) or ""
+        if source == "bank":
+            out = _strip_bank_transition(out)
         if out.strip():
             return out
     except Exception as e:
@@ -399,9 +418,10 @@ def orchestrate_push(
                 if i.startswith("contaminate_draft") or i == "answer_leak_in_draft"
             ]
             if not fb_issues and fallback:
+                sendable = _strip_bank_transition(fallback) if source == "bank" else fallback
                 return {
                     "status": "accept",
-                    "content": fallback,
+                    "content": sendable,
                     "answer": answer,
                     "reason": "fallback_draft_after_sendable_fail",
                     "issues": send_issues,
@@ -428,9 +448,10 @@ def orchestrate_push(
                 "artifact": art,
             }
 
+        sendable = _strip_bank_transition(content) if source == "bank" else content
         return {
             "status": "accept",
-            "content": content,
+            "content": sendable,
             "answer": answer,
             "reason": "ok_review_parse_bypassed" if review_bypassed else "ok",
             "issues": ["review_parse_bypassed"] if review_bypassed else [],

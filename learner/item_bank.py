@@ -55,9 +55,15 @@ def build_pick_context(
     )
 
     lid = (learner_id or "").strip() or _uid()
-    weight_subj = syllabus_subject(subject)
     weights = _load_weights()
-    kp_w = (weights.get(weight_subj) or {}).get("kp_weights") or {}
+    if (subject or "").strip().lower() == "review":
+        kp_w = {}
+        kp_w.update(_safe_weights((weights.get("math") or {}).get("kp_weights") or {}))
+        kp_w.update(_safe_weights((weights.get("comm") or {}).get("kp_weights") or {}))
+        weight_subj = "review"
+    else:
+        weight_subj = syllabus_subject(subject) or subject
+        kp_w = (weights.get(weight_subj) or {}).get("kp_weights") or {}
 
     mastery: dict[str, float] = {}
     due: set[str] = set()
@@ -90,7 +96,10 @@ def build_pick_context(
 
     recent: list[str] = []
     try:
-        recent = load_recent_picks(weight_subj) or []
+        if (subject or "").strip().lower() == "review":
+            recent = (load_recent_picks("math") or []) + (load_recent_picks("comm") or [])
+        else:
+            recent = load_recent_picks(weight_subj) or []
     except Exception:
         recent = []
 
@@ -148,30 +157,49 @@ def pick_technique_for_kp(kp: str) -> str:
 
 
 def select_gap_spec(subject: str, *, skip_kps: set[str] | None = None) -> dict[str, str] | None:
-    """选缺口最大的 (kp[, technique])；科目 ready 已满则 None。"""
+    """选缺口最大的 (kp[, technique])；科目 ready(pass) 已满则 None。"""
     store = get_store()
     quota = bank_quota(subject)
     if store.count_ready(subject) >= quota:
         return None
-    ranked = weak_kp_ranked(subject)
-    if not ranked:
-        return {"kp": "", "technique": "", "subject": subject}
-
     skip = {str(k).split("[")[0].strip() for k in (skip_kps or set())}
+
+    ranked_rows: list[tuple[str, float, str]] = []
+    if (subject or "").strip().lower() == "review":
+        for subj in ("math", "comm"):
+            for kp, score in weak_kp_ranked(subj):
+                ranked_rows.append((kp, score, subj))
+        ranked_rows.sort(key=lambda x: -x[1])
+    else:
+        cs = (subject or "").strip().lower()
+        for kp, score in weak_kp_ranked(subject):
+            ranked_rows.append((kp, score, cs))
+
+    if not ranked_rows:
+        cs = "math" if (subject or "").strip().lower() == "review" else (subject or "").strip()
+        return {"kp": "", "technique": "", "subject": subject, "content_subject": cs}
+
     best = None
-    best_gap = -1
-    for kp, score in ranked:
+    best_gap = -1.0
+    for kp, score, cs in ranked_rows:
         if kp in skip:
             continue
         tech = pick_technique_for_kp(kp)
-        have = store.count_ready(subject, kp=kp, technique=tech) if tech else store.count_ready(
-            subject, kp=kp
+        have = (
+            store.count_ready(subject, kp=kp, technique=tech)
+            if tech
+            else store.count_ready(subject, kp=kp)
         )
         gap = max(0, 1 - have)
         metric = gap * 10 + score * (1.0 / (1 + have))
         if metric > best_gap:
             best_gap = metric
-            best = {"kp": kp, "technique": tech, "subject": subject}
+            best = {
+                "kp": kp,
+                "technique": tech,
+                "subject": subject,
+                "content_subject": cs,
+            }
     return best
 
 
@@ -182,12 +210,14 @@ def pick_for_push(
     technique: str = "",
     learner_id: str | None = None,
 ) -> dict | None:
-    """结合模型抽 ready 题。
-
-    在候选集上打分：quality′ + KP需求(BKT+η+技巧+due) + prefer_kp/tech 软加成。
-    不再「无 KP 匹配就任意抽第一道」；decide 给出的 KP 只作偏好。
-    """
+    """结合模型抽 ready+pass。硬过滤：同 L2 → 同 L1 → None。"""
     from modules.capability import pick_best_item
+    from learner.kp_registry import (
+        get_l1,
+        content_subject_for_kp,
+        item_content_subject,
+        syllabus_subject,
+    )
 
     store = get_store()
     excl = store.learner_seen_hashes(learner_id)
@@ -198,23 +228,34 @@ def pick_for_push(
         limit=limit,
         prefer_kp=kp or "",
     )
-    if not candidates:
-        # top-N 可能全被 exclude；回退旧级联（仍尊重 exclude）
-        l1 = ""
-        if kp:
-            try:
-                from learner.kp_registry import get_l1, syllabus_subject
+    kp = (kp or "").strip()
+    match_tier = "any"
 
-                l1 = get_l1(syllabus_subject(subject), kp) or ""
-            except Exception:
-                l1 = ""
-        return store.pick_ready_item(
-            subject=subject,
-            kp=kp,
-            technique=technique,
-            l1=l1,
-            exclude_hashes=excl,
+    def _item_l1(it: dict) -> str:
+        cs = item_content_subject(it) or syllabus_subject(subject) or content_subject_for_kp(
+            (it.get("kp") or "").strip()
         )
+        return get_l1(cs, (it.get("kp") or "").strip()) or ""
+
+    pool = list(candidates or [])
+    if kp:
+        l2 = [c for c in pool if (c.get("kp") or "").strip() == kp]
+        if l2:
+            pool = l2
+            match_tier = "l2"
+        else:
+            cs = content_subject_for_kp(kp) or syllabus_subject(subject)
+            want_l1 = get_l1(cs, kp) if cs else ""
+            l1_hits = [c for c in pool if want_l1 and _item_l1(c) == want_l1]
+            if l1_hits:
+                pool = l1_hits
+                match_tier = "l1"
+            else:
+                print(f"[item_bank] empty slot prefer_kp={kp} (no pass L2/L1)")
+                return None
+    if not pool:
+        print(f"[item_bank] empty slot prefer_kp={kp or '-'} (no pass candidates)")
+        return None
 
     try:
         ctx = build_pick_context(subject, learner_id=learner_id or "")
@@ -223,21 +264,25 @@ def pick_for_push(
         l1 = ""
         if kp:
             try:
-                from learner.kp_registry import get_l1, syllabus_subject
-
-                l1 = get_l1(syllabus_subject(subject), kp) or ""
+                cs = content_subject_for_kp(kp) or syllabus_subject(subject)
+                l1 = get_l1(cs, kp) or "" if cs else ""
             except Exception:
                 l1 = ""
-        return store.pick_ready_item(
+        hit = store.pick_ready_item(
             subject=subject,
             kp=kp,
             technique=technique,
             l1=l1,
             exclude_hashes=excl,
         )
+        print(
+            f"[item_bank] fallback pick id={hit.get('id') if hit else None} "
+            f"prefer_kp={kp or '-'} match_tier={match_tier} empty={hit is None}"
+        )
+        return hit
 
     best, sc = pick_best_item(
-        candidates,
+        pool,
         ctx,
         prefer_kp=kp or "",
         prefer_technique=technique or "",
@@ -246,12 +291,82 @@ def pick_for_push(
         try:
             print(
                 f"[item_bank] combined pick id={best.get('id')} kp={best.get('kp')} "
-                f"score={sc:.3f} prefer_kp={kp or '-'} eta_boosts="
+                f"score={sc:.3f} prefer_kp={kp or '-'} match_tier={match_tier} eta_boosts="
                 f"{ {k: round(v, 3) for k, v in (ctx.domain_boosts or {}).items()} }"
             )
         except Exception:
             pass
+    else:
+        print(f"[item_bank] empty slot prefer_kp={kp or '-'} match_tier={match_tier}")
     return best
+
+
+def pick_for_push_walk(
+    subject: str,
+    *,
+    kp: str = "",
+    technique: str = "",
+    learner_id: str | None = None,
+) -> dict | None:
+    """日推抽题。单科仍 L2→L1→空槽；review 按薄弱序走到下一项有库存的 KP。
+
+    白天只抽库存：review 的第一薄弱点常是通信编码，但池里可能只有数学 pass。
+    硬过滤本身不放宽（每个 KP 仍只准同 L2 / 同 L1），只换 prefer_kp。
+    """
+    hit = pick_for_push(
+        subject, kp=kp, technique=technique, learner_id=learner_id
+    )
+    if hit or (subject or "").strip().lower() != "review":
+        return hit
+
+    ranked: list[tuple[str, float]] = []
+    for subj in ("math", "comm"):
+        try:
+            ranked.extend(weak_kp_ranked(subj, limit=32))
+        except Exception as e:
+            print(f"[item_bank] review walk rank {subj} skipped: {e}")
+    ranked.sort(key=lambda x: -x[1])
+    seen = {(kp or "").strip()}
+    tries = 0
+    for next_kp, _sc in ranked:
+        next_kp = (next_kp or "").strip()
+        if not next_kp or next_kp in seen:
+            continue
+        seen.add(next_kp)
+        tries += 1
+        if tries > 16:
+            break
+        hit = pick_for_push("review", kp=next_kp, learner_id=learner_id)
+        if hit:
+            print(
+                f"[item_bank] review walk {kp or '-'} -> {next_kp} "
+                f"id={hit.get('id')} kp={hit.get('kp')}"
+            )
+            return hit
+    # 薄弱序前 16 常被通信 KP 占满，数学 pass 排不到。改用库存里实际存在的 pass KP。
+    try:
+        store = get_store()
+        excl = store.learner_seen_hashes(learner_id)
+        cands = store.list_ready_candidates(
+            subject="review", exclude_hashes=excl, limit=60
+        )
+    except Exception as e:
+        print(f"[item_bank] review walk stocked list skipped: {e}")
+        cands = []
+    for it in cands or []:
+        next_kp = (it.get("kp") or "").strip()
+        if not next_kp or next_kp in seen:
+            continue
+        seen.add(next_kp)
+        hit = pick_for_push("review", kp=next_kp, learner_id=learner_id)
+        if hit:
+            print(
+                f"[item_bank] review walk stocked-pass {kp or '-'} -> {next_kp} "
+                f"id={hit.get('id')}"
+            )
+            return hit
+    print(f"[item_bank] empty slot review walk prefer_kp={kp or '-'} (no pass L2/L1)")
+    return None
 
 
 def validate_bank_payload(

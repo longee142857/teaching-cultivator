@@ -95,16 +95,63 @@ def _is_known_l2(subject: str, name: str, kp_weights: dict) -> bool:
 
 
 def syllabus_subject(subject: str) -> str:
-    """规范化考纲科目：review 映射到 math，其余原样。
+    """考纲文件科目：仅 math/comm 有 JSON。review 不再默认折成 math。
 
-    rag_retrieve 已有同样映射（review → math）；保持一致。
+    调用方应传入 content_subject（math|comm）。遗留 review 返回空串，避免误用数学考纲。
     """
-    return "math" if subject == "review" else subject
+    s = (subject or "").strip().lower()
+    if s in ("math", "comm"):
+        return s
+    return ""
+
+
+def parse_content_subject_from_reason(reason: str) -> str:
+    m = re.search(r"\[content_subject=(math|comm)\]", reason or "")
+    return m.group(1) if m else ""
+
+
+def content_subject_for_kp(kp: str) -> str:
+    """按考纲判定 L2 属于哪一科；两边都能 resolve 时优先正式名命中。"""
+    name = (kp or "").strip().split("[")[0].strip()
+    if not name:
+        return ""
+    math_hit = resolve_kp("math", name)
+    comm_hit = resolve_kp("comm", name)
+    math_kps = load_syllabus("math").get("kps") or {}
+    comm_kps = load_syllabus("comm").get("kps") or {}
+    if name in math_kps and name not in comm_kps:
+        return "math"
+    if name in comm_kps and name not in math_kps:
+        return "comm"
+    if math_hit and not comm_hit:
+        return "math"
+    if comm_hit and not math_hit:
+        return "comm"
+    if math_hit:
+        return "math"
+    if comm_hit:
+        return "comm"
+    return ""
+
+
+def item_content_subject(item: dict | None) -> str:
+    if not item:
+        return ""
+    meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
+    cs = str((meta or {}).get("content_subject") or "").strip().lower()
+    if cs in ("math", "comm"):
+        return cs
+    subj = str(item.get("subject") or item.get("bank_subject") or "").strip().lower()
+    if subj in ("math", "comm"):
+        return subj
+    return content_subject_for_kp(str(item.get("kp") or ""))
 
 
 def list_l3_for_l2(subject: str, l2_name: str) -> list[dict]:
     """返回该 L2 在考纲中的 l3[] 列表；无 l3 或 l2 不存在则返空列表。"""
-    subj = syllabus_subject(subject)
+    subj = syllabus_subject(subject) or content_subject_for_kp(l2_name)
+    if subj not in ("math", "comm"):
+        return []
     syl = load_syllabus(subj)
     kps = syl.get("kps") or {}
     meta = kps.get(l2_name)
@@ -161,15 +208,18 @@ def is_valid_l3_id(subject: str, l3_id: str) -> bool:
     l3_id = l3_id.strip()
     if not l3_id:
         return False
-    subj = syllabus_subject(subject)
-    syl = load_syllabus(subj)
-    kps = syl.get("kps") or {}
-    for meta in kps.values():
-        if not isinstance(meta, dict):
-            continue
-        for l3 in meta.get("l3") or []:
-            if isinstance(l3, dict) and (l3.get("id") or "").strip() == l3_id:
-                return True
+    scan = [syllabus_subject(subject)]
+    if scan[0] not in ("math", "comm"):
+        scan = ["math", "comm"]
+    for subj in scan:
+        syl = load_syllabus(subj)
+        kps = syl.get("kps") or {}
+        for meta in kps.values():
+            if not isinstance(meta, dict):
+                continue
+            for l3 in meta.get("l3") or []:
+                if isinstance(l3, dict) and (l3.get("id") or "").strip() == l3_id:
+                    return True
     return False
 
 
