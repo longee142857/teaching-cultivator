@@ -304,8 +304,6 @@ def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[s
         or attempt.get("feedback")
         or ""
     )
-    if not feedback:
-        feedback = item_dto["commentOk"] if correct else item_dto["commentBad"]
     try:
         credit = float(attempt["credit"]) if attempt.get("credit") is not None else None
     except (TypeError, ValueError):
@@ -316,8 +314,38 @@ def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[s
         except (TypeError, ValueError):
             credit = None
     correct_b = bool(correct) if correct is not None else False
-    # Shell shows 部分通过 when !correct && partial (e.g. credit 0.5 半对).
-    partial = (not correct_b) and credit is not None and credit > 0
+    verdict = str(attempt.get("verdict") or meta.get("verdict") or "").strip().lower()
+    mixed = False
+    cdps = attempt.get("cdp_results") or meta.get("cdp_results") or []
+    if isinstance(cdps, list) and cdps:
+        attrs = [
+            c
+            for c in cdps
+            if isinstance(c, dict)
+            and c.get("attributable") is not False
+            and c.get("ok") is not None
+        ]
+        if attrs:
+            n_ok = sum(1 for c in attrs if c.get("ok"))
+            mixed = 0 < n_ok < len(attrs)
+    # BKT applied-partial stores correct=True (rec_correct) + credit 0.5.
+    # Shell banner is 部分通过 only when !correct && partial.
+    if (
+        (credit is not None and 0 < credit < 0.99)
+        or verdict == "partial"
+        or mixed
+    ):
+        correct_b = False
+        partial = True
+        if credit is None:
+            credit = 0.5
+    else:
+        partial = False
+    if not str(feedback or "").strip():
+        if partial:
+            feedback = "部分正确。"
+        else:
+            feedback = item_dto["commentOk"] if correct_b else item_dto["commentBad"]
     reason = str(attempt.get("update_reason") or meta.get("update_reason") or "")
     if "practice_ref" in reason:
         grade_mode_s = "ref_fallback" if "LLM" in str(feedback) else "ref"
@@ -923,11 +951,14 @@ def _execute_llm_grade(
         )
     except TypeError:
         gr = _grade(question, ua, kp_name=kp, subject=subject)
-    comment = gr.feedback or (
-        dto["commentOk"] if gr.is_correct else dto["commentBad"]
+    lecturer = (gr.feedback or "").strip()
+    comment = lecturer or (
+        dto["commentOk"]
+        if gr.is_correct and gr.credit is None
+        else (dto["commentBad"] if gr.credit is None else "部分正确。")
     )
-    if gr.credit is not None:
-        comment = f"部分正确。{comment}"
+    if gr.credit is not None and lecturer and not lecturer.startswith("部分正确"):
+        comment = f"部分正确。{lecturer}"
     result_dto = {
         "correct": bool(gr.is_correct) and gr.credit is None,
         "partial": gr.credit is not None,
@@ -942,9 +973,24 @@ def _execute_llm_grade(
         "masteryAfter": round(gr.p_mastery_after, 4),
         "gradeMode": "llm",
     }
-    # grade_answer writes BKT+attempt; if it missed (no push / 未分类 /
-    # BKT exception) still persist item_id for empty-day / fromBank.
-    if not _attempt_linked(store, lid, push_id=push_id, item_id=item_id):
+    # grade_answer/bkt.record writes the attempt first, often without
+    # user_answer/feedback. Merge those so poll / already hydrate the desk.
+    extra = {
+        "user_answer": ua,
+        "feedback": comment,
+        "credit": gr.credit,
+        "verdict": (
+            "partial"
+            if gr.credit is not None
+            else ("correct" if gr.is_correct else "incorrect")
+        ),
+    }
+    if _attempt_linked(store, lid, push_id=push_id, item_id=item_id):
+        if hasattr(store, "merge_latest_attempt_meta"):
+            store.merge_latest_attempt_meta(
+                lid, extra, push_id=push_id, item_id=item_id
+            )
+    else:
         store.add_attempt_entry(
             {
                 "user_id": lid,
@@ -958,6 +1004,7 @@ def _execute_llm_grade(
                 "confidence": gr.confidence,
                 "feedback": comment,
                 "user_answer": ua,
+                "verdict": extra["verdict"],
             }
         )
     return result_dto

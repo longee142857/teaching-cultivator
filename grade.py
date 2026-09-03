@@ -368,6 +368,25 @@ def _compute_effective_confidence(
     return 0.0
 
 
+def _mixed_cdp_credit(cdp_results: list | None) -> float | None:
+    """Attributable mixed CDP outcomes → partial credit 0.5; alignment noise ignored."""
+    scored: list[bool] = []
+    for r in cdp_results or []:
+        if not isinstance(r, dict):
+            continue
+        if r.get("attributable") is False:
+            continue
+        if r.get("ok") is None:
+            continue
+        scored.append(bool(r.get("ok")))
+    if not scored:
+        return None
+    n_ok = sum(1 for x in scored if x)
+    if 0 < n_ok < len(scored):
+        return 0.5
+    return None
+
+
 def grade_answer(
     question: str,
     user_answer: str,
@@ -447,6 +466,11 @@ def grade_answer(
         is_correct, credit = False, 0.5
     else:
         is_correct, credit = False, None
+        # Some CDPs pass + some fail is 半对 even if the model said incorrect.
+        mixed = _mixed_cdp_credit(cdp_results)
+        if mixed is not None:
+            credit = mixed
+            verdict = "partial"
 
     status = "applied" if effective_conf >= CONFIDENCE_THRESHOLD else "pending"
 
@@ -503,6 +527,9 @@ def grade_answer(
                         push_id=attempt_push_id, item_id=attempt_item_id,
                         cdp_results=cdp_results or None,
                         confidence=round(effective_conf, 4),
+                        user_answer=ua,
+                        feedback=grade_json.get("explanation") or raw,
+                        verdict=verdict,
                     )
                 except TypeError:
                     bkt.record(_uid(), extracted_kp, is_correct, kc)
@@ -550,9 +577,13 @@ def grade_answer(
                 "status": "pending",
                 "confidence": round(effective_conf, 4),
                 "state": kc.to_dict(),
+                "user_answer": ua,
+                "feedback": grade_json.get("explanation") or raw,
             }
             if credit is not None:
                 pending_entry["credit"] = credit
+            if verdict:
+                pending_entry["verdict"] = verdict
             if subj:
                 pending_entry["subject"] = subj
             if cdp_results:

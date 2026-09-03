@@ -96,6 +96,9 @@ class DbBKTLogger:
         item_id: int | None = None,
         cdp_results: list | None = None,
         confidence: float | None = None,
+        user_answer: str = "",
+        feedback: str = "",
+        verdict: str = "",
     ) -> dict[str, Any]:
         mastery_before = state.p_mastery
         now_dt = _now_utc()
@@ -141,6 +144,12 @@ class DbBKTLogger:
             entry["cdp_results"] = cdp_results
         if confidence is not None:
             entry["confidence"] = confidence
+        if user_answer:
+            entry["user_answer"] = user_answer
+        if feedback:
+            entry["feedback"] = feedback
+        if verdict:
+            entry["verdict"] = verdict
 
         # 禁止静默挂到 latest push（会把旧题作答联错行）
         if push_id is None and item_id is None:
