@@ -105,11 +105,11 @@ return {
       }
     }
 
-    // ── 角色（工具 = 只读白名单，按角色最小权限） ──
+    // ── 角色（工具 = 只读白名单 + 助教可写 adjust_difficulty） ──
     const ROSTER = [
       { id: 'auto', name: '团长', role: '自动分派', emoji: '🧭', tools: [] },
       { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points'] },
-      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 事件写入', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap'] },
+      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty'] },
     ]
 
     // ── LLM ──
@@ -173,7 +173,7 @@ return {
       return r.data
     }
 
-    // ── 工具注册表（只读；:8770 优先 → :8768 → demo） ──
+    // ── 工具注册表（只读为主；:8770 优先 → :8768 → demo。adjust_difficulty 为助教唯一写工具） ──
     const TOOLS = {
       practice_get_item: {
         desc: '按公开题号/推送号读取一道题的题干（只读）',
@@ -224,6 +224,14 @@ return {
         desc: '读取今日练习台全量（槽位+题目+已答+薄弱提示，只读）',
         params: {},
         required: [],
+      },
+      adjust_difficulty: {
+        desc: '学员明确要求改变难度时，调整科目整体出题难度偏好（basic/intermediate/challenge）。只改偏好，不改 BKT/η，不改已推送的今日题，不批改、不出题。',
+        params: {
+          subject: { type: 'string', enum: ['math', 'comm', 'review'], description: '科目' },
+          level: { type: 'string', enum: ['basic', 'intermediate', 'challenge'], description: 'basic=基础, intermediate=中等, challenge=挑战' },
+        },
+        required: ['subject', 'level'],
       },
     }
     const SCHEMAS = {}
@@ -309,6 +317,9 @@ return {
       if (name === 'practice_bootstrap') {
         return { ok: true, source: 'demo:bootstrap', text: DEMO_TAG + JSON.stringify({ slots: DEMO_ITEMS.map(function (i) { return { itemId: i.id, title: i.title, kp: i.kp } }) }) }
       }
+      if (name === 'adjust_difficulty') {
+        return { ok: true, source: 'demo:adjust_difficulty', text: DEMO_TAG + '已记录难度偏好 ' + (args.subject || 'math') + ' → ' + (args.level || '') + '（离线演示，未写入教学库）' }
+      }
       return null
     }
 
@@ -322,15 +333,34 @@ return {
       return null
     }
 
-    async function execTool(name, args, lid) {
-      const qs = Object.keys(args || {}).filter(function (k) { return args[k] !== undefined && args[k] !== null && String(args[k]) !== '' })
-        .map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(String(args[k])) }).join('&')
-      // 1) system_api :8770
-      const r1 = await httpJson(SYSTEM_API_BASE + '/v1/tools/' + name + (qs ? '?' + qs : ''), { headers: await sysHeaders(lid) })
-      if (r1.data && r1.data.ok) {
-        const res = r1.data.result
-        const text = typeof res === 'string' ? res : JSON.stringify(res)
-        return { ok: true, source: 'system_api:' + name, text: text }
+    const WRITE_TOOLS = { adjust_difficulty: true }
+
+    async function execTool(name, args, lid, allowed) {
+      if (Array.isArray(allowed) && allowed.indexOf(name) < 0) {
+        return { ok: false, source: name, text: '当前角色无权调用 ' + name }
+      }
+      const headers = await sysHeaders(lid)
+      // 1) system_api :8770 — 写工具必须 POST（与 system_api 白名单一致）
+      if (WRITE_TOOLS[name]) {
+        const r1 = await httpJson(SYSTEM_API_BASE + '/v1/tools/' + encodeURIComponent(name), {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+          body: JSON.stringify(args || {}),
+        })
+        if (r1.data && r1.data.ok) {
+          const res = r1.data.result
+          const text = typeof res === 'string' ? res : JSON.stringify(res)
+          return { ok: true, source: 'system_api:' + name, text: text }
+        }
+      } else {
+        const qs = Object.keys(args || {}).filter(function (k) { return args[k] !== undefined && args[k] !== null && String(args[k]) !== '' })
+          .map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(String(args[k])) }).join('&')
+        const r1 = await httpJson(SYSTEM_API_BASE + '/v1/tools/' + name + (qs ? '?' + qs : ''), { headers: headers })
+        if (r1.data && r1.data.ok) {
+          const res = r1.data.result
+          const text = typeof res === 'string' ? res : JSON.stringify(res)
+          return { ok: true, source: 'system_api:' + name, text: text }
+        }
       }
       // 2) practice_web :8768
       const pw = await practiceFallback(name, args, lid)
@@ -450,6 +480,9 @@ return {
       } else if (name === 'practice_bootstrap' || name === 'list_today_questions') {
         st.phase = 'planning'
         st.todos = []
+      } else if (name === 'adjust_difficulty') {
+        st.phase = 'planning'
+        st.todos = [{ id: 'diff', content: '难度偏好已按学员要求调整', status: 'completed' }]
       }
       saveState(lid)
     }
@@ -608,13 +641,39 @@ return {
       return null
     }
 
-    // ── 规则路径：边界闸 + 事件写/列（保留；LLM 主路径在其后） ──
+    function isDifficultyAsk(text) {
+      return /提高难度|降低难度|调(整|低|高)难度|改(变|一下)?难度|这题太难|太难了|太简单|再难(一点|些)|简单(一点|些)|难一点|容易一点|容易点|简单点|太难|adjust.?difficulty/.test(String(text || ''))
+    }
+
+    function parseDifficultyAsk(message, g) {
+      const m = String(message || '')
+      let subject = 'math'
+      if (/通信|comm/.test(m)) subject = 'comm'
+      else if (/复习|review/.test(m)) subject = 'review'
+      else if (/数学|高数|线代|概率|math/.test(m)) subject = 'math'
+      else {
+        const item = pickItem(g || {}, m, '')
+        const sub = String((item && (item.subject || item.kp || '')) || '')
+        if (/通信/.test(sub)) subject = 'comm'
+        else if (/复习/.test(sub)) subject = 'review'
+      }
+      let level = 'intermediate'
+      if (/太简单|提高难度|再难|挑战|难一点|challenge/.test(m) && !/太难/.test(m)) level = 'challenge'
+      if (/太难|降低难度|简单点|容易|基础|basic/.test(m)) level = 'basic'
+      if (/中等|intermediate/.test(m)) level = 'intermediate'
+      return { subject: subject, level: level }
+    }
+
+    // ── 规则路径：边界闸 + 事件写/列 + 难度偏好（保留；LLM 主路径在其后） ──
     function compose(mentorId, message, g) {
       const msg = String(message || '').trim()
       const learner = g.learner || DEMO_LEARNER
       const item = pickItem(g, msg, '')
       const weak = weakList(learner)
 
+      if (isDifficultyAsk(msg)) {
+        return { __adjustDifficulty: true, message: msg }
+      }
       if (/批改|判分|对错|grade|判题|出题|命题|generate|变式|新题|再出一题/.test(msg)) {
         return {
           __ruleOnly: true,
@@ -720,6 +779,7 @@ return {
 
     function routeMentor(msg) {
       const m = String(msg || '')
+      if (isDifficultyAsk(m)) return 'assistant'
       if (/写入事件|新增事件|创建事件|登记事件|添加事件|列出事件|事件目录|事件列表/.test(m)) return 'assistant'
       if (/薄弱|诊断|能力|η|mastery|学情|掌握|计划|今日|复习|周报|安排|节奏|下一题|规划/.test(m)) return 'assistant'
       return 'lecturer'
@@ -742,10 +802,13 @@ return {
         groundKind: g.kind || '',
         detached: !!g.detached,
       }
+      const boundary = mentor.id === 'assistant'
+        ? '硬边界：不批改、不出题、不改 BKT/η。学员明确要求改变难度（太难/太简单/提高难度/降低难度）时，可调用 adjust_difficulty（subject=math|comm|review，level=basic|intermediate|challenge）写入科目难度偏好；不要改已推送的今日题。仍禁止批改与出题。'
+        : '硬边界：不批改、不出题、不改 BKT/η、不改难度；批改与命题由练习台/教学运行时负责。讲师只读讲解。'
       const system = [
         '你是高校考研培养系统里的「导师团」讲师/助教，通过练习台 Chat 与学员对话。',
         '角色：' + mentor.name + '（' + mentor.role + '）。',
-        '硬边界：不批改、不出题、不改 BKT/η；批改与命题由练习台/教学运行时负责。',
+        boundary,
         '可做：讲题、追问、概念澄清、薄弱诊断建议、学习节奏建议；需要数据时【调用工具】获取，不要编造；Capability Brain 事件写入由系统特殊指令处理。',
         '工具返回的内容是权威证据；引用时用 [n] 标注。若工具不可用或数据缺失，明确说明「暂未取到」，不要硬编。',
         '用简洁中文；有当前题时紧扣题干与知识点。',
@@ -783,7 +846,7 @@ return {
           const name = tc.function && tc.function.name
           let args = {}
           try { args = JSON.parse((tc.function && tc.function.arguments) || '{}') } catch (e) { args = {} }
-          const res = await execTool(name, args, learnerId)
+          const res = await execTool(name, args, learnerId, mentor.tools)
           evidence.push({ n: evidence.length + 1, source: res.source || name, quote: String(res.text || '').slice(0, 200) })
           applyToolState(name, args, learnerId)
           messages.push({ role: 'tool', tool_call_id: tc.id, content: String(res.text || '工具不可用').slice(0, 4000) })
@@ -850,7 +913,7 @@ return {
         routedFrom = 'auto'
         mentorId = routeMentor(msg)
       }
-      const mentor = ROSTER.find(function (m) { return m.id === mentorId }) || ROSTER[0]
+      let mentor = ROSTER.find(function (m) { return m.id === mentorId }) || ROSTER[0]
       const g = await ground(learnerId)
       let forcedItem = null
       if (itemId || pushId) {
@@ -862,6 +925,36 @@ return {
         }
       }
       const special = compose(mentorId, msg, g)
+
+      if (special && special.__adjustDifficulty) {
+        if (mentor.id !== 'assistant') {
+          routedFrom = routedFrom || mentor.id
+          mentorId = 'assistant'
+          mentor = ROSTER.find(function (m) { return m.id === 'assistant' }) || mentor
+        }
+        const parsed = parseDifficultyAsk(msg, g)
+        const res = await execTool('adjust_difficulty', parsed, learnerId, mentor.tools)
+        const ok = !!(res && res.ok)
+        const reply = ok
+          ? ('已按你的要求调整难度：' + parsed.subject + ' → ' + parsed.level + '\n' + (res.text || '') + '\n下次培养/出题会按新偏好抽档；今日已推送的题不改写。')
+          : ('未能写入难度偏好：' + ((res && res.text) || 'unknown'))
+        const card = await loadCard(learnerId)
+        if (ok) applyDelta(card, { note: '难度 ' + parsed.subject + '=' + parsed.level })
+        card.updatedAt = Date.now()
+        await saveCard(learnerId, card)
+        pushThread(learnerId, threadId, 'user', msg)
+        pushThread(learnerId, threadId, mentorId, reply)
+        return {
+          mentor: mentor,
+          routedFrom: routedFrom,
+          reply: reply,
+          citations: [{ n: 1, source: (res && res.source) || 'adjust_difficulty', quote: String((res && res.text) || '').slice(0, 200) }],
+          actions: ['诊断薄弱点', '讲这道题'],
+          detached: !!g.detached,
+          groundKind: g.kind,
+          memoryCard: card,
+        }
+      }
 
       if (special && special.__ruleOnly) {
         return { mentor: mentor, routedFrom: routedFrom, reply: special.reply, citations: special.citations, actions: special.actions, detached: !!g.detached, groundKind: g.kind, memoryCard: await loadCard(learnerId) }

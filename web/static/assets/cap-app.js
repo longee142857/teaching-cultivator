@@ -14,7 +14,17 @@ const REGION_ORDER = ['frontal','parietal','temporal','occipital'];
 const PAGE_MIN = -1; // 封面
 const PAGE_MAX = 3;
 const SWIPE_THRESHOLD = 56;
-let activeTab = "mastery";
+function defaultTab(){
+  try {
+    const q = new URLSearchParams(window.location.search || '');
+    const tab = (q.get('tab') || '').trim();
+    if (tab === 'events' || tab === 'mastery') return tab;
+    if (q.get('embed') === '1') return 'events';
+    if (window.matchMedia && window.matchMedia('(max-width: 820px)').matches) return 'events';
+  } catch (e) {}
+  return 'mastery';
+}
+let activeTab = defaultTab();
 
 const $ = id => document.getElementById(id);
 const stage = $('stage');
@@ -580,13 +590,20 @@ function setTab(tab){
     window.history.replaceState({}, '', window.location.pathname + (q.toString() ? ('?' + q.toString()) : ''));
   } catch (e) {}
   requestAnimationFrame(function () {
-    if (activeTab === 'events') { computeCardAnchors(); updateLeaders(); }
+    if (activeTab === 'events') {
+      computeCardAnchors();
+      updateLeaders();
+      try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+    }
   });
 }
 
 function bindViewTabs(){
   document.querySelectorAll('.view-tab').forEach(function (b) {
     b.addEventListener('click', function () { setTab(b.dataset.tab); });
+  });
+  document.querySelectorAll('[data-open-tab]').forEach(function (b) {
+    b.addEventListener('click', function () { setTab(b.getAttribute('data-open-tab')); });
   });
 }
 

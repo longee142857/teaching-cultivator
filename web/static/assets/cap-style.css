@@ -546,7 +546,6 @@ body::before{
   #brain-plate{ width:min(58vh, 52vw); }
 }
 @media (max-width: 820px){
-  #brain-plate{ width:min(68vw, 48vh); transform:translate(-50%,-58%); }
   .page-deck{ width:min(96vw, 560px); bottom:max(12px, env(safe-area-inset-bottom, 0px)); }
   .event-chip{ max-width:100%; flex:1 1 auto; }
   .stage-hint{ bottom:auto; top:8px; font-size:10px; letter-spacing:.06em; }
@@ -599,20 +598,31 @@ body::before{
 
 /* ---- 嵌入 teaching-shell（iframe 模式） ---- */
 html.is-embedded .studio-bar{ display:none; }
-html.is-embedded, html.is-embedded body{ overflow:hidden; }
+html.is-embedded, html.is-embedded body{ height:100%; overflow:hidden; }
+html.is-embedded #app{ height:100%; min-height:0; }
 
 /* ============================================================
-   Mastery-first：掌握度为首屏；旧预测舞台退到「事件目录（占位）」
+   掌握度 / 脑图双页签。#app 始终占满视口（含 embed iframe），
+   掌握度在 #stage 内滚动；脑图舞台吃掉剩余高度，避免手机上
+   页签被 order 甩到折页下、或 canvas 父级 0 高。
+   CK @ ~390px: 打开 /capability-brain.html 与练习台 embed，
+   确认「脑图」页签在顶栏下可见，舞台可旋转（左视/右视/顶视/斜视）。
    ============================================================ */
-body{ overflow:auto; }
-#app{ min-height:100vh; height:auto; }
-#stage{ display:flex; flex-direction:column; }
+body{ overflow:hidden; }
+#app{
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+#stage{ display:flex; flex-direction:column; flex:1 1 auto; min-height:0; }
 #stage:not(.is-events){ overflow-y:auto; overflow-x:hidden; }
 #stage.is-events{ overflow:hidden; }
 
 .view-tabs{
   display:flex; gap:0; margin-left:auto; flex:0 0 auto;
   border:1px solid var(--line-strong); background:rgba(244,237,224,.6);
+  position:relative; z-index:9;
 }
 .view-tab{
   appearance:none; background:transparent; border:none; border-left:1px solid var(--line);
@@ -627,8 +637,9 @@ body{ overflow:auto; }
   max-width:860px; margin:0 auto; padding:18px 18px 28px;
 }
 #stage.is-events #mastery-panel{ display:none; }
-/* 事件页签：event-stage 撑起 stage，内部保持旧舞台的绝对定位上下文 */
-#event-stage{ position:relative; flex:1 1 auto; min-height:100%; }
+/* 脑图页签：event-stage 必须有确定高度，#brain-plate 才能绝对居中 */
+#event-stage{ position:relative; flex:1 1 auto; min-height:0; height:100%; }
+#stage.is-events #event-stage{ min-height:240px; }
 #event-stage > *{ pointer-events:auto; }
 #event-stage > #brain-plate,
 #event-stage > #leaders,
@@ -693,13 +704,22 @@ body{ overflow:auto; }
 .mastery-strong summary::after{ content:'＋展开'; float:right; font-family:var(--font-mono); font-size:10px; color:var(--ink-soft); }
 .mastery-strong[open] summary::after{ content:'－收起'; }
 .brain-fold{ margin-top:16px; border-top:1px dashed var(--line-strong); padding-top:10px; }
-.brain-fold summary{ cursor:pointer; font-size:11px; color:var(--ink-soft); }
+.brain-fold-open{
+  appearance:none; display:block; width:100%;
+  border:1px solid var(--line-strong); background:var(--card); color:var(--ink);
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.06em;
+  padding:10px 12px; cursor:pointer; text-align:left;
+}
+.brain-fold-open:focus-visible{ outline:2px solid var(--red); outline-offset:2px; }
 .fold-hint{ font-size:11px; color:var(--ink-soft); margin-top:6px; }
 
-/* 事件页签时，旧舞台恢复占屏表现 */
+/* 窄屏：页签贴在顶栏下（不要 order 到舞台之后），舞台仍占剩余高度 */
 @media (max-width: 820px){
   #topbar{ flex-wrap:wrap; gap:10px; }
-  .view-tabs{ order:3; width:100%; margin-left:0; }
+  .presets{ width:100%; margin-left:0; flex-wrap:wrap; }
+  .view-tabs{ width:100%; margin-left:0; }
+  .view-tab{ flex:1 1 auto; text-align:center; min-height:44px; }
   .mastery-head{ align-items:flex-start; }
+  #brain-plate{ width:min(92vw, 62vh); max-height:72%; transform:translate(-50%,-50%); }
 }
 

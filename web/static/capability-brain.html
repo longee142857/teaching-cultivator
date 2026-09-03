@@ -58,8 +58,8 @@
   </header>
 
   <nav class="view-tabs" id="view-tabs" data-od-id="view-tabs" aria-label="视图">
-    <button type="button" class="view-tab is-on mono" data-tab="mastery" aria-pressed="true">掌握度</button>
-    <button type="button" class="view-tab mono" data-tab="events" aria-pressed="false">事件目录（占位）</button>
+    <button type="button" class="view-tab is-on mono" data-tab="events" aria-pressed="true">脑图</button>
+    <button type="button" class="view-tab mono" data-tab="mastery" aria-pressed="false">掌握度</button>
   </nav>
   <main id="stage" class="stage is-cover" data-od-id="stage">
     <section id="mastery-panel" data-od-id="mastery-panel" aria-label="掌握度总览">
@@ -83,13 +83,13 @@
         <summary>已掌握 <span class="group-cap mono" id="strong-cap"></span></summary>
         <div class="kp-list" id="kp-strong"></div>
       </details>
-      <details class="brain-fold" data-od-id="brain-fold">
-        <summary class="mono">显示脑图（装饰）与四叶注记</summary>
-        <p class="fold-hint">旧舞台在下方，需切到「事件目录（占位）」页签使用。</p>
-      </details>
+      <div class="brain-fold" data-od-id="brain-fold">
+        <button type="button" class="brain-fold-open mono" data-open-tab="events" data-od-id="brain-fold-open">打开脑图（左视 / 右视 / 顶视 / 斜视）</button>
+        <p class="fold-hint">切到「脑图」页签使用四叶舞台；事件目录仍为占位，不按当前 BKT 实时推算。</p>
+      </div>
     </section>
     <div id="event-stage" hidden data-od-id="event-stage">
-      <div class="event-banner">事件目录（占位）：下方 P̂ / 路径为内置 mock 或导师登记，<b>不按当前 BKT 实时推算</b>。</div>
+      <div class="event-banner">脑图 · 事件目录（占位）：下方 P̂ / 路径为内置 mock 或导师登记，<b>不按当前 BKT 实时推算</b>。可用顶栏左视 / 右视 / 顶视 / 斜视。</div>
     <div id="orbit-ring" aria-hidden="true"></div>
     <svg id="brain-plate" data-od-id="brain-plate" viewBox="0 0 480 380" role="img" aria-label="预测脑平面墨线图"></svg>
     <svg id="leaders" data-od-id="leader-lines" aria-hidden="true"></svg>
