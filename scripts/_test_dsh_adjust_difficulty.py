@@ -12,6 +12,24 @@ from unittest.mock import patch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+_kl = os.path.join(ROOT, "knowledge-lib")
+if os.path.isdir(_kl) and _kl not in sys.path:
+    sys.path.insert(0, _kl)
+
+
+def _stub_cultivate_deps() -> None:
+    """This VM may lack knowledge-system/lib (intervention / heartbeat_summary)."""
+    import types
+
+    if "intervention" not in sys.modules:
+        m = types.ModuleType("intervention")
+        m.decide_intervention = lambda **_k: None
+        m.InterventionDecision = type("InterventionDecision", (), {})
+        sys.modules["intervention"] = m
+    if "heartbeat_summary" not in sys.modules:
+        m = types.ModuleType("heartbeat_summary")
+        m.extract = lambda *_a, **_k: {}
+        sys.modules["heartbeat_summary"] = m
 
 HOST = os.path.join(ROOT, "integrations", "dsh-mentor-team", "host.js")
 
@@ -57,6 +75,7 @@ def main() -> int:
     check("adjust_difficulty" in WHITELIST, "system_api whitelist has adjust_difficulty")
     check("adjust_difficulty" not in _READ_TOOLS, "adjust_difficulty is POST-only")
 
+    _stub_cultivate_deps()
     import config as config_mod
     import cultivate as cultivate_mod
     from agent import tools as tools_mod

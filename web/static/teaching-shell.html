@@ -553,6 +553,7 @@
         display: flex; flex-direction: column; gap: 6px;
         padding: calc(12px + var(--safe-t)) 12px 12px;
         border-right: 1px solid var(--border); background: var(--bg);
+        min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
       }
       .recents h2 { font-size: 13px; color: var(--muted); font-weight: 550; letter-spacing: 0.04em; margin-bottom: 6px; }
       .recent-btn {
@@ -1069,13 +1070,35 @@
         if (!item) return;
         state.recents = (state.recents || []).filter(function (r) { return r.id !== item.id; });
         state.recents.unshift({ id: item.id, title: item.subject + " · " + item.title, subject: item.subject });
-        state.recents = state.recents.slice(0, 3);
       }
       function seedRecents() {
         if (state.recents && state.recents.length) return;
         state.recents = todayItems().map(function (it) {
           return { id: it.id, title: it.subject + " · " + it.title, subject: it.subject };
         });
+      }
+      /* 讲师会话列表：recents LRU ∪ threads 全部 key ∪ 今日题（未聊过也可选）。不截断。 */
+      function listTutorSessions() {
+        var seen = {};
+        var out = [];
+        function add(id, extra) {
+          id = String(id || "");
+          if (!id || seen[id]) return;
+          seen[id] = true;
+          var it = itemById(id);
+          var rec = extra || {};
+          out.push({
+            id: id,
+            title: rec.title || (it ? ((it.subject || "") + " · " + (it.title || id)) : id),
+            subject: rec.subject || (it && it.subject) || ""
+          });
+        }
+        (state.recents || []).forEach(function (r) { if (r && r.id) add(r.id, r); });
+        Object.keys(state.threads || {}).forEach(function (id) { add(id); });
+        todayItems().forEach(function (it) {
+          add(it.id, { title: (it.subject || "") + " · " + (it.title || it.id), subject: it.subject });
+        });
+        return out;
       }
 
       function setSendEnabled(on) {
@@ -2046,7 +2069,7 @@
         var strip = document.getElementById("tutor-strip");
         if (!strip) return;
         if (state.mode !== "tutor") { strip.innerHTML = ""; return; }
-        var recents = (state.recents || []).slice(0, 6);
+        var recents = listTutorSessions();
         if (!recents.length) {
           strip.innerHTML = '<span class="tc-empty">从练习台打开题目后，可在此切换讲师话题</span>';
           return;
@@ -2072,7 +2095,7 @@
         renderTutorStrip();
         if (state.mode !== "tutor") { recentsEl.innerHTML = ""; return; }
         var html = "<h2>最近会话</h2>";
-        (state.recents || []).slice(0, 3).forEach(function (r) {
+        listTutorSessions().forEach(function (r) {
           var msgs = threadOf(r.id);
           var last = msgs.length ? msgs[msgs.length - 1].text : "尚无消息";
           var active = r.id === state.contextItemId ? " is-active" : "";
