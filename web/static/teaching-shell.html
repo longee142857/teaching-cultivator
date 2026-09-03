@@ -452,8 +452,9 @@
 
     .brain-host { flex: 1; min-height: 0; }
     .brain-host iframe { width: 100%; height: 100%; border: 0; display: block; background: transparent; }
-    .app.is-brain .app-header, .app.is-brain .page-chrome,
+    .app.is-brain .app-header, .app.is-brain .page-chrome, .app.is-brain .tutor-strip,
     .app.is-brain .content, .app.is-brain .practice-dock, .app.is-brain .chat-dock { display: none; }
+    .app.is-brain .brain-host { display: flex; flex-direction: column; }
 
     .context-chip {
       display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
@@ -2122,7 +2123,7 @@
         var on = state.mode === "brain";
         brainHost.hidden = !on;
         if (on && brainLoadedFor !== state.learner) {
-          brainFrame.src = "/capability-brain.html?embed=1&learner=" + encodeURIComponent(state.learner || "");
+          brainFrame.src = "/capability-brain.html?embed=1&tab=events&learner=" + encodeURIComponent(state.learner || "");
           brainLoadedFor = state.learner;
         }
       }

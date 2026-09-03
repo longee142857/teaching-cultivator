@@ -7,14 +7,14 @@
 | `POST /api/v1/tutor/chat` | 讲师/助教对话；`Accept: text/event-stream` 时返回 **SSE 流式**，否则 JSON |
 | `GET /api/v1/agent/manifest` | manifest（version=3, readOnly, tools, streaming） |
 
-角色：`auto` / `lecturer` / `assistant`。**只读工具按角色最小权限**：
+角色：`auto` / `lecturer` / `assistant`。**工具按角色最小权限**（讲师只读；助教只读 + 唯一写工具 `adjust_difficulty`）：
 
-| 角色 | 工具（只读） | 数据源 |
-|------|--------------|--------|
-| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points` | system_api:8770 → practice_web:8768 → demo |
-| 助教 | `get_learner_params` `get_capability_evidence` `get_learner_snapshot` `list_today_questions` `build_report` `practice_bootstrap` | 同上 |
+| 角色 | 工具 | 数据源 |
+|------|------|--------|
+| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points`（只读） | system_api:8770 → practice_web:8768 → demo |
+| 助教 | `get_learner_params` `get_capability_evidence` `get_learner_snapshot` `list_today_questions` `build_report` `practice_bootstrap`（只读）+ `adjust_difficulty`（写，POST `:8770/v1/tools/adjust_difficulty` → 旧 `agent/tools.py` / `cultivate.set_difficulty_pref`） | 同上 |
 
-执行链：**system_api(:8770，`X-System-Token`)** → **practice_web(:8768)** → **本地演示数据（前缀「【演示数据】」）**。LLM（DeepSeek 直连）**按需调用工具**取数，工具结果成为 `citations`（逐条证据引用）。批改/命题仍由教学运行时负责（边界闸）。
+执行链：**system_api(:8770，`X-System-Token`)** → **practice_web(:8768)** → **本地演示数据（前缀「【演示数据】」）**。写工具 `adjust_difficulty` **仅 POST JSON**，不走 GET。LLM（DeepSeek 直连）**按需调用工具**取数，工具结果成为 `citations`（逐条证据引用）。批改/命题仍由教学运行时负责（边界闸）；学员明确要求改变难度时助教可写难度偏好，不改 BKT/η、不改已推送今日题。
 
 **通用版 host.js**：Node standalone（云端 `process` 存在）走 `web.fetch` 全功能；真实 DSH（`process` 不可用）走 **subprocess curl** 执行器（`curlRequest`，`C:\Windows\System32\curl.exe` 兜底）。
 
@@ -67,5 +67,6 @@ ssh -i ~/.ssh/ccc.pem -N -L 8768:127.0.0.1:8768 -L 8770:127.0.0.1:8770 ubuntu@15
 ## 边界
 
 - 批改 → 练习台 `POST /api/v1/practice/submit`；命题/复评 → teaching 定时或人工。
+- 改变难度 → 助教 `adjust_difficulty`（`cultivate.set_difficulty_pref`，科目 `basic|intermediate|challenge`）；讲师不可调用。
 - 导师团可写 **Capability Brain 事件**（`POST /api/v1/capability/events`），不批改、不出题。
 - 脱机：`detached:true` + 演示数据；工具不可达时如实返回「暂未取到」，禁止编造。
