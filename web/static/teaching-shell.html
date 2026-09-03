@@ -106,18 +106,26 @@
     }
     .tutor-strip::-webkit-scrollbar { display: none; }
     .tutor-chip {
-      appearance: none; flex: 0 0 auto; max-width: 68vw;
+      appearance: none; flex: 0 0 auto; max-width: 68vw; min-width: 0;
       display: flex; flex-direction: column; gap: 1px; text-align: left;
       border: 1px solid var(--border); background: var(--bg);
       border-radius: 2px; padding: 7px 12px; color: var(--fg);
     }
+    .tutor-chip .tc-title,
+    .tutor-chip .tc-sub {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
+    }
     .tutor-chip .tc-title {
       font-size: 12px; font-weight: 550; line-height: 1.35;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .tutor-chip .tc-sub {
       font-size: 10px; color: var(--muted); font-family: var(--font-mono); letter-spacing: .02em;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .tutor-chip.is-active {
       border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
@@ -548,24 +556,32 @@
         font-size: 14px; font-weight: 550; letter-spacing: 0.02em;
       }
       .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
-      .app.is-tutor .workspace { grid-template-columns: 200px 1fr; }
+      .app.is-tutor .workspace { grid-template-columns: minmax(0, 200px) minmax(0, 1fr); }
       .app.is-tutor .recents {
         display: flex; flex-direction: column; gap: 6px;
         padding: calc(12px + var(--safe-t)) 12px 12px;
         border-right: 1px solid var(--border); background: var(--bg);
-        min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+        min-height: 0; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
       }
       .recents h2 { font-size: 13px; color: var(--muted); font-weight: 550; letter-spacing: 0.04em; margin-bottom: 6px; }
       .recent-btn {
         appearance: none; width: 100%; text-align: left;
         border: 1px solid transparent; background: transparent;
         border-radius: 8px; padding: 10px 10px; min-height: 56px;
-        display: grid; gap: 2px;
+        display: grid; gap: 2px; min-width: 0;
       }
       .recent-btn:hover { background: var(--hover); color: var(--fg); }
       .recent-btn.is-active { border-color: var(--border); background: var(--surface); box-shadow: var(--shadow); }
-      .recent-title { font-size: 13px; font-weight: 550; line-height: 1.4; }
-      .recent-preview { font-size: 12px; color: var(--muted); line-height: 1.45; }
+      .recent-title {
+        font-size: 13px; font-weight: 550; line-height: 1.4;
+        min-width: 0; overflow: hidden; text-overflow: ellipsis;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      }
+      .recent-preview {
+        font-size: 12px; color: var(--muted); line-height: 1.45;
+        min-width: 0; overflow: hidden; text-overflow: ellipsis;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      }
       .dock { padding-bottom: 12px; }
       .app-header { padding-top: 16px; padding-inline: 22px; }
       .content { padding: 22px 28px 32px; }
@@ -1066,6 +1082,18 @@
         } catch (e) { return null; }
       }
 
+      function previewText(raw) {
+        var s = String(raw == null ? "" : raw);
+        s = s.replace(/\$\$[\s\S]*?\$\$/g, " ");
+        s = s.replace(/\\\[[\s\S]*?\\\]/g, " ");
+        s = s.replace(/\\\([\s\S]*?\\\)/g, " ");
+        s = s.replace(/\$[^$\n]+\$/g, " ");
+        s = s.replace(/\\[a-zA-Z]+/g, " ");
+        s = s.replace(/[{}]/g, " ");
+        s = s.replace(/[\r\n]+/g, " ");
+        s = s.replace(/\s+/g, " ").trim();
+        return s;
+      }
       function bumpRecent(item) {
         if (!item) return;
         state.recents = (state.recents || []).filter(function (r) { return r.id !== item.id; });
@@ -2080,7 +2108,7 @@
           var sub = it ? it.kp : (r.subject || "");
           return '<button type="button" class="tutor-chip' + active + '" data-od-id="tchip-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
             '<span class="tc-title">' + esc(r.title) + "</span>" +
-            '<span class="tc-sub">' + esc(sub || "") + "</span>" +
+            '<span class="tc-sub">' + esc(previewText(sub) || sub || "") + "</span>" +
           "</button>";
         }).join("");
         strip.querySelectorAll("[data-thread-id]").forEach(function (btn) {
@@ -2097,12 +2125,12 @@
         var html = "<h2>最近会话</h2>";
         listTutorSessions().forEach(function (r) {
           var msgs = threadOf(r.id);
-          var last = msgs.length ? msgs[msgs.length - 1].text : "尚无消息";
+          var last = msgs.length ? (previewText(msgs[msgs.length - 1].text) || "（公式）") : "尚无消息";
           var active = r.id === state.contextItemId ? " is-active" : "";
           html +=
             '<button type="button" class="recent-btn' + active + '" data-od-id="recent-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
               '<div class="recent-title">' + esc(r.title) + "</div>" +
-              '<div class="recent-preview">' + esc(last.slice(0, 28)) + "</div>" +
+              '<div class="recent-preview">' + esc(last) + "</div>" +
             "</button>";
         });
         recentsEl.innerHTML = html;
