@@ -11,10 +11,19 @@ from unittest.mock import patch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+_kl = os.path.join(ROOT, "knowledge-lib")
+if os.path.isdir(_kl) and _kl not in sys.path:
+    sys.path.insert(0, _kl)
 
 import config as config_mod
 import grade as grade_mod
-from grade import GradeResult, _detect_item_type, _parse_grade_verdict, grade_answer
+from grade import (
+    GradeResult,
+    _detect_item_type,
+    _mixed_cdp_credit,
+    _parse_grade_verdict,
+    grade_answer,
+)
 from agent import tools as tools_mod
 from learner import paths as paths_mod
 from learner.context import bind_learner
@@ -73,6 +82,29 @@ def _run_daily(check) -> None:
     mcq = "下列正确的是\nA. 1\nB. 2\nC. 3\nD. 4"
     check(_detect_item_type(mcq) == "mcq", "mcq ABCD")
     check(_detect_item_type("简述香农公式") == "open", "open")
+
+    sep("1b. _mixed_cdp_credit")
+    check(
+        _mixed_cdp_credit(
+            [
+                {"id": "c1", "ok": True, "attributable": True},
+                {"id": "c2", "ok": False, "attributable": True},
+                {"id": "c3", "ok": False, "attributable": False},
+            ]
+        )
+        == 0.5,
+        "mixed attributable → 0.5",
+    )
+    check(
+        _mixed_cdp_credit(
+            [
+                {"id": "c1", "ok": False, "attributable": True},
+                {"id": "c2", "ok": False, "attributable": True},
+            ]
+        )
+        is None,
+        "all-fail CDP no credit",
+    )
 
     sep("2. _parse_grade_verdict")
     check(_parse_grade_verdict("正确与否：正确\n评语：好") == (True, None), "correct")

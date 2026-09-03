@@ -740,6 +740,161 @@ def test_async_grade_and_idempotent(tmp_db: str):
     check((sub_m.get("result") or {}).get("gradeMode") == "llm", "mcq llm gradeMode")
 
 
+def _llm_partial_limit(_system, _user, task_type="grade", *_a, **_k):
+    if task_type == "verify_grade":
+        return json.dumps(
+            {"agrees": True, "confidence": 0.9, "reasoning": "ok"},
+            ensure_ascii=False,
+        )
+    return json.dumps(
+        {
+            "verdict": "partial",
+            "confidence": 0.95,
+            "explanation": "结论 a=1 与 1/3 正确，展开不完整。",
+            "cdp_results": [
+                {"id": "cdp1", "ok": True, "technique": "limit", "note": "ok"},
+                {"id": "cdp2", "ok": False, "technique": "series", "note": "缺项"},
+                {"id": "cdp3", "ok": False, "technique": "justify", "note": "缺"},
+            ],
+        },
+        ensure_ascii=False,
+    )
+
+
+def _llm_incorrect_mixed_cdp(_system, _user, task_type="grade", *_a, **_k):
+    if task_type == "verify_grade":
+        return json.dumps(
+            {"agrees": True, "confidence": 0.9, "reasoning": "ok"},
+            ensure_ascii=False,
+        )
+    return json.dumps(
+        {
+            "verdict": "incorrect",
+            "confidence": 0.95,
+            "explanation": "一对三：结论对，两处展开失败。",
+            "cdp_results": [
+                {"id": "cdp1", "ok": True, "technique": "limit", "note": "ok"},
+                {"id": "cdp2", "ok": False, "technique": "series", "note": "缺"},
+                {"id": "cdp3", "ok": False, "technique": "justify", "note": "缺"},
+            ],
+        },
+        ensure_ascii=False,
+    )
+
+
+def test_partial_result_hydrate(tmp_db: str):
+    """Partial grade must hydrate 部分通过 + lecturer text + 你的作答."""
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "llm"
+
+    import importlib
+    from unittest.mock import patch
+
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+
+    importlib.reload(ps)
+    from modules.store import get_store
+
+    store = get_store()
+    cdps = [
+        {"id": "cdp1", "technique": "limit"},
+        {"id": "cdp2", "technique": "series"},
+        {"id": "cdp3", "technique": "justify"},
+    ]
+    q = "求极限\n\n已知展开，求 a 与常数项。"
+    ua = "展开得 a=1，常数 1/3。"
+    iid = store.insert_bank_item(
+        subject="math",
+        question=q,
+        answer="a=1",
+        kp="极限",
+        status="ready",
+        cdps=cdps,
+    )
+    pid = store.record_push_for_item(
+        item_id=iid, learner_id="partial_learner", slot="math", reason="test:partial"
+    )
+
+    # BKT-style row (applied partial stores correct=True) must still be 部分通过.
+    bkt_like = {
+        "correct": True,
+        "credit": 0.5,
+        "user_answer": ua,
+        "feedback": "结论 a=1 与 1/3 正确，展开不完整。",
+        "verdict": "partial",
+        "status": "applied",
+        "knowledge_point": "极限",
+    }
+    dto = {"commentOk": "步骤与结论正确。", "commentBad": "结论或步骤有偏差，请对照参考要点复查。", "explain": "", "kp": "极限"}
+    mapped = ps._attempt_result_dto(bkt_like, dto)
+    check(mapped and mapped["partial"] is True and mapped["correct"] is False, "bkt rec_correct+credit → partial")
+    check("展开不完整" in (mapped or {}).get("comment", ""), "hydrate keeps lecturer explanation")
+    check((mapped or {}).get("submitted") == ua, "hydrate keeps submitted")
+    check("结论或步骤有偏差" not in (mapped or {}).get("comment", ""), "no generic fallback when explanation exists")
+
+    with patch("grade.call_llm", side_effect=_llm_partial_limit), patch(
+        "learner.kp_registry.normalize_kp_for_grade", return_value="极限"
+    ), patch("learner.weights_ops.bump_kp_weight"), patch(
+        "learner.weights_ops.decay_kp_weight"
+    ):
+        sub = _submit_and_wait(
+            ps,
+            "partial_learner",
+            answer=ua,
+            item=f"i{iid}",
+            push=pid,
+            mode="llm",
+        )
+    r = sub.get("result") or {}
+    check(sub.get("ok") and r.get("partial") is True, "submit result.partial")
+    check(r.get("correct") is False, "submit not full correct")
+    check("展开不完整" in (r.get("comment") or ""), "submit comment is explanation")
+    check("结论或步骤有偏差" not in (r.get("comment") or ""), "submit no generic fallback")
+    check(r.get("submitted") == ua, "submit submitted round-trip")
+
+    got = ps.get_item("partial_learner", item=f"i{iid}", push=pid)
+    hr = got.get("result") or {}
+    check(hr.get("partial") is True, "GET item hydrates partial")
+    check("展开不完整" in (hr.get("comment") or ""), "GET item comment is explanation")
+    check(hr.get("submitted") == ua, "GET item 你的作答")
+
+    again = ps.submit(
+        "partial_learner", answer="请再批一次", item=f"i{iid}", push=pid, mode="llm"
+    )
+    check(again.get("already"), "already replay")
+    ar = again.get("result") or {}
+    check(ar.get("partial") is True, "already keeps partial")
+    check("展开不完整" in (ar.get("comment") or ""), "already keeps explanation")
+    check(ar.get("submitted") == ua, "already keeps 你的作答 not the second click text")
+    hits = [a for a in store.get_attempts("partial_learner") if a.get("item_id") == iid]
+    check(len(hits) == 1, "already does not insert another attempt")
+    check(hits[0].get("user_answer") == ua, "attempt meta has user_answer")
+    check("展开不完整" in str(hits[0].get("feedback") or ""), "attempt meta has feedback")
+
+    q2 = "再求一极限（混合 CDP）。"
+    iid2 = store.insert_bank_item(
+        subject="math", question=q2, answer="1", kp="极限", status="ready", cdps=cdps
+    )
+    with patch("grade.call_llm", side_effect=_llm_incorrect_mixed_cdp), patch(
+        "learner.kp_registry.normalize_kp_for_grade", return_value="极限"
+    ), patch("learner.weights_ops.bump_kp_weight"), patch(
+        "learner.weights_ops.decay_kp_weight"
+    ):
+        sub2 = _submit_and_wait(
+            ps, "partial_learner", answer="只写出了 a=1", item=f"i{iid2}", mode="llm"
+        )
+    r2 = sub2.get("result") or {}
+    check(r2.get("partial") is True and r2.get("credit") == 0.5, "mixed CDP + incorrect verdict → partial")
+    check("一对三" in (r2.get("comment") or ""), "mixed CDP keeps explanation")
+
+
 def main():
     test_dto()
     with tempfile.TemporaryDirectory() as td:
@@ -754,6 +909,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t4.db")
         test_async_grade_and_idempotent(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t5.db")
+        test_partial_result_hydrate(db)
     print("ALL_OK")
 
 

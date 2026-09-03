@@ -809,9 +809,92 @@ class Store:
         except (TypeError, json.JSONDecodeError):
             pass
         entry["user_id"] = r["user_id"]
+        entry["knowledge_point"] = r["knowledge_point"] or entry.get("knowledge_point") or ""
         entry["correct"] = None if r["correct"] is None else bool(r["correct"])
+        entry["item_type"] = r["item_type"] or entry.get("item_type") or "unknown"
+        entry["status"] = r["status"] or entry.get("status") or "applied"
         entry["ts"] = r["answered_at"]
+        entry["answered_at"] = r["answered_at"]
+        if r["push_id"] is not None:
+            entry["push_id"] = int(r["push_id"])
+        if r["item_id"] is not None:
+            entry["item_id"] = int(r["item_id"])
+        if r["credit"] is not None:
+            entry["credit"] = r["credit"]
+        elif "credit" not in entry:
+            entry["credit"] = None
+        if r["confidence"] is not None:
+            entry["confidence"] = r["confidence"]
         return entry
+
+    def merge_latest_attempt_meta(
+        self,
+        user_id: str,
+        extra: dict,
+        *,
+        push_id=None,
+        item_id=None,
+    ) -> bool:
+        """Fill missing meta/credit on the latest matching attempt. No new row."""
+        lid = str(user_id or "").strip()
+        if not lid or not extra:
+            return False
+
+        def _sql_id(v):
+            if v is None or v == "":
+                return None
+            try:
+                n = int(v)
+            except (TypeError, ValueError):
+                return None
+            return n if n > 0 else None
+
+        pid = _sql_id(push_id)
+        iid = _sql_id(item_id)
+
+        def _do(conn) -> bool:
+            row = None
+            if pid is not None:
+                row = conn.execute(
+                    "SELECT id, meta, credit FROM attempts "
+                    "WHERE user_id=? AND push_id=? ORDER BY id DESC LIMIT 1",
+                    (lid, pid),
+                ).fetchone()
+            if row is None and iid is not None:
+                row = conn.execute(
+                    "SELECT id, meta, credit FROM attempts "
+                    "WHERE user_id=? AND item_id=? ORDER BY id DESC LIMIT 1",
+                    (lid, iid),
+                ).fetchone()
+            if row is None:
+                return False
+            try:
+                meta = json.loads(row[1] or "{}")
+            except (TypeError, json.JSONDecodeError):
+                meta = {}
+            if not isinstance(meta, dict):
+                meta = {}
+            for k, v in extra.items():
+                if k == "credit":
+                    continue
+                if v is None or v == "":
+                    continue
+                if not meta.get(k):
+                    meta[k] = v
+            credit = row[2]
+            if credit is None and extra.get("credit") is not None:
+                try:
+                    credit = float(extra["credit"])
+                    meta.setdefault("credit", credit)
+                except (TypeError, ValueError):
+                    credit = row[2]
+            conn.execute(
+                "UPDATE attempts SET meta=?, credit=? WHERE id=?",
+                (json.dumps(meta, ensure_ascii=False), credit, int(row[0])),
+            )
+            return True
+
+        return bool(self._txn(_do))
 
     # ── mastery ────────────────────────────────────────────
 
