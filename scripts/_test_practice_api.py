@@ -895,6 +895,61 @@ def test_partial_result_hydrate(tmp_db: str):
     check("一对三" in (r2.get("comment") or ""), "mixed CDP keeps explanation")
 
 
+def test_report_poor(tmp_db: str):
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "ref"
+    os.environ["PRACTICE_API_TOKEN"] = ""
+
+    import importlib
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+    from modules.store import get_store
+
+    importlib.reload(ps)
+    store = get_store()
+    bad = store.insert_bank_item(
+        subject="math",
+        question="假 pass 烂题 lim x→0 ?",
+        answer="0",
+        kp="极限",
+        status="ready",
+    )
+    good = store.insert_bank_item(
+        subject="math",
+        question="替补好题 lim x→0 sinx/x",
+        answer="1",
+        kp="极限",
+        status="ready",
+    )
+    store.apply_judge_verdict(bad, verdict="pass", reasons=["gate"], confidence=0.9)
+    store.apply_judge_verdict(good, verdict="pass", reasons=["gate"], confidence=0.9)
+    push_id = store.record_push_for_item(
+        item_id=bad, learner_id="poor_learner", slot="math", decision_type="test"
+    )
+    out = ps.report_poor(
+        "poor_learner",
+        item=f"i{bad}",
+        push=push_id,
+        reason="user_report_poor",
+        store=store,
+    )
+    check(out.get("ok") and out.get("reported"), "report_poor ok")
+    check(out.get("qualityTier") == "poor", "tier flipped to poor")
+    bad_row = store.get_item(bad)
+    check(bad_row and bad_row.get("quality_tier") == "poor", "db quality poor")
+    check(bad_row.get("status") == "quarantine", "quarantined")
+    check(out.get("replaced") is True and out.get("item"), "replaced with bank item")
+    check(int(out["item"].get("itemId") or 0) == good, "replacement is good item")
+    fresh = store.get_push(int(push_id))
+    check(fresh and int(fresh.get("item_id") or 0) == good, "push rebinding")
+
+
 def main():
     test_dto()
     with tempfile.TemporaryDirectory() as td:
@@ -912,6 +967,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t5.db")
         test_partial_result_hydrate(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t6.db")
+        test_report_poor(db)
     print("ALL_OK")
 
 

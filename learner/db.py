@@ -1265,6 +1265,49 @@ class Store:
 
         return int(self._txn(_do))
 
+    def quarantine_item(self, item_id: int) -> bool:
+        """单题隔离：status→quarantine（不删）。已 retired 的也标 quarantine，避免误再抽。"""
+        def _do(conn) -> bool:
+            cur = conn.execute(
+                """UPDATE items SET status='quarantine'
+                   WHERE id=? AND COALESCE(status, '') != 'quarantine'""",
+                (int(item_id),),
+            )
+            return int(cur.rowcount or 0) > 0
+
+        return bool(self._txn(_do))
+
+    def replace_push_item(self, push_id: int, new_item_id: int) -> dict | None:
+        """把某条 push 换绑到新题；新题若 ready 则 retired（已消耗）。"""
+        def _do(conn) -> dict | None:
+            row = conn.execute(
+                "SELECT id, item_id FROM pushes WHERE id=?", (int(push_id),)
+            ).fetchone()
+            if not row:
+                return None
+            new_row = conn.execute(
+                "SELECT id, status FROM items WHERE id=?", (int(new_item_id),)
+            ).fetchone()
+            if not new_row:
+                raise ValueError(f"item not found: {new_item_id}")
+            old_id = int(row["item_id"])
+            conn.execute(
+                "UPDATE pushes SET item_id=? WHERE id=?",
+                (int(new_item_id), int(push_id)),
+            )
+            if (new_row["status"] or "") == "ready":
+                conn.execute(
+                    "UPDATE items SET status='retired' WHERE id=?",
+                    (int(new_item_id),),
+                )
+            return {
+                "push_id": int(push_id),
+                "old_item_id": old_id,
+                "new_item_id": int(new_item_id),
+            }
+
+        return self._txn(_do)
+
     def list_items_for_judge(self, *, max_reviews: int = 2, limit: int = 3) -> list[dict]:
         """待审判：ready 且 judge_count < max_reviews；优先 pending，再 poor（给第二次机会）。"""
         rows = self._query(

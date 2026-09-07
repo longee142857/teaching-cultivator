@@ -131,6 +131,8 @@
       border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
       background: color-mix(in oklch, var(--accent) 8%, var(--surface));
     }
+    .tutor-chip.is-general .tc-title { color: var(--accent); }
+    .text-link.is-warn { color: #b45309; }
     .tc-empty {
       font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em;
       color: var(--muted); padding: 8px 0;
@@ -1099,13 +1101,17 @@
         state.recents = (state.recents || []).filter(function (r) { return r.id !== item.id; });
         state.recents.unshift({ id: item.id, title: item.subject + " · " + item.title, subject: item.subject });
       }
+      function bumpGeneralRecent() {
+        state.recents = (state.recents || []).filter(function (r) { return r.id !== "general"; });
+        state.recents.unshift({ id: "general", title: "通用对话", subject: "" });
+      }
       function seedRecents() {
         if (state.recents && state.recents.length) return;
         state.recents = todayItems().map(function (it) {
           return { id: it.id, title: it.subject + " · " + it.title, subject: it.subject };
         });
       }
-      /* 讲师会话列表：recents LRU ∪ threads 全部 key ∪ 今日题（未聊过也可选）。不截断。 */
+      /* 讲师会话列表：通用对话 ∪ recents LRU ∪ threads ∪ 今日题。不截断。 */
       function listTutorSessions() {
         var seen = {};
         var out = [];
@@ -1117,16 +1123,30 @@
           var rec = extra || {};
           out.push({
             id: id,
-            title: rec.title || (it ? ((it.subject || "") + " · " + (it.title || id)) : id),
+            title: rec.title || (id === "general" ? "通用对话" : (it ? ((it.subject || "") + " · " + (it.title || id)) : id)),
             subject: rec.subject || (it && it.subject) || ""
           });
         }
+        add("general", { title: "通用对话", subject: "" });
         (state.recents || []).forEach(function (r) { if (r && r.id) add(r.id, r); });
         Object.keys(state.threads || {}).forEach(function (id) { add(id); });
         todayItems().forEach(function (it) {
           add(it.id, { title: (it.subject || "") + " · " + (it.title || it.id), subject: it.subject });
         });
         return out;
+      }
+
+      function startBlankTutor() {
+        stopStream();
+        state.pending = false;
+        setSendEnabled(true);
+        state.mode = "tutor";
+        state.contextItemId = "general";
+        bumpGeneralRecent();
+        persist();
+        render();
+        composerInput.focus();
+        composerInput.placeholder = "问周卷成绩、学情或计划…（不绑题）";
       }
 
       function setSendEnabled(on) {
@@ -1142,6 +1162,7 @@
         var prev = state.mode;
         state.mode = mode;
         if (mode === "tutor") seedRecents();
+        if (mode === "tutor" && !state.contextItemId) state.contextItemId = "general";
         if (prev !== mode) flipDir = mode === "practice" ? 1 : -1;
         persist();
         render({ animate: prev !== mode });
@@ -1484,6 +1505,54 @@
         persist();
         render();
         composerInput.focus();
+        composerInput.placeholder = item ? "问这题卡住的步骤…" : "问周卷成绩、学情或计划…（不绑题）";
+      }
+
+      function reportPoorItem() {
+        var item = currentItem();
+        if (!item || state.pending) return;
+        if (!window.confirm("确认本题质量差？将隔离该题并尽量换同槽新题。")) return;
+        state.pending = true;
+        state.error = "";
+        render();
+        fetch(apiUrl("/api/v1/practice/report-poor"), {
+          method: "POST",
+          headers: apiHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({
+            learner: state.learner,
+            item: item.id,
+            push: item.pushId != null ? String(item.pushId) : (state.push || null),
+            reason: "user_report_poor"
+          })
+        }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+          .then(function (pack) {
+            state.pending = false;
+            var data = pack.body || {};
+            if (!data.ok) {
+              state.error = (data.error || "标记失败") + "";
+              render();
+              return;
+            }
+            if (data.replaced && data.item) {
+              ITEMS[state.index] = data.item;
+              if (data.item.pushId != null) state.push = String(data.item.pushId);
+              else if (data.pushId != null) state.push = String(data.pushId);
+              state.draft = "";
+              state.error = "";
+              state.lastResult = null;
+              ocrPayload = null;
+              state.ocrMsg = "已换题（原题已标 poor）";
+              setView("desk", { resetDraft: true, result: null, fromDeepLink: false });
+              return;
+            }
+            state.error = "已标记 poor；暂无同槽替补，请做下一题。";
+            goNext();
+          })
+          .catch(function () {
+            state.pending = false;
+            state.error = "标记请求失败，请稍后重试。";
+            render();
+          });
       }
 
       function tutorReply(item, userText) {
@@ -1524,9 +1593,12 @@
       function sendChat(text) {
         var trimmed = (text || "").trim();
         if (!trimmed || state.pending) return;
-        threadOf(state.contextItemId).push({ role: "user", text: trimmed });
+        var tid = state.contextItemId || "general";
+        threadOf(tid).push({ role: "user", text: trimmed });
         var item = contextItem();
+        var blank = !item || tid === "general";
         if (item) bumpRecent(item);
+        else bumpGeneralRecent();
         composerInput.value = "";
         state.pending = true;
         setSendEnabled(false);
@@ -1537,10 +1609,11 @@
           headers: apiHeaders({ "Content-Type": "application/json", "Accept": "text/event-stream" }),
           body: JSON.stringify({
             learner: state.learner,
-            item: item ? item.id : state.contextItemId,
-            push: item && item.pushId != null ? String(item.pushId) : state.push,
+            item: blank ? null : (item ? item.id : null),
+            push: blank ? null : (item && item.pushId != null ? String(item.pushId) : state.push),
             message: trimmed,
-            threadId: state.contextItemId || "general"
+            threadId: blank ? "general" : tid,
+            blank: blank
           })
         }).then(function (r) {
           var ct = (r.headers && r.headers.get && r.headers.get("content-type")) || "";
@@ -1742,17 +1815,23 @@
         headerEl.classList.toggle("is-collapsed", !!state.headerCollapsed);
         if (state.mode === "tutor") {
           var it = contextItem();
+          var isGeneral = !it || state.contextItemId === "general";
           var badge = state.tutorDetached === true
             ? '<span class="tutor-badge is-detached">脱机演示</span>'
             : '<span class="tutor-badge">已连接教学系统</span>';
           headerEl.innerHTML =
             badge +
             '<div class="context-chip" data-od-id="tutor-context">' +
-              '<span class="kicker">当前题目</span>' +
-              "<strong>" + esc(it ? it.subject + " · " + it.title : "未绑定题目") + "</strong>" +
-              '<span class="meta">' + esc(state.learner) + (it ? " · " + it.id : "") + "</span>" +
+              '<span class="kicker">' + (isGeneral ? "通用对话" : "当前题目") + "</span>" +
+              "<strong>" + esc(isGeneral ? "空白聊天（不绑题）" : (it.subject + " · " + it.title)) + "</strong>" +
+              '<span class="meta">' + esc(state.learner) + (isGeneral ? "" : (" · " + it.id)) + "</span>" +
             "</div>" +
-            '<div class="sub">' + esc(it ? it.kp : "可从练习台带入题干，或在左侧选择最近会话") + "</div>";
+            '<div class="sub">' + esc(isGeneral ? "可问周卷成绩、学情或计划；点上方「通用对话」或练习台「不懂」绑题" : it.kp) + "</div>" +
+            (isGeneral
+              ? ""
+              : '<button type="button" class="text-link" id="btn-blank-tutor" data-od-id="btn-blank-tutor" style="justify-self:end">空白聊天</button>');
+          var blankBtn = document.getElementById("btn-blank-tutor");
+          if (blankBtn) blankBtn.addEventListener("click", startBlankTutor);
           return;
         }
         var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
@@ -1980,7 +2059,10 @@
                   '<div class="answer-preview math-block" id="answer-preview" data-od-id="answer-preview" aria-live="polite"></div>' +
                 "</div>" +
                 err +
-                '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+                '<div class="row wrap" style="gap:12px">' +
+                  '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+                  '<button type="button" class="text-link is-warn" id="btn-report-poor" data-od-id="btn-report-poor">题质量差</button>' +
+                "</div>" +
               "</section>" +
             "</div>" +
           "</div>"
@@ -2017,7 +2099,10 @@
                 '<div class="meta">' + masteryTxt + "</div>" +
               "</div>" +
               '<div class="hint" data-od-id="your-answer"><strong>你的作答</strong><br />' + esc(r.submitted) + "</div>" +
-              '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+              '<div class="row wrap" style="gap:12px">' +
+                '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
+                '<button type="button" class="text-link is-warn" id="btn-report-poor" data-od-id="btn-report-poor">题质量差</button>' +
+              "</div>" +
             "</section>" +
             '<section class="card" data-od-id="explain-fold" style="padding:0">' +
               '<div class="fold' + (state.explainOpen ? " is-open" : "") + '">' +
@@ -2075,11 +2160,14 @@
       function renderChatList() {
         var msgs = threadOf(state.contextItemId);
         if (!msgs.length && !state.pending) {
+          var general = !state.contextItemId || state.contextItemId === "general";
           return (
             '<div class="empty" data-od-id="view-tutor-empty">' +
               '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg></div>' +
-              "<h1>问讲师</h1>" +
-              "<p>结合当前题目提问。讲师由导师团 agent 驱动（按需取数后作答），非演示。</p>" +
+              "<h1>" + (general ? "通用对话" : "问讲师") + "</h1>" +
+              "<p>" + (general
+                ? "不绑定当前题目。可问周卷成绩、学情、计划；需要讲某题时从练习台点「不懂，问讲师」。"
+                : "结合当前题目提问。讲师由导师团 agent 驱动（按需取数后作答），非演示。") + "</p>" +
             "</div>"
           );
         }
@@ -2103,10 +2191,11 @@
           return;
         }
         strip.innerHTML = recents.map(function (r) {
-          var active = r.id === state.contextItemId ? " is-active" : "";
-          var it = itemById(r.id);
-          var sub = it ? it.kp : (r.subject || "");
-          return '<button type="button" class="tutor-chip' + active + '" data-od-id="tchip-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
+          var active = r.id === state.contextItemId || (r.id === "general" && (!state.contextItemId || state.contextItemId === "general")) ? " is-active" : "";
+          var isGen = r.id === "general";
+          var it = isGen ? null : itemById(r.id);
+          var sub = isGen ? "不绑题" : (it ? it.kp : (r.subject || ""));
+          return '<button type="button" class="tutor-chip' + active + (isGen ? " is-general" : "") + '" data-od-id="tchip-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
             '<span class="tc-title">' + esc(r.title) + "</span>" +
             '<span class="tc-sub">' + esc(previewText(sub) || sub || "") + "</span>" +
           "</button>";
@@ -2114,6 +2203,12 @@
         strip.querySelectorAll("[data-thread-id]").forEach(function (btn) {
           btn.addEventListener("click", function () {
             state.contextItemId = btn.getAttribute("data-thread-id");
+            if (state.contextItemId === "general") {
+              bumpGeneralRecent();
+              composerInput.placeholder = "问周卷成绩、学情或计划…（不绑题）";
+            } else {
+              composerInput.placeholder = "问这题卡住的步骤…";
+            }
             persist();
             render();
           });
@@ -2247,6 +2342,8 @@
         });
         var ask = document.getElementById("btn-ask-tutor");
         if (ask) ask.addEventListener("click", askTutor);
+        var poor = document.getElementById("btn-report-poor");
+        if (poor) poor.addEventListener("click", reportPoorItem);
         var fold = document.getElementById("btn-fold");
         if (fold) fold.addEventListener("click", function () { state.explainOpen = !state.explainOpen; render(); });
         var doneHome = document.getElementById("btn-done-home");

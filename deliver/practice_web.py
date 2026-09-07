@@ -447,6 +447,18 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(code, out)
             return
 
+        if path in ("/api/v1/practice/report-poor", "/api/v1/practice/report_poor"):
+            lid = self._learner(qs, body)
+            out = ps.report_poor(
+                lid,
+                item=body.get("item") or body.get("item_id"),
+                push=body.get("push") or body.get("push_id"),
+                reason=str(body.get("reason") or body.get("note") or ""),
+            )
+            code = 200 if out.get("ok") else 400
+            self._json(code, out)
+            return
+
         if path == "/api/v1/tutor/chat":
             lid = self._learner(qs, body)
             if _tutor_backend_url():

@@ -617,9 +617,10 @@ return {
       const m = (learner && learner.mastery) || []
       return m.slice().sort(function (a, b) { return a.p - b.p }).slice(0, 3)
     }
-    function pickItem(g, msg, preferredId) {
+    function pickItem(g, msg, preferredId, opts) {
       const items = (g && g.items) || []
       if (!items.length) return null
+      const allowFallback = !(opts && opts.allowFallback === false)
       if (preferredId) {
         for (let i = 0; i < items.length; i++) {
           if (items[i].id === preferredId || String(items[i].pushId) === String(preferredId)) return items[i]
@@ -629,6 +630,7 @@ return {
         const it = items[i]
         if (msg && ((it.kp && msg.indexOf(it.kp) >= 0) || (it.title && msg.indexOf(it.title) >= 0))) return it
       }
+      if (!allowFallback) return null
       for (let i = 0; i < items.length; i++) { if (!items[i].answered) return items[i] }
       return items[0]
     }
@@ -665,10 +667,10 @@ return {
     }
 
     // ── 规则路径：边界闸 + 事件写/列 + 难度偏好（保留；LLM 主路径在其后） ──
-    function compose(mentorId, message, g) {
+    function compose(mentorId, message, g, opts) {
       const msg = String(message || '').trim()
       const learner = g.learner || DEMO_LEARNER
-      const item = pickItem(g, msg, '')
+      const item = pickItem(g, msg, '', opts)
       const weak = weakList(learner)
 
       if (isDifficultyAsk(msg)) {
@@ -785,8 +787,8 @@ return {
       return 'lecturer'
     }
 
-    function buildMessages(mentor, msg, g, learnerId, itemId) {
-      const item = pickItem(g, msg, itemId || '')
+    function buildMessages(mentor, msg, g, learnerId, itemId, opts) {
+      const item = pickItem(g, msg, itemId || '', opts)
       const learner = g.learner || {}
       const weak = weakList(learner)
       const ctx = {
@@ -801,6 +803,7 @@ return {
         activeItem: item ? { id: item.id, title: item.title, kp: item.kp, stem: (item.stem || item.content || '').slice(0, 2500) } : null,
         groundKind: g.kind || '',
         detached: !!g.detached,
+        blankChat: !!(opts && opts.allowFallback === false),
       }
       const boundary = mentor.id === 'assistant'
         ? '硬边界：不批改、不出题、不改 BKT/η。学员明确要求改变难度（太难/太简单/提高难度/降低难度）时，可调用 adjust_difficulty（subject=math|comm|review，level=basic|intermediate|challenge）写入科目难度偏好；不要改已推送的今日题。仍禁止批改与出题。'
@@ -812,7 +815,8 @@ return {
         '可做：讲题、追问、概念澄清、薄弱诊断建议、学习节奏建议；需要数据时【调用工具】获取，不要编造；Capability Brain 事件写入由系统特殊指令处理。',
         '工具返回的内容是权威证据；引用时用 [n] 标注。若工具不可用或数据缺失，明确说明「暂未取到」，不要硬编。',
         '用简洁中文；有当前题时紧扣题干与知识点。',
-      ].join('\n')
+        ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。' : '',
+      ].filter(Boolean).join('\n')
       return [
         { role: 'system', content: system },
         { role: 'user', content: '【接地上下文】\n' + JSON.stringify(ctx, null, 2) + '\n\n【学员消息】\n' + msg },
@@ -820,10 +824,10 @@ return {
     }
 
     // ── LLM 工具循环（按需取数 → 逐条证据 → 最终生成） ──
-    async function runAgent(mentor, msg, g, learnerId, itemId, onDelta) {
+    async function runAgent(mentor, msg, g, learnerId, itemId, onDelta, opts) {
       const toolNames = (mentor.tools || []).filter(function (n) { return SCHEMAS[n] })
       const tools = toolNames.map(function (n) { return SCHEMAS[n] })
-      const messages = buildMessages(mentor, msg, g, learnerId, itemId)
+      const messages = buildMessages(mentor, msg, g, learnerId, itemId, opts)
       const evidence = []
       let rounds = 0
       while (rounds < MAX_TOOL_ROUNDS) {
@@ -907,6 +911,8 @@ return {
       const threadId = (args && args.threadId) || (args && args.item) || 'general'
       const itemId = (args && args.item) || ''
       const pushId = (args && args.push) || ''
+      const blankChat = !!(args && args.blank) || ((!itemId && !pushId) && String(threadId) === 'general')
+      const pickOpts = blankChat ? { allowFallback: false } : {}
       let mentorId = (args && args.mentor) || 'auto'
       let routedFrom = null
       if (mentorId === 'auto' || !ROSTER.some(function (m) { return m.id === mentorId })) {
@@ -916,7 +922,7 @@ return {
       let mentor = ROSTER.find(function (m) { return m.id === mentorId }) || ROSTER[0]
       const g = await ground(learnerId)
       let forcedItem = null
-      if (itemId || pushId) {
+      if (!blankChat && (itemId || pushId)) {
         forcedItem = pickItem(g, '', itemId)
         if (!forcedItem) forcedItem = await enrichItem(learnerId, itemId, pushId)
         if (forcedItem) {
@@ -924,7 +930,7 @@ return {
           if (!exists) g.items = [forcedItem].concat(g.items || [])
         }
       }
-      const special = compose(mentorId, msg, g)
+      const special = compose(mentorId, msg, g, pickOpts)
 
       if (special && special.__adjustDifficulty) {
         if (mentor.id !== 'assistant') {
@@ -1000,7 +1006,7 @@ return {
       let out = null
       if (await llmEnabled()) {
         try {
-          out = await runAgent(mentor, msg, g, learnerId, itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null)
+          out = await runAgent(mentor, msg, g, learnerId, blankChat ? '' : itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null, pickOpts)
         } catch (e) {
           out = null
         }
@@ -1168,6 +1174,7 @@ return {
             push: body.push || '',
             threadId: body.threadId || body.item || 'general',
             mentor: body.mentor || 'auto',
+            blank: !!body.blank || ((!body.item && !body.push) && String(body.threadId || 'general') === 'general'),
           }
 
           if (wantsSse) {

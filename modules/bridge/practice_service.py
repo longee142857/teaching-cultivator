@@ -136,6 +136,11 @@ def agent_manifest() -> dict[str, Any]:
                 "backend": "deliver.simpletex",
             },
             "params": {"method": "GET", "path": "/api/v1/practice/params"},
+            "report_poor": {
+                "method": "POST",
+                "path": "/api/v1/practice/report-poor",
+                "note": "learner flags gate-passed poor item → quarantine + optional replace",
+            },
         },
         "tutor": {
             "chat": {
@@ -821,6 +826,118 @@ def get_item(
         out["grading"] = True
         out["pending"] = True
         out["result"] = _pending_grade_result(explain=dto.get("explain") or "")
+    return out
+
+
+def report_poor(
+    learner_id: str,
+    *,
+    item: str | int | None = None,
+    push: str | int | None = None,
+    reason: str = "",
+    store=None,
+) -> dict[str, Any]:
+    """学员标记「闸过但仍 poor」：写 fail 审判、隔离，并尽量同槽换题。"""
+    lid = (learner_id or "").strip()
+    if not lid:
+        return {"ok": False, "error": "missing learner"}
+    store = store or _store()
+    push_id = parse_push_id(push)
+    item_id = parse_item_id(item)
+    row = None
+    if push_id is not None:
+        row = store.get_push(push_id)
+    if row is None and item_id is not None:
+        it = store.get_item(item_id)
+        if it:
+            row = {
+                "push_id": None,
+                "item_id": item_id,
+                "subject": it.get("subject"),
+                "slot": it.get("subject") or "",
+                "day": _today(),
+                "from_bank": True,
+            }
+            recent = store.list_recent_pushes(lid, days=30)
+            for r in recent:
+                if int(r.get("item_id") or 0) == item_id:
+                    row = r
+                    break
+    if row is None:
+        return {"ok": False, "error": "item_not_found"}
+    try:
+        bad_id = int(row.get("item_id") or 0)
+    except (TypeError, ValueError):
+        bad_id = 0
+    if not bad_id:
+        return {"ok": False, "error": "item_not_found"}
+
+    note = (reason or "").strip() or "user_report_poor"
+    try:
+        verdict = store.apply_judge_verdict(
+            bad_id,
+            verdict="fail",
+            reasons=[note],
+            confidence=1.0,
+            details={"source": "learner", "learner_id": lid},
+        )
+    except ValueError as e:
+        return {"ok": False, "error": str(e)}
+    quarantined = False
+    if hasattr(store, "quarantine_item"):
+        try:
+            quarantined = bool(store.quarantine_item(bad_id))
+        except Exception:
+            quarantined = False
+
+    kind = (
+        (row.get("slot") or row.get("subject") or "")
+        .strip()
+        .lower()
+    ) or "math"
+    if kind not in ("math", "comm", "review"):
+        kind = "math"
+    exclude = {bad_id}
+    replacement = _pick_ready_for_kind(kind, lid, store=store, exclude_ids=exclude)
+    replaced = False
+    new_dto = None
+    new_push_id = row.get("push_id")
+    if replacement:
+        try:
+            new_iid = int(replacement.get("id") or 0)
+        except (TypeError, ValueError):
+            new_iid = 0
+        if new_iid:
+            if row.get("push_id") is not None and hasattr(store, "replace_push_item"):
+                try:
+                    store.replace_push_item(int(row["push_id"]), new_iid)
+                    new_push_id = int(row["push_id"])
+                    fresh = store.get_push(int(row["push_id"]))
+                    if fresh:
+                        new_dto = push_to_shell_item(fresh, backlog=False)
+                        replaced = True
+                except Exception as e:
+                    log.warning("replace_push_item failed: %s", e)
+            if not replaced:
+                bank_row = _bank_item_as_row(replacement, day=_today(), kind=kind)
+                new_dto = push_to_shell_item(bank_row, backlog=False)
+                new_dto["fromBank"] = True
+                new_push_id = None
+                replaced = True
+
+    out: dict[str, Any] = {
+        "ok": True,
+        "reported": True,
+        "itemId": bad_id,
+        "qualityTier": (verdict or {}).get("quality_tier") or "poor",
+        "quarantined": quarantined,
+        "replaced": replaced,
+        "reason": note,
+    }
+    if replaced and new_dto:
+        out["item"] = new_dto
+        if new_push_id is not None:
+            out["pushId"] = new_push_id
     return out
 
 

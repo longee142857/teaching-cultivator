@@ -6,6 +6,8 @@ const CSS = [
   '.mt-badge{font-size:11px;padding:2px 8px;border-radius:999px;background:#dcfce7;color:#166534}',
   '.mt-badge.is-detached{background:#fef3c7;color:#92400e}',
   '.mt-close{margin-left:auto;border:0;background:transparent;cursor:pointer;font-size:16px;color:#6b7280}',
+  '.mt-blank{border:0;background:transparent;color:#2563eb;cursor:pointer;font-size:12px;padding:0 4px;white-space:nowrap}',
+  '.mt-blank.is-on{color:#166534;font-weight:600}',
   '.mt-roster{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid rgba(0,0,0,.08)}',
   '.mt-chip{border:1px solid rgba(0,0,0,.18);background:transparent;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;color:#1f2937}',
   '.mt-chip.is-on{background:#2563eb;color:#fff;border-color:#2563eb}',
@@ -66,6 +68,12 @@ return {
       const [card, setCard] = React.useState(null)
       const [detached, setDetached] = React.useState(false)
       const [conn, setConn] = React.useState('…')
+      const [blank, setBlank] = React.useState(false)
+      const urlItem = (function () {
+        try {
+          return (new URLSearchParams(window.location.search || '').get('item') || '').trim()
+        } catch (e) { return '' }
+      })()
 
       React.useEffect(function () {
         host.call('mentor.roster').then(function (r) { setRoster(r || []) }).catch(function () {})
@@ -82,18 +90,21 @@ return {
         setPending(true)
         let item = null
         let push = null
-        try {
-          const q = new URLSearchParams(window.location.search || '')
-          item = q.get('item')
-          push = q.get('push')
-        } catch (e) {}
+        if (!blank) {
+          try {
+            const q = new URLSearchParams(window.location.search || '')
+            item = q.get('item')
+            push = q.get('push')
+          } catch (e) {}
+        }
         host.call('mentor.chat', {
           mentor: mentorId,
           learner: learner,
           message: text,
           item: item,
           push: push,
-          threadId: item || 'general',
+          threadId: blank ? 'general' : (item || 'general'),
+          blank: !!blank,
         })
           .then(function (res) {
             setMsgs(function (m) {
@@ -130,6 +141,18 @@ return {
 
       function pickM(id) { setMentor(id) }
 
+      function startBlank() {
+        setBlank(true)
+        setMsgs([])
+        setInput('')
+      }
+
+      function bindItemAgain() {
+        setBlank(false)
+        setMsgs([])
+        setInput('')
+      }
+
       function clearCard() {
         host.call('mentor.clearCard', { learner: learner }).then(setCard).catch(function () {})
       }
@@ -155,6 +178,17 @@ return {
       const header = React.createElement('div', { className: 'mt-head' },
         React.createElement('span', null, '🎓 导师团'),
         React.createElement('span', { className: 'mt-badge' + (detached ? ' is-detached' : '') }, conn),
+        blank
+          ? React.createElement('button', {
+              className: 'mt-blank is-on',
+              onClick: urlItem ? bindItemAgain : undefined,
+              title: urlItem ? '回到 URL 绑定题目' : '当前为通用对话',
+            }, urlItem ? '回到本题' : '通用对话')
+          : React.createElement('button', {
+              className: 'mt-blank',
+              onClick: startBlank,
+              title: '开启空白聊天，不绑定当前题目（适合问周卷/学情）',
+            }, '空白聊天'),
         React.createElement('button', { className: 'mt-close', onClick: function () { setOpen(false) }, title: '收起' }, '—'),
       )
 
@@ -201,7 +235,7 @@ return {
           value: input,
           onChange: function (e) { setInput(e.target.value) },
           onKeyDown: onKey,
-          placeholder: '问导师…（Enter 发送，Shift+Enter 换行）',
+          placeholder: blank ? '通用对话…（周卷成绩、学情等；Enter 发送）' : '问导师…（Enter 发送，Shift+Enter 换行）',
           rows: 2,
         }),
         React.createElement('button', { className: 'mt-send', onClick: send, disabled: pending }, '发送'),
