@@ -534,6 +534,17 @@
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 12px 12px 4px 12px; padding: 10px 12px; box-shadow: var(--shadow);
     }
+    .msg-actions {
+      display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 4px;
+    }
+    .msg-action {
+      appearance: none; border: 0; background: none; padding: 2px 0;
+      color: var(--muted); font-size: 11px; font-family: var(--font-mono);
+      letter-spacing: 0.02em; cursor: pointer; text-decoration: underline;
+      text-underline-offset: 2px; min-height: 0;
+    }
+    .msg-action:hover { color: var(--fg); }
+    .msg-action.is-ok { color: var(--ok); text-decoration: none; }
     .pending { font-size: 13px; color: var(--muted); }
     .stream-cursor {
       display: inline-block; width: 2px; height: 0.95em;
@@ -1681,6 +1692,8 @@
             stopStream();
             persist();
             setSendEnabled(true);
+            renderChat();
+            return;
           }
           patchLastMessage(msg);
         }, 32);
@@ -2251,7 +2264,75 @@
         );
       }
 
-      function msgHtml(msg, last) {
+      function copyText(text, btn) {
+        var raw = String(text == null ? "" : text);
+        if (!raw) return;
+        function markOk() {
+          if (!btn) return;
+          var old = btn.getAttribute("data-label") || btn.textContent;
+          btn.setAttribute("data-label", old);
+          btn.textContent = "已复制";
+          btn.classList.add("is-ok");
+          setTimeout(function () {
+            btn.textContent = btn.getAttribute("data-label") || "复制源码";
+            btn.classList.remove("is-ok");
+          }, 1400);
+        }
+        function fallback() {
+          var ta = document.createElement("textarea");
+          ta.value = raw;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); markOk(); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(raw).then(markOk).catch(fallback);
+        } else {
+          fallback();
+        }
+      }
+      function fillDraftFromTutor(text) {
+        var raw = String(text == null ? "" : text).trim();
+        if (!raw) return;
+        state.draft = raw;
+        state.error = "";
+        persist();
+        setMode("practice");
+        setView("desk", { resetDraft: false });
+        setTimeout(function () {
+          var input = document.getElementById("answer-input");
+          if (input) {
+            input.value = state.draft;
+            paintDraftPreview();
+            input.focus();
+          }
+        }, 0);
+      }
+      function bindMsgActions() {
+        root.querySelectorAll("[data-copy-msg]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var idx = parseInt(btn.getAttribute("data-copy-msg"), 10);
+            var msgs = threadOf(state.contextItemId);
+            var m = msgs[idx];
+            if (!m) return;
+            copyText(m.text || "", btn);
+          });
+        });
+        root.querySelectorAll("[data-fill-msg]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var idx = parseInt(btn.getAttribute("data-fill-msg"), 10);
+            var msgs = threadOf(state.contextItemId);
+            var m = msgs[idx];
+            if (!m) return;
+            fillDraftFromTutor(m.text || "");
+          });
+        });
+      }
+      function msgHtml(msg, last, idx) {
         var who = msg.role === "user" ? "你" : "讲师";
         var cursor = msg.streaming ? '<span class="stream-cursor"></span>' : "";
         var cites = "";
@@ -2262,11 +2343,20 @@
           });
           cites = '<div class="tutor-cites">' + items.join("") + "</div>";
         }
+        var actions = "";
+        if (msg.role !== "user" && !msg.streaming) {
+          actions =
+            '<div class="msg-actions">' +
+              '<button type="button" class="msg-action" data-copy-msg="' + idx + '" data-od-id="msg-copy-' + idx + '" title="复制 Markdown / LaTeX 原文">复制源码</button>' +
+              '<button type="button" class="msg-action" data-fill-msg="' + idx + '" data-od-id="msg-fill-' + idx + '" title="把这段源码填回练习台原文框">填入原文</button>' +
+            "</div>";
+        }
         return (
           '<article class="msg' + (msg.role === "user" ? " is-user" : "") + '"' + (last ? ' data-od-id="last-msg"' : "") + ">" +
             '<div class="msg-who">' + who + "</div>" +
             '<div class="msg-body">' + renderMathMarkdown(msg.text) + cursor + "</div>" +
             cites +
+            actions +
           "</article>"
         );
       }
@@ -2285,7 +2375,7 @@
           );
         }
         var html = '<div class="thread" data-od-id="tutor-thread" aria-live="polite">';
-        msgs.forEach(function (m, i) { html += msgHtml(m, i === msgs.length - 1); });
+        msgs.forEach(function (m, i) { html += msgHtml(m, i === msgs.length - 1, i); });
         if (state.pending) html += '<div class="pending" data-od-id="tutor-pending">讲师正在作答…</div>';
         return html + "</div>";
       }
@@ -2293,6 +2383,13 @@
         var el = root.querySelector('[data-od-id="last-msg"] .msg-body');
         if (el) el.innerHTML = renderMathMarkdown(msg.text) + (msg.streaming ? '<span class="stream-cursor"></span>' : "");
         else renderChat();
+      }
+      function renderChat() {
+        renderHeader();
+        renderRecents();
+        root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
+        bindMsgActions();
+        root.scrollTop = root.scrollHeight;
       }
       function renderTutorStrip() {
         var strip = document.getElementById("tutor-strip");
@@ -2367,12 +2464,6 @@
             render();
           });
         });
-      }
-      function renderChat() {
-        renderHeader();
-        renderRecents();
-        root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
-        root.scrollTop = root.scrollHeight;
       }
 
       function renderPracticeDock() {
