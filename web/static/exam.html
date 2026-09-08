@@ -34,6 +34,42 @@
     button:disabled { opacity: 0.55; cursor: not-allowed; }
     .report { margin-top: 20px; padding: 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); white-space: pre-wrap; }
     .hint { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+    .ocr-open {
+      appearance: none; border: 0; background: none; color: var(--accent);
+      font: inherit; font-size: 0.88rem; font-weight: 600; padding: 6px 0;
+      margin-top: 8px; cursor: pointer; text-decoration: underline;
+      text-underline-offset: 2px; width: auto;
+    }
+    .ocr-sheet {
+      position: fixed; inset: 0; z-index: 40;
+      display: none; align-items: flex-end; justify-content: center;
+      background: rgba(28, 26, 22, 0.4);
+      padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+    .ocr-sheet.is-open { display: flex; }
+    .ocr-card {
+      width: min(560px, 100%); max-height: min(82vh, 680px);
+      overflow: auto; background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    }
+    .ocr-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .ocr-modes { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+    .ocr-mode {
+      appearance: none; border: 1px solid var(--line); background: #fff;
+      color: var(--ink); border-radius: 999px; padding: 6px 12px;
+      font: inherit; font-size: 0.85rem; cursor: pointer; width: auto;
+    }
+    .ocr-mode.is-on { border-color: var(--accent); background: #e7f5ef; color: var(--accent); font-weight: 600; }
+    .ocr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+    .ocr-actions button { width: 100%; border-radius: 10px; padding: 10px 12px; }
+    .ocr-actions .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .ocr-preview { display: grid; gap: 8px; margin-top: 8px; }
+    .ocr-preview img { max-width: 100%; max-height: 180px; border-radius: 8px; border: 1px solid var(--line); object-fit: contain; background: #fff; }
+    .ocr-msg { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
+    .ocr-msg.err { color: var(--danger); }
+    .ocr-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .ocr-foot button { width: 100%; border-radius: 10px; padding: 10px 12px; }
+    .ocr-foot .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
   </style>
 </head>
 <body>
@@ -59,9 +95,33 @@
     <div id="questions"></div>
     <div class="actions" id="actions" hidden>
       <button type="button" id="submitBtn">提交答卷</button>
-      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。也可继续用钉钉私聊发 md /「交卷」。</p>
+      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写可用每题旁「手写识别」弹窗。也可继续用钉钉私聊发 md /「交卷」。</p>
     </div>
     <div id="report" class="report" hidden></div>
+  </div>
+
+  <div class="ocr-sheet" id="ocrSheet" aria-hidden="true">
+    <div class="ocr-card" role="dialog" aria-modal="true" aria-labelledby="ocrTitle">
+      <h3 id="ocrTitle">手写识别</h3>
+      <p class="hint" style="margin:0" id="ocrTargetHint">识别结果将填入当前题目作答框（可再改）。</p>
+      <div class="ocr-modes">
+        <button type="button" class="ocr-mode is-on" data-ocr-mode="document">整页识别</button>
+        <button type="button" class="ocr-mode" data-ocr-mode="formula">公式加强</button>
+      </div>
+      <input type="file" id="ocrFile" accept="image/*" hidden />
+      <div class="ocr-actions">
+        <button type="button" class="ghost" id="ocrPick">选择手写图片</button>
+        <button type="button" id="ocrRun" disabled>识别</button>
+      </div>
+      <div class="ocr-preview" id="ocrPreview" hidden>
+        <img id="ocrPreviewImg" alt="手写预览" />
+      </div>
+      <p class="ocr-msg" id="ocrMsg"></p>
+      <div class="ocr-foot">
+        <button type="button" class="ghost" id="ocrClose">关闭</button>
+        <button type="button" id="ocrApply" disabled>填入本题</button>
+      </div>
+    </div>
   </div>
   <script>
 (function () {
@@ -205,6 +265,150 @@
     return html;
   }
 
+  let ocrTargetI = null;
+  let ocrMode = "document";
+  let ocrPayload = null;
+  let ocrText = "";
+  let ocrBusy = false;
+  const ocrSheet = document.getElementById("ocrSheet");
+  const ocrMsg = document.getElementById("ocrMsg");
+  const ocrFile = document.getElementById("ocrFile");
+  const ocrPick = document.getElementById("ocrPick");
+  const ocrRun = document.getElementById("ocrRun");
+  const ocrApply = document.getElementById("ocrApply");
+  const ocrClose = document.getElementById("ocrClose");
+  const ocrPreview = document.getElementById("ocrPreview");
+  const ocrPreviewImg = document.getElementById("ocrPreviewImg");
+  const ocrTargetHint = document.getElementById("ocrTargetHint");
+
+  function setOcrMsg(text, isErr) {
+    ocrMsg.textContent = text || "";
+    ocrMsg.className = "ocr-msg" + (isErr ? " err" : "");
+  }
+  function syncOcrButtons() {
+    ocrRun.disabled = !(ocrPayload && ocrPayload.dataUrl) || ocrBusy;
+    ocrApply.disabled = !String(ocrText || "").trim() || ocrBusy;
+    ocrPick.disabled = ocrBusy;
+  }
+  function openOcrSheet(qi) {
+    ocrTargetI = String(qi);
+    ocrTargetHint.textContent = "识别结果将填入第 " + ocrTargetI + " 题作答框（可再改）。";
+    ocrSheet.classList.add("is-open");
+    ocrSheet.setAttribute("aria-hidden", "false");
+    syncOcrButtons();
+  }
+  function closeOcrSheet() {
+    ocrSheet.classList.remove("is-open");
+    ocrSheet.setAttribute("aria-hidden", "true");
+  }
+  function fileToOcrPayload(file, done) {
+    if (!file) { done(new Error("empty")); return; }
+    const reader = new FileReader();
+    reader.onload = function () {
+      const dataUrl = String(reader.result || "");
+      done(null, { dataUrl: dataUrl, filename: file.name || "answer.jpg", name: file.name || "手写图片" });
+    };
+    reader.onerror = function () { done(new Error("read_failed")); };
+    reader.readAsDataURL(file);
+  }
+  function ocrErrorText(code) {
+    const map = {
+      empty_image: "请先选择手写图片。",
+      image_too_large: "图片过大，请换一张更清晰的近拍。",
+      payload_too_large: "图片过大，请换一张。",
+      simpletex_not_configured: "手写识别未配置，请改用手打。",
+      ocr_disabled: "手写识别已关闭，请改用手打。",
+      empty_ocr: "未识别出文字，请换一张更清晰、光线更好的图。",
+    };
+    const c = String(code || "");
+    if (map[c]) return map[c];
+    if (c.indexOf("http_") === 0) return "识别服务暂时不可用（" + c + "）。";
+    return c ? ("识别失败：" + c) : "识别失败，请稍后重试。";
+  }
+
+  ocrSheet.addEventListener("click", function (e) {
+    if (e.target === ocrSheet) closeOcrSheet();
+  });
+  ocrClose.addEventListener("click", closeOcrSheet);
+  document.querySelectorAll("[data-ocr-mode]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (ocrBusy) return;
+      ocrMode = btn.getAttribute("data-ocr-mode") === "formula" ? "formula" : "document";
+      document.querySelectorAll("[data-ocr-mode]").forEach(function (b) {
+        b.classList.toggle("is-on", b.getAttribute("data-ocr-mode") === ocrMode);
+      });
+    });
+  });
+  ocrPick.addEventListener("click", function () { ocrFile.click(); });
+  ocrFile.addEventListener("change", function () {
+    const file = ocrFile.files && ocrFile.files[0];
+    ocrFile.value = "";
+    if (!file) return;
+    setOcrMsg("正在读取图片…", false);
+    fileToOcrPayload(file, function (err, payload) {
+      if (err || !payload) {
+        ocrPayload = null;
+        ocrPreview.hidden = true;
+        setOcrMsg("读取图片失败。", true);
+        syncOcrButtons();
+        return;
+      }
+      ocrPayload = payload;
+      ocrText = "";
+      ocrPreviewImg.src = payload.dataUrl;
+      ocrPreview.hidden = false;
+      setOcrMsg("已选图，点「识别」。", false);
+      syncOcrButtons();
+    });
+  });
+  ocrRun.addEventListener("click", function () {
+    if (!ocrPayload || !ocrPayload.dataUrl || ocrBusy) return;
+    ocrBusy = true;
+    syncOcrButtons();
+    setOcrMsg(ocrMode === "formula" ? "正在用标准公式模型识别…" : "正在整页识别…", false);
+    fetch("/e/" + TOKEN + "/ocr", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image: ocrPayload.dataUrl,
+        filename: ocrPayload.filename || "answer.jpg",
+        mode: ocrMode,
+      }),
+    }).then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (pack) {
+        ocrBusy = false;
+        const data = pack.body || {};
+        if (!data.ok) {
+          setOcrMsg(ocrErrorText(data.error), true);
+          syncOcrButtons();
+          return;
+        }
+        ocrText = String(data.text || "").trim();
+        const conf = (typeof data.conf === "number") ? (" · 置信 " + Math.round(data.conf * 100) + "%") : "";
+        setOcrMsg(ocrText ? ("识别完成" + conf + "。点「填入本题」写入作答框。") : ocrErrorText("empty_ocr"), !ocrText);
+        syncOcrButtons();
+      })
+      .catch(function (e) {
+        ocrBusy = false;
+        setOcrMsg("网络错误：" + (e && e.message ? e.message : "ocr_failed"), true);
+        syncOcrButtons();
+      });
+  });
+  ocrApply.addEventListener("click", function () {
+    const text = String(ocrText || "").trim();
+    if (!text || ocrTargetI == null) return;
+    const ta = qRoot.querySelector('textarea[data-i="' + ocrTargetI + '"]');
+    if (!ta) {
+      setOcrMsg("找不到第 " + ocrTargetI + " 题作答框。", true);
+      return;
+    }
+    const prev = String(ta.value || "").trim();
+    ta.value = prev ? (prev + "\n\n" + text) : text;
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+    closeOcrSheet();
+    try { ta.focus(); } catch (e) {}
+  });
+
   async function loadPaper() {
     const r = await fetch("/e/" + TOKEN + "/data", { cache: "no-store" });
     const data = await r.json();
@@ -239,7 +443,12 @@
       ta.dataset.i = String(it.i);
       ta.placeholder = I18N.placeholder;
       lab.appendChild(ta);
-      card.appendChild(h); card.appendChild(body); card.appendChild(lab);
+      const ocrBtn = document.createElement("button");
+      ocrBtn.type = "button";
+      ocrBtn.className = "ocr-open";
+      ocrBtn.textContent = "手写识别";
+      ocrBtn.addEventListener("click", function () { openOcrSheet(it.i); });
+      card.appendChild(h); card.appendChild(body); card.appendChild(lab); card.appendChild(ocrBtn);
       qRoot.appendChild(card);
     });
   }

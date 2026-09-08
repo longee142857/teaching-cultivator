@@ -335,6 +335,8 @@ def test_empty_day_and_capability(tmp_db: str):
     exam_html = (ROOT / "web/static/exam.html").read_text(encoding="utf-8")
     check('maxlength="24"' in exam_html, "exam uid maxlength allows 20-digit")
     check("[0-9]{1,24}" in exam_html, "exam uid regex allows 20-digit")
+    check("ocrSheet" in exam_html and "手写识别" in exam_html, "exam shared OCR modal")
+    check("/e/\" + TOKEN + \"/ocr" in exam_html or "/ocr" in exam_html, "exam ocr posts to token route")
 
 
 def _llm_ok(_system, _user, task_type="grade", *_a, **_k):

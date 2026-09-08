@@ -192,6 +192,28 @@ def test_http_deny_and_data(tmp_bank: str):
         zone = "\u4f5c\u7b54\u533a"
         check("### " + zone + " 1" in called.get("md", ""), "submit assembled md")
         check(called.get("paper_id") == pid, "submit paper_id")
+
+        from modules.bridge import practice_service as ps
+
+        def _fake_ocr(*, image="", filename="", mode=""):
+            called["ocr_mode"] = mode
+            if not image:
+                return {"ok": False, "error": "empty_image", "text": ""}
+            return {"ok": True, "text": "x=1", "conf": 0.9, "mode": mode or "document"}
+
+        ps.practice_ocr = _fake_ocr
+        status, body = post(
+            f"/e/{tok}/ocr",
+            json.dumps({"image": "data:image/png;base64,aaa", "mode": "formula"}).encode(),
+        )
+        ocr = json.loads(body.decode())
+        check(status == 200 and ocr.get("ok") and ocr.get("text") == "x=1", "ocr ok")
+        check(called.get("ocr_mode") == "formula", "ocr mode passed")
+        status, body = post(f"/e/{tok}/ocr", json.dumps({"image": ""}).encode())
+        ocr = json.loads(body.decode())
+        check(status == 400 and ocr.get("error") == "empty_image", "ocr empty_image")
+        html = open(os.path.join(ew.static_dir(), "exam.html"), encoding="utf-8").read()
+        check("ocrSheet" in html and "手写识别" in html, "exam html shared OCR modal")
     finally:
         httpd.shutdown()
 

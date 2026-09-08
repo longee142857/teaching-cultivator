@@ -5,6 +5,7 @@ Routes (nginx TLS reverse-proxy to public):
   GET  /e/{token}          -> HTML shell
   GET  /e/{token}/data     -> paper JSON (parsed from public md; never keys)
   POST /e/{token}/submit   -> assemble answer md -> submit_answer_md
+  POST /e/{token}/ocr      -> handwriting OCR (SimpleTex via practice_service)
   GET  /health             -> healthcheck
 
 Token: random hex stored in data/exam_bank/tokens.json; lazy expiry purge.
@@ -401,8 +402,15 @@ class ExamHandler(BaseHTTPRequestHandler):
             return
         self.wfile.write(data)
 
-    def _read_json(self) -> dict:
+    def _read_json(self, max_bytes: int = 2_000_000) -> dict:
         n = int(self.headers.get("Content-Length") or 0)
+        if n > int(max_bytes):
+            # drain a bit then refuse
+            try:
+                self.rfile.read(min(n, int(max_bytes) + 1))
+            except Exception:
+                pass
+            return {"__too_large__": True}
         raw = self.rfile.read(n) if n else b"{}"
         try:
             data = json.loads(raw.decode("utf-8"))
@@ -550,6 +558,38 @@ class ExamHandler(BaseHTTPRequestHandler):
                 return
             save_draft(meta["paper_id"], uid, answers)
             self._json(200, {"ok": True})
+            return
+
+        if action == "ocr":
+            meta = resolve_token(token)
+            if not meta:
+                self._json(404, {"ok": False, "error": "invalid or expired token"})
+                return
+            data = self._read_json(max_bytes=4_000_000)
+            if data.get("__too_large__"):
+                self._json(400, {"ok": False, "error": "payload_too_large", "text": ""})
+                return
+            try:
+                from modules.bridge import practice_service as ps
+
+                out = ps.practice_ocr(
+                    image=str(data.get("image") or data.get("data_url") or ""),
+                    filename=str(data.get("filename") or data.get("name") or ""),
+                    mode=str(data.get("mode") or ""),
+                )
+            except Exception as e:
+                self._json(502, {"ok": False, "error": "ocr_failed", "detail": str(e)[:200], "text": ""})
+                return
+            err = str(out.get("error") or "")
+            if out.get("ok"):
+                code = 200
+            elif err == "simpletex_not_configured":
+                code = 501
+            elif err in ("empty_image", "image_too_large", "payload_too_large"):
+                code = 400
+            else:
+                code = 502
+            self._json(code, out)
             return
 
         if action != "submit":
