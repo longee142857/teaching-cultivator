@@ -545,6 +545,28 @@
     }
     .msg-action:hover { color: var(--fg); }
     .msg-action.is-ok { color: var(--ok); text-decoration: none; }
+    .source-sheet {
+      position: fixed; inset: 0; z-index: 80;
+      display: flex; align-items: flex-end; justify-content: center;
+      background: rgba(43, 33, 24, 0.36);
+      padding: 12px 12px calc(12px + var(--safe-b));
+    }
+    .source-sheet[hidden] { display: none !important; }
+    .source-card {
+      width: min(720px, 100%); max-height: min(78vh, 640px);
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: var(--shadow); padding: 12px;
+    }
+    .source-card h3 { margin: 0; font-size: 14px; font-weight: 600; }
+    .source-card textarea {
+      flex: 1; min-height: 180px; width: 100%; resize: vertical;
+      font-family: var(--font-mono); font-size: 12px; line-height: 1.5;
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px; background: var(--bg); color: var(--fg);
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .source-card .btn-row { margin-top: 0; }
     .pending { font-size: 13px; color: var(--muted); }
     .stream-cursor {
       display: inline-block; width: 2px; height: 0.95em;
@@ -903,6 +925,22 @@
         讲师
       </button>
     </nav>
+  </div>
+
+  <div class="source-sheet" id="source-sheet" hidden data-od-id="source-sheet" role="dialog" aria-modal="true" aria-labelledby="source-sheet-title">
+    <div class="source-card">
+      <h3 id="source-sheet-title">讲师回复源码</h3>
+      <p class="hint" style="margin:0">钉钉等内置浏览器常拦剪贴板。可长按下方文本全选复制，或点「复制到剪贴板」。</p>
+      <textarea id="source-sheet-text" readonly rows="12" data-od-id="source-sheet-text"></textarea>
+      <div class="btn-row two">
+        <button type="button" class="btn ghost" id="source-sheet-select" data-od-id="source-sheet-select">全选</button>
+        <button type="button" class="btn primary" id="source-sheet-copy" data-od-id="source-sheet-copy">复制到剪贴板</button>
+      </div>
+      <div class="btn-row two">
+        <button type="button" class="btn ghost" id="source-sheet-fill" data-od-id="source-sheet-fill">填入原文</button>
+        <button type="button" class="btn ghost" id="source-sheet-close" data-od-id="source-sheet-close">关闭</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -2266,7 +2304,7 @@
 
       function copyText(text, btn) {
         var raw = String(text == null ? "" : text);
-        if (!raw) return;
+        if (!raw) return Promise.resolve(false);
         function markOk() {
           if (!btn) return;
           var old = btn.getAttribute("data-label") || btn.textContent;
@@ -2278,26 +2316,57 @@
             btn.classList.remove("is-ok");
           }, 1400);
         }
-        function fallback() {
+        function tryExec() {
           var ta = document.createElement("textarea");
           ta.value = raw;
           ta.setAttribute("readonly", "");
-          ta.style.position = "fixed";
-          ta.style.left = "-9999px";
+          ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0.01;padding:0;border:0;";
           document.body.appendChild(ta);
+          ta.focus();
           ta.select();
-          try { document.execCommand("copy"); markOk(); } catch (e) {}
+          ta.setSelectionRange(0, raw.length);
+          var ok = false;
+          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
           document.body.removeChild(ta);
+          return ok;
         }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(raw).then(markOk).catch(fallback);
-        } else {
-          fallback();
+        if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+          return navigator.clipboard.writeText(raw).then(function () {
+            markOk();
+            return true;
+          }).catch(function () {
+            if (tryExec()) { markOk(); return true; }
+            return false;
+          });
         }
+        if (tryExec()) { markOk(); return Promise.resolve(true); }
+        return Promise.resolve(false);
+      }
+      function openSourceSheet(text) {
+        var sheet = document.getElementById("source-sheet");
+        var ta = document.getElementById("source-sheet-text");
+        if (!sheet || !ta) return;
+        ta.value = String(text == null ? "" : text);
+        sheet.hidden = false;
+        setTimeout(function () {
+          ta.focus();
+          ta.select();
+          try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
+        }, 30);
+      }
+      function closeSourceSheet() {
+        var sheet = document.getElementById("source-sheet");
+        if (sheet) sheet.hidden = true;
+      }
+      function msgSourceAt(idx) {
+        var msgs = threadOf(state.contextItemId);
+        var m = msgs[idx];
+        return m ? String(m.text || "") : "";
       }
       function fillDraftFromTutor(text) {
         var raw = String(text == null ? "" : text).trim();
         if (!raw) return;
+        closeSourceSheet();
         state.draft = raw;
         state.error = "";
         persist();
@@ -2314,22 +2383,55 @@
       }
       function bindMsgActions() {
         root.querySelectorAll("[data-copy-msg]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
+          btn.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
             var idx = parseInt(btn.getAttribute("data-copy-msg"), 10);
-            var msgs = threadOf(state.contextItemId);
-            var m = msgs[idx];
-            if (!m) return;
-            copyText(m.text || "", btn);
+            var raw = msgSourceAt(idx);
+            if (!raw) return;
+            // 钉钉 WebView 常拦 clipboard：先弹出可选中面板，再尝试静默复制
+            openSourceSheet(raw);
+            copyText(raw, btn);
           });
         });
         root.querySelectorAll("[data-fill-msg]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
+          btn.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
             var idx = parseInt(btn.getAttribute("data-fill-msg"), 10);
-            var msgs = threadOf(state.contextItemId);
-            var m = msgs[idx];
-            if (!m) return;
-            fillDraftFromTutor(m.text || "");
+            fillDraftFromTutor(msgSourceAt(idx));
           });
+        });
+      }
+      function bindSourceSheet() {
+        var sheet = document.getElementById("source-sheet");
+        var ta = document.getElementById("source-sheet-text");
+        var btnSel = document.getElementById("source-sheet-select");
+        var btnCopy = document.getElementById("source-sheet-copy");
+        var btnFill = document.getElementById("source-sheet-fill");
+        var btnClose = document.getElementById("source-sheet-close");
+        if (!sheet) return;
+        sheet.addEventListener("click", function (ev) {
+          if (ev.target === sheet) closeSourceSheet();
+        });
+        if (btnClose) btnClose.addEventListener("click", closeSourceSheet);
+        if (btnSel && ta) btnSel.addEventListener("click", function () {
+          ta.focus();
+          ta.select();
+          try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
+        });
+        if (btnCopy && ta) btnCopy.addEventListener("click", function () {
+          copyText(ta.value, btnCopy).then(function (ok) {
+            if (!ok) {
+              ta.focus();
+              ta.select();
+              btnCopy.textContent = "请长按全选复制";
+              setTimeout(function () { btnCopy.textContent = "复制到剪贴板"; }, 1800);
+            }
+          });
+        });
+        if (btnFill && ta) btnFill.addEventListener("click", function () {
+          fillDraftFromTutor(ta.value);
         });
       }
       function msgHtml(msg, last, idx) {
