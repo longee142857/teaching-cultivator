@@ -239,11 +239,12 @@
       font-size: 13px; letter-spacing: 0.02em; text-align: left; width: auto;
     }
     .text-link:hover { background: var(--hover); color: var(--fg); }
+    .text-link:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: none; }
 
     .tab-btn:focus-visible, .nav-btn:focus-visible, .btn:focus-visible,
     .text-link:focus-visible, .slot-row:focus-visible, .backlog-item:focus-visible,
     .fold-toggle:focus-visible, textarea:focus-visible, .recent-btn:focus-visible,
-    .rail-toggle:focus-visible {
+    .rail-toggle:focus-visible, .recents-toggle:focus-visible {
       outline: 2px solid var(--accent); outline-offset: 2px;
     }
 
@@ -1415,7 +1416,7 @@
             state.draft = String(data.text).trim();
             state.error = "";
             var conf = (typeof data.conf === "number") ? (" · 置信 " + Math.round(data.conf * 100) + "%") : "";
-            state.ocrMsg = "识别完成" + conf + "。请对照下方预览与手写，改原文后提交。";
+            state.ocrMsg = "识别完成" + conf + "。可先「发给老师讨论」，确认后再提交。";
             render();
           })
           .catch(function (e) {
@@ -1567,6 +1568,39 @@
         render();
         composerInput.focus();
         composerInput.placeholder = item ? "问这题卡住的步骤…" : "问周卷成绩、学情或计划…（不绑题）";
+      }
+
+      function sendDraftToTutor() {
+        var input = document.getElementById("answer-input");
+        if (input) state.draft = input.value;
+        var draft = String(state.draft || "").trim();
+        if (!draft) {
+          state.error = "请先识别手写或填写原文，再发给老师讨论。";
+          render();
+          return;
+        }
+        if (state.pending || state.ocrBusy) return;
+        var item = currentItem();
+        stopStream();
+        state.pending = false;
+        state.error = "";
+        setSendEnabled(true);
+        state.mode = "tutor";
+        seedRecents();
+        if (item) {
+          state.contextItemId = item.id;
+          bumpRecent(item);
+        } else {
+          state.contextItemId = "general";
+          bumpGeneralRecent();
+        }
+        persist();
+        render();
+        var clipped = draft.length > 6000 ? (draft.slice(0, 6000) + "\n…（已截断）") : draft;
+        var msg =
+          "我把手写识别/整理成了下面这份草稿（还没点提交批改）。请先帮我看识别和推导有没有问题；我们讨论完我再回练习台提交。\n\n" +
+          "【草稿】\n" + clipped;
+        setTimeout(function () { sendChat(msg); }, 0);
       }
 
       function reportPoorItem() {
@@ -2135,9 +2169,13 @@
                 "</div>" +
                 err +
                 '<div class="row wrap" style="gap:12px">' +
+                  '<button type="button" class="text-link" id="btn-send-tutor" data-od-id="btn-send-tutor"' +
+                    (state.pending || state.ocrBusy ? " disabled" : "") +
+                    ' title="把当前识别/原文发给讲师讨论，确认后再回练习台提交">发给老师讨论</button>' +
                   '<button type="button" class="text-link" id="btn-ask-tutor" data-od-id="btn-ask-tutor">不懂，问讲师</button>' +
                   '<button type="button" class="text-link is-warn" id="btn-report-poor" data-od-id="btn-report-poor">题质量差</button>' +
                 "</div>" +
+                '<p class="hint" style="margin:0" data-od-id="send-tutor-hint">识别后可先「发给老师讨论」，确认草稿无误再点下方「提交」批改。</p>' +
               "</section>" +
             "</div>" +
           "</div>"
@@ -2436,6 +2474,8 @@
         });
         var ask = document.getElementById("btn-ask-tutor");
         if (ask) ask.addEventListener("click", askTutor);
+        var sendTutor = document.getElementById("btn-send-tutor");
+        if (sendTutor) sendTutor.addEventListener("click", sendDraftToTutor);
         var poor = document.getElementById("btn-report-poor");
         if (poor) poor.addEventListener("click", reportPoorItem);
         var fold = document.getElementById("btn-fold");
@@ -2681,6 +2721,7 @@
           state.push = saved.push || null;
           state.lastResult = saved.lastResult || null;
           if (saved.headerCollapsed !== undefined) state.headerCollapsed = !!saved.headerCollapsed;
+          if (saved.recentsCollapsed !== undefined) state.recentsCollapsed = !!saved.recentsCollapsed;
           setView(saved.view);
           return;
         }
