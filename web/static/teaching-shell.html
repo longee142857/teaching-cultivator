@@ -1596,9 +1596,9 @@
         }
         persist();
         render();
-        var clipped = draft.length > 6000 ? (draft.slice(0, 6000) + "\n…（已截断）") : draft;
+        var clipped = draft.length > 3500 ? (draft.slice(0, 3500) + "\n…（已截断，完整稿仍在练习台原文框）") : draft;
         var msg =
-          "我把手写识别/整理成了下面这份草稿（还没点提交批改）。请先帮我看识别和推导有没有问题；我们讨论完我再回练习台提交。\n\n" +
+          "我把手写识别/整理成了下面这份草稿（尚未正式交卷）。请帮我核对识别是否准确、推导有没有明显问题；讨论清楚后我再回练习台点提交。\n\n" +
           "【草稿】\n" + clipped;
         setTimeout(function () { sendChat(msg); }, 0);
       }

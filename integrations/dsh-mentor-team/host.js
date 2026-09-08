@@ -676,7 +676,9 @@ return {
       if (isDifficultyAsk(msg)) {
         return { __adjustDifficulty: true, message: msg }
       }
-      if (/批改|判分|对错|grade|判题|出题|命题|generate|变式|新题|再出一题/.test(msg)) {
+      // 「发给老师讨论」会带【草稿】；文案里可能出现「批改/提交」字样，不能误拦成硬闸
+      const isDraftReview = /【草稿】|手写识别|识别\/整理成了|帮我看识别|帮我核对识别|草稿讨论/.test(msg)
+      if (!isDraftReview && /批改|判分|对错|grade|判题|出题|命题|generate|变式|新题|再出一题/.test(msg)) {
         return {
           __ruleOnly: true,
           reply: '这块由教学运行时负责：批改请到练习台提交作答（教学系统会批改并回写 BKT/η）；命题/变式由教学系统的定时或人工确认流程完成。我这边只做讲解、诊断与规划建议，不直接批改、不出题。\n\n例外：Capability Brain 的「事件」可由导师团写入（说「写入事件：考研专业课通过」）。',
@@ -807,7 +809,7 @@ return {
       }
       const boundary = mentor.id === 'assistant'
         ? '硬边界：不批改、不出题、不改 BKT/η。学员明确要求改变难度（太难/太简单/提高难度/降低难度）时，可调用 adjust_difficulty（subject=math|comm|review，level=basic|intermediate|challenge）写入科目难度偏好；不要改已推送的今日题。仍禁止批改与出题。'
-        : '硬边界：不批改、不出题、不改 BKT/η、不改难度；批改与命题由练习台/教学运行时负责。讲师只读讲解。'
+        '硬边界：不批改、不出题、不改 BKT/η、不改难度；批改与命题由练习台/教学运行时负责。讲师只读讲解。若学员发来【草稿】手写识别稿，请核对识别与推导，不要代为判分或写入成绩。' :
       const system = [
         '你是高校考研培养系统里的「导师团」讲师/助教，通过练习台 Chat 与学员对话。',
         '角色：' + mentor.name + '（' + mentor.role + '）。',
