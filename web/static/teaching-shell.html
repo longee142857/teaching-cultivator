@@ -546,11 +546,13 @@
     .msg-action:hover { color: var(--fg); }
     .msg-action.is-ok { color: var(--ok); text-decoration: none; }
     .source-sheet {
-      position: fixed; inset: 0; z-index: 80;
-      display: flex; align-items: flex-end; justify-content: center;
+      position: fixed; inset: 0; z-index: 200;
+      display: none;
+      align-items: flex-end; justify-content: center;
       background: rgba(43, 33, 24, 0.36);
       padding: 12px 12px calc(12px + var(--safe-b));
     }
+    .source-sheet.is-open { display: flex; }
     .source-sheet[hidden] { display: none !important; }
     .source-card {
       width: min(720px, 100%); max-height: min(78vh, 640px);
@@ -2345,18 +2347,28 @@
       function openSourceSheet(text) {
         var sheet = document.getElementById("source-sheet");
         var ta = document.getElementById("source-sheet-text");
-        if (!sheet || !ta) return;
+        if (!sheet || !ta) {
+          try { window.alert(String(text == null ? "" : text).slice(0, 800)); } catch (e) {}
+          return;
+        }
         ta.value = String(text == null ? "" : text);
         sheet.hidden = false;
+        sheet.removeAttribute("hidden");
+        sheet.classList.add("is-open");
         setTimeout(function () {
-          ta.focus();
-          ta.select();
-          try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
-        }, 30);
+          try {
+            ta.focus();
+            ta.select();
+            ta.setSelectionRange(0, ta.value.length);
+          } catch (e) {}
+        }, 40);
       }
       function closeSourceSheet() {
         var sheet = document.getElementById("source-sheet");
-        if (sheet) sheet.hidden = true;
+        if (!sheet) return;
+        sheet.classList.remove("is-open");
+        sheet.hidden = true;
+        sheet.setAttribute("hidden", "hidden");
       }
       function msgSourceAt(idx) {
         var msgs = threadOf(state.contextItemId);
@@ -2382,26 +2394,30 @@
         }, 0);
       }
       function bindMsgActions() {
-        root.querySelectorAll("[data-copy-msg]").forEach(function (btn) {
-          btn.addEventListener("click", function (ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            var idx = parseInt(btn.getAttribute("data-copy-msg"), 10);
-            var raw = msgSourceAt(idx);
-            if (!raw) return;
-            // 钉钉 WebView 常拦 clipboard：先弹出可选中面板，再尝试静默复制
-            openSourceSheet(raw);
-            copyText(raw, btn);
-          });
-        });
-        root.querySelectorAll("[data-fill-msg]").forEach(function (btn) {
-          btn.addEventListener("click", function (ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            var idx = parseInt(btn.getAttribute("data-fill-msg"), 10);
-            fillDraftFromTutor(msgSourceAt(idx));
-          });
-        });
+        // no-op kept for call sites; clicks use delegated handler on root
+      }
+      function onRootMsgAction(ev) {
+        var copyBtn = ev.target && ev.target.closest && ev.target.closest("[data-copy-msg]");
+        if (copyBtn && root.contains(copyBtn)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var cidx = parseInt(copyBtn.getAttribute("data-copy-msg"), 10);
+          var craw = msgSourceAt(cidx);
+          if (!craw) {
+            openSourceSheet("（这条消息没有可复制的源码）");
+            return;
+          }
+          openSourceSheet(craw);
+          copyText(craw, copyBtn);
+          return;
+        }
+        var fillBtn = ev.target && ev.target.closest && ev.target.closest("[data-fill-msg]");
+        if (fillBtn && root.contains(fillBtn)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var fidx = parseInt(fillBtn.getAttribute("data-fill-msg"), 10);
+          fillDraftFromTutor(msgSourceAt(fidx));
+        }
       }
       function bindSourceSheet() {
         var sheet = document.getElementById("source-sheet");
@@ -2449,7 +2465,7 @@
         if (msg.role !== "user" && !msg.streaming) {
           actions =
             '<div class="msg-actions">' +
-              '<button type="button" class="msg-action" data-copy-msg="' + idx + '" data-od-id="msg-copy-' + idx + '" title="复制 Markdown / LaTeX 原文">复制源码</button>' +
+              '<button type="button" class="msg-action" data-copy-msg="' + idx + '" data-od-id="msg-copy-' + idx + '" title="打开源码面板（可长按复制）">复制源码</button>' +
               '<button type="button" class="msg-action" data-fill-msg="' + idx + '" data-od-id="msg-fill-' + idx + '" title="把这段源码填回练习台原文框">填入原文</button>' +
             "</div>";
         }
@@ -2490,7 +2506,6 @@
         renderHeader();
         renderRecents();
         root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
-        bindMsgActions();
         root.scrollTop = root.scrollHeight;
       }
       function renderTutorStrip() {
@@ -2943,6 +2958,8 @@
           sendChat(composerInput.value);
         }
       });
+      bindSourceSheet();
+      root.addEventListener("click", onRootMsgAction);
 
 
       function boot() {
