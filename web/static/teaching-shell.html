@@ -474,6 +474,46 @@
       border-radius: 999px; background: var(--soft-ok); color: var(--ok); margin-right: 8px;
     }
     .tutor-badge.is-detached { background: rgba(122,90,42,.14); color: var(--warn); }
+    /* 讲师页头：默认单行，尽量不占对话区 */
+    .app.is-tutor .app-header {
+      padding: 6px 14px;
+      gap: 0;
+      align-items: center;
+      grid-template-columns: 1fr auto;
+      min-height: 0;
+    }
+    .app.is-tutor .app-header .tutor-head {
+      display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: nowrap;
+    }
+    .app.is-tutor .app-header .tutor-badge { margin-right: 0; flex-shrink: 0; font-size: 10px; padding: 2px 7px; }
+    .app.is-tutor .app-header .tutor-title {
+      font-size: 13px; font-weight: 600; line-height: 1.25;
+      min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .app.is-tutor .app-header .meta {
+      font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 28ch;
+    }
+    .app.is-tutor .app-header .tutor-ops {
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    }
+    .app.is-tutor .app-header .text-link {
+      min-height: 0; padding: 4px 0; font-size: 12px;
+    }
+    .app.is-tutor .app-header .sub { display: none; }
+    .app.is-tutor .app-header.is-expanded-detail {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding-block: 8px;
+    }
+    .app.is-tutor .app-header.is-expanded-detail .sub {
+      display: block; font-size: 12px; line-height: 1.4; grid-column: 1 / -1;
+    }
+    .recents-toggle {
+      appearance: none; border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); border-radius: 6px; font-size: 11px; font-family: var(--font-mono);
+      padding: 4px 8px; cursor: pointer; letter-spacing: 0.02em; min-height: 28px;
+    }
+    .recents-toggle:hover { background: var(--hover); color: var(--fg); }
     .tutor-cites { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 6px; }
     .tutor-cite {
       font-size: 11px; color: var(--muted); background: var(--surface);
@@ -559,13 +599,29 @@
       }
       .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
       .app.is-tutor .workspace { grid-template-columns: minmax(0, 200px) minmax(0, 1fr); }
+      .app.is-tutor.is-recents-collapsed .workspace { grid-template-columns: 36px minmax(0, 1fr); }
       .app.is-tutor .recents {
         display: flex; flex-direction: column; gap: 6px;
         padding: calc(12px + var(--safe-t)) 12px 12px;
         border-right: 1px solid var(--border); background: var(--bg);
         min-height: 0; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
       }
-      .recents h2 { font-size: 13px; color: var(--muted); font-weight: 550; letter-spacing: 0.04em; margin-bottom: 6px; }
+      .app.is-tutor.is-recents-collapsed .recents {
+        padding: calc(10px + var(--safe-t)) 4px 10px;
+        align-items: center;
+        overflow: hidden;
+      }
+      .app.is-tutor.is-recents-collapsed .recents .recents-body,
+      .app.is-tutor.is-recents-collapsed .recents h2,
+      .app.is-tutor.is-recents-collapsed .recents .recent-btn { display: none; }
+      .recents-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 6px;
+        margin-bottom: 2px;
+      }
+      .app.is-tutor.is-recents-collapsed .recents-head {
+        flex-direction: column; margin-bottom: 0; width: 100%;
+      }
+      .recents h2 { font-size: 13px; color: var(--muted); font-weight: 550; letter-spacing: 0.04em; margin: 0; }
       .recent-btn {
         appearance: none; width: 100%; text-align: left;
         border: 1px solid transparent; background: transparent;
@@ -586,7 +642,9 @@
       }
       .dock { padding-bottom: 12px; }
       .app-header { padding-top: 16px; padding-inline: 22px; }
+      .app.is-tutor .app-header { padding: 6px 18px; }
       .content { padding: 22px 28px 32px; }
+      .app.is-tutor .content { padding: 14px 22px 18px; }
       .card, .card:nth-child(even) { transform: none; }
       .stack { gap: 16px; }
       .today-grid {
@@ -951,6 +1009,8 @@
         threads: {},
         recents: [],
         headerCollapsed: true,
+        recentsCollapsed: true,
+        tutorHeaderDetail: false,
         ocrBusy: false,
         ocrMsg: "",
         ocrMode: "document"
@@ -1073,7 +1133,8 @@
             answered: state.answered, fromDeepLink: state.fromDeepLink, push: state.push,
             lastResult: state.lastResult, railExpanded: state.railExpanded,
             contextItemId: state.contextItemId, threads: state.threads, recents: state.recents,
-            headerCollapsed: !!state.headerCollapsed
+            headerCollapsed: !!state.headerCollapsed,
+            recentsCollapsed: !!state.recentsCollapsed
           }));
         } catch (e) {}
       }
@@ -1813,25 +1874,39 @@
 
       function renderHeader() {
         headerEl.classList.toggle("is-collapsed", !!state.headerCollapsed);
+        headerEl.classList.toggle("is-expanded-detail", state.mode === "tutor" && !!state.tutorHeaderDetail);
         if (state.mode === "tutor") {
           var it = contextItem();
           var isGeneral = !it || state.contextItemId === "general";
+          var title = isGeneral ? "通用对话" : ((it.subject || "") + " · " + (it.title || it.id || ""));
           var badge = state.tutorDetached === true
-            ? '<span class="tutor-badge is-detached">脱机演示</span>'
-            : '<span class="tutor-badge">已连接教学系统</span>';
+            ? '<span class="tutor-badge is-detached">脱机</span>'
+            : '<span class="tutor-badge">已连接</span>';
+          var detail = isGeneral
+            ? "可问周卷成绩、学情或计划；点会话条「通用对话」或练习台「不懂」绑题"
+            : (it.kp || "");
           headerEl.innerHTML =
-            badge +
-            '<div class="context-chip" data-od-id="tutor-context">' +
-              '<span class="kicker">' + (isGeneral ? "通用对话" : "当前题目") + "</span>" +
-              "<strong>" + esc(isGeneral ? "空白聊天（不绑题）" : (it.subject + " · " + it.title)) + "</strong>" +
-              '<span class="meta">' + esc(state.learner) + (isGeneral ? "" : (" · " + it.id)) + "</span>" +
+            '<div class="tutor-head" data-od-id="tutor-context">' +
+              badge +
+              '<span class="tutor-title" title="' + escAttr(title) + '">' + esc(title) + "</span>" +
+              '<span class="meta">' + esc(state.learner) + (isGeneral || !it ? "" : (" · " + it.id)) + "</span>" +
             "</div>" +
-            '<div class="sub">' + esc(isGeneral ? "可问周卷成绩、学情或计划；点上方「通用对话」或练习台「不懂」绑题" : it.kp) + "</div>" +
-            (isGeneral
-              ? ""
-              : '<button type="button" class="text-link" id="btn-blank-tutor" data-od-id="btn-blank-tutor" style="justify-self:end">空白聊天</button>');
+            '<div class="tutor-ops">' +
+              (isGeneral ? "" : '<button type="button" class="text-link" id="btn-blank-tutor" data-od-id="btn-blank-tutor">空白聊天</button>') +
+              '<button type="button" class="recents-toggle" id="btn-tutor-detail" data-od-id="btn-tutor-detail" aria-expanded="' +
+                (state.tutorHeaderDetail ? "true" : "false") + '">' + (state.tutorHeaderDetail ? "收起" : "详情") + "</button>" +
+            "</div>" +
+            '<div class="sub">' + esc(detail) + "</div>";
           var blankBtn = document.getElementById("btn-blank-tutor");
           if (blankBtn) blankBtn.addEventListener("click", startBlankTutor);
+          var detailBtn = document.getElementById("btn-tutor-detail");
+          if (detailBtn) detailBtn.addEventListener("click", function () {
+            state.tutorHeaderDetail = !state.tutorHeaderDetail;
+            renderHeader();
+          });
+          composerInput.placeholder = isGeneral
+            ? "问周卷成绩、学情或计划…（不绑题）"
+            : "问这题卡住的步骤…";
           return;
         }
         var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
@@ -2217,21 +2292,39 @@
       function renderRecents() {
         renderTutorStrip();
         if (state.mode !== "tutor") { recentsEl.innerHTML = ""; return; }
-        var html = "<h2>最近会话</h2>";
+        var collapsed = !!state.recentsCollapsed;
+        var html =
+          '<div class="recents-head">' +
+            (collapsed ? "" : "<h2>最近会话</h2>") +
+            '<button type="button" class="recents-toggle" id="btn-recents-toggle" data-od-id="btn-recents-toggle" title="' +
+              (collapsed ? "展开最近会话" : "收起最近会话") + '" aria-expanded="' + (collapsed ? "false" : "true") + '">' +
+              (collapsed ? "›" : "‹ 收起") +
+            "</button>" +
+          "</div>" +
+          '<div class="recents-body">';
         listTutorSessions().forEach(function (r) {
           var msgs = threadOf(r.id);
           var last = msgs.length ? (previewText(msgs[msgs.length - 1].text) || "（公式）") : "尚无消息";
-          var active = r.id === state.contextItemId ? " is-active" : "";
+          var active = r.id === state.contextItemId || (r.id === "general" && (!state.contextItemId || state.contextItemId === "general")) ? " is-active" : "";
           html +=
             '<button type="button" class="recent-btn' + active + '" data-od-id="recent-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
               '<div class="recent-title">' + esc(r.title) + "</div>" +
               '<div class="recent-preview">' + esc(last) + "</div>" +
             "</button>";
         });
+        html += "</div>";
         recentsEl.innerHTML = html;
+        var toggle = document.getElementById("btn-recents-toggle");
+        if (toggle) toggle.addEventListener("click", function () {
+          state.recentsCollapsed = !state.recentsCollapsed;
+          persist();
+          syncChrome();
+          renderRecents();
+        });
         recentsEl.querySelectorAll("[data-thread-id]").forEach(function (btn) {
           btn.addEventListener("click", function () {
             state.contextItemId = btn.getAttribute("data-thread-id");
+            if (state.contextItemId === "general") bumpGeneralRecent();
             persist();
             render();
           });
@@ -2278,6 +2371,7 @@
         appEl.classList.toggle("is-expanded", !!state.railExpanded);
         appEl.classList.toggle("is-tutor", state.mode === "tutor");
         appEl.classList.toggle("is-brain", state.mode === "brain");
+        appEl.classList.toggle("is-recents-collapsed", state.mode === "tutor" && !!state.recentsCollapsed);
         syncBrainHost();
         var dockOn = state.mode === "practice" && (state.view === "desk" || state.view === "result");
         appEl.classList.toggle("is-practice-dock", dockOn);
@@ -2547,6 +2641,7 @@
           if (saved.railExpanded) state.railExpanded = saved.railExpanded;
           if (saved.contextItemId) state.contextItemId = saved.contextItemId;
           if (saved.headerCollapsed !== undefined) state.headerCollapsed = !!saved.headerCollapsed;
+          if (saved.recentsCollapsed !== undefined) state.recentsCollapsed = !!saved.recentsCollapsed;
         }
         itemId = canonicalItemId(itemId);
         if (modeHint === "tutor") {
