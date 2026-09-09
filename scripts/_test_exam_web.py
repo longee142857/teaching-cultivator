@@ -214,7 +214,7 @@ def test_http_deny_and_data(tmp_bank: str):
         check(status == 400 and ocr.get("error") == "empty_image", "ocr empty_image")
         html = open(os.path.join(ew.static_dir(), "exam.html"), encoding="utf-8").read()
         check("ocrSheet" in html and "手写识别" in html, "exam html shared OCR modal")
-        check('id="ocrOpen"' in html, "exam OCR button in header")
+        check('id="ocrFab"' in html, "exam OCR floating button")
         check('id="ocrSource"' in html and 'id="ocrRender"' in html, "exam OCR source + render")
         check("ocrBtn.className" not in html, "no per-question OCR button")
     finally:

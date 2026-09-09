@@ -34,12 +34,17 @@
     button:disabled { opacity: 0.55; cursor: not-allowed; }
     .report { margin-top: 20px; padding: 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); white-space: pre-wrap; }
     .hint { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
-    .head-tools { margin: 4px 0 16px; }
-    #ocrOpen {
-      appearance: none; border: 1px solid var(--accent); background: #e7f5ef;
-      color: var(--accent); font: inherit; font-size: 0.9rem; font-weight: 600;
-      padding: 8px 16px; border-radius: 999px; width: auto; cursor: pointer;
+    #ocrFab {
+      position: fixed; z-index: 30;
+      right: max(12px, env(safe-area-inset-right, 0px));
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      appearance: none; border: 0; background: var(--accent); color: #fff;
+      font: inherit; font-size: 0.86rem; font-weight: 600;
+      padding: 10px 14px; border-radius: 999px; width: auto; cursor: pointer;
+      box-shadow: 0 8px 22px rgba(11, 110, 79, 0.32);
     }
+    #ocrFab[hidden] { display: none !important; }
+    .ocr-sheet.is-open ~ #ocrFab { visibility: hidden; pointer-events: none; }
     .ocr-sheet {
       position: fixed; inset: 0; z-index: 40;
       display: none; align-items: flex-end; justify-content: center;
@@ -119,14 +124,11 @@
     <header id="head" hidden>
       <h1 id="title">双周检测卷</h1>
       <div class="meta" id="meta"></div>
-      <div class="head-tools">
-        <button type="button" id="ocrOpen">手写识别</button>
-      </div>
     </header>
     <div id="questions"></div>
     <div class="actions" id="actions" hidden>
       <button type="button" id="submitBtn">提交答卷</button>
-      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写用顶部「手写识别」弹窗，核对源码与预览后再填入指定题。也可继续用钉钉私聊发 md /「交卷」。</p>
+      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写点右下角「手写识别」，核对源码与预览后再填入指定题。也可继续用钉钉私聊发 md /「交卷」。</p>
     </div>
     <div id="report" class="report" hidden></div>
   </div>
@@ -165,6 +167,7 @@
       </div>
     </div>
   </div>
+  <button type="button" id="ocrFab" hidden>手写识别</button>
   <script>
 (function () {
   const boot = document.getElementById("boot");
@@ -318,7 +321,7 @@
   const ocrRun = document.getElementById("ocrRun");
   const ocrApply = document.getElementById("ocrApply");
   const ocrClose = document.getElementById("ocrClose");
-  const ocrOpen = document.getElementById("ocrOpen");
+  const ocrOpen = document.getElementById("ocrFab");
   const ocrPreview = document.getElementById("ocrPreview");
   const ocrPreviewImg = document.getElementById("ocrPreviewImg");
   const ocrFileName = document.getElementById("ocrFileName");
@@ -549,6 +552,7 @@
     boot.hidden = true;
     head.hidden = false;
     actions.hidden = false;
+    ocrOpen.hidden = false;
     titleEl.textContent = paper.title || paper.paper_id || I18N.title;
     metaEl.textContent =
       I18N.metaId + (paper.paper_id || "-") +
