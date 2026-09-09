@@ -34,11 +34,11 @@
     button:disabled { opacity: 0.55; cursor: not-allowed; }
     .report { margin-top: 20px; padding: 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); white-space: pre-wrap; }
     .hint { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
-    .ocr-open {
-      appearance: none; border: 0; background: none; color: var(--accent);
-      font: inherit; font-size: 0.88rem; font-weight: 600; padding: 6px 0;
-      margin-top: 8px; cursor: pointer; text-decoration: underline;
-      text-underline-offset: 2px; width: auto;
+    .head-tools { margin: 4px 0 16px; }
+    #ocrOpen {
+      appearance: none; border: 1px solid var(--accent); background: #e7f5ef;
+      color: var(--accent); font: inherit; font-size: 0.9rem; font-weight: 600;
+      padding: 8px 16px; border-radius: 999px; width: auto; cursor: pointer;
     }
     .ocr-sheet {
       position: fixed; inset: 0; z-index: 40;
@@ -48,11 +48,16 @@
     }
     .ocr-sheet.is-open { display: flex; }
     .ocr-card {
-      width: min(560px, 100%); max-height: min(82vh, 680px);
+      width: min(640px, 100%); max-height: min(92vh, 860px);
       overflow: auto; background: var(--card); border: 1px solid var(--line);
       border-radius: 14px; padding: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
     }
     .ocr-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+    .ocr-target { display: grid; gap: 4px; margin: 8px 0; color: var(--muted); font-size: 0.85rem; }
+    .ocr-target select {
+      font: inherit; padding: 8px 10px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff; color: var(--ink);
+    }
     .ocr-modes { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
     .ocr-mode {
       appearance: none; border: 1px solid var(--line); background: #fff;
@@ -63,8 +68,31 @@
     .ocr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
     .ocr-actions button { width: 100%; border-radius: 10px; padding: 10px 12px; }
     .ocr-actions .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-    .ocr-preview { display: grid; gap: 8px; margin-top: 8px; }
-    .ocr-preview img { max-width: 100%; max-height: 180px; border-radius: 8px; border: 1px solid var(--line); object-fit: contain; background: #fff; }
+    .ocr-preview {
+      display: flex; gap: 10px; align-items: center;
+      border: 1px dashed var(--line); border-radius: 8px; padding: 8px 10px;
+      margin-top: 8px; background: #fff;
+    }
+    .ocr-preview img {
+      width: 72px; height: 72px; object-fit: cover; border-radius: 6px;
+      flex-shrink: 0; border: 1px solid var(--line); background: #fff;
+    }
+    .ocr-meta { font-size: 0.82rem; color: var(--muted); line-height: 1.55; min-width: 0; }
+    .ocr-meta strong { display: block; color: var(--ink); font-weight: 600; font-size: 0.88rem; }
+    .ocr-src-lab, .ocr-render-lab {
+      display: block; margin: 12px 0 6px; color: var(--muted); font-size: 0.85rem;
+    }
+    #ocrSource {
+      width: 100%; min-height: 120px; resize: vertical;
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 10px 12px; font: inherit; background: #fff;
+    }
+    .ocr-render {
+      min-height: 72px; padding: 10px 12px; border: 1px solid var(--line);
+      border-radius: 10px; background: #fff; overflow-x: auto;
+    }
+    .ocr-render.is-empty { color: var(--muted); font-size: 0.85rem; }
+    .ocr-render .katex-display { margin: 0.4em 0; overflow-x: auto; overflow-y: hidden; }
     .ocr-msg { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
     .ocr-msg.err { color: var(--danger); }
     .ocr-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
@@ -91,11 +119,14 @@
     <header id="head" hidden>
       <h1 id="title">双周检测卷</h1>
       <div class="meta" id="meta"></div>
+      <div class="head-tools">
+        <button type="button" id="ocrOpen">手写识别</button>
+      </div>
     </header>
     <div id="questions"></div>
     <div class="actions" id="actions" hidden>
       <button type="button" id="submitBtn">提交答卷</button>
-      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写可用每题旁「手写识别」弹窗。也可继续用钉钉私聊发 md /「交卷」。</p>
+      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写用顶部「手写识别」弹窗，核对源码与预览后再填入指定题。也可继续用钉钉私聊发 md /「交卷」。</p>
     </div>
     <div id="report" class="report" hidden></div>
   </div>
@@ -103,7 +134,10 @@
   <div class="ocr-sheet" id="ocrSheet" aria-hidden="true">
     <div class="ocr-card" role="dialog" aria-modal="true" aria-labelledby="ocrTitle">
       <h3 id="ocrTitle">手写识别</h3>
-      <p class="hint" style="margin:0" id="ocrTargetHint">识别结果将填入当前题目作答框（可再改）。</p>
+      <p class="hint" style="margin:0">选图识别后先核对源码和公式预览，再填入指定题（可改）。演算纸用「整页识别」，单条公式用「公式加强」。</p>
+      <label class="ocr-target">填入题目
+        <select id="ocrTarget"></select>
+      </label>
       <div class="ocr-modes">
         <button type="button" class="ocr-mode is-on" data-ocr-mode="document">整页识别</button>
         <button type="button" class="ocr-mode" data-ocr-mode="formula">公式加强</button>
@@ -115,7 +149,15 @@
       </div>
       <div class="ocr-preview" id="ocrPreview" hidden>
         <img id="ocrPreviewImg" alt="手写预览" />
+        <div class="ocr-meta">
+          <strong id="ocrFileName">手写图片</strong>
+          <span id="ocrMetaHint">点「识别」生成源码。</span>
+        </div>
       </div>
+      <label class="ocr-src-lab" for="ocrSource">识别源码（可改）</label>
+      <textarea id="ocrSource" placeholder="识别结果会出现在这里，也可手改 LaTeX / Markdown。"></textarea>
+      <div class="ocr-render-lab">预览</div>
+      <div class="ocr-render is-empty" id="ocrRender" aria-live="polite">识别或粘贴源码后，这里显示公式渲染。填入仍用上方源码，不是预览 HTML。</div>
       <p class="ocr-msg" id="ocrMsg"></p>
       <div class="ocr-foot">
         <button type="button" class="ghost" id="ocrClose">关闭</button>
@@ -268,7 +310,6 @@
   let ocrTargetI = null;
   let ocrMode = "document";
   let ocrPayload = null;
-  let ocrText = "";
   let ocrBusy = false;
   const ocrSheet = document.getElementById("ocrSheet");
   const ocrMsg = document.getElementById("ocrMsg");
@@ -277,24 +318,88 @@
   const ocrRun = document.getElementById("ocrRun");
   const ocrApply = document.getElementById("ocrApply");
   const ocrClose = document.getElementById("ocrClose");
+  const ocrOpen = document.getElementById("ocrOpen");
   const ocrPreview = document.getElementById("ocrPreview");
   const ocrPreviewImg = document.getElementById("ocrPreviewImg");
-  const ocrTargetHint = document.getElementById("ocrTargetHint");
+  const ocrFileName = document.getElementById("ocrFileName");
+  const ocrMetaHint = document.getElementById("ocrMetaHint");
+  const ocrTargetSel = document.getElementById("ocrTarget");
+  const ocrSource = document.getElementById("ocrSource");
+  const ocrRender = document.getElementById("ocrRender");
 
+  function ocrSourceText() {
+    return String(ocrSource.value || "").trim();
+  }
+  function draftHasMathDelimiters(src) {
+    return /\$\$|\\\[|\\\(|\$[^$\n]/.test(String(src || ""));
+  }
+  function paintOcrPreview() {
+    const src = String(ocrSource.value || "");
+    const trimmed = src.trim();
+    ocrRender.classList.toggle("is-empty", !trimmed);
+    ocrRender.removeAttribute("data-tex");
+    if (!trimmed) {
+      ocrRender.innerHTML = "识别或粘贴源码后，这里显示公式渲染。填入仍用上方源码，不是预览 HTML。";
+      return;
+    }
+    try {
+      if (draftHasMathDelimiters(src)) {
+        ocrRender.innerHTML = renderMathMarkdown(src);
+        return;
+      }
+      ocrRender.setAttribute("data-tex", trimmed);
+      if (typeof katex !== "undefined") {
+        try {
+          katex.render(trimmed, ocrRender, { throwOnError: false, displayMode: true, strict: "ignore", trust: false });
+        } catch (e1) {
+          ocrRender.innerHTML = "<code>" + escapeHtml(trimmed) + "</code>";
+        }
+      } else {
+        ocrRender.innerHTML = "<code>" + escapeHtml(trimmed) + "</code>";
+      }
+    } catch (e) {
+      ocrRender.innerHTML = "<code>" + escapeHtml(trimmed) + "</code>";
+    }
+  }
   function setOcrMsg(text, isErr) {
     ocrMsg.textContent = text || "";
     ocrMsg.className = "ocr-msg" + (isErr ? " err" : "");
   }
   function syncOcrButtons() {
     ocrRun.disabled = !(ocrPayload && ocrPayload.dataUrl) || ocrBusy;
-    ocrApply.disabled = !String(ocrText || "").trim() || ocrBusy;
+    ocrApply.disabled = !ocrSourceText() || ocrBusy || !ocrTargetSel.value;
     ocrPick.disabled = ocrBusy;
+    ocrTargetSel.disabled = ocrBusy;
+    ocrSource.disabled = ocrBusy;
+    ocrRun.textContent = ocrBusy ? "识别中…" : "识别";
+    ocrPick.textContent = ocrPayload ? "更换图片" : "选择手写图片";
   }
-  function openOcrSheet(qi) {
-    ocrTargetI = String(qi);
-    ocrTargetHint.textContent = "识别结果将填入第 " + ocrTargetI + " 题作答框（可再改）。";
+  function fillOcrTargetOptions() {
+    const keep = String(ocrTargetSel.value || ocrTargetI || "");
+    ocrTargetSel.innerHTML = "";
+    qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) {
+      const opt = document.createElement("option");
+      opt.value = ta.dataset.i;
+      const filled = String(ta.value || "").trim() ? "（已有作答）" : "";
+      opt.textContent = "第 " + ta.dataset.i + " 题" + filled;
+      ocrTargetSel.appendChild(opt);
+    });
+    let pick = keep;
+    if (!pick || !ocrTargetSel.querySelector('option[value="' + pick + '"]')) {
+      pick = "";
+      qRoot.querySelectorAll("textarea[data-i]").forEach(function (ta) {
+        if (!pick && !String(ta.value || "").trim()) pick = ta.dataset.i;
+      });
+      if (!pick && ocrTargetSel.options.length) pick = ocrTargetSel.options[0].value;
+    }
+    ocrTargetSel.value = pick;
+    ocrTargetI = pick;
+  }
+  function openOcrSheet() {
+    fillOcrTargetOptions();
     ocrSheet.classList.add("is-open");
     ocrSheet.setAttribute("aria-hidden", "false");
+    paintOcrPreview();
     syncOcrButtons();
   }
   function closeOcrSheet() {
@@ -326,10 +431,19 @@
     return c ? ("识别失败：" + c) : "识别失败，请稍后重试。";
   }
 
+  ocrOpen.addEventListener("click", openOcrSheet);
   ocrSheet.addEventListener("click", function (e) {
     if (e.target === ocrSheet) closeOcrSheet();
   });
   ocrClose.addEventListener("click", closeOcrSheet);
+  ocrTargetSel.addEventListener("change", function () {
+    ocrTargetI = ocrTargetSel.value;
+    syncOcrButtons();
+  });
+  ocrSource.addEventListener("input", function () {
+    paintOcrPreview();
+    syncOcrButtons();
+  });
   document.querySelectorAll("[data-ocr-mode]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (ocrBusy) return;
@@ -354,10 +468,13 @@
         return;
       }
       ocrPayload = payload;
-      ocrText = "";
+      ocrSource.value = "";
       ocrPreviewImg.src = payload.dataUrl;
+      ocrFileName.textContent = payload.name || "手写图片";
+      ocrMetaHint.textContent = ocrMode === "formula" ? "标准公式模型 · 识别后核对源码与预览。" : "整页 markdown · 识别后核对源码与预览。";
       ocrPreview.hidden = false;
-      setOcrMsg("已选图，点「识别」。", false);
+      paintOcrPreview();
+      setOcrMsg("已选图，点「识别」生成源码。", false);
       syncOcrButtons();
     });
   });
@@ -383,9 +500,16 @@
           syncOcrButtons();
           return;
         }
-        ocrText = String(data.text || "").trim();
+        const text = String(data.text || "").trim();
+        ocrSource.value = text;
+        paintOcrPreview();
         const conf = (typeof data.conf === "number") ? (" · 置信 " + Math.round(data.conf * 100) + "%") : "";
-        setOcrMsg(ocrText ? ("识别完成" + conf + "。点「填入本题」写入作答框。") : ocrErrorText("empty_ocr"), !ocrText);
+        if (text) {
+          ocrMetaHint.textContent = "识别完成" + conf + "。可改源码，预览会跟着变。";
+          setOcrMsg("识别完成" + conf + "。核对预览后点「填入本题」。", false);
+        } else {
+          setOcrMsg(ocrErrorText("empty_ocr"), true);
+        }
         syncOcrButtons();
       })
       .catch(function (e) {
@@ -395,18 +519,22 @@
       });
   });
   ocrApply.addEventListener("click", function () {
-    const text = String(ocrText || "").trim();
-    if (!text || ocrTargetI == null) return;
-    const ta = qRoot.querySelector('textarea[data-i="' + ocrTargetI + '"]');
+    const text = ocrSourceText();
+    const qi = String(ocrTargetSel.value || ocrTargetI || "");
+    if (!text || !qi) return;
+    const ta = qRoot.querySelector('textarea[data-i="' + qi + '"]');
     if (!ta) {
-      setOcrMsg("找不到第 " + ocrTargetI + " 题作答框。", true);
+      setOcrMsg("找不到第 " + qi + " 题作答框。", true);
       return;
     }
     const prev = String(ta.value || "").trim();
     ta.value = prev ? (prev + "\n\n" + text) : text;
     ta.dispatchEvent(new Event("input", { bubbles: true }));
     closeOcrSheet();
-    try { ta.focus(); } catch (e) {}
+    try {
+      ta.scrollIntoView({ behavior: "smooth", block: "center" });
+      ta.focus();
+    } catch (e) {}
   });
 
   async function loadPaper() {
@@ -443,12 +571,7 @@
       ta.dataset.i = String(it.i);
       ta.placeholder = I18N.placeholder;
       lab.appendChild(ta);
-      const ocrBtn = document.createElement("button");
-      ocrBtn.type = "button";
-      ocrBtn.className = "ocr-open";
-      ocrBtn.textContent = "手写识别";
-      ocrBtn.addEventListener("click", function () { openOcrSheet(it.i); });
-      card.appendChild(h); card.appendChild(body); card.appendChild(lab); card.appendChild(ocrBtn);
+      card.appendChild(h); card.appendChild(body); card.appendChild(lab);
       qRoot.appendChild(card);
     });
   }

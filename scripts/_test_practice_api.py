@@ -336,6 +336,9 @@ def test_empty_day_and_capability(tmp_db: str):
     check('maxlength="24"' in exam_html, "exam uid maxlength allows 20-digit")
     check("[0-9]{1,24}" in exam_html, "exam uid regex allows 20-digit")
     check("ocrSheet" in exam_html and "手写识别" in exam_html, "exam shared OCR modal")
+    check('id="ocrOpen"' in exam_html, "exam OCR button in header")
+    check('id="ocrSource"' in exam_html and 'id="ocrRender"' in exam_html, "exam OCR source + render")
+    check("ocrBtn.className" not in exam_html, "no per-question OCR button")
     check("/e/\" + TOKEN + \"/ocr" in exam_html or "/ocr" in exam_html, "exam ocr posts to token route")
 
 
