@@ -30,7 +30,7 @@ SYSTEM_API_BASE=http://127.0.0.1:8770
 SYSTEM_API_TOKEN=<与 system_api 同 key，勿入库>
 DEEPSEEK_API_KEY=...          # 或 LLM_API_KEY
 LLM_BASE_URL=https://api.deepseek.com/v1
-TUTOR_MODEL=deepseek-chat
+TUTOR_MODEL=deepseek-v4.1-flash-expires-on-0910
 ```
 
 `deliver/practice_web.py`：客户端带 `Accept: text/event-stream` 时**透传 SSE 流**；否则走原 JSON 代理；未配置 `TUTOR_BACKEND_URL` 仍 501。

@@ -24,6 +24,39 @@ def main() -> None:
     fails: list[str] = []
 
     print("\n=== select_model matrix ===")
+    check(
+        MODEL_FLASH == MODEL_PRO == AGENT_MODEL == "deepseek-v4.1-flash-expires-on-0910",
+        "flash/pro/agent default to V4.1 Flash beta id",
+        fails,
+    )
+    src = open(os.path.join(ROOT, "config.py"), encoding="utf-8").read()
+    check(
+        "deepseek-v4.1-flash-expires-on-0910" in src
+        and "deepseek-v4-flash" not in src
+        and "deepseek-v4-pro" not in src,
+        "config.py default strings are V4.1 Flash beta",
+        fails,
+    )
+    env_ex = open(os.path.join(ROOT, ".env.example"), encoding="utf-8").read()
+    check(
+        "DEEPSEEK_MODEL_FLASH=deepseek-v4.1-flash-expires-on-0910" in env_ex
+        and "DEEPSEEK_MODEL_PRO=deepseek-v4.1-flash-expires-on-0910" in env_ex
+        and "AGENT_MODEL=deepseek-v4.1-flash-expires-on-0910" in env_ex
+        and "TUTOR_MODEL=deepseek-v4.1-flash-expires-on-0910" in env_ex
+        and "qwen-plus" in env_ex,
+        ".env.example model ids + qwen-plus kept",
+        fails,
+    )
+    host = open(
+        os.path.join(ROOT, "integrations", "dsh-mentor-team", "host.js"),
+        encoding="utf-8",
+    ).read()
+    check(
+        "env('TUTOR_MODEL', 'deepseek-v4.1-flash-expires-on-0910')" in host
+        and "deepseek-chat" not in host,
+        "host.js TUTOR_MODEL default is V4.1 Flash beta",
+        fails,
+    )
     for t in ("generate", "grade", "explain"):
         cfg = select_model(t)
         check(cfg.provider == "deepseek", f"{t} provider=deepseek", fails)
