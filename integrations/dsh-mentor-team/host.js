@@ -19,7 +19,7 @@ return {
     const PRACTICE_BASE = env('PRACTICE_API_BASE', 'http://127.0.0.1:8768').replace(/\/$/, '')
     const SYSTEM_API_BASE = env('SYSTEM_API_BASE', 'http://127.0.0.1:8770').replace(/\/$/, '')
     const LLM_BASE = (env('LLM_BASE_URL', '') || env('DEEPSEEK_API_BASE', '') || 'https://api.deepseek.com/v1').replace(/\/$/, '')
-    const TUTOR_MODEL = env('TUTOR_MODEL', 'deepseek-chat')
+    const TUTOR_MODEL = env('TUTOR_MODEL', 'deepseek-v4.1-flash-expires-on-0910')
     const MAX_TOOL_ROUNDS = 4
 
     let cfgCache = null
