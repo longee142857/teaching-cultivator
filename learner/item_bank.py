@@ -308,23 +308,32 @@ def pick_for_push_walk(
     technique: str = "",
     learner_id: str | None = None,
 ) -> dict | None:
-    """日推抽题。单科仍 L2→L1→空槽；review 按薄弱序走到下一项有库存的 KP。
+    """日推抽题。硬过滤仍是 L2→L1→空槽；review / comm 可换 prefer_kp 走到有库存的 KP。
 
-    白天只抽库存：review 的第一薄弱点常是通信编码，但池里可能只有数学 pass。
-    硬过滤本身不放宽（每个 KP 仍只准同 L2 / 同 L1），只换 prefer_kp。
+    白天只抽库存：decide 点的 KP 常无同 L2/L1 pass。review 可跨 math+comm 库存；
+    comm 只在通信 pass 里走（不进数学）。math 不走，避免单科串题。
+    每个 KP 仍只准同 L2 / 同 L1，只换 prefer_kp。
     """
     hit = pick_for_push(
         subject, kp=kp, technique=technique, learner_id=learner_id
     )
-    if hit or (subject or "").strip().lower() != "review":
+    subj = (subject or "").strip().lower()
+    if hit or subj not in ("review", "comm"):
         return hit
 
+    if subj == "review":
+        rank_subjects = ("math", "comm")
+        pick_subject = "review"
+    else:
+        rank_subjects = ("comm",)
+        pick_subject = "comm"
+
     ranked: list[tuple[str, float]] = []
-    for subj in ("math", "comm"):
+    for rs in rank_subjects:
         try:
-            ranked.extend(weak_kp_ranked(subj, limit=32))
+            ranked.extend(weak_kp_ranked(rs, limit=32))
         except Exception as e:
-            print(f"[item_bank] review walk rank {subj} skipped: {e}")
+            print(f"[item_bank] {pick_subject} walk rank {rs} skipped: {e}")
     ranked.sort(key=lambda x: -x[1])
     seen = {(kp or "").strip()}
     tries = 0
@@ -336,36 +345,36 @@ def pick_for_push_walk(
         tries += 1
         if tries > 16:
             break
-        hit = pick_for_push("review", kp=next_kp, learner_id=learner_id)
+        hit = pick_for_push(pick_subject, kp=next_kp, learner_id=learner_id)
         if hit:
             print(
-                f"[item_bank] review walk {kp or '-'} -> {next_kp} "
+                f"[item_bank] {pick_subject} walk {kp or '-'} -> {next_kp} "
                 f"id={hit.get('id')} kp={hit.get('kp')}"
             )
             return hit
-    # 薄弱序前 16 常被通信 KP 占满，数学 pass 排不到。改用库存里实际存在的 pass KP。
+    # 薄弱序前 16 常被无库存 KP 占满。改用该科目库存里实际存在的 pass KP。
     try:
         store = get_store()
         excl = store.learner_seen_hashes(learner_id)
         cands = store.list_ready_candidates(
-            subject="review", exclude_hashes=excl, limit=60
+            subject=pick_subject, exclude_hashes=excl, limit=60
         )
     except Exception as e:
-        print(f"[item_bank] review walk stocked list skipped: {e}")
+        print(f"[item_bank] {pick_subject} walk stocked list skipped: {e}")
         cands = []
     for it in cands or []:
         next_kp = (it.get("kp") or "").strip()
         if not next_kp or next_kp in seen:
             continue
         seen.add(next_kp)
-        hit = pick_for_push("review", kp=next_kp, learner_id=learner_id)
+        hit = pick_for_push(pick_subject, kp=next_kp, learner_id=learner_id)
         if hit:
             print(
-                f"[item_bank] review walk stocked-pass {kp or '-'} -> {next_kp} "
+                f"[item_bank] {pick_subject} walk stocked-pass {kp or '-'} -> {next_kp} "
                 f"id={hit.get('id')}"
             )
             return hit
-    print(f"[item_bank] empty slot review walk prefer_kp={kp or '-'} (no pass L2/L1)")
+    print(f"[item_bank] empty slot {pick_subject} walk prefer_kp={kp or '-'} (no pass L2/L1)")
     return None
 
 

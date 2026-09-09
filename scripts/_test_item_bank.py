@@ -478,6 +478,107 @@ def test_review_walk_uses_next_stocked_kp() -> None:
             )
 
 
+def test_comm_walk_uses_stocked_pass() -> None:
+    """comm 首选 KP 无 pass 时走到通信库存；不串数学；不抽 pending/poor。"""
+    from learner.db import Store
+    from learner.item_bank import pick_for_push, pick_for_push_walk
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+        cdps = [
+            {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+            {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+        ]
+        comm_pass = store.insert_bank_item(
+            subject="comm",
+            question="随机过程题",
+            answer="1",
+            kp="随机过程",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "comm"},
+        )
+        _mark_pass(store, comm_pass)
+        math_pass = store.insert_bank_item(
+            subject="math",
+            question="数学极限题",
+            answer="1",
+            kp="函数极限与连续",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "math"},
+        )
+        _mark_pass(store, math_pass)
+        pending = store.insert_bank_item(
+            subject="comm",
+            question="pending PCM",
+            answer="1",
+            kp="PCM编码",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "comm"},
+        )
+        poor = store.insert_bank_item(
+            subject="comm",
+            question="poor QPSK",
+            answer="1",
+            kp="QPSK与OQPSK",
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": "comm"},
+        )
+        store.apply_judge_verdict(poor, verdict="fail", reasons=["x"], confidence=1.0)
+
+        def fake_ranked(subject, limit=8):
+            if subject == "comm":
+                return [
+                    ("线性分组码与汉明码", 4.0),
+                    ("扰码与Rake", 3.0),
+                    ("PCM编码", 2.0),
+                    ("QPSK与OQPSK", 1.5),
+                ]
+            return [("函数极限与连续", 9.0)]
+
+        prefer = "线性分组码与汉明码"
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked):
+            check(
+                pick_for_push("comm", kp=prefer) is None,
+                "hard filter still empty on 汉明码 with only 随机过程 pass",
+            )
+            hit = pick_for_push_walk("comm", kp=prefer)
+            check(
+                hit and int(hit["id"]) == comm_pass,
+                f"comm walk lands on stocked 随机过程 (got {hit})",
+            )
+            check((hit or {}).get("kp") == "随机过程", "comm walk stays on comm KP")
+            check(
+                pick_for_push_walk("math", kp=prefer) is None,
+                "math still does not walk across KPs",
+            )
+            check(
+                pick_for_push_walk("comm", kp=prefer)
+                and int(pick_for_push_walk("comm", kp=prefer)["id"]) != pending,
+                "comm walk skips pending",
+            )
+            check(
+                pick_for_push_walk("comm", kp=prefer)
+                and int(pick_for_push_walk("comm", kp=prefer)["id"]) != poor,
+                "comm walk skips poor",
+            )
+            check(
+                pick_for_push_walk("comm", kp=prefer)
+                and int(pick_for_push_walk("comm", kp=prefer)["id"]) != math_pass,
+                "comm walk does not cross into math",
+            )
+
+
 def test_author_spec_drops_cross_subject_ref() -> None:
     from learner.db import Store
     from types import SimpleNamespace
@@ -528,6 +629,7 @@ def main() -> int:
     test_offpeak_slots_and_ref_gate()
     test_pick_rejects_pending_poor_and_sanitizes_stored_ref()
     test_review_walk_uses_next_stocked_kp()
+    test_comm_walk_uses_stocked_pass()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")
