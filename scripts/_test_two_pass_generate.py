@@ -10,31 +10,31 @@ from config import AGENT_MODEL, MODEL_FLASH, MODEL_PRO
 from decide.router import select_model, REASONING_EFFORT_DEFAULT
 from prompts.prompt_builder import PromptBuilder
 
-V41_FLASH = "deepseek-v4.1-flash-expires-on-0910"
+DS_FLASH = "deepseek-flash"
 
 
 def test_model_tiers():
-    assert MODEL_FLASH == V41_FLASH == MODEL_PRO == AGENT_MODEL
+    assert MODEL_FLASH == DS_FLASH == MODEL_PRO == AGENT_MODEL
     for t in ("generate", "grade", "explain"):
         cfg = select_model(t)
-        assert cfg.model == V41_FLASH, t
+        assert cfg.model == DS_FLASH, t
         assert cfg.provider == "deepseek", t
         assert cfg.thinking is True, t
         assert cfg.effort == REASONING_EFFORT_DEFAULT == "high", t
     cfg_author = select_model("author")
-    assert cfg_author.model == V41_FLASH
+    assert cfg_author.model == DS_FLASH
     assert cfg_author.provider == "deepseek"
     assert cfg_author.thinking is True
     assert cfg_author.effort == REASONING_EFFORT_DEFAULT == "high"
     for t in ("polish", "orchestrate"):
         cfg = select_model(t)
-        assert cfg.model == V41_FLASH, t
+        assert cfg.model == DS_FLASH, t
         assert cfg.provider == "deepseek", t
         assert cfg.thinking is False, t
     flash = select_model("other")
-    assert flash.model == V41_FLASH
+    assert flash.model == DS_FLASH
     assert flash.thinking is False
-    print("OK model tiers (V4.1 Flash beta for flash/pro/author; thinking unchanged)")
+    print("OK model tiers (deepseek-flash for flash/pro/author; thinking unchanged)")
 
 
 def test_polish_template():

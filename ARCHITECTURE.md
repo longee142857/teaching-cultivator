@@ -60,11 +60,11 @@ Grading: `grade` → `verify_grade` → apply|pending → mastery write-back whe
 
 | Role | Default model | Channel |
 |------|---------------|---------|
-| Agent (chat / tools) | `deepseek-v4.1-flash-expires-on-0910` + thinking high | DeepSeek direct (V4.1 Flash beta) |
-| grade / generate / explain | `deepseek-v4.1-flash-expires-on-0910` + thinking high | DeepSeek direct |
-| author（双周卷组卷） | `deepseek-v4.1-flash-expires-on-0910` + thinking high | DeepSeek direct (same beta id; no v4.1-pro) |
+| Agent (chat / tools) | `deepseek-flash` + thinking high | DeepSeek direct |
+| grade / generate / explain | `deepseek-flash` + thinking high | DeepSeek direct |
+| author（双周卷组卷） | `deepseek-flash` + thinking high | DeepSeek direct (same production id; no separate pro) |
 | review_item / verify_grade | `qwen-plus` | DashScope 北京直连（失败回退 DeepSeek Flash） |
-| polish / orchestrate | `deepseek-v4.1-flash-expires-on-0910` | DeepSeek direct |
+| polish / orchestrate | `deepseek-flash` | DeepSeek direct |
 
 Override via env: `AGENT_MODEL`, `AGENT_THINKING`, `AGENT_REASONING_EFFORT`, `REVIEWER_PROVIDER`, `REVIEWER_MODEL`, `DASHSCOPE_API_KEY`, `DEEPSEEK_MODEL_*`.
 
