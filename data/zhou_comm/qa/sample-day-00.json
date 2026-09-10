@@ -1,0 +1,811 @@
+{
+  "day": 0,
+  "seed": 20260907,
+  "sample": [
+    {
+      "print_page": 72,
+      "chapter": "ch4",
+      "n_paragraphs": 19,
+      "paragraphs": [
+        {
+          "id": "zhou.p072.s01",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{an} _ {\\mathrm{o}}} = k T B _ {\\mathrm{n}} K _ {\\mathrm{pa}} + P _ {\\mathrm{n}} = K _ {\\mathrm{pa}} k B"
+        },
+        {
+          "id": "zhou.p072.s02",
+          "kind": "body",
+          "text": "定义:线性双端口网络的等效噪声温度\r"
+        },
+        {
+          "id": "zhou.p072.s03",
+          "kind": "formula",
+          "text": "$$\r\nT _ {\\mathrm{e}} = \\frac {P _ {\\mathrm{n}}}{K _ {\\mathrm{pa}} k B _ {\\mathrm{n}}}\\tag{4.6.31}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p072.s04",
+          "kind": "body",
+          "text": "于是\r"
+        },
+        {
+          "id": "zhou.p072.s05",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{an} _ {0}} = K _ {\\mathrm{pa}} k B _ {\\mathrm{n}} (T + T _ {\\mathrm{e}})\\tag{4.6.32}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p072.s06",
+          "kind": "body",
+          "text": "等效噪声温度的含义是:将线性双端口网络分别与源及负载匹配相联,在等效噪声带宽内将线性网络的内部噪声暂时抑制,而将源内阻 R 的噪声温度由原来的 T 值增加 $T_{e}$ 值,此 $T_{e}$ 值的增加应使得由温度为 $T + T_{e}"
+        },
+        {
+          "id": "zhou.p072.s07",
+          "kind": "header",
+          "text": "[图片 page 85]\r"
+        },
+        {
+          "id": "zhou.p072.s08",
+          "kind": "header",
+          "text": "[图片 page 85]\r"
+        },
+        {
+          "id": "zhou.p072.s09",
+          "kind": "body",
+          "text": "线性双端口网络的噪声系数 $F$ 与等效噪声温度 $T_{\\mathrm{e}}$ 之间的关系式推导如下：\r"
+        },
+        {
+          "id": "zhou.p072.s10",
+          "kind": "formula",
+          "text": "$$\r\n\\begin{array}{r l} P _ {\\mathrm {an_ {o}}} = & k (T + T _ {\\mathrm{e}}) B _ {\\mathrm{n}} K _ {\\mathrm{pa}} = k F T B"
+        },
+        {
+          "id": "zhou.p072.s11",
+          "kind": "body",
+          "text": "多级线性网络级联的总等效噪声温度为\r"
+        },
+        {
+          "id": "zhou.p072.s12",
+          "kind": "formula",
+          "text": "$$\r\nT _ {\\mathrm{e}} = T _ {\\mathrm{e} _ {1}} + \\frac {T _ {\\mathrm{e} _ {2}}}{K _ {\\mathrm{pa} _ {1}}} + \\frac {T _ {\\m"
+        },
+        {
+          "id": "zhou.p072.s13",
+          "kind": "body",
+          "text": "其中， $T_{e_{1}}, T_{e_{2}}, \\cdots$ 是每级网络的等效噪声温度； $K_{pa_{1}}, K_{pa_{2}}, \\cdots$ 为每级网络的可获功率增益。\r"
+        },
+        {
+          "id": "zhou.p072.s14",
+          "kind": "body",
+          "text": "4. 接收机的噪声功率谱密度\r"
+        },
+        {
+          "id": "zhou.p072.s15",
+          "kind": "body",
+          "text": "在无线通信中,接收机与接收天线相接,接收机噪声的单边功率谱密度 $N_{0}$ 为\r"
+        },
+        {
+          "id": "zhou.p072.s16",
+          "kind": "formula",
+          "text": "$$\r\nN _ {0} = k (T _ {\\mathrm{a}} + T _ {\\mathrm{e}}) = k [ T _ {\\mathrm{a}} + (F - 1) T ] \\quad \\mathrm{W/Hz}\\tag{4.6.3"
+        },
+        {
+          "id": "zhou.p072.s17",
+          "kind": "body",
+          "text": "接收机噪声的双边功率谱密度 $N_{0}/2$ 为\r"
+        },
+        {
+          "id": "zhou.p072.s18",
+          "kind": "formula",
+          "text": "$$\r\n\\frac {N _ {0}}{2} = \\frac {k}{2} \\left(T _ {\\mathrm{a}} + T _ {\\mathrm{e}}\\right) = \\frac {k}{2} \\left[ T _ {\\mathr"
+        },
+        {
+          "id": "zhou.p072.s19",
+          "kind": "header",
+          "text": "72"
+        }
+      ]
+    },
+    {
+      "print_page": 105,
+      "chapter": "ch5",
+      "n_paragraphs": 9,
+      "paragraphs": [
+        {
+          "id": "zhou.p105.s01",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{s}} (f) = \\frac {\\sigma_ {\\mathrm{a}} ^ {2}}{T _ {\\mathrm{s}}} X _ {\\mathrm{rcos}} (f)\\tag{5.5.8}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p105.s02",
+          "kind": "body",
+          "text": "另外根据 5.3 节, 若 $\\{a_{n}\\}$ 是双极性序列, 平均误比特率为\r"
+        },
+        {
+          "id": "zhou.p105.s03",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{b}} = \\frac {1}{2} \\operatorname{erfc} \\left(\\sqrt {\\frac {E _ {\\mathrm{b}}}{N _ {0}}}\\right) = Q \\left"
+        },
+        {
+          "id": "zhou.p105.s04",
+          "kind": "body",
+          "text": "5.6 眼图\r"
+        },
+        {
+          "id": "zhou.p105.s05",
+          "kind": "body",
+          "text": "上面已讨论了基带传输系统的理论性能。对于实际的基带传输系统还可用实验手段以波形观察方式来评价基带传输系统的性能。它是用示波器显示基带传输系统接收滤波器的输出基带信号波形。如果将接收波形输入于示波器垂直放大器，同时调整示波器的水平扫描周期为输"
+        },
+        {
+          "id": "zhou.p105.s06",
+          "kind": "header",
+          "text": "[图片 page 118]\r"
+        },
+        {
+          "id": "zhou.p105.s07",
+          "kind": "header",
+          "text": "[图片 page 118]\r"
+        },
+        {
+          "id": "zhou.p105.s08",
+          "kind": "header",
+          "text": "[图片 page 118]\r"
+        },
+        {
+          "id": "zhou.p105.s09",
+          "kind": "header",
+          "text": "105"
+        }
+      ]
+    },
+    {
+      "print_page": 115,
+      "chapter": "ch5",
+      "n_paragraphs": 10,
+      "paragraphs": [
+        {
+          "id": "zhou.p115.s01",
+          "kind": "formula",
+          "text": "$$\r\n\\begin{array}{r l} & {H _ {\\mathrm{I}} (f) = H _ {1} (f) \\bullet H _ {2} (f)} \\\\ & {\\qquad = \\left\\{ \\begin{array}{l"
+        },
+        {
+          "id": "zhou.p115.s02",
+          "kind": "caption",
+          "text": "图 5.8.2 画出了第一类部分响应系统传递函数的幅频特性及相频特性。\r"
+        },
+        {
+          "id": "zhou.p115.s03",
+          "kind": "header",
+          "text": "[图片 page 128]\r"
+        },
+        {
+          "id": "zhou.p115.s04",
+          "kind": "header",
+          "text": "[图片 page 128]\r"
+        },
+        {
+          "id": "zhou.p115.s05",
+          "kind": "body",
+          "text": "从图 5.8.2 可看到, $H_{1}(f)$ 的幅频特性是平滑地降至零,截止频率 $W=\\frac{1}{2T_{b}}$ ,相频特性是线性的,因而在具体实现时有可能用物理可实现的滤波器来近似此频率特性。\r"
+        },
+        {
+          "id": "zhou.p115.s06",
+          "kind": "body",
+          "text": "该系统的冲激响应表示式为\r"
+        },
+        {
+          "id": "zhou.p115.s07",
+          "kind": "formula",
+          "text": "$$\r\n\\begin{array}{r l} h _ {1} (t) & = \\frac {\\sin \\left(\\frac {\\pi t}{T _ {\\mathrm{b}}}\\right)}{\\frac {\\pi t}{T _ {\\mat"
+        },
+        {
+          "id": "zhou.p115.s08",
+          "kind": "body",
+          "text": "由于该系统的冲激响应是两个时间间隔为 $T_{b}$ 的 sinc 函数之和，因此，又称此响应为双二进信号脉冲，图 5.8.3 表示冲激响应 $h_{\\mathrm{I}}(t)$ 。\r"
+        },
+        {
+          "id": "zhou.p115.s09",
+          "kind": "header",
+          "text": "[图片 page 128]\r"
+        },
+        {
+          "id": "zhou.p115.s10",
+          "kind": "header",
+          "text": "115"
+        }
+      ]
+    },
+    {
+      "print_page": 122,
+      "chapter": "ch5",
+      "n_paragraphs": 14,
+      "paragraphs": [
+        {
+          "id": "zhou.p122.s01",
+          "kind": "body",
+          "text": "(4) 求最佳判决门限 $V_{T}$ 值；\r"
+        },
+        {
+          "id": "zhou.p122.s02",
+          "kind": "body",
+          "text": "(5) 详细推导出平均误比特率计算公式。\r"
+        },
+        {
+          "id": "zhou.p122.s03",
+          "kind": "body",
+          "text": "5.7 已知匹配滤波器的输入信号 $s_i(t)$ 的波形图如题 5.7 图所示。 $s_1(t)$ 与 $s_2(t)$ 等概率出现, 请\r"
+        },
+        {
+          "id": "zhou.p122.s04",
+          "kind": "body",
+          "text": "(1) 画出匹配滤波器冲激响应 $h(t)$ 图；\r"
+        },
+        {
+          "id": "zhou.p122.s05",
+          "kind": "body",
+          "text": "(2) 若发 $s_{1}(t)$ ，求出在 $t=T_{b}$ 时刻采样的信号幅度值及瞬时信号功率；求出在 $t=T_{b}$ 时刻采样的噪声平均功率；\r"
+        },
+        {
+          "id": "zhou.p122.s06",
+          "kind": "body",
+          "text": "(3) 若发 $s_2(t)$ , 求出在 $t = T_b$ 时刻采样值 $y$ 的条件均值 $E(y|s_2)$ 及条件方差 $D(y|s_2)$ , 写出 $y$ 的条件概率密度函数 $p_2(y)$ 表达式;\r"
+        },
+        {
+          "id": "zhou.p122.s07",
+          "kind": "body",
+          "text": "(4) 推导出平均误比特率计算公式。\r"
+        },
+        {
+          "id": "zhou.p122.s08",
+          "kind": "header",
+          "text": "[图片 page 135]\r"
+        },
+        {
+          "id": "zhou.p122.s09",
+          "kind": "header",
+          "text": "[图片 page 135]\r"
+        },
+        {
+          "id": "zhou.p122.s10",
+          "kind": "body",
+          "text": "题5.7图\r"
+        },
+        {
+          "id": "zhou.p122.s11",
+          "kind": "body",
+          "text": "5.8 设基带传输系统的发送滤波器、信道和接收滤波器的总传递函数 $H(f)$ 如题 5.8 图所示。其中， $f_{1}=1\\ MHz, f_{2}=3\\ MHz$ 。试确定该系统无码间干扰传输时的最高码元速率和频带利用率。\r"
+        },
+        {
+          "id": "zhou.p122.s12",
+          "kind": "header",
+          "text": "[图片 page 135]\r"
+        },
+        {
+          "id": "zhou.p122.s13",
+          "kind": "body",
+          "text": "5.9 设基带传输系统的发送滤波器、信道及接收滤波器传递函数为 $H(f)$ ，若要求以2000 Baud码元速率传输，则题5.9图中的 $H(f)$ 是否满足采样点无码间干扰条件？说明理由。\r"
+        },
+        {
+          "id": "zhou.p122.s14",
+          "kind": "body",
+          "text": "5.10 设 $\\alpha = 1$ 升余弦滚降无码间干扰基带传输系统的输入是十六进制码元, 其码元速率是 122"
+        }
+      ]
+    },
+    {
+      "print_page": 135,
+      "chapter": "ch6",
+      "n_paragraphs": 14,
+      "paragraphs": [
+        {
+          "id": "zhou.p135.s01",
+          "kind": "header",
+          "text": "[图片 page 148]\r"
+        },
+        {
+          "id": "zhou.p135.s02",
+          "kind": "header",
+          "text": "[图片 page 148]\r"
+        },
+        {
+          "id": "zhou.p135.s03",
+          "kind": "body",
+          "text": "判决器的输入是\r"
+        },
+        {
+          "id": "zhou.p135.s04",
+          "kind": "formula",
+          "text": "$$\r\nl = y _ {1} - y _ {2} = d E _ {\\mathrm{b}} + Z\\tag{6.2.41}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p135.s05",
+          "kind": "body",
+          "text": "其中 $d = 1$ 对应发送 $s_1(t), d = -1$ 对应发送 $s_2(t)$ 。 $Z = Z_1 - Z_2$ 是均值为零，方差为 $\\sigma^2 = N_0E_b$ 的高斯随机变量。\r"
+        },
+        {
+          "id": "zhou.p135.s06",
+          "kind": "body",
+          "text": "发送 $s_2(t)$ 时判决出错的概率是\r"
+        },
+        {
+          "id": "zhou.p135.s07",
+          "kind": "formula",
+          "text": "$$\r\nP (e \\mid s _ {1}) = P (Z > E _ {\\mathrm{b}}) = \\frac {1}{2} \\operatorname{erfc} \\left(\\sqrt {\\frac {E _ {\\mathrm{b}"
+        },
+        {
+          "id": "zhou.p135.s08",
+          "kind": "body",
+          "text": "根据对称性可知 $P(e|s_{2})=P(e|s_{1})$ 。平均误比特率为\r"
+        },
+        {
+          "id": "zhou.p135.s09",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{b}} = \\frac {1}{2} \\operatorname{erfc} \\left(\\sqrt {\\frac {E _ {\\mathrm{b}}}{2 N _ {0}}}\\right)\\tag{6.2"
+        },
+        {
+          "id": "zhou.p135.s10",
+          "kind": "body",
+          "text": "(2) 非相干解调\r"
+        },
+        {
+          "id": "zhou.p135.s11",
+          "kind": "body",
+          "text": "当 $s_{1}(t)$ 、 $s_{2}(t)$ 中包含接收机未知的相位时，可以采用如图 6.2.15 所示的非相干解调。此图中的两个支路相当于是两个 OOK 的非相干解调。在 $s_{1}(t)$ 、 $s_{2}(t)$ 等概率出现的"
+        },
+        {
+          "id": "zhou.p135.s12",
+          "kind": "formula",
+          "text": "$$\r\nP _ {\\mathrm{b}} = \\frac {1}{2} \\exp \\left(\\frac {- E _ {\\mathrm{b}}}{2 N _ {0}}\\right)\\tag{6.2.44}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p135.s13",
+          "kind": "body",
+          "text": "误比特率曲线示于图 6.2.10。\r"
+        },
+        {
+          "id": "zhou.p135.s14",
+          "kind": "header",
+          "text": "135"
+        }
+      ]
+    },
+    {
+      "print_page": 140,
+      "chapter": "ch6",
+      "n_paragraphs": 15,
+      "paragraphs": [
+        {
+          "id": "zhou.p140.s01",
+          "kind": "body",
+          "text": "在科斯塔斯环中，相位差 $\\theta$ 的初始值在由电路启动时状态决定，是一个在 $[0,2\\pi]$ 内分布的随机值。若初始 $\\theta$ 在一、四象限，VCO 在 $v_{7}$ 的作用下变化，最终 $\\theta$ 将趋向 0。"
+        },
+        {
+          "id": "zhou.p140.s02",
+          "kind": "body",
+          "text": "上述现象称为恢复载波的 $0, \\pi$ 相位模糊。如果恢复载波的相位与接收信号的载波相位反相，将导致解调后的数据 0、1 反转。解决此问题的方法之一是采用差分移相键控 (DPSK)。\r"
+        },
+        {
+          "id": "zhou.p140.s03",
+          "kind": "body",
+          "text": "6.2.5 差分移相键控\r"
+        },
+        {
+          "id": "zhou.p140.s04",
+          "kind": "body",
+          "text": "1. DPSK 信号的产生\r"
+        },
+        {
+          "id": "zhou.p140.s05",
+          "kind": "body",
+          "text": "差分移相键控(DPSK)信号的产生框图如图 6.2.22 所示。\r"
+        },
+        {
+          "id": "zhou.p140.s06",
+          "kind": "header",
+          "text": "[图片 page 153]\r"
+        },
+        {
+          "id": "zhou.p140.s07",
+          "kind": "body",
+          "text": "根据图 6.2.22 来说明 DPSK 调制器的工作原理: 先将输入的二进制序列 $\\{b_{n}\\}$ (取值为 1 或 0) 进行差分编码, 得到二进制相对码序列 $\\{d_{n}\\}$ :\r"
+        },
+        {
+          "id": "zhou.p140.s08",
+          "kind": "formula",
+          "text": "$$\r\nd _ {n} = b _ {n} \\oplus d _ {n - 1}\\tag{6.2.59}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p140.s09",
+          "kind": "body",
+          "text": "再将相对码序列 $\\{d_n\\}$ 进行2PAM，得到双极性不归零脉冲序列 $\\{a_n\\}$ ，然后再将双极性不归零码序列进行2PSK数字调制，即可得到DPSK信号，举例说明如下。\r"
+        },
+        {
+          "id": "zhou.p140.s10",
+          "kind": "example",
+          "text": "例 6.2.2 差分编码及差分移相键控。\r"
+        },
+        {
+          "id": "zhou.p140.s11",
+          "kind": "formula",
+          "text": "$$\r\n\\begin{array}{r l r l r l r l r l} \\text {绝对码} \\{b _ {n} \\} & & 1 & 0 & 0 & 1 & 0 & 0 & 1 & 1 \\\\ \\text {相对码} \\{d _ {"
+        },
+        {
+          "id": "zhou.p140.s12",
+          "kind": "body",
+          "text": "从本例看出，DPSK的特点是利用在当前比特的载波相位 $\\theta_{n}$ 与前一比特的载波相位 $\\theta_{n - 1}$ 的相位差 $(\\theta_{n} - \\theta_{n - 1})$ 来传递当前的绝对码 $\\{b_"
+        },
+        {
+          "id": "zhou.p140.s13",
+          "kind": "body",
+          "text": "2. DPSK 信号的平均功率谱密度\r"
+        },
+        {
+          "id": "zhou.p140.s14",
+          "kind": "body",
+          "text": "由于在绝对码的传号与空号等概出现且符号间统计独立时，相对码的平均功率谱密度与绝对码的平均功率谱密度是相同的，所以用相对码进行2PSK调制所得到的DPSK信号平均功率谱密度与2PSK信号的平均功率谱密度是相同的。\r"
+        },
+        {
+          "id": "zhou.p140.s15",
+          "kind": "header",
+          "text": "140"
+        }
+      ]
+    },
+    {
+      "print_page": 219,
+      "chapter": "ch7",
+      "n_paragraphs": 16,
+      "paragraphs": [
+        {
+          "id": "zhou.p219.s01",
+          "kind": "body",
+          "text": "再将公式(7.5.4)稍加修改即可求得典型的香农第一变长编码定理形式\r"
+        },
+        {
+          "id": "zhou.p219.s02",
+          "kind": "formula",
+          "text": "$$\r\n\\frac {H (X)}{\\log_ {2} m} + \\frac {1}{L} > \\frac {\\overline {{{K}}}}{L} \\geqslant \\frac {H (X)}{\\log_ {2} m}\\tag{7."
+        },
+        {
+          "id": "zhou.p219.s03",
+          "kind": "body",
+          "text": "对于二进制(即 m=2)，令 $\\frac{1}{L}=\\varepsilon$ ，则有\r"
+        },
+        {
+          "id": "zhou.p219.s04",
+          "kind": "formula",
+          "text": "$$\r\n\\begin{array}{c} \\frac {H (X)}{\\log_ {2} 2} + \\varepsilon > \\frac {\\overline {{K}}}{L} \\geqslant \\frac {H (X)}{\\log_"
+        },
+        {
+          "id": "zhou.p219.s05",
+          "kind": "body",
+          "text": "其中 $\\frac{\\overline{K}}{L}$ 表示平均每个信源符号的编码长度。可见它要求 $\\frac{\\overline{K}}{L}$ 与信息熵 $H(X)$ 相匹配，因此又称为熵编码。从上述定理看出，若对离散无记忆信源的输出"
+        },
+        {
+          "id": "zhou.p219.s06",
+          "kind": "body",
+          "text": "变长编码可以无失真编码,无差错译码。\r"
+        },
+        {
+          "id": "zhou.p219.s07",
+          "kind": "body",
+          "text": "编码效率 $\\eta$ :\r"
+        },
+        {
+          "id": "zhou.p219.s08",
+          "kind": "formula",
+          "text": "$$\r\n\\eta = \\frac {H (X)}{R}\\tag{7.5.7}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p219.s09",
+          "kind": "body",
+          "text": "它表示信源的平均每个符号的信息熵 $H(X)$ 与信源平均每个符号的编码长度 R 之比值。用变长编码可达到相当高的编码效率。一般，变长码所要求的信源消息序列长度 L 比等长编码的小得多。\r"
+        },
+        {
+          "id": "zhou.p219.s10",
+          "kind": "body",
+          "text": "7.6 无失真离散信源编码\r"
+        },
+        {
+          "id": "zhou.p219.s11",
+          "kind": "body",
+          "text": "上一节讨论了离散信源编码定理，该定理既是存在性定理也是构造性定理。由于离散无失真信源编码是与信源消息(符号)熵相匹配的编码，因此通常称它为熵编码。具体实现时又可分为等长码与变长码两类。实际上等长码除了在不考虑信源统计特性的PCM编码中采用以"
+        },
+        {
+          "id": "zhou.p219.s12",
+          "kind": "body",
+          "text": "1. 变长编码\r"
+        },
+        {
+          "id": "zhou.p219.s13",
+          "kind": "body",
+          "text": "变长编码的思路是根据信源输出符号出现概率的不同来选择码字，出现概率大的用短码，出现概率小的用长码，使平均编码长度 $\\overline{K}$ 最短，因而可提高编码效率。\r"
+        },
+        {
+          "id": "zhou.p219.s14",
+          "kind": "example",
+          "text": "例7.6.1 设有一个简单离散单消息信源如下：\r"
+        },
+        {
+          "id": "zhou.p219.s15",
+          "kind": "formula",
+          "text": "$$\r\n\\binom {X} {P \\left(x _ {i}\\right)} = \\left( \\begin{array}{c c c c} x _ {1} & x _ {2} & x _ {3} & x _ {4} \\\\ \\frac {"
+        },
+        {
+          "id": "zhou.p219.s16",
+          "kind": "header",
+          "text": "219"
+        }
+      ]
+    },
+    {
+      "print_page": 233,
+      "chapter": "ch7",
+      "n_paragraphs": 17,
+      "paragraphs": [
+        {
+          "id": "zhou.p233.s01",
+          "kind": "body",
+          "text": "通信号 $x(t)$ 的频谱 $\\hat{X}(f) = X(f)$ 。\r"
+        },
+        {
+          "id": "zhou.p233.s02",
+          "kind": "body",
+          "text": "由图可见，若 $f_{s}<2B$ ，则在 $X_{s}(f)$ 中的 I、II 频谱势必重叠，因而产生混叠现象。这说明带通信号的采样频率 $f_{s}=2B$ 是最低采样频率。若 $f_{s}>2B$ ，在理论上看是不必要的，但在实际上由"
+        },
+        {
+          "id": "zhou.p233.s03",
+          "kind": "body",
+          "text": "(2) 再分析 $m \\neq 0$ 的一般情况, 这时, 可适当降低最低频率 $f_{L}^{\\prime} < f_{L}$ , 显然它使信号带宽相应适当增大, $B^{\\prime} = f_{H} - f_{L}^{\\prime} "
+        },
+        {
+          "id": "zhou.p233.s04",
+          "kind": "body",
+          "text": "再由公式(7.9.11)\r"
+        },
+        {
+          "id": "zhou.p233.s05",
+          "kind": "formula",
+          "text": "$$\r\nk B + m B = f _ {\\mathrm{H}} = k B ^ {\\prime}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p233.s06",
+          "kind": "body",
+          "text": "可求得\r"
+        },
+        {
+          "id": "zhou.p233.s07",
+          "kind": "formula",
+          "text": "$$\r\nB ^ {\\prime} = B \\left(1 + \\frac {m}{k}\\right)\\tag{7.9.14}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p233.s08",
+          "kind": "body",
+          "text": "由于 $f_{H}$ 与 $B'$ 满足整数倍关系，则可利用公式(7.9.13)的结论，将公式(7.9.14)代入(7.9.13)，得\r"
+        },
+        {
+          "id": "zhou.p233.s09",
+          "kind": "formula",
+          "text": "$$\r\nf _ {\\mathrm{s} \\min} = 2 B ^ {\\prime} = 2 B \\left(1 + \\frac {m}{k}\\right)\\tag{7.9.15}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p233.s10",
+          "kind": "body",
+          "text": "定理得证。\r"
+        },
+        {
+          "id": "zhou.p233.s11",
+          "kind": "body",
+          "text": "现在，进一步解释其含义如下：在公式(7.9.15)中， $B=f_{H}-f_{L}, k=\\lfloor f_{H}/(f_{H}-f_{L})\\rfloor$ ，它表示不超过 $f_{H}/(f_{H}-f_{L})$ 的最大正整数。而"
+        },
+        {
+          "id": "zhou.p233.s12",
+          "kind": "body",
+          "text": "由图 7.9.7 可知，带通信号的采样频率是在 2B 与 4B 之间变动。且当 $f_{H}$ 继续增大时， $f_{s\\min} \\rightarrow 2B$ ，所以在实际问题中当 $f_{H} \\gg B$ 时，不论 $f_{H}$ "
+        },
+        {
+          "id": "zhou.p233.s13",
+          "kind": "body",
+          "text": "采样定理是通信原理中一个十分重要的定理,它是模拟信号数字化、时分多路复用以及信号分析与处理的主要理论依据之一。\r"
+        },
+        {
+          "id": "zhou.p233.s14",
+          "kind": "body",
+          "text": "7.9.3 标量量化\r"
+        },
+        {
+          "id": "zhou.p233.s15",
+          "kind": "body",
+          "text": "前面讨论了对连续信源输出的模拟信号在时间轴上的离散化处理——采样，下面讨论将上述采样序列在取值域上的离散化处理——量化。\r"
+        },
+        {
+          "id": "zhou.p233.s16",
+          "kind": "body",
+          "text": "需指出，在模拟信号的数字化中，模拟信号在时间上的离散化，不致引入失真，因为各样值仍是一个连续变量，此连续变量所包含的信息量是无限大。若将时间上离散的样值进一步在取值域上离散化——量化，则因量化后的量化电平是离散的，此离散随机变量载荷的信息量"
+        },
+        {
+          "id": "zhou.p233.s17",
+          "kind": "header",
+          "text": "233"
+        }
+      ]
+    },
+    {
+      "print_page": 268,
+      "chapter": "ch8",
+      "n_paragraphs": 18,
+      "paragraphs": [
+        {
+          "id": "zhou.p268.s01",
+          "kind": "header",
+          "text": "[图片 page 281]\r"
+        },
+        {
+          "id": "zhou.p268.s02",
+          "kind": "header",
+          "text": "[图片 page 281]\r"
+        },
+        {
+          "id": "zhou.p268.s03",
+          "kind": "body",
+          "text": "8.5 无失真信道\r"
+        },
+        {
+          "id": "zhou.p268.s04",
+          "kind": "body",
+          "text": "1. 波形无失真\r"
+        },
+        {
+          "id": "zhou.p268.s05",
+          "kind": "body",
+          "text": "若信号 $s(t)$ 通过信道后只有幅度变化和延迟，即\r"
+        },
+        {
+          "id": "zhou.p268.s06",
+          "kind": "formula",
+          "text": "$$\r\ny (t) = a \\cdot s (t - t _ {0})\\tag{8.5.1}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p268.s07",
+          "kind": "body",
+          "text": "其中 $a, t_{0} > 0$ ，则称此信道为理想无失真，或波形无失真。\r"
+        },
+        {
+          "id": "zhou.p268.s08",
+          "kind": "body",
+          "text": "式(8.5.1)两边同时做傅氏变换可得信道的传递函数为\r"
+        },
+        {
+          "id": "zhou.p268.s09",
+          "kind": "formula",
+          "text": "$$\r\nH (f) = \\frac {Y (f)}{S (f)} = a \\mathrm{e} ^ {- \\mathrm{j} 2 \\pi f t _ {0}}\\tag{8.5.2}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p268.s10",
+          "kind": "body",
+          "text": "因此，理想无失真信道传递函数的特征是：幅频特性 $|H(f)|$ 是常数，相频特性 $\\varphi(f) = \\angle H(f) = -2\\pi ft_0$ 是一条过原点的直线。\r"
+        },
+        {
+          "id": "zhou.p268.s11",
+          "kind": "body",
+          "text": "定义\r"
+        },
+        {
+          "id": "zhou.p268.s12",
+          "kind": "formula",
+          "text": "$$\r\n\\tau (f) = - \\frac {\\varphi (f)}{2 \\pi f}\\tag{8.5.3}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p268.s13",
+          "kind": "body",
+          "text": "为信道的时延特性,它表示信号中的不同频率分量通过信道后的时延。波形无失真要求当所有频率分量经历相同的时延。\r"
+        },
+        {
+          "id": "zhou.p268.s14",
+          "kind": "body",
+          "text": "2. 复包络无失真\r"
+        },
+        {
+          "id": "zhou.p268.s15",
+          "kind": "body",
+          "text": "设带通信号 $s(t) = \\operatorname{Re}\\{s_{\\mathrm{L}}(t)\\mathrm{e}^{\\mathrm{j}2\\pi f_c t}\\}$ 通过带通信道 $H(f)$ 后成为带通信号 $y(t) = \\op"
+        },
+        {
+          "id": "zhou.p268.s16",
+          "kind": "formula",
+          "text": "$$\r\ny _ {\\mathrm{L}} (t) = z \\cdot s _ {\\mathrm{L}} (t - t _ {0})\\tag{8.5.4}\r\n$$\r"
+        },
+        {
+          "id": "zhou.p268.s17",
+          "kind": "body",
+          "text": "其中 $z=ae^{i\\theta}$ 是复数，则称此信道对复包络无失真。\r"
+        },
+        {
+          "id": "zhou.p268.s18",
+          "kind": "header",
+          "text": "268"
+        }
+      ]
+    },
+    {
+      "print_page": 321,
+      "chapter": "ch9",
+      "n_paragraphs": 15,
+      "paragraphs": [
+        {
+          "id": "zhou.p321.s01",
+          "kind": "formula",
+          "text": "$$\r\nd \\left( \\begin{array}{l} \\hat {\\boldsymbol {c}} \\\\ \\mathbf {y} \\end{array} \\right) = d \\left( \\begin{array}{l l l} "
+        },
+        {
+          "id": "zhou.p321.s02",
+          "kind": "body",
+          "text": "所以该路径汉明距离为2。另一条是(11)分支加上与(11)分支相连的前一时刻的幸存路径 $\\hat{\\pmb{c}} = (1110)$ 组成。新路径为(111011)，于是有\r"
+        },
+        {
+          "id": "zhou.p321.s03",
+          "kind": "formula",
+          "text": "$$\r\nd \\left( \\begin{array}{l} \\hat {\\boldsymbol {c}} \\\\ \\boldsymbol {y} \\end{array} \\right) = d \\left( \\begin{array}{l l"
+        },
+        {
+          "id": "zhou.p321.s04",
+          "kind": "body",
+          "text": "即该路径与 y 的汉明距离为 3。根据最小汉明距离译码，l=3 时刻 $s_{0}$ 状态的幸存路径应是 $\\hat{c}=(00\\ 00\\ 00)$ ，其度量值 d=2。其他时刻以及进入其余状态的幸存路径的选择与上述方法相同。如果在某一时"
+        },
+        {
+          "id": "zhou.p321.s05",
+          "kind": "body",
+          "text": "下面进一步探讨软判决译码。\r"
+        },
+        {
+          "id": "zhou.p321.s06",
+          "kind": "body",
+          "text": "3. 软判决译码\r"
+        },
+        {
+          "id": "zhou.p321.s07",
+          "kind": "body",
+          "text": "前面讨论了 BSC 信道中的维特比译码, 它是硬判决译码, 为了充分利用信道输出的信号所提供的有关信息, 提高译码性能, 可以不将解调器输出波形进行硬判决成 $\\{0\\quad1\\}$ , 而是进行多电平量化 $(Q=2^{m})$ , 然"
+        },
+        {
+          "id": "zhou.p321.s08",
+          "kind": "body",
+          "text": "从性能上,软判决比硬判决可获得1.5\\~2 dB的好处,有关软判决维特比译码的工作原理请见参考文献[23]。\r"
+        },
+        {
+          "id": "zhou.p321.s09",
+          "kind": "body",
+          "text": "9.6 交织\r"
+        },
+        {
+          "id": "zhou.p321.s10",
+          "kind": "body",
+          "text": "迄今为止，前面所介绍的各类信道编码(除RS码以外)都是用于无记忆信道的，即是针对独立差错(随机错误)设计的。但是在某些实际情况下，比如衰落信道中，差错主要是突发性的，一个突发差错将引起一连串错误。这时前面介绍的纠独立差错的信道编码将无能为力"
+        },
+        {
+          "id": "zhou.p321.s11",
+          "kind": "body",
+          "text": "这里，所要讨论的是可以纠正很长的突发差错，而且也不仅限于一个突发。在某种意义上说，它是一种信道改造技术，它通过信号设计将一个原来属于突发差错的有记忆信道改造为基本上是独立差错的随机无记忆信道。这样，前面介绍的各类用于无记忆信道纠正独立差错的"
+        },
+        {
+          "id": "zhou.p321.s12",
+          "kind": "body",
+          "text": "交织原理方框图如图 9.6.1 所示。\r"
+        },
+        {
+          "id": "zhou.p321.s13",
+          "kind": "body",
+          "text": "下面，以一个最简单的例子入手来讨论交织器与去交织器的设计，以及如何通过交织与反交织变换，将一个突发错误的有记忆信道改造为独立差错的无记忆信道。\r"
+        },
+        {
+          "id": "zhou.p321.s14",
+          "kind": "body",
+          "text": "假若，发送一组信息 $\\mathbf{X}=(x_{1}x_{2}\\cdots x_{24}x_{25})$ ，首先将 X 送入交织器，同时将交织器设计成按列写入按行取出的 $5 \\times 5$ 阵列存储器。然后从存储器中按行输出，送入"
+        },
+        {
+          "id": "zhou.p321.s15",
+          "kind": "header",
+          "text": "321"
+        }
+      ]
+    }
+  ]
+}

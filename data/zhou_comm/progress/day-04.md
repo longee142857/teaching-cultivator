@@ -1,0 +1,48 @@
+# Day 04
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 149 / 496 / 199 / 448
+- 本章批次：Ch9 §9.1–9.3.5（print_page 276–303；止于 CRC 节末、§9.4 BCH/RS 之前；习题未触）
+- atoms（created_day=4, chapter=9）：36；有 role=core：36（100.0%）；L3 已映射原子数：31
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（36）：
+- `zhou.ch9.block.distance.def`
+- `zhou.ch9.block.dmin.correct`
+- `zhou.ch9.block.dmin.wmin`
+- `zhou.ch9.block.dual`
+- `zhou.ch9.block.generator`
+- `zhou.ch9.block.gh0`
+- `zhou.ch9.block.h.dmin`
+- `zhou.ch9.block.linear.def`
+- `zhou.ch9.block.nk.intro`
+- `zhou.ch9.block.parity.h`
+- `zhou.ch9.block.sphere.packing`
+- `zhou.ch9.block.syndrome.decode`
+- `zhou.ch9.block.syndrome.def`
+- `zhou.ch9.block.systematic`
+- `zhou.ch9.block.weight.def`
+- `zhou.ch9.coding.error.types`
+- `zhou.ch9.coding.fec.arq`
+- `zhou.ch9.coding.gf2`
+- `zhou.ch9.coding.parity.even`
+- `zhou.ch9.coding.purpose`
+- `zhou.ch9.coding.rate.def`
+- `zhou.ch9.coding.redundancy`
+- `zhou.ch9.coding.repeat.def`
+- `zhou.ch9.crc.encode`
+- `zhou.ch9.crc.poly.common`
+- `zhou.ch9.crc.principle`
+- `zhou.ch9.crc.undetect`
+- `zhou.ch9.cyclic.def`
+- `zhou.ch9.cyclic.encode.circuit`
+- `zhou.ch9.cyclic.g.factor`
+- `zhou.ch9.cyclic.g.poly`
+- `zhou.ch9.cyclic.poly.rep`
+- `zhou.ch9.cyclic.shift.mod`
+- `zhou.ch9.cyclic.sys.encode`
+- `zhou.ch9.hamming.construct`
+- `zhou.ch9.hamming.params`
+- 抽检：qa/sample-day-04.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：§9.1 引言/差错类型/码率/GF(2) 等无精确 coding L3（5 条未映射）；正文未单列香农信道编码定理表述（以多余度换可靠性思想覆盖）；Day1=40/Day2=35/Day3=38 未改动
+- 阻塞：无
+- 明日计划：Day5 = Ch9 §9.4–9.10 余部（BCH/RS 等）；勿回改 Day1–4
+- 合并状态: 未合并

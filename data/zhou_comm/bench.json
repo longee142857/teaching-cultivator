@@ -1,0 +1,65 @@
+{
+  "db": "/workspace/zhou-comm-atoms/zhou_comm.db",
+  "repeats": 50,
+  "opened_once": true,
+  "args": {
+    "get": {
+      "print_page": 1,
+      "paras": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "lookup": {
+      "term": "ISI"
+    },
+    "l3": {
+      "l3_id": "comm.coding.block.matrix"
+    }
+  },
+  "result_counts": {
+    "get": 4,
+    "lookup": 2,
+    "l3": 13
+  },
+  "locator_ok": {
+    "get": true,
+    "lookup": true,
+    "l3": true
+  },
+  "ops": [
+    {
+      "op": "get",
+      "n": 50,
+      "p50_ms": 0.0145,
+      "p99_ms": 0.0314,
+      "mean_ms": 0.0156,
+      "max_ms": 0.0401,
+      "target_p99_ms": 3.0,
+      "pass": true
+    },
+    {
+      "op": "lookup",
+      "n": 50,
+      "p50_ms": 0.031,
+      "p99_ms": 0.0741,
+      "mean_ms": 0.0342,
+      "max_ms": 0.0843,
+      "target_p99_ms": 10.0,
+      "pass": true
+    },
+    {
+      "op": "l3",
+      "n": 50,
+      "p50_ms": 0.1244,
+      "p99_ms": 0.1683,
+      "mean_ms": 0.1306,
+      "max_ms": 0.1711,
+      "target_p99_ms": 10.0,
+      "pass": true
+    }
+  ],
+  "all_pass": true
+}

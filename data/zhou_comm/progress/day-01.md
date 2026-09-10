@@ -1,0 +1,52 @@
+# Day 01
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 40 / 118 / 54 / 127
+- 本章：Ch5 数字信号的基带传输（print_page 77–119；习题自 zhou.p120.s09 起跳过）
+- atoms（created_day=1, chapter=5）：40；有 role=core：40（100.0%）；L3 已映射原子数：36
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100%）
+- 新增 atom ids（40）：
+- `zhou.ch5.baseband.def`
+- `zhou.ch5.eq.adaptive`
+- `zhou.ch5.eq.dfe`
+- `zhou.ch5.eq.linear.zf`
+- `zhou.ch5.eq.mse.orthogonality`
+- `zhou.ch5.eq.zf.noise.caveat`
+- `zhou.ch5.eye.read`
+- `zhou.ch5.isi.best.design`
+- `zhou.ch5.isi.def`
+- `zhou.ch5.isi.ideal.channel`
+- `zhou.ch5.isi.nyquist`
+- `zhou.ch5.isi.nyquist.rate`
+- `zhou.ch5.isi.rcos`
+- `zhou.ch5.isi.rcos.impulse`
+- `zhou.ch5.line.ami`
+- `zhou.ch5.line.cmi.manchester`
+- `zhou.ch5.line.hdb3`
+- `zhou.ch5.line.select`
+- `zhou.ch5.opt.awgn.model`
+- `zhou.ch5.opt.ber.bipolar`
+- `zhou.ch5.opt.ber.unipolar`
+- `zhou.ch5.opt.mf.receive`
+- `zhou.ch5.pam.diffcode`
+- `zhou.ch5.pam.mpam.bw`
+- `zhou.ch5.pam.nrz.bipolar`
+- `zhou.ch5.pam.nrz.unipolar`
+- `zhou.ch5.pam.rz.bipolar`
+- `zhou.ch5.pam.rz.unipolar`
+- `zhou.ch5.pam.wave.def`
+- `zhou.ch5.pr.duobinary`
+- `zhou.ch5.pr.partial.idea`
+- `zhou.ch5.pr.precoding`
+- `zhou.ch5.psd.continuous.discrete`
+- `zhou.ch5.psd.correlated.coding`
+- `zhou.ch5.psd.formula`
+- `zhou.ch5.psd.nrz.bipolar.formula`
+- `zhou.ch5.rate.ber.ser`
+- `zhou.ch5.rate.bitrate`
+- `zhou.ch5.sync.linespec`
+- `zhou.ch5.sync.symbol`
+- 抽检：qa/sample-day-01.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：符号同步无对应 baseband L3；若干引言/速率定义原子暂未映射（Day9 全量对齐）
+- 阻塞：无
+- 明日计划：按考纲优先继续其他章原子（或补 Ch5 遗漏细目）
+- 合并状态: 未合并

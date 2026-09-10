@@ -1,0 +1,217 @@
+{
+  "day": 3,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch6.m.mpsk.ser",
+      "type": "formula",
+      "name": "MPSK误符率上界",
+      "print_page": [
+        174
+      ],
+      "paragraph_ids": [
+        "zhou.p174.s02",
+        "zhou.p174.s04",
+        "zhou.p174.s06"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p174.s02",
+        "zhou.p174.s04"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.m.mpsk.vector",
+      "type": "formula",
+      "name": "MPSK二维矢量与相邻距离",
+      "print_page": [
+        170
+      ],
+      "paragraph_ids": [
+        "zhou.p170.s07",
+        "zhou.p170.s08",
+        "zhou.p170.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p170.s07",
+        "zhou.p170.s08",
+        "zhou.p170.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.m.qam.16",
+      "type": "example",
+      "name": "矩形星座16QAM",
+      "print_page": [
+        176,
+        177
+      ],
+      "paragraph_ids": [
+        "zhou.p176.s07",
+        "zhou.p177.s01",
+        "zhou.p177.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p176.s07",
+        "zhou.p177.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.m.qam.def",
+      "type": "definition",
+      "name": "正交幅度调制(MQAM)",
+      "print_page": [
+        175
+      ],
+      "paragraph_ids": [
+        "zhou.p175.s02",
+        "zhou.p175.s03",
+        "zhou.p175.s06",
+        "zhou.p175.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p175.s03",
+        "zhou.p175.s06"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.m.qam.ser",
+      "type": "formula",
+      "name": "矩形MQAM误符率",
+      "print_page": [
+        178,
+        179
+      ],
+      "paragraph_ids": [
+        "zhou.p178.s03",
+        "zhou.p179.s03",
+        "zhou.p179.s06"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p178.s03",
+        "zhou.p179.s03",
+        "zhou.p179.s06"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.msk.def",
+      "type": "definition",
+      "name": "最小移频键控(MSK)",
+      "print_page": [
+        185,
+        186
+      ],
+      "paragraph_ids": [
+        "zhou.p185.s04",
+        "zhou.p185.s06",
+        "zhou.p185.s07",
+        "zhou.p185.s08",
+        "zhou.p186.s02",
+        "zhou.p186.s06"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p185.s07",
+        "zhou.p185.s08",
+        "zhou.p186.s02",
+        "zhou.p186.s06"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.msk.iq",
+      "type": "procedure",
+      "name": "MSK正交调制与预编码",
+      "print_page": [
+        190,
+        191
+      ],
+      "paragraph_ids": [
+        "zhou.p190.s08",
+        "zhou.p190.s12",
+        "zhou.p190.s13",
+        "zhou.p191.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p190.s08",
+        "zhou.p190.s12",
+        "zhou.p190.s13",
+        "zhou.p191.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.msk.phase",
+      "type": "formula",
+      "name": "MSK相位路径连续性",
+      "print_page": [
+        188
+      ],
+      "paragraph_ids": [
+        "zhou.p188.s01",
+        "zhou.p188.s02",
+        "zhou.p188.s05",
+        "zhou.p188.s08"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p188.s02",
+        "zhou.p188.s05",
+        "zhou.p188.s08"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.space.map",
+      "type": "theorem",
+      "name": "最大后验概率(MAP)准则",
+      "print_page": [
+        157,
+        158,
+        159
+      ],
+      "paragraph_ids": [
+        "zhou.p157.s07",
+        "zhou.p158.s15",
+        "zhou.p158.s19",
+        "zhou.p159.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p158.s15",
+        "zhou.p158.s19",
+        "zhou.p159.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.space.vector.dim",
+      "type": "definition",
+      "name": "常用调制的信号空间维数",
+      "print_page": [
+        154
+      ],
+      "paragraph_ids": [
+        "zhou.p154.s09",
+        "zhou.p154.s10"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p154.s10"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "day": 2,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch6.bin.fsk.def",
+      "type": "definition",
+      "name": "二进制移频键控(2FSK)",
+      "print_page": [
+        132
+      ],
+      "paragraph_ids": [
+        "zhou.p132.s10",
+        "zhou.p132.s11",
+        "zhou.p132.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p132.s11",
+        "zhou.p132.s12"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.bin.fsk.discontinuous",
+      "type": "formula",
+      "name": "相位不连续2FSK信号",
+      "print_page": [
+        132,
+        133
+      ],
+      "paragraph_ids": [
+        "zhou.p132.s13",
+        "zhou.p132.s14",
+        "zhou.p133.s01",
+        "zhou.p133.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p132.s14",
+        "zhou.p133.s01",
+        "zhou.p133.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.bin.ook.def",
+      "type": "definition",
+      "name": "二进制通断键控(OOK/2ASK)",
+      "print_page": [
+        126
+      ],
+      "paragraph_ids": [
+        "zhou.p126.s05",
+        "zhou.p126.s06"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p126.s06"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.bin.ook.noncoherent",
+      "type": "procedure",
+      "name": "OOK非相干包络检波",
+      "print_page": [
+        130,
+        131
+      ],
+      "paragraph_ids": [
+        "zhou.p130.s10",
+        "zhou.p130.s11",
+        "zhou.p131.s11",
+        "zhou.p131.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p130.s11",
+        "zhou.p131.s11",
+        "zhou.p131.s12"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.bin.ook.noncoherent.ber",
+      "type": "formula",
+      "name": "OOK非相干解调高SNR误比特率",
+      "print_page": [
+        131,
+        132
+      ],
+      "paragraph_ids": [
+        "zhou.p131.s20",
+        "zhou.p132.s01",
+        "zhou.p132.s07",
+        "zhou.p132.s08"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p132.s07",
+        "zhou.p132.s08"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.bin.psk.carrier.sqring",
+      "type": "procedure",
+      "name": "2PSK载波同步平方环法",
+      "print_page": [
+        138
+      ],
+      "paragraph_ids": [
+        "zhou.p138.s05",
+        "zhou.p138.s06",
+        "zhou.p138.s13",
+        "zhou.p138.s14",
+        "zhou.p138.s15"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p138.s05",
+        "zhou.p138.s13",
+        "zhou.p138.s14",
+        "zhou.p138.s15"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.dqpsk.def",
+      "type": "definition",
+      "name": "差分四相移相键控(DQPSK)",
+      "print_page": [
+        147,
+        148
+      ],
+      "paragraph_ids": [
+        "zhou.p147.s03",
+        "zhou.p148.s02",
+        "zhou.p148.s03",
+        "zhou.p148.s04"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p147.s03",
+        "zhou.p148.s02",
+        "zhou.p148.s03",
+        "zhou.p148.s04"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.mod.classification",
+      "type": "definition",
+      "name": "数字调制参量分类(ASK/FSK/PSK/QAM)",
+      "print_page": [
+        125
+      ],
+      "paragraph_ids": [
+        "zhou.p125.s04",
+        "zhou.p125.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p125.s05"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.oqpsk.def",
+      "type": "definition",
+      "name": "偏移四相移相键控(OQPSK)",
+      "print_page": [
+        149
+      ],
+      "paragraph_ids": [
+        "zhou.p149.s02",
+        "zhou.p149.s03",
+        "zhou.p149.s08",
+        "zhou.p149.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p149.s03",
+        "zhou.p149.s08",
+        "zhou.p149.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch6.qpsk.vs.bpsk",
+      "type": "theorem",
+      "name": "QPSK与2PSK性能比较",
+      "print_page": [
+        144,
+        146
+      ],
+      "paragraph_ids": [
+        "zhou.p144.s10",
+        "zhou.p146.s16"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p146.s16"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

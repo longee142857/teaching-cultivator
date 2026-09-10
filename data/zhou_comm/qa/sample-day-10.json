@@ -1,0 +1,134 @@
+{
+  "day": 10,
+  "sample": [
+    {
+      "term": "奈奎斯特",
+      "hits": [
+        {
+          "atom_id": "zhou.ch5.isi.nyquist",
+          "name": "无ISI奈奎斯特准则"
+        },
+        {
+          "atom_id": "zhou.ch7.lowpass.sampling.theorem",
+          "name": "低通采样定理与奈奎斯特速率"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "ISI",
+      "hits": [
+        {
+          "atom_id": "zhou.ch11.flat.vs.freq.select",
+          "name": "平衰落与频率选择性：带宽相对相干带宽"
+        },
+        {
+          "atom_id": "zhou.ch5.isi.def",
+          "name": "码间干扰(ISI)"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "匹配滤波",
+      "hits": [
+        {
+          "atom_id": "zhou.ch10.pn.sync.capture.track",
+          "name": "伪码粗同步(捕获)与细同步(跟踪)"
+        },
+        {
+          "atom_id": "zhou.ch5.opt.mf.receive",
+          "name": "匹配滤波最佳接收"
+        },
+        {
+          "atom_id": "zhou.ch6.space.opt.mf.equiv",
+          "name": "匹配滤波器与相关解调器等价"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "眼图",
+      "hits": [
+        {
+          "atom_id": "zhou.ch5.eye.read",
+          "name": "眼图判读"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "升余弦",
+      "hits": [
+        {
+          "atom_id": "zhou.ch5.isi.rcos",
+          "name": "升余弦滚降无ISI传输"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "维特比",
+      "hits": [
+        {
+          "atom_id": "zhou.ch9.bch.decode.classes",
+          "name": "BCH译码：频域与时域两类"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "OFDM",
+      "hits": [
+        {
+          "atom_id": "zhou.ch11.flat.vs.freq.select",
+          "name": "平衰落与频率选择性：带宽相对相干带宽"
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.idea",
+          "name": "OFDM多载波基本思想：并行窄子信道平衰落"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "香农容量",
+      "hits": [
+        {
+          "atom_id": "zhou.ch8.additive.interference.classes",
+          "name": "加性干扰的来源与性质分类"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "CRC",
+      "hits": [
+        {
+          "atom_id": "zhou.ch9.bch.decode.classes",
+          "name": "BCH译码：频域与时域两类"
+        },
+        {
+          "atom_id": "zhou.ch9.crc.principle",
+          "name": "CRC原理与检错"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "term": "QPSK",
+      "hits": [
+        {
+          "atom_id": "zhou.ch6.qpsk.ber",
+          "name": "QPSK相干解调误比特率"
+        },
+        {
+          "atom_id": "zhou.ch6.qpsk.def",
+          "name": "四相移相键控(QPSK)定义"
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "all_pass": true
+}

@@ -1,0 +1,50 @@
+# Day 06
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 235 / 766 / 309 / 699
+- 本章批次：Ch2 确定信号分析 §2.1–2.6（print_page 9–26；全章止于习题前；含 FS/FT、能/功率谱、LTI、Hilbert/解析、带通、无失真、可实现性）
+- atoms（created_day=6, chapter=2）：38；有 role=core：38（100.0%）；L3 已映射原子数：38
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（38）：
+- `zhou.ch2.analytic.signal`
+- `zhou.ch2.bandpass.equiv.baseband`
+- `zhou.ch2.bandpass.iq.phase`
+- `zhou.ch2.bandwidth.defs`
+- `zhou.ch2.complex.envelope.def`
+- `zhou.ch2.complex.exp.eigen`
+- `zhou.ch2.complex.tone.line`
+- `zhou.ch2.conjugate.symmetry`
+- `zhou.ch2.convolution.product`
+- `zhou.ch2.cross.corr.psd`
+- `zhou.ch2.dc.delta`
+- `zhou.ch2.energy.autocorr.wk`
+- `zhou.ch2.esd.def`
+- `zhou.ch2.esd.psd.through.lti`
+- `zhou.ch2.filter.noncausal`
+- `zhou.ch2.filter.truncation.rolloff`
+- `zhou.ch2.fourier.series.def`
+- `zhou.ch2.fourier.transform.def`
+- `zhou.ch2.ft.area`
+- `zhou.ch2.ft.differentiation`
+- `zhou.ch2.hilbert.transform`
+- `zhou.ch2.ideal.lpf.bpf`
+- `zhou.ch2.ideal.sampling.spectrum`
+- `zhou.ch2.inner.product.energy`
+- `zhou.ch2.lti.convolution`
+- `zhou.ch2.nodistortion.envelope`
+- `zhou.ch2.nodistortion.hf`
+- `zhou.ch2.nodistortion.waveform`
+- `zhou.ch2.onesided.spectrum`
+- `zhou.ch2.parseval.inner`
+- `zhou.ch2.periodic.impulse.train`
+- `zhou.ch2.periodic.psd.example`
+- `zhou.ch2.power.autocorr.wk`
+- `zhou.ch2.power.signal.psd`
+- `zhou.ch2.rect.sinc`
+- `zhou.ch2.schwarz.inequality`
+- `zhou.ch2.signum.ft`
+- `zhou.ch2.time.freq.shift`
+- 抽检：qa/sample-day-06.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：2.6 可实现性无专用 syllabus L3，弱映射至 lti；Day1–5=40/35/38/36/48 未改动；未映射 0 条
+- 阻塞：无
+- 明日计划：Day7 = Ch3 随机过程（print 27–44）
+- 合并状态: 未合并

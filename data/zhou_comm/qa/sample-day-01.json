@@ -1,0 +1,215 @@
+{
+  "day": 1,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch5.line.ami",
+      "type": "definition",
+      "name": "AMI码",
+      "print_page": [
+        90
+      ],
+      "paragraph_ids": [
+        "zhou.p090.s11",
+        "zhou.p090.s15"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p090.s11",
+        "zhou.p090.s15"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.isi.rcos",
+      "type": "formula",
+      "name": "升余弦滚降无ISI传输",
+      "print_page": [
+        102,
+        103
+      ],
+      "paragraph_ids": [
+        "zhou.p102.s04",
+        "zhou.p103.s03",
+        "zhou.p103.s04",
+        "zhou.p103.s10"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p102.s04",
+        "zhou.p103.s03",
+        "zhou.p103.s04",
+        "zhou.p103.s10"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.pam.rz.bipolar",
+      "type": "definition",
+      "name": "双极性归零码",
+      "print_page": [
+        82
+      ],
+      "paragraph_ids": [
+        "zhou.p082.s04",
+        "zhou.p082.s06"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p082.s04",
+        "zhou.p082.s06"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.isi.rcos.impulse",
+      "type": "formula",
+      "name": "升余弦冲激响应",
+      "print_page": [
+        103
+      ],
+      "paragraph_ids": [
+        "zhou.p103.s06",
+        "zhou.p103.s08",
+        "zhou.p103.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p103.s06",
+        "zhou.p103.s08",
+        "zhou.p103.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.line.cmi.manchester",
+      "type": "definition",
+      "name": "CMI码与数字双相码",
+      "print_page": [
+        92,
+        93
+      ],
+      "paragraph_ids": [
+        "zhou.p092.s06",
+        "zhou.p093.s02",
+        "zhou.p093.s05",
+        "zhou.p093.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p092.s06",
+        "zhou.p093.s02",
+        "zhou.p093.s05",
+        "zhou.p093.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.pam.wave.def",
+      "type": "definition",
+      "name": "数字脉冲幅度调制(PAM)",
+      "print_page": [
+        79,
+        80
+      ],
+      "paragraph_ids": [
+        "zhou.p080.s07",
+        "zhou.p079.s21",
+        "zhou.p080.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p079.s21",
+        "zhou.p080.s03"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.line.hdb3",
+      "type": "definition",
+      "name": "HDB3码",
+      "print_page": [
+        91,
+        92
+      ],
+      "paragraph_ids": [
+        "zhou.p092.s04",
+        "zhou.p091.s05",
+        "zhou.p092.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p091.s05",
+        "zhou.p092.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.psd.continuous.discrete",
+      "type": "theorem",
+      "name": "连续谱与离散谱条件",
+      "print_page": [
+        86
+      ],
+      "paragraph_ids": [
+        "zhou.p086.s05",
+        "zhou.p086.s06",
+        "zhou.p086.s15"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p086.s05",
+        "zhou.p086.s06",
+        "zhou.p086.s15"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.isi.best.design",
+      "type": "procedure",
+      "name": "最佳基带传输收发滤波设计",
+      "print_page": [
+        104,
+        105
+      ],
+      "paragraph_ids": [
+        "zhou.p105.s03",
+        "zhou.p104.s03",
+        "zhou.p104.s04",
+        "zhou.p104.s20"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p104.s03",
+        "zhou.p104.s04",
+        "zhou.p104.s20"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch5.pr.precoding",
+      "type": "procedure",
+      "name": "部分响应预编码防误码传播",
+      "print_page": [
+        116,
+        117
+      ],
+      "paragraph_ids": [
+        "zhou.p116.s11",
+        "zhou.p116.s12",
+        "zhou.p116.s15",
+        "zhou.p117.s07"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p116.s11",
+        "zhou.p116.s12",
+        "zhou.p116.s15",
+        "zhou.p117.s07"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "day": 6,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch2.esd.def",
+      "type": "definition",
+      "name": "能量谱密度的定义",
+      "print_page": [
+        13
+      ],
+      "paragraph_ids": [
+        "zhou.p013.s15",
+        "zhou.p013.s16",
+        "zhou.p013.s18",
+        "zhou.p013.s19"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p013.s16",
+        "zhou.p013.s18",
+        "zhou.p013.s19"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.esd.psd.through.lti",
+      "type": "formula",
+      "name": "能谱/功率谱通过LTI的变换",
+      "print_page": [
+        18
+      ],
+      "paragraph_ids": [
+        "zhou.p018.s08",
+        "zhou.p018.s09",
+        "zhou.p018.s11"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p018.s09",
+        "zhou.p018.s11"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.filter.noncausal",
+      "type": "caveat",
+      "name": "非因果滤波器模型与绝对时延可忽略",
+      "print_page": [
+        24
+      ],
+      "paragraph_ids": [
+        "zhou.p024.s11",
+        "zhou.p024.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p024.s11",
+        "zhou.p024.s12"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.filter.truncation.rolloff",
+      "type": "caveat",
+      "name": "截断近似与滚降相对陡降的可实现性",
+      "print_page": [
+        24,
+        25,
+        26
+      ],
+      "paragraph_ids": [
+        "zhou.p024.s14",
+        "zhou.p024.s15",
+        "zhou.p024.s16",
+        "zhou.p025.s08",
+        "zhou.p026.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p024.s14",
+        "zhou.p024.s15",
+        "zhou.p024.s16",
+        "zhou.p025.s08",
+        "zhou.p026.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.fourier.series.def",
+      "type": "formula",
+      "name": "周期信号的傅里叶级数展开",
+      "print_page": [
+        9
+      ],
+      "paragraph_ids": [
+        "zhou.p009.s04",
+        "zhou.p009.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p009.s05"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.nodistortion.hf",
+      "type": "formula",
+      "name": "无失真条件的频域表述与时延特性",
+      "print_page": [
+        22
+      ],
+      "paragraph_ids": [
+        "zhou.p022.s15",
+        "zhou.p022.s16",
+        "zhou.p022.s17",
+        "zhou.p022.s19",
+        "zhou.p022.s20"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p022.s16",
+        "zhou.p022.s17",
+        "zhou.p022.s19",
+        "zhou.p022.s20"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.nodistortion.waveform",
+      "type": "definition",
+      "name": "波形无失真系统的时域定义",
+      "print_page": [
+        22
+      ],
+      "paragraph_ids": [
+        "zhou.p022.s11",
+        "zhou.p022.s12",
+        "zhou.p022.s13"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p022.s12",
+        "zhou.p022.s13"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.onesided.spectrum",
+      "type": "definition",
+      "name": "单边谱的定义与用法",
+      "print_page": [
+        16
+      ],
+      "paragraph_ids": [
+        "zhou.p016.s09",
+        "zhou.p016.s10",
+        "zhou.p016.s12",
+        "zhou.p016.s14"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p016.s09",
+        "zhou.p016.s10",
+        "zhou.p016.s12",
+        "zhou.p016.s14"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.periodic.psd.example",
+      "type": "example",
+      "name": "周期信号功率谱密度示例",
+      "print_page": [
+        15,
+        16
+      ],
+      "paragraph_ids": [
+        "zhou.p015.s20",
+        "zhou.p015.s24",
+        "zhou.p016.s04"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p015.s20",
+        "zhou.p015.s24",
+        "zhou.p016.s04"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch2.schwarz.inequality",
+      "type": "theorem",
+      "name": "许瓦兹不等式与等式条件",
+      "print_page": [
+        10
+      ],
+      "paragraph_ids": [
+        "zhou.p010.s02",
+        "zhou.p010.s06",
+        "zhou.p010.s07",
+        "zhou.p010.s08"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p010.s06",
+        "zhou.p010.s07",
+        "zhou.p010.s08"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "day": 7,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch3.gauss.process.def",
+      "type": "definition",
+      "name": "高斯过程的定义与封闭性",
+      "print_page": [
+        34
+      ],
+      "paragraph_ids": [
+        "zhou.p034.s06",
+        "zhou.p034.s07",
+        "zhou.p034.s09",
+        "zhou.p034.s10"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p034.s07",
+        "zhou.p034.s09",
+        "zhou.p034.s10"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.joint.gaussian",
+      "type": "definition",
+      "name": "联合高斯随机变量",
+      "print_page": [
+        34
+      ],
+      "paragraph_ids": [
+        "zhou.p034.s01",
+        "zhou.p034.s02",
+        "zhou.p034.s03",
+        "zhou.p034.s04",
+        "zhou.p034.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p034.s02",
+        "zhou.p034.s03",
+        "zhou.p034.s04",
+        "zhou.p034.s05"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.mf.as.correlator",
+      "type": "theorem",
+      "name": "匹配滤波器等价于滑动相关器",
+      "print_page": [
+        40
+      ],
+      "paragraph_ids": [
+        "zhou.p040.s08",
+        "zhou.p040.s09",
+        "zhou.p040.s10"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p040.s09",
+        "zhou.p040.s10"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.mf.bandpass.example",
+      "type": "example",
+      "name": "矩形包络带通信号的匹配与包络匹配对比",
+      "print_page": [
+        40,
+        41
+      ],
+      "paragraph_ids": [
+        "zhou.p040.s21",
+        "zhou.p040.s22",
+        "zhou.p041.s01",
+        "zhou.p041.s11",
+        "zhou.p041.s13",
+        "zhou.p041.s20"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p040.s21",
+        "zhou.p040.s22",
+        "zhou.p041.s01",
+        "zhou.p041.s11",
+        "zhou.p041.s13",
+        "zhou.p041.s20"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.mf.def",
+      "type": "definition",
+      "name": "匹配滤波器的定义与传递函数",
+      "print_page": [
+        39,
+        40
+      ],
+      "paragraph_ids": [
+        "zhou.p039.s17",
+        "zhou.p040.s01",
+        "zhou.p040.s03",
+        "zhou.p040.s05",
+        "zhou.p040.s06",
+        "zhou.p040.s07"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p039.s17",
+        "zhou.p040.s01",
+        "zhou.p040.s03",
+        "zhou.p040.s05",
+        "zhou.p040.s06",
+        "zhou.p040.s07"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.mf.envelope.match",
+      "type": "definition",
+      "name": "对复包络匹配的带通匹配滤波器",
+      "print_page": [
+        40,
+        41
+      ],
+      "paragraph_ids": [
+        "zhou.p040.s12",
+        "zhou.p040.s13",
+        "zhou.p040.s14",
+        "zhou.p040.s16",
+        "zhou.p040.s17",
+        "zhou.p041.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p040.s12",
+        "zhou.p040.s13",
+        "zhou.p040.s14",
+        "zhou.p040.s16",
+        "zhou.p040.s17",
+        "zhou.p041.s12"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.rp.avg.psd",
+      "type": "definition",
+      "name": "随机过程的平均功率谱密度与平均自相关",
+      "print_page": [
+        28,
+        29
+      ],
+      "paragraph_ids": [
+        "zhou.p028.s22",
+        "zhou.p029.s01",
+        "zhou.p029.s02",
+        "zhou.p029.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p029.s01",
+        "zhou.p029.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.rp.def",
+      "type": "definition",
+      "name": "随机过程的定义与统计特性给定",
+      "print_page": [
+        27
+      ],
+      "paragraph_ids": [
+        "zhou.p027.s03",
+        "zhou.p027.s07",
+        "zhou.p027.s08"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p027.s07",
+        "zhou.p027.s08"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.rp.zero.mean.decomp",
+      "type": "caveat",
+      "name": "任意随机过程可分解为零均值加确定均值函数",
+      "print_page": [
+        28
+      ],
+      "paragraph_ids": [
+        "zhou.p028.s05",
+        "zhou.p028.s06",
+        "zhou.p028.s07"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p028.s05",
+        "zhou.p028.s06",
+        "zhou.p028.s07"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch3.wss.sequence",
+      "type": "definition",
+      "name": "宽平稳随机序列",
+      "print_page": [
+        32
+      ],
+      "paragraph_ids": [
+        "zhou.p032.s09",
+        "zhou.p032.s10",
+        "zhou.p032.s11",
+        "zhou.p032.s12",
+        "zhou.p032.s13"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p032.s10",
+        "zhou.p032.s11",
+        "zhou.p032.s12",
+        "zhou.p032.s13"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}
