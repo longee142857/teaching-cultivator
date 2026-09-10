@@ -1,0 +1,10 @@
+{
+  "_placeholder": true,
+  "_note": "Replace with ingest_report.json from zhou_comm_atoms_delivery.tar.gz. Counts below are from the accepted pack brief, not re-measured.",
+  "pages": 433,
+  "paragraphs": 6532,
+  "atoms": 411,
+  "l3_covered": 149,
+  "l3_total": 150,
+  "l3_gap": ["comm.analog_mod.nbfm"]
+}
