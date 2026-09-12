@@ -1,0 +1,1271 @@
+{
+  "day": 11,
+  "seed": 20260911,
+  "n": 20,
+  "all_pass": true,
+  "samples": [
+    {
+      "l3_id": "comm.analog_mod.dsb",
+      "n_atoms": 2,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch4.dsb.sc.gen",
+          "name": "DSB-SC 信号产生",
+          "confidence": 0.98,
+          "print_page": [
+            46
+          ],
+          "paragraph_ids": [
+            "zhou.p046.s04",
+            "zhou.p046.s06",
+            "zhou.p046.s07"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch4.dsb.spectrum.bw",
+          "name": "DSB-SC 频谱与带宽",
+          "confidence": 0.95,
+          "print_page": [
+            46,
+            47
+          ],
+          "paragraph_ids": [
+            "zhou.p046.s13",
+            "zhou.p046.s15",
+            "zhou.p046.s17",
+            "zhou.p047.s01"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.baseband.isi.best",
+      "n_atoms": 1,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch5.isi.best.design",
+          "name": "最佳基带传输收发滤波设计",
+          "confidence": 0.95,
+          "print_page": [
+            104,
+            105
+          ],
+          "paragraph_ids": [
+            "zhou.p104.s03",
+            "zhou.p104.s04",
+            "zhou.p104.s20",
+            "zhou.p105.s03"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.baseband.isi.def",
+      "n_atoms": 1,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch5.isi.def",
+          "name": "码间干扰(ISI)",
+          "confidence": 0.98,
+          "print_page": [
+            97,
+            99
+          ],
+          "paragraph_ids": [
+            "zhou.p097.s05",
+            "zhou.p099.s15",
+            "zhou.p099.s18"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.baseband.opt.ber",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch5.opt.ber.bipolar",
+          "name": "双极性2PAM误比特率",
+          "confidence": 0.95,
+          "print_page": [
+            96
+          ],
+          "paragraph_ids": [
+            "zhou.p096.s06",
+            "zhou.p096.s18"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch5.opt.ber.unipolar",
+          "name": "单极性2PAM误比特率",
+          "confidence": 0.95,
+          "print_page": [
+            96,
+            97
+          ],
+          "paragraph_ids": [
+            "zhou.p096.s13",
+            "zhou.p097.s01"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch5.rate.ber.ser",
+          "name": "误比特率与误符率",
+          "confidence": 0.75,
+          "print_page": [
+            79
+          ],
+          "paragraph_ids": [
+            "zhou.p079.s13",
+            "zhou.p079.s15",
+            "zhou.p079.s17"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.baseband.opt.snr",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch5.opt.ber.bipolar",
+          "name": "双极性2PAM误比特率",
+          "confidence": 0.9,
+          "print_page": [
+            96
+          ],
+          "paragraph_ids": [
+            "zhou.p096.s06",
+            "zhou.p096.s18"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch5.opt.ber.unipolar",
+          "name": "单极性2PAM误比特率",
+          "confidence": 0.85,
+          "print_page": [
+            96,
+            97
+          ],
+          "paragraph_ids": [
+            "zhou.p096.s13",
+            "zhou.p097.s01"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch5.opt.awgn.model",
+          "name": "加性白高斯噪声信道(AWGN)",
+          "confidence": 0.7,
+          "print_page": [
+            94
+          ],
+          "paragraph_ids": [
+            "zhou.p094.s09",
+            "zhou.p094.s13"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.channel.cap.awgn",
+      "n_atoms": 4,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch8.cap.awgn.symbol",
+          "name": "AWGN 信道每符号容量",
+          "confidence": 0.98,
+          "print_page": [
+            273
+          ],
+          "paragraph_ids": [
+            "zhou.p273.s02",
+            "zhou.p273.s03",
+            "zhou.p273.s04",
+            "zhou.p273.s06",
+            "zhou.p273.s07"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch8.cap.shannon.bandwidth.snr",
+          "name": "限带 AWGN 香农公式（带宽–SNR）",
+          "confidence": 0.95,
+          "print_page": [
+            273
+          ],
+          "paragraph_ids": [
+            "zhou.p273.s11",
+            "zhou.p273.s12",
+            "zhou.p273.s13",
+            "zhou.p273.s14",
+            "zhou.p273.s16",
+            "zhou.p273.s17"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch8.cap.infinite.bw.eb.min",
+          "name": "无限带宽容量上界与最小比特能量",
+          "confidence": 0.85,
+          "print_page": [
+            273
+          ],
+          "paragraph_ids": [
+            "zhou.p273.s17",
+            "zhou.p273.s18",
+            "zhou.p273.s20",
+            "zhou.p273.s22",
+            "zhou.p273.s24",
+            "zhou.p273.s25"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch8.additive.interference.classes",
+          "name": "加性干扰的来源与性质分类",
+          "confidence": 0.65,
+          "print_page": [
+            267
+          ],
+          "paragraph_ids": [
+            "zhou.p267.s01",
+            "zhou.p267.s02"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.coding.cyclic.syndrome",
+      "n_atoms": 4,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch9.bch.peterson",
+          "name": "彼得森BCH译码基本步骤",
+          "confidence": 0.72,
+          "print_page": [
+            307
+          ],
+          "paragraph_ids": [
+            "zhou.p307.s05",
+            "zhou.p307.s06",
+            "zhou.p307.s07",
+            "zhou.p307.s08"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch9.crc.principle",
+          "name": "CRC原理与检错",
+          "confidence": 0.7,
+          "print_page": [
+            302
+          ],
+          "paragraph_ids": [
+            "zhou.p302.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch9.rs.decode.diff",
+          "name": "RS译码相对BCH须再求错误值",
+          "confidence": 0.65,
+          "print_page": [
+            308
+          ],
+          "paragraph_ids": [
+            "zhou.p308.s15"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch9.bch.decode.classes",
+          "name": "BCH译码：频域与时域两类",
+          "confidence": 0.62,
+          "print_page": [
+            307
+          ],
+          "paragraph_ids": [
+            "zhou.p307.s04"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.passband.bin.dpsk",
+      "n_atoms": 5,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch6.bin.dpsk.ber",
+          "name": "DPSK误比特率",
+          "confidence": 0.95,
+          "print_page": [
+            141,
+            142
+          ],
+          "paragraph_ids": [
+            "zhou.p141.s14",
+            "zhou.p141.s16",
+            "zhou.p141.s17",
+            "zhou.p141.s19",
+            "zhou.p142.s01"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.bin.dpsk.demod",
+          "name": "DPSK解调方案",
+          "confidence": 0.95,
+          "print_page": [
+            141
+          ],
+          "paragraph_ids": [
+            "zhou.p141.s05",
+            "zhou.p141.s07"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.bin.dpsk.encode",
+          "name": "DPSK差分编码与信号特点",
+          "confidence": 0.95,
+          "print_page": [
+            140
+          ],
+          "paragraph_ids": [
+            "zhou.p140.s03",
+            "zhou.p140.s07",
+            "zhou.p140.s08",
+            "zhou.p140.s12",
+            "zhou.p140.s14"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.bin.psk.phase.ambiguity",
+          "name": "恢复载波0/π相位模糊",
+          "confidence": 0.75,
+          "print_page": [
+            139,
+            140
+          ],
+          "paragraph_ids": [
+            "zhou.p139.s09",
+            "zhou.p139.s10",
+            "zhou.p140.s01",
+            "zhou.p140.s02"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.dqpsk.def",
+          "name": "差分四相移相键控(DQPSK)",
+          "confidence": 0.7,
+          "print_page": [
+            147,
+            148
+          ],
+          "paragraph_ids": [
+            "zhou.p147.s03",
+            "zhou.p148.s02",
+            "zhou.p148.s03",
+            "zhou.p148.s04"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.passband.mfsk.spectrum",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch6.mfsk.spectrum",
+          "name": "正交MFSK频谱与频带利用率",
+          "confidence": 0.9,
+          "print_page": [
+            182,
+            183
+          ],
+          "paragraph_ids": [
+            "zhou.p182.s13",
+            "zhou.p183.s01",
+            "zhou.p183.s05",
+            "zhou.p183.s06"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.mfsk.def",
+          "name": "M进制移频键控(MFSK)",
+          "confidence": 0.8,
+          "print_page": [
+            180,
+            181
+          ],
+          "paragraph_ids": [
+            "zhou.p180.s06",
+            "zhou.p180.s07",
+            "zhou.p181.s03",
+            "zhou.p181.s06"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.mfsk.compare",
+          "name": "MFSK与MASK/MPSK/MQAM比较要点",
+          "confidence": 0.7,
+          "print_page": [
+            150,
+            180,
+            183,
+            184
+          ],
+          "paragraph_ids": [
+            "zhou.p150.s05",
+            "zhou.p180.s05",
+            "zhou.p183.s06",
+            "zhou.p184.s12"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.passband.space.vector",
+      "n_atoms": 8,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch6.space.vector.expand",
+          "name": "信号正交展开与完备性",
+          "confidence": 0.9,
+          "print_page": [
+            152,
+            153
+          ],
+          "paragraph_ids": [
+            "zhou.p152.s16",
+            "zhou.p152.s22",
+            "zhou.p153.s01",
+            "zhou.p153.s04",
+            "zhou.p153.s05"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.space.vector.idea",
+          "name": "数字调制信号的矢量表示思想",
+          "confidence": 0.9,
+          "print_page": [
+            151
+          ],
+          "paragraph_ids": [
+            "zhou.p151.s05",
+            "zhou.p151.s06"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.mfsk.vector",
+          "name": "正交MFSK的M维矢量",
+          "confidence": 0.85,
+          "print_page": [
+            181,
+            182
+          ],
+          "paragraph_ids": [
+            "zhou.p181.s08",
+            "zhou.p181.s17",
+            "zhou.p182.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.space.vector.dim",
+          "name": "常用调制的信号空间维数",
+          "confidence": 0.85,
+          "print_page": [
+            154
+          ],
+          "paragraph_ids": [
+            "zhou.p154.s09",
+            "zhou.p154.s10"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.space.constellation",
+          "name": "信号星座与欧氏距离",
+          "confidence": 0.8,
+          "print_page": [
+            153,
+            154
+          ],
+          "paragraph_ids": [
+            "zhou.p153.s20",
+            "zhou.p154.s04",
+            "zhou.p154.s06",
+            "zhou.p154.s07",
+            "zhou.p154.s08"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.m.mask.vector",
+          "name": "MASK一维矢量与最小距离",
+          "confidence": 0.75,
+          "print_page": [
+            165
+          ],
+          "paragraph_ids": [
+            "zhou.p165.s03",
+            "zhou.p165.s04",
+            "zhou.p165.s08"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.m.mpsk.vector",
+          "name": "MPSK二维矢量与相邻距离",
+          "confidence": 0.7,
+          "print_page": [
+            170
+          ],
+          "paragraph_ids": [
+            "zhou.p170.s07",
+            "zhou.p170.s08",
+            "zhou.p170.s09"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch6.m.qam.vector",
+          "name": "MQAM二维矢量与矩形星座距离",
+          "confidence": 0.7,
+          "print_page": [
+            175,
+            176
+          ],
+          "paragraph_ids": [
+            "zhou.p175.s21",
+            "zhou.p176.s05",
+            "zhou.p176.s06"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.sig_rand.bandpass.sig",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch2.bandpass.iq.phase",
+          "name": "带通信号的I/Q与包络相位表示",
+          "confidence": 0.95,
+          "print_page": [
+            21
+          ],
+          "paragraph_ids": [
+            "zhou.p021.s02",
+            "zhou.p021.s03",
+            "zhou.p021.s05",
+            "zhou.p021.s06"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch2.complex.envelope.def",
+          "name": "带通信号的复包络定义",
+          "confidence": 0.95,
+          "print_page": [
+            19,
+            20
+          ],
+          "paragraph_ids": [
+            "zhou.p019.s17",
+            "zhou.p019.s19",
+            "zhou.p019.s20",
+            "zhou.p020.s01",
+            "zhou.p020.s05"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch2.bandpass.equiv.baseband",
+          "name": "带通系统的等效基带分析",
+          "confidence": 0.75,
+          "print_page": [
+            21
+          ],
+          "paragraph_ids": [
+            "zhou.p021.s10",
+            "zhou.p021.s13",
+            "zhou.p021.s17",
+            "zhou.p021.s19",
+            "zhou.p021.s20"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.sig_rand.mf.corr",
+      "n_atoms": 4,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch3.mf.as.correlator",
+          "name": "匹配滤波器等价于滑动相关器",
+          "confidence": 0.95,
+          "print_page": [
+            40
+          ],
+          "paragraph_ids": [
+            "zhou.p040.s08",
+            "zhou.p040.s09",
+            "zhou.p040.s10"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.mf.bandpass.example",
+          "name": "矩形包络带通信号的匹配与包络匹配对比",
+          "confidence": 0.8,
+          "print_page": [
+            40,
+            41
+          ],
+          "paragraph_ids": [
+            "zhou.p040.s21",
+            "zhou.p040.s22",
+            "zhou.p041.s01",
+            "zhou.p041.s11",
+            "zhou.p041.s13",
+            "zhou.p041.s20"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.mf.envelope.match",
+          "name": "对复包络匹配的带通匹配滤波器",
+          "confidence": 0.8,
+          "print_page": [
+            40,
+            41
+          ],
+          "paragraph_ids": [
+            "zhou.p040.s12",
+            "zhou.p040.s13",
+            "zhou.p040.s14",
+            "zhou.p040.s16",
+            "zhou.p040.s17",
+            "zhou.p041.s12"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.awgn.inner.product",
+          "name": "高斯白噪声与确定信号的内积（投影）",
+          "confidence": 0.7,
+          "print_page": [
+            36
+          ],
+          "paragraph_ids": [
+            "zhou.p036.s01",
+            "zhou.p036.s02",
+            "zhou.p036.s03",
+            "zhou.p036.s04",
+            "zhou.p036.s08",
+            "zhou.p036.s09"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.sig_rand.nodistortion",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch2.nodistortion.hf",
+          "name": "无失真条件的频域表述与时延特性",
+          "confidence": 0.95,
+          "print_page": [
+            22
+          ],
+          "paragraph_ids": [
+            "zhou.p022.s15",
+            "zhou.p022.s16",
+            "zhou.p022.s17",
+            "zhou.p022.s19",
+            "zhou.p022.s20"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch2.nodistortion.waveform",
+          "name": "波形无失真系统的时域定义",
+          "confidence": 0.95,
+          "print_page": [
+            22
+          ],
+          "paragraph_ids": [
+            "zhou.p022.s11",
+            "zhou.p022.s12",
+            "zhou.p022.s13"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch2.nodistortion.envelope",
+          "name": "复包络无失真与群时延",
+          "confidence": 0.93,
+          "print_page": [
+            23
+          ],
+          "paragraph_ids": [
+            "zhou.p023.s05",
+            "zhou.p023.s06",
+            "zhou.p023.s09",
+            "zhou.p023.s11",
+            "zhou.p023.s12",
+            "zhou.p023.s20"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.psd",
+      "n_atoms": 7,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch3.rp.avg.psd",
+          "name": "随机过程的平均功率谱密度与平均自相关",
+          "confidence": 0.95,
+          "print_page": [
+            28,
+            29
+          ],
+          "paragraph_ids": [
+            "zhou.p028.s22",
+            "zhou.p029.s01",
+            "zhou.p029.s02",
+            "zhou.p029.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.rp.wiener.khinchin",
+          "name": "维纳–辛钦定理（平均功率谱）",
+          "confidence": 0.95,
+          "print_page": [
+            29
+          ],
+          "paragraph_ids": [
+            "zhou.p029.s05",
+            "zhou.p029.s06",
+            "zhou.p029.s07",
+            "zhou.p029.s08",
+            "zhou.p029.s09",
+            "zhou.p029.s11"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.random.phase.tone",
+          "name": "随机相位余弦波的平稳性与线谱",
+          "confidence": 0.85,
+          "print_page": [
+            30
+          ],
+          "paragraph_ids": [
+            "zhou.p030.s12",
+            "zhou.p030.s13",
+            "zhou.p030.s15",
+            "zhou.p030.s16",
+            "zhou.p030.s17",
+            "zhou.p030.s18"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.rp.psd.through.lti",
+          "name": "随机过程通过滤波器的功率谱变换",
+          "confidence": 0.85,
+          "print_page": [
+            29
+          ],
+          "paragraph_ids": [
+            "zhou.p029.s12",
+            "zhou.p029.s13",
+            "zhou.p029.s15",
+            "zhou.p029.s16",
+            "zhou.p029.s17"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.ergodic.psd",
+          "name": "平稳遍历过程样本功率谱等于过程功率谱",
+          "confidence": 0.8,
+          "print_page": [
+            30
+          ],
+          "paragraph_ids": [
+            "zhou.p030.s10",
+            "zhou.p030.s11"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch3.wss.def",
+          "name": "宽平稳（广义平稳）随机过程",
+          "confidence": 0.75,
+          "print_page": [
+            29,
+            30
+          ],
+          "paragraph_ids": [
+            "zhou.p029.s19",
+            "zhou.p029.s20",
+            "zhou.p029.s21",
+            "zhou.p030.s01"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch2.power.autocorr.wk",
+          "name": "功率信号自相关与功率谱维纳–辛钦",
+          "confidence": 0.7,
+          "print_page": [
+            14
+          ],
+          "paragraph_ids": [
+            "zhou.p014.s16",
+            "zhou.p014.s17",
+            "zhou.p014.s19",
+            "zhou.p014.s21",
+            "zhou.p014.s22"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.source.pcm.tdm",
+      "n_atoms": 3,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch7.pcm.tdm",
+          "name": "PCM 时分复用与数字复接",
+          "confidence": 0.98,
+          "print_page": [
+            241,
+            242
+          ],
+          "paragraph_ids": [
+            "zhou.p241.s07",
+            "zhou.p241.s08",
+            "zhou.p242.s05"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.pcm.encoding",
+          "name": "PCM：采样、量化与折叠码编码",
+          "confidence": 0.9,
+          "print_page": [
+            239,
+            240
+          ],
+          "paragraph_ids": [
+            "zhou.p239.s03",
+            "zhou.p240.s04",
+            "zhou.p240.s08",
+            "zhou.p240.s09"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.source.memoryless",
+          "name": "离散无记忆序列信源",
+          "confidence": 0.65,
+          "print_page": [
+            209
+          ],
+          "paragraph_ids": [
+            "zhou.p209.s17",
+            "zhou.p209.s18",
+            "zhou.p209.s19"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.source.pcm.uniform",
+      "n_atoms": 5,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch7.uniform.quantizer",
+          "name": "均匀量化器与 S/N_q=M^2",
+          "confidence": 0.98,
+          "print_page": [
+            235,
+            236
+          ],
+          "paragraph_ids": [
+            "zhou.p235.s23",
+            "zhou.p236.s01",
+            "zhou.p236.s02",
+            "zhou.p236.s03",
+            "zhou.p236.s04"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.scalar.quantization",
+          "name": "标量量化映射与量化噪声",
+          "confidence": 0.9,
+          "print_page": [
+            234,
+            235
+          ],
+          "paragraph_ids": [
+            "zhou.p234.s04",
+            "zhou.p234.s05",
+            "zhou.p235.s07",
+            "zhou.p235.s10",
+            "zhou.p235.s21"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.digitization.three.steps",
+          "name": "模拟信号数字化三步骤",
+          "confidence": 0.8,
+          "print_page": [
+            226,
+            233
+          ],
+          "paragraph_ids": [
+            "zhou.p226.s08",
+            "zhou.p226.s11",
+            "zhou.p233.s16"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.nonuniform.best.quantizer",
+          "name": "非均匀/最佳量化：质心与中点条件",
+          "confidence": 0.7,
+          "print_page": [
+            236,
+            237
+          ],
+          "paragraph_ids": [
+            "zhou.p236.s06",
+            "zhou.p236.s17",
+            "zhou.p237.s05"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.vector.quantization",
+          "name": "矢量量化与逼近 R(D)",
+          "confidence": 0.65,
+          "print_page": [
+            242,
+            243,
+            244
+          ],
+          "paragraph_ids": [
+            "zhou.p242.s07",
+            "zhou.p243.s07",
+            "zhou.p244.s08",
+            "zhou.p244.s10"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.source.rd.rstar",
+      "n_atoms": 5,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch7.rd.function.def",
+          "name": "信息率失真函数 R(D)",
+          "confidence": 0.98,
+          "print_page": [
+            223,
+            224
+          ],
+          "paragraph_ids": [
+            "zhou.p223.s22",
+            "zhou.p224.s02",
+            "zhou.p224.s03",
+            "zhou.p224.s11"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.rd.function.props",
+          "name": "R(D) 曲线的基本性质",
+          "confidence": 0.95,
+          "print_page": [
+            224
+          ],
+          "paragraph_ids": [
+            "zhou.p224.s07",
+            "zhou.p224.s09",
+            "zhou.p224.s10",
+            "zhou.p224.s11"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.limited.distortion.theorem",
+          "name": "限失真信源编码定理",
+          "confidence": 0.85,
+          "print_page": [
+            225,
+            226
+          ],
+          "paragraph_ids": [
+            "zhou.p225.s10",
+            "zhou.p225.s15",
+            "zhou.p226.s02",
+            "zhou.p226.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.vector.quantization",
+          "name": "矢量量化与逼近 R(D)",
+          "confidence": 0.85,
+          "print_page": [
+            242,
+            243,
+            244
+          ],
+          "paragraph_ids": [
+            "zhou.p242.s07",
+            "zhou.p243.s07",
+            "zhou.p244.s08",
+            "zhou.p244.s10"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch7.distortion.measure",
+          "name": "失真测度与平均失真、允许失真 D",
+          "confidence": 0.8,
+          "print_page": [
+            223
+          ],
+          "paragraph_ids": [
+            "zhou.p223.s02",
+            "zhou.p223.s03",
+            "zhou.p223.s05",
+            "zhou.p223.s09",
+            "zhou.p223.s15"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.spread.ofdm.cp",
+      "n_atoms": 5,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch11.ofdm.cp.circular.conv",
+          "name": "循环前缀使信道呈现循环卷积并保持正交",
+          "confidence": 0.95,
+          "print_page": [
+            374,
+            375
+          ],
+          "paragraph_ids": [
+            "zhou.p374.s10",
+            "zhou.p374.s11",
+            "zhou.p375.s01"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.cp.def",
+          "name": "循环前缀：尾部复制为前缀",
+          "confidence": 0.95,
+          "print_page": [
+            374
+          ],
+          "paragraph_ids": [
+            "zhou.p374.s05",
+            "zhou.p374.s07",
+            "zhou.p374.s09"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.guard.blank.ici",
+          "name": "空闲保护间隔在多径下破坏子载波正交性",
+          "confidence": 0.85,
+          "print_page": [
+            373,
+            374
+          ],
+          "paragraph_ids": [
+            "zhou.p373.s07",
+            "zhou.p373.s09",
+            "zhou.p374.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.dab.example",
+          "name": "DAB中的OFDM应用参数示例",
+          "confidence": 0.7,
+          "print_page": [
+            378
+          ],
+          "paragraph_ids": [
+            "zhou.p378.s04",
+            "zhou.p378.s06",
+            "zhou.p378.s08"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.txrx.interleave",
+          "name": "OFDM收发信机：编码交织与IFFT/加CP链路",
+          "confidence": 0.7,
+          "print_page": [
+            375
+          ],
+          "paragraph_ids": [
+            "zhou.p375.s07",
+            "zhou.p375.s08",
+            "zhou.p375.s10",
+            "zhou.p375.s12"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.spread.ofdm.idea",
+      "n_atoms": 7,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch11.ofdm.idea",
+          "name": "OFDM多载波基本思想：并行窄子信道平衰落",
+          "confidence": 0.95,
+          "print_page": [
+            368
+          ],
+          "paragraph_ids": [
+            "zhou.p368.s02",
+            "zhou.p368.s03",
+            "zhou.p368.s04",
+            "zhou.p368.s05"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.bpsk.structure",
+          "name": "BPSK-OFDM串并变换与正交子载波收发",
+          "confidence": 0.9,
+          "print_page": [
+            369,
+            370
+          ],
+          "paragraph_ids": [
+            "zhou.p369.s01",
+            "zhou.p370.s01",
+            "zhou.p370.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.qam.envelope",
+          "name": "QAM-OFDM信号与复包络表示",
+          "confidence": 0.9,
+          "print_page": [
+            370,
+            371
+          ],
+          "paragraph_ids": [
+            "zhou.p370.s05",
+            "zhou.p371.s02",
+            "zhou.p371.s03",
+            "zhou.p371.s05",
+            "zhou.p371.s07",
+            "zhou.p371.s10",
+            "zhou.p371.s11"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.spacing.2d",
+          "name": "二维调制下子载波最小正交间隔为1/Ts",
+          "confidence": 0.9,
+          "print_page": [
+            371,
+            372
+          ],
+          "paragraph_ids": [
+            "zhou.p371.s12",
+            "zhou.p371.s13",
+            "zhou.p372.s01",
+            "zhou.p372.s03",
+            "zhou.p372.s04"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.flat.vs.freq.select",
+          "name": "平衰落与频率选择性：带宽相对相干带宽",
+          "confidence": 0.85,
+          "print_page": [
+            367,
+            368
+          ],
+          "paragraph_ids": [
+            "zhou.p367.s08",
+            "zhou.p368.s01",
+            "zhou.p368.s03"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.dab.example",
+          "name": "DAB中的OFDM应用参数示例",
+          "confidence": 0.8,
+          "print_page": [
+            378
+          ],
+          "paragraph_ids": [
+            "zhou.p378.s04",
+            "zhou.p378.s06",
+            "zhou.p378.s08"
+          ]
+        },
+        {
+          "atom_id": "zhou.ch11.ofdm.txrx.interleave",
+          "name": "OFDM收发信机：编码交织与IFFT/加CP链路",
+          "confidence": 0.8,
+          "print_page": [
+            375
+          ],
+          "paragraph_ids": [
+            "zhou.p375.s07",
+            "zhou.p375.s08",
+            "zhou.p375.s10",
+            "zhou.p375.s12"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "l3_id": "comm.spread.rake.vs_eq",
+      "n_atoms": 1,
+      "atoms": [
+        {
+          "atom_id": "zhou.ch10.rake.vs.multipath",
+          "name": "扩频可分辨多径与Rake相对均衡的优势概念",
+          "confidence": 0.85,
+          "print_page": [
+            358,
+            362
+          ],
+          "paragraph_ids": [
+            "zhou.p358.s07",
+            "zhou.p358.s13",
+            "zhou.p362.s03",
+            "zhou.p362.s10"
+          ]
+        }
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

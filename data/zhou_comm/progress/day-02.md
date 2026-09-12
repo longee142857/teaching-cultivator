@@ -1,0 +1,47 @@
+# Day 02
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 75 / 248 / 103 / 232
+- 本章批次：Ch6 §6.1–6.3 数字信号的频带传输（print_page 125–149；止于 zhou.p150.s02「6.4 M进制」之前；习题未触）
+- atoms（created_day=2, chapter=6）：35；有 role=core：35（100.0%）；L3 已映射原子数：32
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（35）：
+- `zhou.ch6.bin.dpsk.ber`
+- `zhou.ch6.bin.dpsk.demod`
+- `zhou.ch6.bin.dpsk.encode`
+- `zhou.ch6.bin.fsk.bw`
+- `zhou.ch6.bin.fsk.coherent.ber`
+- `zhou.ch6.bin.fsk.continuous`
+- `zhou.ch6.bin.fsk.correlation`
+- `zhou.ch6.bin.fsk.def`
+- `zhou.ch6.bin.fsk.discontinuous`
+- `zhou.ch6.bin.fsk.noncoherent.ber`
+- `zhou.ch6.bin.ook.coherent.ber`
+- `zhou.ch6.bin.ook.correlate`
+- `zhou.ch6.bin.ook.def`
+- `zhou.ch6.bin.ook.noncoherent`
+- `zhou.ch6.bin.ook.noncoherent.ber`
+- `zhou.ch6.bin.ook.psd`
+- `zhou.ch6.bin.ook.signal`
+- `zhou.ch6.bin.psk.ber`
+- `zhou.ch6.bin.psk.carrier.costas`
+- `zhou.ch6.bin.psk.carrier.sqring`
+- `zhou.ch6.bin.psk.def`
+- `zhou.ch6.bin.psk.phase.ambiguity`
+- `zhou.ch6.bin.psk.psd`
+- `zhou.ch6.dqpsk.def`
+- `zhou.ch6.mod.bin.m.linear.memory`
+- `zhou.ch6.mod.classification`
+- `zhou.ch6.oqpsk.def`
+- `zhou.ch6.oqpsk.vs.qpsk`
+- `zhou.ch6.passband.intro`
+- `zhou.ch6.qpsk.ber`
+- `zhou.ch6.qpsk.constellation`
+- `zhou.ch6.qpsk.def`
+- `zhou.ch6.qpsk.gray`
+- `zhou.ch6.qpsk.psd`
+- `zhou.ch6.qpsk.vs.bpsk`
+- 抽检：qa/sample-day-02.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：教材式(6.2.49) 2PSK Pb 写作 erfc√(Eb/(2N0))，与 §6.3 中 2PSK/QPSK 的 Eb=A²Tb/2 及 erfc√(Eb/N0) 表述需对照；无独立 DQPSK L3，暂映射 qpsk.principle+bin.dpsk；space.* 留给 Day3 §6.4
+- 阻塞：无
+- 明日计划：Day3 原子化 §6.4（矢量表示/最佳接收/MASK/MPSK/MQAM 等），勿回改 Ch5/本批
+- 合并状态: 未合并

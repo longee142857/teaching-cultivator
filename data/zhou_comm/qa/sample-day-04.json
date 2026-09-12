@@ -1,0 +1,206 @@
+{
+  "day": 4,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch9.block.nk.intro",
+      "type": "definition",
+      "name": "(n,k)线性分组码与监督位",
+      "print_page": [
+        278
+      ],
+      "paragraph_ids": [
+        "zhou.p278.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p278.s05"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.block.syndrome.def",
+      "type": "formula",
+      "name": "伴随式（校验子）定义",
+      "print_page": [
+        289,
+        290
+      ],
+      "paragraph_ids": [
+        "zhou.p289.s09",
+        "zhou.p289.s14",
+        "zhou.p290.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p289.s14",
+        "zhou.p290.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.block.systematic",
+      "type": "definition",
+      "name": "系统码与典型生成矩阵",
+      "print_page": [
+        284,
+        286
+      ],
+      "paragraph_ids": [
+        "zhou.p284.s13",
+        "zhou.p284.s14",
+        "zhou.p284.s15",
+        "zhou.p286.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p284.s13",
+        "zhou.p284.s14",
+        "zhou.p284.s15"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.block.weight.def",
+      "type": "definition",
+      "name": "汉明重量（码重）",
+      "print_page": [
+        278
+      ],
+      "paragraph_ids": [
+        "zhou.p278.s08",
+        "zhou.p278.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p278.s08",
+        "zhou.p278.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.coding.error.types",
+      "type": "definition",
+      "name": "随机差错、突发差错与混合信道",
+      "print_page": [
+        276
+      ],
+      "paragraph_ids": [
+        "zhou.p276.s07",
+        "zhou.p276.s08",
+        "zhou.p276.s09",
+        "zhou.p276.s10"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p276.s07",
+        "zhou.p276.s08",
+        "zhou.p276.s09",
+        "zhou.p276.s10"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.coding.fec.arq",
+      "type": "definition",
+      "name": "前向纠错、反馈重传与HARQ",
+      "print_page": [
+        280,
+        281
+      ],
+      "paragraph_ids": [
+        "zhou.p280.s09",
+        "zhou.p280.s10",
+        "zhou.p281.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p280.s09",
+        "zhou.p280.s10",
+        "zhou.p281.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.crc.undetect",
+      "type": "formula",
+      "name": "CRC漏检比例约2^{-r}",
+      "print_page": [
+        303
+      ],
+      "paragraph_ids": [
+        "zhou.p303.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p303.s03"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.cyclic.def",
+      "type": "definition",
+      "name": "循环码定义",
+      "print_page": [
+        292
+      ],
+      "paragraph_ids": [
+        "zhou.p292.s06",
+        "zhou.p292.s07"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p292.s06",
+        "zhou.p292.s07"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.cyclic.sys.encode",
+      "type": "procedure",
+      "name": "系统循环码编码",
+      "print_page": [
+        299,
+        300
+      ],
+      "paragraph_ids": [
+        "zhou.p299.s15",
+        "zhou.p300.s02",
+        "zhou.p300.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p299.s15",
+        "zhou.p300.s02",
+        "zhou.p300.s03"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.hamming.params",
+      "type": "definition",
+      "name": "汉明码主要参数",
+      "print_page": [
+        291
+      ],
+      "paragraph_ids": [
+        "zhou.p291.s07",
+        "zhou.p291.s08",
+        "zhou.p291.s09",
+        "zhou.p291.s10",
+        "zhou.p291.s11"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p291.s07",
+        "zhou.p291.s08",
+        "zhou.p291.s09",
+        "zhou.p291.s10",
+        "zhou.p291.s11"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

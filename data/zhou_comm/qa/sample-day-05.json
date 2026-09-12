@@ -1,0 +1,191 @@
+{
+  "day": 5,
+  "seed": 20260907,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch9.bch.shortened",
+      "type": "definition",
+      "name": "缩短BCH码",
+      "print_page": [
+        307
+      ],
+      "paragraph_ids": [
+        "zhou.p307.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p307.s03"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.conv.encoder",
+      "type": "definition",
+      "name": "卷积编码器：有记忆时序网络",
+      "print_page": [
+        309
+      ],
+      "paragraph_ids": [
+        "zhou.p309.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p309.s05"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.conv.g.matrix",
+      "type": "formula",
+      "name": "卷积码生成矩阵（半无限）",
+      "print_page": [
+        310,
+        311
+      ],
+      "paragraph_ids": [
+        "zhou.p310.s22",
+        "zhou.p311.s02",
+        "zhou.p311.s03"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p311.s02",
+        "zhou.p311.s03"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.conv.ml",
+      "type": "theorem",
+      "name": "卷积码最大似然（ML）译码思想",
+      "print_page": [
+        315,
+        316
+      ],
+      "paragraph_ids": [
+        "zhou.p315.s11",
+        "zhou.p315.s13",
+        "zhou.p316.s06",
+        "zhou.p316.s09"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p315.s11",
+        "zhou.p315.s13",
+        "zhou.p316.s06",
+        "zhou.p316.s09"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.conv.ml.bsc",
+      "type": "formula",
+      "name": "BSC下ML等价于最小汉明距离",
+      "print_page": [
+        316
+      ],
+      "paragraph_ids": [
+        "zhou.p316.s18",
+        "zhou.p316.s21",
+        "zhou.p316.s22",
+        "zhou.p316.s23"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p316.s18",
+        "zhou.p316.s21",
+        "zhou.p316.s22",
+        "zhou.p316.s23"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.conv.nkk",
+      "type": "definition",
+      "name": "卷积码(n,k,K)表示法",
+      "print_page": [
+        309
+      ],
+      "paragraph_ids": [
+        "zhou.p309.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p309.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.golay.perfect",
+      "type": "theorem",
+      "name": "(23,12)戈莱码是完备码",
+      "print_page": [
+        307
+      ],
+      "paragraph_ids": [
+        "zhou.p307.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p307.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.interleave.purpose",
+      "type": "definition",
+      "name": "交织：突发信道改造为独立差错信道",
+      "print_page": [
+        321
+      ],
+      "paragraph_ids": [
+        "zhou.p321.s10",
+        "zhou.p321.s11"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p321.s11"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.ldpc.sparse",
+      "type": "definition",
+      "name": "LDPC码：大码长与稀疏校验矩阵",
+      "print_page": [
+        331,
+        332
+      ],
+      "paragraph_ids": [
+        "zhou.p331.s13",
+        "zhou.p332.s02"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p332.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch9.rs.g.poly",
+      "type": "formula",
+      "name": "RS码生成多项式",
+      "print_page": [
+        308
+      ],
+      "paragraph_ids": [
+        "zhou.p308.s09",
+        "zhou.p308.s10",
+        "zhou.p308.s12"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p308.s10",
+        "zhou.p308.s12"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

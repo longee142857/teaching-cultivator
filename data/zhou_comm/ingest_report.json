@@ -1,0 +1,111 @@
+{
+  "day": 0,
+  "status": "day0_ingested",
+  "n_ocr_files": 433,
+  "n_pages": 433,
+  "n_paragraphs": 6532,
+  "n_fts": 6532,
+  "empty_pages": [
+    145,
+    227,
+    306,
+    324,
+    379,
+    393,
+    416
+  ],
+  "empty_page_count": 7,
+  "kind_counts": {
+    "body": 4224,
+    "caption": 82,
+    "example": 72,
+    "footnote": 1,
+    "formula": 1311,
+    "header": 842
+  },
+  "page_offset": 13,
+  "filename_semantics": "pdf_page",
+  "toc": {
+    "ch1": [
+      1,
+      8
+    ],
+    "ch2": [
+      9,
+      26
+    ],
+    "ch3": [
+      27,
+      44
+    ],
+    "ch4": [
+      45,
+      76
+    ],
+    "ch5": [
+      77,
+      124
+    ],
+    "ch6": [
+      125,
+      206
+    ],
+    "ch7": [
+      207,
+      262
+    ],
+    "ch8": [
+      263,
+      275
+    ],
+    "ch9": [
+      276,
+      338
+    ],
+    "ch10": [
+      339,
+      366
+    ],
+    "ch11": [
+      367,
+      379
+    ],
+    "ch12": [
+      380,
+      391
+    ],
+    "ch13": [
+      392,
+      404
+    ]
+  },
+  "paragraph_id_scheme": "For print_page>=0: zhou.p{print_page:03d}.s{seq:02d} (print_page 0 → zhou.p000.s01). For print_page<0 (front matter): zhou.pm{abs(print_page):02d}.s{seq:02d} (e.g. print_page=-1 → zhou.pm01.s01; -12 → zhou.pm12.s01).",
+  "sample_checksums": {
+    "pdf_001": "e0c873df95dabae443368a22e1a95ba429c8bc8909583ce176eacd3980834333",
+    "pdf_217": "9a1c8c74d0f46d300c78f346309e2479e5f6eedaebbf744075c0bf0ce926537e",
+    "pdf_433": "d92955da5086c95666b3262360c7826c335543ccbf075ed56200980e6cd40fd7",
+    "print_1_pdf_14": "149f9af5bb6134c155396dd423027f1181e01abb377a182aba5ff5bfa54fd302"
+  },
+  "pct_diff_vs_433": 0.0,
+  "integrity_check": "ok",
+  "body_paragraphs_by_chapter": {
+    "ch1": 28,
+    "ch2": 202,
+    "ch3": 226,
+    "ch4": 314,
+    "ch5": 476,
+    "ch6": 722,
+    "ch7": 552,
+    "ch8": 155,
+    "ch9": 686,
+    "ch10": 283,
+    "ch11": 80,
+    "ch12": 119,
+    "ch13": 76
+  },
+  "print_page_range": [
+    -12,
+    420
+  ],
+  "ingested_at": "2026-09-07T17:31:52.681772+08:00"
+}

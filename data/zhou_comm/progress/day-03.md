@@ -1,0 +1,50 @@
+# Day 03
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 113 / 388 / 160 / 343
+- 本章批次：Ch6 §6.4–6.5（print_page 150–201；止于 zhou.p201.s05「习题」之前；习题未触）
+- atoms（created_day=3, chapter=6）：38；有 role=core：38（100.0%）；L3 已映射原子数：30
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（38）：
+- `zhou.ch6.gmsk.bt03`
+- `zhou.ch6.gmsk.def`
+- `zhou.ch6.gmsk.demod`
+- `zhou.ch6.gray.ber.approx`
+- `zhou.ch6.m.intro`
+- `zhou.ch6.m.mask.def`
+- `zhou.ch6.m.mask.psd`
+- `zhou.ch6.m.mask.ser`
+- `zhou.ch6.m.mask.vector`
+- `zhou.ch6.m.mpsk.def`
+- `zhou.ch6.m.mpsk.opt`
+- `zhou.ch6.m.mpsk.psd`
+- `zhou.ch6.m.mpsk.ser`
+- `zhou.ch6.m.mpsk.vector`
+- `zhou.ch6.m.qam.16`
+- `zhou.ch6.m.qam.def`
+- `zhou.ch6.m.qam.ser`
+- `zhou.ch6.m.qam.vector`
+- `zhou.ch6.m.qam.vs.mpsk`
+- `zhou.ch6.m.seff`
+- `zhou.ch6.mfsk.compare`
+- `zhou.ch6.mfsk.def`
+- `zhou.ch6.mfsk.ser`
+- `zhou.ch6.mfsk.spectrum`
+- `zhou.ch6.mfsk.vector`
+- `zhou.ch6.msk.ber`
+- `zhou.ch6.msk.def`
+- `zhou.ch6.msk.iq`
+- `zhou.ch6.msk.phase`
+- `zhou.ch6.msk.psd`
+- `zhou.ch6.space.constellation`
+- `zhou.ch6.space.map`
+- `zhou.ch6.space.ml`
+- `zhou.ch6.space.opt.awgn`
+- `zhou.ch6.space.opt.mf.equiv`
+- `zhou.ch6.space.vector.dim`
+- `zhou.ch6.space.vector.expand`
+- `zhou.ch6.space.vector.idea`
+- 抽检：qa/sample-day-03.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：syllabus 无 MSK/GMSK L3（8 条恒包络相关原子未映射；另有引言等）；Day1=40/Day2=35 未改动
+- 阻塞：无
+- 明日计划：按日程继续后续章节原子；勿回改 Ch5/Ch6 Day2–3
+- 合并状态: 未合并

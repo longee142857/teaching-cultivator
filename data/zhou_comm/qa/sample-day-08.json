@@ -1,0 +1,238 @@
+{
+  "day": 8,
+  "seed": 20260908,
+  "n": 10,
+  "all_pass": true,
+  "atoms": [
+    {
+      "atom_id": "zhou.ch10.dsss.bandwidth.gain",
+      "type": "formula",
+      "name": "直扩带宽扩展与扩频增益N",
+      "print_page": [
+        354,
+        355,
+        358
+      ],
+      "paragraph_ids": [
+        "zhou.p354.s13",
+        "zhou.p354.s16",
+        "zhou.p354.s17",
+        "zhou.p355.s15",
+        "zhou.p358.s12",
+        "zhou.p358.s13"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p354.s13",
+        "zhou.p354.s16",
+        "zhou.p354.s17",
+        "zhou.p355.s15",
+        "zhou.p358.s12",
+        "zhou.p358.s13"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch11.ofdm.ifft.idft",
+      "type": "formula",
+      "name": "OFDM复包络采样等于IDFT；解调用DFT",
+      "print_page": [
+        372,
+        373
+      ],
+      "paragraph_ids": [
+        "zhou.p372.s07",
+        "zhou.p372.s08",
+        "zhou.p372.s09",
+        "zhou.p372.s10",
+        "zhou.p372.s11",
+        "zhou.p373.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p372.s08",
+        "zhou.p372.s09",
+        "zhou.p372.s10",
+        "zhou.p372.s11",
+        "zhou.p373.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch4.dsb.spectrum.bw",
+      "type": "formula",
+      "name": "DSB-SC 频谱与带宽",
+      "print_page": [
+        46,
+        47
+      ],
+      "paragraph_ids": [
+        "zhou.p046.s13",
+        "zhou.p046.s15",
+        "zhou.p046.s17",
+        "zhou.p047.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p046.s13",
+        "zhou.p046.s15",
+        "zhou.p046.s17",
+        "zhou.p047.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch4.fdm.concept",
+      "type": "definition",
+      "name": "频分复用(FDM)原理",
+      "print_page": [
+        64
+      ],
+      "paragraph_ids": [
+        "zhou.p064.s12",
+        "zhou.p064.s17",
+        "zhou.p064.s18"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p064.s12",
+        "zhou.p064.s17",
+        "zhou.p064.s18"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch4.noise.am.envelope",
+      "type": "theorem",
+      "name": "高信噪比下 AM 包络检波近似相干性能",
+      "print_page": [
+        59,
+        60
+      ],
+      "paragraph_ids": [
+        "zhou.p059.s18",
+        "zhou.p060.s01"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p060.s01"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch4.noise.fm.snr",
+      "type": "formula",
+      "name": "高信噪比 FM 鉴频输出信噪比",
+      "print_page": [
+        61
+      ],
+      "paragraph_ids": [
+        "zhou.p061.s21",
+        "zhou.p061.s23",
+        "zhou.p061.s24"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p061.s23",
+        "zhou.p061.s24"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch7.huffman.coding",
+      "type": "procedure",
+      "name": "哈夫曼变长编码",
+      "print_page": [
+        219,
+        220,
+        221
+      ],
+      "paragraph_ids": [
+        "zhou.p219.s13",
+        "zhou.p220.s10",
+        "zhou.p220.s15",
+        "zhou.p221.s02",
+        "zhou.p221.s04",
+        "zhou.p221.s05"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p220.s10",
+        "zhou.p220.s15",
+        "zhou.p221.s02",
+        "zhou.p221.s04"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch7.joint.cond.entropy",
+      "type": "formula",
+      "name": "联合熵与条件熵的定义",
+      "print_page": [
+        213
+      ],
+      "paragraph_ids": [
+        "zhou.p213.s08",
+        "zhou.p213.s09",
+        "zhou.p213.s10",
+        "zhou.p213.s11"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p213.s08",
+        "zhou.p213.s09",
+        "zhou.p213.s10",
+        "zhou.p213.s11"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch8.cap.bsc.formula",
+      "type": "formula",
+      "name": "BSC 信道容量公式",
+      "print_page": [
+        272
+      ],
+      "paragraph_ids": [
+        "zhou.p272.s15",
+        "zhou.p272.s16",
+        "zhou.p272.s18",
+        "zhou.p272.s20",
+        "zhou.p272.s22",
+        "zhou.p272.s23"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p272.s15",
+        "zhou.p272.s16",
+        "zhou.p272.s18",
+        "zhou.p272.s20",
+        "zhou.p272.s22"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    },
+    {
+      "atom_id": "zhou.ch8.channel.const.examples",
+      "type": "example",
+      "name": "典型恒参信道实例",
+      "print_page": [
+        264,
+        265
+      ],
+      "paragraph_ids": [
+        "zhou.p264.s10",
+        "zhou.p264.s12",
+        "zhou.p264.s13",
+        "zhou.p265.s02",
+        "zhou.p265.s04"
+      ],
+      "core_paragraph_ids": [
+        "zhou.p264.s10",
+        "zhou.p264.s12",
+        "zhou.p265.s02"
+      ],
+      "pass": true,
+      "fail_reasons": []
+    }
+  ]
+}

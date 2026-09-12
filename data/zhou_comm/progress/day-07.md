@@ -1,0 +1,48 @@
+# Day 07
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 271 / 937 / 373 / 795
+- 本章批次：Ch3 随机过程 §3.1–3.5（print_page 27–41；止于习题 zhou.p042.s03 之前；含均值/相关、维纳辛钦、宽平稳/遍历、高斯过程、AWGN、窄带噪声 IQ/包络/莱斯、匹配滤波）
+- atoms（created_day=7, chapter=3）：36；有 role=core：36（100.0%）；L3 已映射原子数：36
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（36）：
+- `zhou.ch3.awgn.band.independence`
+- `zhou.ch3.awgn.def`
+- `zhou.ch3.awgn.filter.psd`
+- `zhou.ch3.awgn.inner.product`
+- `zhou.ch3.complex.conjugate.uncorr`
+- `zhou.ch3.cyclostationary.def`
+- `zhou.ch3.ergodic.def`
+- `zhou.ch3.ergodic.psd`
+- `zhou.ch3.gauss.process.def`
+- `zhou.ch3.gauss.q.erfc`
+- `zhou.ch3.hilbert.joint.stationary`
+- `zhou.ch3.joint.complex.stationary`
+- `zhou.ch3.joint.gaussian`
+- `zhou.ch3.mf.as.correlator`
+- `zhou.ch3.mf.bandpass.example`
+- `zhou.ch3.mf.def`
+- `zhou.ch3.mf.envelope.match`
+- `zhou.ch3.mf.snr.formula`
+- `zhou.ch3.nb.iq.props`
+- `zhou.ch3.nb.noise.power`
+- `zhou.ch3.nb.noise.repr`
+- `zhou.ch3.nb.rayleigh.envelope`
+- `zhou.ch3.nb.rice.envelope`
+- `zhou.ch3.nb.rice.limit`
+- `zhou.ch3.random.phase.tone`
+- `zhou.ch3.rp.autocorr`
+- `zhou.ch3.rp.avg.psd`
+- `zhou.ch3.rp.def`
+- `zhou.ch3.rp.filter.zero.mean`
+- `zhou.ch3.rp.mean`
+- `zhou.ch3.rp.psd.through.lti`
+- `zhou.ch3.rp.uncorrelated`
+- `zhou.ch3.rp.wiener.khinchin`
+- `zhou.ch3.rp.zero.mean.decomp`
+- `zhou.ch3.wss.def`
+- `zhou.ch3.wss.sequence`
+- 抽检：qa/sample-day-07.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：循环平稳/平稳序列无专用 L3，映射至 rp.stationary；Day1–6=40/35/38/36/48/38 未改动；未映射 0 条；目标 L3 缺失 0 条
+- 阻塞：无
+- 明日计划：Day8 = 按任务书下一批次（Ch3 习题后或 Ch4，视计划）
+- 合并状态: 未合并

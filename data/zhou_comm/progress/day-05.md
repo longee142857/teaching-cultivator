@@ -1,0 +1,60 @@
+# Day 05
+- db: integrity_check: ok
+- pages / paragraphs / atoms / atom_spans / atom_l3 / terms : 433 / 6532 / 197 / 628 / 259 / 591
+- 本章批次：Ch9 §9.4–9.10（print_page 304–334；止于习题前；含 BCH/RS/卷积/交织/级联/Turbo/TCM/LDPC）
+- atoms（created_day=5, chapter=9）：48；有 role=core：48（100.0%）；L3 已映射原子数：45
+- 门禁：atoms≥25 ✓；≥90% 有 core ✓（实为 100.0%）
+- 新增 atom ids（48）：
+- `zhou.ch9.bch.decode.classes`
+- `zhou.ch9.bch.def`
+- `zhou.ch9.bch.design.distance`
+- `zhou.ch9.bch.extended`
+- `zhou.ch9.bch.irreducible`
+- `zhou.ch9.bch.peterson`
+- `zhou.ch9.bch.primitive.poly`
+- `zhou.ch9.bch.shortened`
+- `zhou.ch9.bch.table.use`
+- `zhou.ch9.concat.nasa`
+- `zhou.ch9.conv.desc.methods`
+- `zhou.ch9.conv.discrete`
+- `zhou.ch9.conv.encoder`
+- `zhou.ch9.conv.g.matrix`
+- `zhou.ch9.conv.ml`
+- `zhou.ch9.conv.ml.bsc`
+- `zhou.ch9.conv.nkk`
+- `zhou.ch9.conv.poly`
+- `zhou.ch9.conv.soft`
+- `zhou.ch9.conv.state.def`
+- `zhou.ch9.conv.trellis`
+- `zhou.ch9.conv.viterbi.example`
+- `zhou.ch9.conv.viterbi.idea`
+- `zhou.ch9.conv.viterbi.steps`
+- `zhou.ch9.conv.vs.block`
+- `zhou.ch9.golay.2312`
+- `zhou.ch9.golay.perfect`
+- `zhou.ch9.interleave.block`
+- `zhou.ch9.interleave.purpose`
+- `zhou.ch9.ldpc.encode`
+- `zhou.ch9.ldpc.h.construct`
+- `zhou.ch9.ldpc.msg.pass`
+- `zhou.ch9.ldpc.sparse`
+- `zhou.ch9.ldpc.tanner`
+- `zhou.ch9.rs.burst`
+- `zhou.ch9.rs.decode.diff`
+- `zhou.ch9.rs.def`
+- `zhou.ch9.rs.encode`
+- `zhou.ch9.rs.example159`
+- `zhou.ch9.rs.g.poly`
+- `zhou.ch9.rs.params`
+- `zhou.ch9.tcm.impl`
+- `zhou.ch9.tcm.intro`
+- `zhou.ch9.tcm.set.partition`
+- `zhou.ch9.tcm.two.distances`
+- `zhou.ch9.turbo.decode`
+- `zhou.ch9.turbo.def`
+- `zhou.ch9.turbo.encoder`
+- 抽检：qa/sample-day-05.json（10 atoms，seed=20260907，all_pass=true）
+- issues 新增：BCH/RS/Turbo/TCM/LDPC 无专用 syllabus L3，部分诚实未映射或弱映射至 cyclic.*/block.*/conv.*/interleave（未映射 3 条）；Day1=40/Day2=35/Day3=38/Day4=36 未改动
+- 阻塞：无
+- 明日计划：Day6 = Ch2 确定信号（print 9–26）按考纲优先序（数字频带/基带/信道编码已做；Priority2=确定信号与随机信号/信道容量）
+- 合并状态: 未合并

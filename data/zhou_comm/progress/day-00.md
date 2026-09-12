@@ -1,0 +1,16 @@
+# Day 00
+- db: schema frozen, integrity_check: ok
+- pages / paragraphs / atoms / atom_l3 mapped / terms : 433 / 6532 / 0 / 0 / 0
+- FTS rows: 6532
+- 本章或本批：物理层灌库完成（确定性切段，无 LLM）
+- page_offset=13; filename_semantics=pdf_page; print_page = pdf_page - 13
+- print_page range: -12 .. 420
+- empty_pages (no substantive paras): 7 → [145, 227, 306, 324, 379, 393, 416]
+- kind_counts: {"body": 4224, "caption": 82, "example": 72, "footnote": 1, "formula": 1311, "header": 842}
+- |n_pages-433|/433 = 0.0000%
+- 新增 atom ids：无（Day 0 不做原子）
+- 抽检：qa/sample-day-00.json（10 页，Ch2–11，seed=20260907）
+- issues 新增条数：1
+- 阻塞：无
+- 明日计划：按考纲优先序开始 Ch 原子（数字频带/基带/信道编码）
+- 合并状态: 未合并
