@@ -52,6 +52,7 @@ WHITELIST: dict[str, Callable[..., Any]] = {
     "grade_answer": T.grade_answer,
     "submit_exam_answer_md": T.submit_exam_answer_md,
     "adjust_difficulty": T.adjust_difficulty,
+    "set_learning_mode": T.set_learning_mode,
     "note_weak_point": T.note_weak_point,
     "propose_add_kp": T.propose_add_kp,
     "confirm_add_kp": T.confirm_add_kp,

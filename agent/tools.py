@@ -464,6 +464,19 @@ def adjust_difficulty(subject: str, level: str) -> str:
     return result
 
 
+def set_learning_mode(subject: str = "comm", mode: str = "free", book: str = "zhou_comm") -> str:
+    """通信槽推进模式开关。mode=free|advance；advance 需原子库已验收。"""
+    from cultivate import set_learning_mode as _set
+
+    result = _set(subject=subject, mode=mode, book=book)
+    if result.get("ok"):
+        return (
+            f"learning_mode={result['learning_mode']} book={result.get('book_id')} "
+            f"learner={result.get('learner_id')}"
+        )
+    return f"设置失败：{result.get('error') or result}"
+
+
 def build_report(days: int = 7) -> str:
     """生成学习报告。"""
     from learner.profile import build_weekly

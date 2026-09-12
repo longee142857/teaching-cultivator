@@ -381,6 +381,81 @@ def _mixed_cdp_credit(cdp_results: list | None) -> float | None:
     return None
 
 
+def _maybe_advance_grade(
+    *,
+    question: str,
+    verdict: str,
+    status: str,
+    credit: float | None,
+) -> None:
+    """三条都有 atom_id 才回写 cursor：item + last_push + 15:00 comm 槽。"""
+    from learner.db import get_store
+    from learner.advance import apply_atom_grade, _owner_id
+
+    store = get_store()
+    sid = _uid()
+    item = get_store().get_item_by_question(question, "comm")
+    if not item:
+        item = get_store().get_item_by_question(question, "")
+    item_atom = str((item or {}).get("atom_id") or "").strip()
+    item_book = str((item or {}).get("book_id") or "").strip()
+    if isinstance((item or {}).get("meta"), dict):
+        item_atom = item_atom or str(item["meta"].get("atom_id") or "").strip()
+        item_book = item_book or str(item["meta"].get("book_id") or "").strip()
+
+    file_atom = ""
+    file_book = ""
+    file_subj = ""
+    for path in (P.last_push_path(), P.public_last_class_path()):
+        try:
+            if not os.path.isfile(path):
+                continue
+            with open(path, encoding="utf-8") as f:
+                rec = json.load(f)
+            if (rec.get("question") or "").strip() and (
+                rec.get("question") or ""
+            ).strip()[:80] != (question or "").strip()[:80]:
+                continue
+            file_atom = str(rec.get("atom_id") or "").strip()
+            file_book = str(rec.get("book_id") or "").strip()
+            file_subj = str(rec.get("subject") or "").strip()
+            if file_atom:
+                break
+        except Exception:
+            continue
+
+    slot = ""
+    try:
+        resolved = store.resolve_push_for_question(sid or None, question)
+        if resolved:
+            push = store.get_push(int(resolved[0]))
+            if push:
+                slot = str(push.get("slot") or "").strip().lower()
+                if not item_atom:
+                    item_atom = str(push.get("atom_id") or "").strip()
+                if not item_book:
+                    item_book = str(push.get("book_id") or "").strip()
+    except Exception:
+        pass
+
+    if not item_atom or not file_atom or item_atom != file_atom:
+        return
+    if (file_subj and file_subj != "comm") or slot == "review":
+        return
+    if slot and slot != "comm":
+        return
+    book = item_book or file_book or "zhou_comm"
+    apply_atom_grade(
+        learner_id=_owner_id() or sid,
+        book_id=book,
+        atom_id=item_atom,
+        slot=slot or "comm",
+        verdict=verdict,
+        status=status,
+        credit=credit,
+    )
+
+
 def grade_answer(
     question: str,
     user_answer: str,
@@ -605,6 +680,16 @@ def grade_answer(
             mastery_after = mastery_before
     except Exception as e:
         print(f"[grade] BKT update failed: {e}")
+
+    try:
+        _maybe_advance_grade(
+            question=q,
+            verdict=verdict,
+            status=status,
+            credit=credit,
+        )
+    except Exception as e:
+        print(f"[grade] advance cursor skipped: {e}")
 
     return GradeResult(
         is_correct=is_correct,

@@ -63,6 +63,9 @@ SSL_VERIFY = os.environ.get("SSL_VERIFY", "1") == "1"
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 # BIG-TEACH-013: SQLite 真相源库；空则用 DATA_DIR/teaching.db
 TEACHING_DB = os.environ.get("TEACHING_DB", "")
+# 原子库只读路径（未验收禁止 ZHOU_COMM_ACCEPTED=1）
+ZHOU_COMM_DB = os.environ.get("ZHOU_COMM_DB", "")
+FAN_COMM_DB = os.environ.get("FAN_COMM_DB", "")
 BKT_OVERRIDES_PATH = os.path.join(DATA_DIR, "bkt_overrides.json")  # BIG-TEACH-012b #2
 LP_PATH = os.path.join(DATA_DIR, "learning-progress.json")  # DEPRECATED (BIG-TEACH-012d #16)
 # 每日记录目录：默认仓库内 data/daily_export；可用环境变量覆盖

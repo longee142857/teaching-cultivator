@@ -53,6 +53,9 @@ data/public/
 data/teaching.db
 data/teaching.db-wal
 data/teaching.db-shm
+data/atom_books/
+
+# Private ops / session notes (not for public tree)
 data/param_audit.jsonl
 
 # Private ops / session notes (not for public tree)

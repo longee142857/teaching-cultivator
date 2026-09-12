@@ -99,6 +99,12 @@ def get_difficulty_pref(subject: str) -> str:
     return _load_difficulty_pref().get(subject, "")
 
 
+def set_learning_mode(subject: str, mode: str, book: str = "zhou_comm") -> dict:
+    from learner.advance import set_learning_mode as _set
+
+    return _set(subject=subject, mode=mode, book=book)
+
+
 def get_last_answer() -> str:
     return _last_answer
 
@@ -143,6 +149,13 @@ def _save_last_push(subject: str, decision: InterventionDecision, content: str,
         l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
         if l3_id:
             record["l3_id"] = l3_id
+        from learner.kp_registry import parse_atom_from_reason, parse_book_from_reason
+        atom_id = parse_atom_from_reason(getattr(decision, "reason", "") or "")
+        book_id = parse_book_from_reason(getattr(decision, "reason", "") or "")
+        if atom_id:
+            record["atom_id"] = atom_id
+        if book_id:
+            record["book_id"] = book_id
         path = _last_push_write_path(source=source)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
@@ -373,7 +386,41 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
     """
     from learner.kp_registry import (
         pick_l3, syllabus_subject, resolve_kp, list_l3_for_l2,
+        l2_for_l3,
     )
+    if subject == "comm":
+        try:
+            from learner.advance import advance_active, resolve_advance_target
+            from learner.ability_cycle import encode_ability_reason
+
+            if advance_active("comm"):
+                target = resolve_advance_target()
+                if not target.get("ok"):
+                    return InterventionDecision(
+                        "defer", "basic",
+                        f"advance:{target.get('error') or 'blocked'}",
+                        5,
+                    )
+                l3_id = target["l3_id"]
+                l2 = l2_for_l3("comm", l3_id) or ""
+                if not l2:
+                    return InterventionDecision(
+                        "defer", "basic",
+                        f"{target['atom_id']}: 映射 L3 无对应 L2", 5,
+                    )
+                pref = get_difficulty_pref("comm") or "basic"
+                reason = (
+                    f"{l2}: 书序原子 {target['atom_id']} "
+                    f"[l3={l3_id}] [atom={target['atom_id']}] "
+                    f"[book={target['book_id']}] [advance=1] "
+                    f"[content_subject=comm] {encode_ability_reason('recognize')}"
+                )
+                decision = InterventionDecision("push", pref, reason, 3)
+                decision.ability_goal = "recognize"
+                return decision
+        except Exception as e:
+            print(f"[cultivate] advance decide fallback free: {e}")
+
     weights = _load_weights()
     target_kp = None
     target_val = 0.0  # mastery for the selected KP
@@ -542,6 +589,7 @@ def _author_once(
     theory_pct: int,
     last_error: str,
     item_form: str = "mcq",
+    llm_task: str = "generate",
 ) -> tuple[str, str]:
     """阶段1：出题+验算。返回 (draft_body, answer)。"""
     system, user = builder.build(
@@ -562,7 +610,7 @@ def _author_once(
         last_error=last_error,
         item_form=item_form,
     )
-    raw = call_llm(system, user, "author", decision.difficulty)
+    raw = call_llm(system, user, llm_task, decision.difficulty)
     from math_format import split_question_answer, sanitize_answer_meta
     draft, answer = split_question_answer(raw)
     answer = sanitize_answer_meta(answer)
@@ -585,11 +633,13 @@ def generate(subject: str, decision: InterventionDecision, *,
              mastery: float = 0.0, opportunity_count: int = 0,
              consecutive_failures: int = 0,
              source: str = "schedule",
-             exam_allow_low_rag: bool = False) -> str:
+             exam_allow_low_rag: bool = False,
+             llm_task: str | None = None) -> str:
     """出题契约 → 编排质检/文案 → 可发送正文（Phase C）。"""
     from learner.kp_registry import (
         parse_l3_from_reason, is_valid_l3_id, pick_l3, syllabus_subject,
         parse_content_subject_from_reason, content_subject_for_kp,
+        parse_atom_from_reason, parse_book_from_reason,
     )
 
     kp_hint = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
@@ -622,17 +672,20 @@ def generate(subject: str, decision: InterventionDecision, *,
     global _last_ref_source
     _last_ref_source = ""
     ref_entry = None
-    try:
-        picker = RefPicker(gen_subj)
-        ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
-        if ref_entry:
-            src = ref_entry.get("source", {})
-            if isinstance(src, dict):
-                _last_ref_source = f"{src.get('year', '')}年{src.get('subject', '')}"
-            else:
-                _last_ref_source = str(src)
-    except Exception:
-        pass
+    atom_id = parse_atom_from_reason(decision.reason)
+    book_id = parse_book_from_reason(decision.reason) or "zhou_comm"
+    if not atom_id:
+        try:
+            picker = RefPicker(gen_subj)
+            ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
+            if ref_entry:
+                src = ref_entry.get("source", {})
+                if isinstance(src, dict):
+                    _last_ref_source = f"{src.get('year', '')}年{src.get('subject', '')}"
+                else:
+                    _last_ref_source = str(src)
+        except Exception:
+            pass
 
     # ── L3 硬闸 (BIG-TEACH-011c) ──
     # reason 可能含 [l3=…][ability=…]；L2 名取方括号前
@@ -642,7 +695,7 @@ def generate(subject: str, decision: InterventionDecision, *,
     if l3_id and not is_valid_l3_id(l3_subj, l3_id):
         print(f"[cultivate] l3_id '{l3_id}' not in syllabus — treated as miss")
         l3_id = None
-    if not l3_id and kp:
+    if not l3_id and kp and not atom_id:
         # 兼容漏挂 [l3=] 的调用方（如旧 pregen）：现场补选
         l3_id = pick_l3(l3_subj, kp)
         if l3_id:
@@ -656,23 +709,27 @@ def generate(subject: str, decision: InterventionDecision, *,
         global _rag_strict_blocked
         _rag_strict_blocked = False
 
-        if not l3_id:
+        if not l3_id and not atom_id:
             print(f"[cultivate] no valid l3_id — L2='{kp}' blocked (need L3)")
             if rag_strict_enabled():
                 _rag_strict_blocked = True
                 return ""
             unit_id = kp  # RAG_STRICT=0 兼容旧路径
         else:
-            unit_id = l3_id
+            unit_id = l3_id or kp
 
-        rag = rag_retrieve(gen_subj, unit_id, top_k=4, N=2)
+        rag = rag_retrieve(
+            gen_subj, unit_id, top_k=4, N=1 if atom_id else 2,
+            atom_id=atom_id or "", book_id=book_id,
+        )
         print(
             f"[cultivate] rag_retrieve ok={rag.ok} hit={rag.hit_count} "
             f"backend={rag.backend} reason={rag.reason} unit={unit_id}"
+            f"{' atom='+atom_id if atom_id else ''}"
         )
         if rag_strict_enabled() and not rag.ok and not exam_allow_low_rag:
-            # 换 L3 重试：同 L2 再试 1 个其他 L3
-            if l3_id:
+            # 换 L3 重试：同 L2 再试 1 个其他 L3（推进模式禁止轮转）
+            if l3_id and not atom_id:
                 retry_l3 = pick_l3(l3_subj, kp, recent_l3=[l3_id])
                 if retry_l3 and retry_l3 != l3_id:
                     print(f"[cultivate] retry alternate L3: {retry_l3}")
@@ -719,7 +776,10 @@ def generate(subject: str, decision: InterventionDecision, *,
     ability_goal = getattr(decision, 'ability_goal', '') or parse_ability_from_reason(decision.reason) or ''
     global _last_item_form
     forced_form = parse_item_form_from_reason(decision.reason)
-    if forced_form:
+    if atom_id:
+        ability_goal = "recognize"
+        _last_item_form = forced_form or "mcq"
+    elif forced_form:
         _last_item_form = forced_form
     else:
         last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
@@ -745,13 +805,14 @@ def generate(subject: str, decision: InterventionDecision, *,
         theory_pct=theory_pct,
         last_error=last_error,
         item_form=_last_item_form,
+        llm_task=(llm_task if llm_task in ("generate", "author") else "generate"),
     )
 
     global _last_answer
     _last_answer = ""
 
     # ── 出题 LLM（短契约）──
-    print(f"[cultivate] author ({tpl_type}/{decision.difficulty})")
+    print(f"[cultivate] author ({tpl_type}/{decision.difficulty} task={author_kwargs['llm_task']})")
     draft, answer = _author_once(builder, **author_kwargs)
     if not draft:
         print("[cultivate] author produced empty draft")
@@ -955,16 +1016,23 @@ def _cultivate_inner(subject: str):
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
     kp = kp.split("[")[0].strip()
 
-    from learner.item_bank import pick_for_push_walk, live_fallback_enabled, pick_technique_for_kp
+    from learner.item_bank import pick_for_push_walk, pick_for_push, live_fallback_enabled, pick_technique_for_kp
     from learner.db import get_store
+    from learner.kp_registry import parse_atom_from_reason
 
     tech = pick_technique_for_kp(kp)
     try:
         sid = _uid()
     except Exception:
         sid = ""
-    item = pick_for_push_walk(subject, kp=kp, technique=tech, learner_id=sid or None)
-    if item:
+    atom_id = parse_atom_from_reason(decision.reason) or ""
+    if atom_id:
+        item = pick_for_push(
+            subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
+        )
+    else:
+        item = pick_for_push_walk(subject, kp=kp, technique=tech, learner_id=sid or None)
+    if item and not atom_id:
         actual = (item.get("kp") or "").strip()
         if actual and actual != kp:
             print(
@@ -975,6 +1043,18 @@ def _cultivate_inner(subject: str):
             if reason.startswith(kp):
                 decision.reason = actual + reason[len(kp):]
             kp = actual
+    if not item and atom_id:
+        try:
+            from learner.advance import ensure_reserved_comm_item
+
+            fill = ensure_reserved_comm_item()
+            print(f"[cultivate] {subject}: reserved atom fill {fill}")
+            if fill.get("ok"):
+                item = pick_for_push(
+                    subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
+                )
+        except Exception as e:
+            print(f"[cultivate] {subject}: reserved atom fill failed: {e}")
     if not item:
         if not live_fallback_enabled():
             print(
@@ -987,7 +1067,8 @@ def _cultivate_inner(subject: str):
                 qdir = Path(DATA_DIR) / "problem_queue"
                 qdir.mkdir(parents=True, exist_ok=True)
                 (qdir / f"bank_empty_{subject}.md").write_text(
-                    f"# bank empty\nsubject={subject}\nkp={kp}\ntech={tech}\n",
+                    f"# bank empty\nsubject={subject}\nkp={kp}\ntech={tech}\n"
+                    f"atom_id={atom_id}\n",
                     encoding="utf-8",
                 )
             except Exception:

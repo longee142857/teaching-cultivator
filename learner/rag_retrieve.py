@@ -356,6 +356,55 @@ def _query_local_chroma(
         )
 
 
+def _from_zhou_sqlite(atom_id: str, book_id: str, N: int, subject: str) -> RagResult:
+    from learner.atom_book import core_spans, get_atom
+
+    aid = (atom_id or "").strip()
+    spans = core_spans(aid, book_id)
+    atom = get_atom(aid, book_id) or {}
+    snippets: list[dict] = []
+    if atom.get("statement"):
+        snippets.append(
+            {
+                "id": f"atom-{aid}",
+                "source": f"{book_id}:{aid}",
+                "page": "",
+                "distance": 0.0,
+                "text": str(atom.get("statement") or ""),
+                "atom_id": aid,
+                "paragraph_id": "",
+            }
+        )
+    for i, s in enumerate(spans):
+        text = (s.get("text") or "").strip()
+        if not text:
+            continue
+        snippets.append(
+            {
+                "id": f"span-{i:03d}",
+                "source": f"{book_id}:{s.get('paragraph_id') or ''}",
+                "page": str(s.get("print_page") or ""),
+                "distance": 0.0,
+                "text": text[:800],
+                "atom_id": aid,
+                "paragraph_id": s.get("paragraph_id") or "",
+            }
+        )
+    hit = len(spans)
+    ok = hit >= 1
+    return RagResult(
+        ok=ok,
+        hit_count=hit,
+        N=max(1, int(N or 1)),
+        snippets=snippets,
+        queries_used=[aid],
+        backend="zhou_sqlite",
+        reason="ok" if ok else "no_core_span",
+        subject=subject,
+        unit_id=aid,
+    )
+
+
 def rag_retrieve(
     subject: str,
     unit_id: str,
@@ -364,10 +413,13 @@ def rag_retrieve(
     top_k: int = 4,
     N: int | None = None,
     allow_local_chroma: bool = True,
+    atom_id: str = "",
+    book_id: str = "",
 ) -> RagResult:
     """硬契约入口。unit_id = l3_id 或 L2 正式名。
 
-    顺序：kb_cache →（本机）Chroma → enqueue miss。
+    推进模式：atom_id 走 zhou_sqlite，禁止混书 Chroma 顶过闸。
+    顺序（非 advance）：kb_cache →（本机）Chroma → enqueue miss。
     """
     _ = ability_goal
     n = int(N if N is not None else DEFAULT_N)
@@ -376,6 +428,14 @@ def rag_retrieve(
     subj = syllabus_subject(subject) or content_subject_for_kp(unit_id or "")
     if subj not in ("math", "comm"):
         subj = subject if subject in ("math", "comm") else ""
+
+    aid = (atom_id or "").strip()
+    if aid:
+        bid = (book_id or "").strip() or "zhou_comm"
+        r = _from_zhou_sqlite(aid, bid, n, subj or "comm")
+        _audit(r)
+        return r
+
     if subj not in ("math", "comm") or not (unit_id or "").strip():
         r = RagResult(
             ok=False, hit_count=0, N=n, reason="invalid_subject_or_unit",

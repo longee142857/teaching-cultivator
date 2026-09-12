@@ -209,8 +209,9 @@ def pick_for_push(
     kp: str = "",
     technique: str = "",
     learner_id: str | None = None,
+    atom_id: str = "",
 ) -> dict | None:
-    """结合模型抽 ready+pass。硬过滤：同 L2 → 同 L1 → None。"""
+    """结合模型抽 ready+pass。硬过滤：有 atom_id 只认该原子；否则同 L2 → 同 L1 → None。"""
     from modules.capability import pick_best_item
     from learner.kp_registry import (
         get_l1,
@@ -222,11 +223,13 @@ def pick_for_push(
     store = get_store()
     excl = store.learner_seen_hashes(learner_id)
     limit = int(os.environ.get("BANK_PICK_CANDIDATES", "60"))
+    aid = (atom_id or "").strip()
     candidates = store.list_ready_candidates(
         subject=subject,
         exclude_hashes=excl,
         limit=limit,
-        prefer_kp=kp or "",
+        prefer_kp="" if aid else (kp or ""),
+        atom_id=aid,
     )
     kp = (kp or "").strip()
     match_tier = "any"
@@ -238,7 +241,13 @@ def pick_for_push(
         return get_l1(cs, (it.get("kp") or "").strip()) or ""
 
     pool = list(candidates or [])
-    if kp:
+    if aid:
+        pool = [c for c in pool if (c.get("atom_id") or "").strip() == aid]
+        if not pool:
+            print(f"[item_bank] empty slot atom_id={aid} (no pass)")
+            return None
+        match_tier = "atom"
+    elif kp:
         l2 = [c for c in pool if (c.get("kp") or "").strip() == kp]
         if l2:
             pool = l2
@@ -270,10 +279,11 @@ def pick_for_push(
                 l1 = ""
         hit = store.pick_ready_item(
             subject=subject,
-            kp=kp,
+            kp="" if aid else kp,
             technique=technique,
-            l1=l1,
+            l1="" if aid else l1,
             exclude_hashes=excl,
+            atom_id=aid,
         )
         print(
             f"[item_bank] fallback pick id={hit.get('id') if hit else None} "
@@ -307,16 +317,21 @@ def pick_for_push_walk(
     kp: str = "",
     technique: str = "",
     learner_id: str | None = None,
+    atom_id: str = "",
 ) -> dict | None:
     """日推抽题。硬过滤仍是 L2→L1→空槽；review / comm 可换 prefer_kp 走到有库存的 KP。
 
     白天只抽库存：decide 点的 KP 常无同 L2/L1 pass。review 可跨 math+comm 库存；
     comm 只在通信 pass 里走（不进数学）。math 不走，避免单科串题。
     每个 KP 仍只准同 L2 / 同 L1，只换 prefer_kp。
+    推进模式传入 atom_id 时禁止 walk / L1 回退。
     """
+    aid = (atom_id or "").strip()
     hit = pick_for_push(
-        subject, kp=kp, technique=technique, learner_id=learner_id
+        subject, kp=kp, technique=technique, learner_id=learner_id, atom_id=aid
     )
+    if aid:
+        return hit
     subj = (subject or "").strip().lower()
     if hit or subj not in ("review", "comm"):
         return hit
@@ -419,7 +434,7 @@ def structure_item_via_llm(question: str, answer: str, kp: str) -> dict[str, Any
         "要求：techniques≥1；solution.steps≥2；cdps≥2 且每条带 technique。"
     )
     user = f"知识点：{kp}\n\n题目：\n{question}\n\n参考解答：\n{answer or '（无）'}"
-    raw = call_llm(system, user, "author")
+    raw = call_llm(system, user, "generate")
     m = re.search(r"\{[\s\S]*\}", raw or "")
     if not m:
         return {}

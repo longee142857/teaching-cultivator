@@ -162,15 +162,15 @@ def _q_hash(question: str) -> str:
 
 
 def _db_path() -> str:
+    env = os.environ.get("TEACHING_DB", "").strip()
+    if env:
+        return env
     try:
         from config import TEACHING_DB, DATA_DIR
         if (TEACHING_DB or "").strip():
             return TEACHING_DB.strip()
         return os.path.join(DATA_DIR, "teaching.db")
     except Exception:
-        env = os.environ.get("TEACHING_DB", "").strip()
-        if env:
-            return env
         return os.path.join("data", "teaching.db")
 
 
@@ -204,6 +204,7 @@ class Store:
             try:
                 conn.executescript(_SCHEMA)
                 self._migrate_bank_columns(conn)
+                self._migrate_advance_tables(conn)
                 # 旧库可能已有无 PK 的 item_kcs：补唯一索引（忽略已存在/冲突）
                 try:
                     conn.execute(
@@ -294,6 +295,67 @@ class Store:
             conn.execute(
                 """UPDATE items SET quality_score=1.0
                    WHERE quality_score IS NULL"""
+            )
+        except sqlite3.OperationalError:
+            pass
+
+    @staticmethod
+    def _migrate_advance_tables(conn: sqlite3.Connection) -> None:
+        """推进模式：learner_modes / 单行 cursor / atom_progress + items.atom_id。"""
+        conn.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS learner_modes (
+                learner_id TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                learning_mode TEXT NOT NULL,
+                book_id TEXT,
+                updated_at TEXT,
+                PRIMARY KEY (learner_id, subject)
+            );
+            CREATE TABLE IF NOT EXISTS book_cursors (
+                learner_id TEXT NOT NULL,
+                book_id TEXT NOT NULL,
+                atom_id TEXT NOT NULL,
+                status TEXT NOT NULL,
+                updated_at TEXT,
+                PRIMARY KEY (learner_id, book_id)
+            );
+            CREATE TABLE IF NOT EXISTS atom_progress (
+                learner_id TEXT NOT NULL,
+                book_id TEXT NOT NULL,
+                atom_id TEXT NOT NULL,
+                status TEXT NOT NULL,
+                streak_correct INTEGER DEFAULT 0,
+                streak_incorrect INTEGER DEFAULT 0,
+                total_correct INTEGER DEFAULT 0,
+                total_attempts INTEGER DEFAULT 0,
+                recent_verdicts TEXT,
+                unlocked_at TEXT,
+                passed_at TEXT,
+                PRIMARY KEY (learner_id, book_id, atom_id)
+            );
+            """
+        )
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(items)").fetchall()}
+        for name, decl in (
+            ("atom_id", "TEXT"),
+            ("book_id", "TEXT"),
+        ):
+            if name not in cols:
+                try:
+                    conn.execute(f"ALTER TABLE items ADD COLUMN {name} {decl}")
+                except sqlite3.OperationalError:
+                    pass
+        att_cols = {r[1] for r in conn.execute("PRAGMA table_info(attempts)").fetchall()}
+        if "atom_id" not in att_cols:
+            try:
+                conn.execute("ALTER TABLE attempts ADD COLUMN atom_id TEXT")
+            except sqlite3.OperationalError:
+                pass
+        try:
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS ix_items_atom "
+                "ON items (atom_id, book_id, status, quality_tier)"
             )
         except sqlite3.OperationalError:
             pass
@@ -458,6 +520,8 @@ class Store:
             "item_form": row["item_form"] or "",
             "ability_goal": row["ability_goal"] or "",
             "ref_source": row["ref_source"] or "",
+            "atom_id": (row["atom_id"] if "atom_id" in row.keys() else "") or "",
+            "book_id": (row["book_id"] if "book_id" in row.keys() else "") or "",
             "decision_type": meta.get("decision_type", ""),
             "reason": meta.get("reason", ""),
             "timestamp": row["pushed_at"],
@@ -486,6 +550,7 @@ class Store:
         "p.pushed_at, p.slot, p.channel, "
         "i.id AS item_id, i.subject, i.question, i.answer, i.difficulty, "
         "i.kp, i.l3_id, i.item_form, i.ability_goal, i.ref_source, i.meta, "
+        "i.atom_id, i.book_id, "
         "i.techniques AS item_techniques, i.solution AS item_solution, "
         "i.cdps AS item_cdps, i.status AS item_status "
         "FROM pushes p JOIN items i ON i.id = p.item_id "
@@ -736,6 +801,7 @@ class Store:
 
         push_id = _sql_id(entry.get("push_id"))
         item_id = _sql_id(entry.get("item_id"))
+        atom_id = str(entry.get("atom_id") or "").strip() or None
         meta = dict(entry)
         if push_id is not None:
             meta["push_id"] = push_id
@@ -750,14 +816,15 @@ class Store:
             conn.execute(
                 """INSERT INTO attempts
                    (user_id, push_id, item_id, knowledge_point, correct, credit,
-                    item_type, status, confidence, answered_at, meta)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                    item_type, status, confidence, answered_at, meta, atom_id)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
                     user_id, push_id, item_id,
                     entry.get("knowledge_point") or "", correct, credit,
                     entry.get("item_type") or "unknown", entry.get("status") or "applied",
                     confidence, answered_at,
                     json.dumps(meta, ensure_ascii=False),
+                    atom_id,
                 ),
             )
             return int(conn.execute("SELECT last_insert_rowid()").fetchone()[0])
@@ -1026,11 +1093,20 @@ class Store:
         cdps: list | None = None,
         meta: dict | None = None,
         status: str = "ready",
+        atom_id: str = "",
+        book_id: str = "",
     ) -> int:
         """写入预生成题（不写 pushes）。"""
         techs = list(techniques or [])
         sol = solution or {}
         cdps_l = list(cdps or [])
+        atom_id = (atom_id or "").strip()
+        book_id = (book_id or "").strip()
+        if atom_id and isinstance(meta, dict):
+            meta = dict(meta)
+            meta.setdefault("atom_id", atom_id)
+            if book_id:
+                meta.setdefault("book_id", book_id)
 
         def _do(conn) -> int:
             qh = _q_hash(question)
@@ -1040,8 +1116,9 @@ class Store:
                    (subject, q_hash, question, answer, difficulty, kp, l3_id,
                     item_form, ability_goal, ref_source, meta, created_at,
                     status, bank_subject, techniques, solution, cdps, use_count,
-                    quality_tier, quality_score, judge_count, judge_meta)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,'pending',1.0,0,?)
+                    quality_tier, quality_score, judge_count, judge_meta,
+                    atom_id, book_id)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,'pending',1.0,0,?,?,?)
                    ON CONFLICT(subject, q_hash) DO UPDATE SET
                      answer=excluded.answer, difficulty=excluded.difficulty,
                      kp=excluded.kp, l3_id=excluded.l3_id,
@@ -1051,7 +1128,8 @@ class Store:
                      techniques=excluded.techniques, solution=excluded.solution,
                      cdps=excluded.cdps,
                      quality_tier='pending', quality_score=1.0, judge_count=0,
-                     judge_meta=excluded.judge_meta""",
+                     judge_meta=excluded.judge_meta,
+                     atom_id=excluded.atom_id, book_id=excluded.book_id""",
                 (
                     subject, qh, question, answer or "", difficulty or "",
                     kp or "", l3_id or "", item_form or "", ability_goal or "",
@@ -1062,6 +1140,7 @@ class Store:
                     json.dumps(sol, ensure_ascii=False),
                     json.dumps(cdps_l, ensure_ascii=False),
                     json.dumps({"reviews": []}, ensure_ascii=False),
+                    atom_id, book_id,
                 ),
             )
             row = conn.execute(
@@ -1133,14 +1212,34 @@ class Store:
         exclude_hashes: set[str] | None = None,
         limit: int = 60,
         prefer_kp: str = "",
+        atom_id: str = "",
     ) -> list[dict]:
         """列出 ready+pass 候选（供结合模型打分）；排除已见 q_hash。
 
         prefer_kp：额外并入该 KP 下 pass 库存，避免全局 top-N 挤掉 decide 意图。
+        atom_id：推进模式硬过滤，只返回该原子的题。
         """
         subj = (subject or "").strip()
         excl = exclude_hashes or set()
         pref = (prefer_kp or "").strip()
+        aid = (atom_id or "").strip()
+        if aid:
+            rows = self._query(
+                """SELECT * FROM items
+                   WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
+                     AND COALESCE(bank_subject, subject)=?
+                     AND COALESCE(atom_id, '')=?
+                   ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
+                   LIMIT ?""",
+                (subj, aid, int(limit)),
+            )
+            by_id: dict[int, dict] = {}
+            for r in rows:
+                if str(r["q_hash"]) in excl:
+                    continue
+                d = self._item_dict(r)
+                by_id[int(d["id"])] = d
+            return list(by_id.values())
         rows = self._query(
             """SELECT * FROM items
                WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
@@ -1180,6 +1279,7 @@ class Store:
         technique: str = "",
         l1: str = "",
         exclude_hashes: set[str] | None = None,
+        atom_id: str = "",
     ) -> dict | None:
         """按契约抽 ready+pass：KP+technique → KP → L1 → None（不扩到任意题）。"""
         subj = (subject or "").strip()
@@ -1215,6 +1315,9 @@ class Store:
             "AND COALESCE(bank_subject, subject)=? "
         )
         order = " ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC LIMIT 40"
+        aid = (atom_id or "").strip()
+        if aid:
+            return _fetch(base + "AND COALESCE(atom_id,'')=?" + order, (subj, aid))
 
         if kp and tech:
             hit = _fetch(
@@ -1493,6 +1596,229 @@ class Store:
             "cdp_fail_recent": cdp_fail[:limit],
             "weak_kps": [{"kp": k, "n": n} for k, n in top_kp],
         }
+
+    def get_learner_mode(self, learner_id: str, subject: str) -> dict | None:
+        rows = self._query(
+            "SELECT * FROM learner_modes WHERE learner_id=? AND subject=?",
+            ((learner_id or "").strip(), (subject or "").strip()),
+        )
+        if not rows:
+            return None
+        r = rows[0]
+        return {
+            "learner_id": r["learner_id"],
+            "subject": r["subject"],
+            "learning_mode": r["learning_mode"] or "free",
+            "book_id": r["book_id"] or "",
+            "updated_at": r["updated_at"] or "",
+        }
+
+    def set_learner_mode(
+        self, learner_id: str, subject: str, mode: str, book_id: str
+    ) -> None:
+        now = now_utc_iso()
+
+        def _do(conn) -> None:
+            conn.execute(
+                """INSERT INTO learner_modes
+                   (learner_id, subject, learning_mode, book_id, updated_at)
+                   VALUES (?,?,?,?,?)
+                   ON CONFLICT(learner_id, subject) DO UPDATE SET
+                     learning_mode=excluded.learning_mode,
+                     book_id=excluded.book_id,
+                     updated_at=excluded.updated_at""",
+                (
+                    (learner_id or "").strip(),
+                    (subject or "").strip(),
+                    (mode or "free").strip(),
+                    (book_id or "").strip(),
+                    now,
+                ),
+            )
+
+        self._txn(_do)
+
+    def get_book_cursor(self, learner_id: str, book_id: str) -> dict | None:
+        rows = self._query(
+            "SELECT * FROM book_cursors WHERE learner_id=? AND book_id=?",
+            ((learner_id or "").strip(), (book_id or "").strip()),
+        )
+        if not rows:
+            return None
+        r = rows[0]
+        return {
+            "learner_id": r["learner_id"],
+            "book_id": r["book_id"],
+            "atom_id": r["atom_id"] or "",
+            "status": r["status"] or "",
+            "updated_at": r["updated_at"] or "",
+        }
+
+    def set_book_cursor(
+        self, lid: str, book_id: str, atom_id: str, status: str = "active"
+    ) -> None:
+        now = now_utc_iso()
+
+        def _do(conn) -> None:
+            conn.execute(
+                """INSERT INTO book_cursors
+                   (learner_id, book_id, atom_id, status, updated_at)
+                   VALUES (?,?,?,?,?)
+                   ON CONFLICT(learner_id, book_id) DO UPDATE SET
+                     atom_id=excluded.atom_id,
+                     status=excluded.status,
+                     updated_at=excluded.updated_at""",
+                (
+                    (lid or "").strip(),
+                    (book_id or "").strip(),
+                    (atom_id or "").strip(),
+                    (status or "active").strip(),
+                    now,
+                ),
+            )
+
+        self._txn(_do)
+
+    def mark_atom_status(
+        self, learner_id: str, book_id: str, atom_id: str, status: str
+    ) -> None:
+        now = now_utc_iso()
+
+        def _do(conn) -> None:
+            conn.execute(
+                """INSERT INTO atom_progress
+                   (learner_id, book_id, atom_id, status, streak_correct,
+                    streak_incorrect, total_correct, total_attempts,
+                    recent_verdicts, unlocked_at, passed_at)
+                   VALUES (?,?,?,?,0,0,0,0,'[]',?,?)
+                   ON CONFLICT(learner_id, book_id, atom_id) DO UPDATE SET
+                     status=excluded.status,
+                     passed_at=CASE WHEN excluded.status IN ('passed','escaped')
+                       THEN excluded.passed_at ELSE atom_progress.passed_at END""",
+                (
+                    (learner_id or "").strip(),
+                    (book_id or "").strip(),
+                    (atom_id or "").strip(),
+                    (status or "").strip(),
+                    now,
+                    now if status in ("passed", "escaped") else None,
+                ),
+            )
+
+        self._txn(_do)
+
+    def touch_atom_progress(
+        self, learner_id: str, book_id: str, atom_id: str, *, correct: bool
+    ) -> dict:
+        now = now_utc_iso()
+
+        def _do(conn) -> dict:
+            row = conn.execute(
+                "SELECT * FROM atom_progress WHERE learner_id=? AND book_id=? AND atom_id=?",
+                (learner_id, book_id, atom_id),
+            ).fetchone()
+            if row:
+                recent = []
+                try:
+                    recent = json.loads(row["recent_verdicts"] or "[]")
+                except (TypeError, json.JSONDecodeError):
+                    recent = []
+                if not isinstance(recent, list):
+                    recent = []
+                streak_c = int(row["streak_correct"] or 0)
+                streak_w = int(row["streak_incorrect"] or 0)
+                total_c = int(row["total_correct"] or 0)
+                total_a = int(row["total_attempts"] or 0)
+                unlocked = row["unlocked_at"] or now
+            else:
+                recent, streak_c, streak_w, total_c, total_a = [], 0, 0, 0, 0
+                unlocked = now
+            total_a += 1
+            if correct:
+                streak_c += 1
+                streak_w = 0
+                total_c += 1
+                recent.append("correct")
+            else:
+                streak_c = 0
+                streak_w += 1
+                recent.append("wrong")
+            recent = recent[-10:]
+            conn.execute(
+                """INSERT INTO atom_progress
+                   (learner_id, book_id, atom_id, status, streak_correct,
+                    streak_incorrect, total_correct, total_attempts,
+                    recent_verdicts, unlocked_at, passed_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,NULL)
+                   ON CONFLICT(learner_id, book_id, atom_id) DO UPDATE SET
+                     streak_correct=excluded.streak_correct,
+                     streak_incorrect=excluded.streak_incorrect,
+                     total_correct=excluded.total_correct,
+                     total_attempts=excluded.total_attempts,
+                     recent_verdicts=excluded.recent_verdicts""",
+                (
+                    learner_id, book_id, atom_id, "active",
+                    streak_c, streak_w, total_c, total_a,
+                    json.dumps(recent, ensure_ascii=False), unlocked,
+                ),
+            )
+            return {
+                "learner_id": learner_id,
+                "book_id": book_id,
+                "atom_id": atom_id,
+                "status": "active",
+                "streak_correct": streak_c,
+                "streak_incorrect": streak_w,
+                "total_correct": total_c,
+                "total_attempts": total_a,
+                "recent_verdicts": recent,
+            }
+
+        return self._txn(_do)
+
+    def count_atom_items(
+        self, subject: str, atom_id: str, *, quality: tuple[str, ...] = ("pass",)
+    ) -> int:
+        aid = (atom_id or "").strip()
+        if not aid:
+            return 0
+        tiers = [q for q in quality if q]
+        if not tiers:
+            return 0
+        placeholders = ",".join("?" * len(tiers))
+        rows = self._query(
+            f"""SELECT COUNT(*) FROM items
+                WHERE COALESCE(bank_subject, subject)=?
+                  AND COALESCE(atom_id,'')=?
+                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})""",
+            ((subject or "").strip(), aid, *tiers),
+        )
+        return int(rows[0][0]) if rows else 0
+
+    def list_atom_items(
+        self,
+        subject: str,
+        atom_id: str,
+        *,
+        quality: tuple[str, ...] = ("pending",),
+        limit: int = 8,
+    ) -> list[dict]:
+        aid = (atom_id or "").strip()
+        if not aid:
+            return []
+        tiers = [q for q in quality if q]
+        if not tiers:
+            return []
+        placeholders = ",".join("?" * len(tiers))
+        rows = self._query(
+            f"""SELECT * FROM items
+                WHERE COALESCE(bank_subject, subject)=?
+                  AND COALESCE(atom_id,'')=?
+                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})
+                ORDER BY id DESC LIMIT ?""",
+            ((subject or "").strip(), aid, *tiers, int(limit)),
+        )
+        return [self._item_dict(r) for r in rows]
 
 
 _store: dict[str, Store] = {}

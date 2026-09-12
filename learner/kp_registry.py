@@ -252,6 +252,40 @@ def parse_l3_from_reason(reason: str) -> str | None:
     return m.group(1).strip() if m else None
 
 
+def parse_atom_from_reason(reason: str) -> str | None:
+    import re
+    m = re.search(r"\[atom=([^\]]+)\]", reason or "")
+    return m.group(1).strip() if m else None
+
+
+def parse_book_from_reason(reason: str) -> str | None:
+    import re
+    m = re.search(r"\[book=([^\]]+)\]", reason or "")
+    return m.group(1).strip() if m else None
+
+
+def l2_for_l3(subject: str, l3_id: str) -> str | None:
+    """L3 id → 所在 L2 正式名。"""
+    lid = (l3_id or "").strip()
+    if not lid:
+        return None
+    scan = [syllabus_subject(subject)]
+    if scan[0] not in ("math", "comm"):
+        scan = ["math", "comm"]
+    for subj in scan:
+        if subj not in ("math", "comm"):
+            continue
+        syl = load_syllabus(subj)
+        kps = syl.get("kps") or {}
+        for l2_name, meta in kps.items():
+            if not isinstance(meta, dict):
+                continue
+            for l3 in meta.get("l3") or []:
+                if isinstance(l3, dict) and (l3.get("id") or "").strip() == lid:
+                    return str(l2_name)
+    return None
+
+
 def resolve_kp(subject: str, kp_hint: str, kp_weights: dict | None = None) -> str | None:
     """精确 → legacy →（多概念先拆段）→ 别名/标准名打分。
 

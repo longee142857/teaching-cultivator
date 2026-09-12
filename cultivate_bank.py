@@ -31,6 +31,22 @@ MAX_GAP_ATTEMPTS = 3
 
 def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
     store = get_store()
+    reserved = None
+    if subject == "comm":
+        try:
+            from learner.advance import reserved_comm_spec
+
+            reserved = reserved_comm_spec()
+        except Exception as e:
+            print(f"[cultivate_bank] reserved spec skipped: {e}")
+            reserved = None
+    if reserved:
+        result = _author_spec(subject, reserved)
+        if result.get("ok") or not result.get("skipped"):
+            result["reserved"] = True
+            return result
+        print(f"[cultivate_bank] reserved author failed: {result}")
+
     if store.count_ready(subject) >= bank_quota(subject):
         return {
             "ok": True,
@@ -113,7 +129,13 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
 
         l2 = force_kp.split("[")[0].strip()
         weight_subj = content_subj if content_subj in ("math", "comm") else gen_subject
-        l3_id = pick_l3(weight_subj, l2) if l2 else None
+        pin_l3 = (spec.get("l3_id") or "").strip()
+        pin_atom = (spec.get("atom_id") or "").strip()
+        pin_book = (spec.get("book_id") or "").strip()
+        if pin_l3:
+            l3_id = pin_l3
+        else:
+            l3_id = pick_l3(weight_subj, l2) if l2 else None
         if not l3_id and l2 and not list_l3_for_l2(weight_subj, l2):
             # 缺口 KP 不在考纲 / 无 L3：回退 decide 已选 L3
             l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "")
@@ -125,6 +147,12 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
                 "kp": l2,
             }
         reason = f"{l2} [l3={l3_id}]"
+        if pin_atom:
+            reason = f"{reason} [atom={pin_atom}]"
+        if pin_book:
+            reason = f"{reason} [book={pin_book}]"
+        if pin_atom:
+            ability = "recognize"
         if ability:
             reason = f"{reason} {encode_ability_reason(ability)}"
         if content_subj in ("math", "comm"):
@@ -187,6 +215,12 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     l3_id = parse_l3_from_reason(getattr(decision, "reason", "") or "") or ""
 
     meta = {"source": "pregen", "technique_hint": force_tech, "content_subject": content_subj}
+    pin_atom = (spec.get("atom_id") or "").strip()
+    pin_book = (spec.get("book_id") or "").strip()
+    if pin_atom:
+        meta["atom_id"] = pin_atom
+        meta["book_id"] = pin_book
+        meta["reserved"] = True
     try:
         from modules.capability import merge_irt_into_meta
 
@@ -209,6 +243,8 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
         cdps=cdps,
         meta=meta,
         status="ready",
+        atom_id=pin_atom,
+        book_id=pin_book,
     )
     return {
         "ok": True,
