@@ -27,12 +27,12 @@ DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 DEEPSEEK_API_BASE = os.environ.get("DEEPSEEK_API_BASE", "https://api.deepseek.com/v1")
 
 # ── 模型 ──
-# Official DeepSeek V4.1 Flash beta id (limited; no separate v4.1-pro).
-_DS_V41_FLASH = "deepseek-v4.1-flash-expires-on-0910"
-MODEL_FLASH = os.environ.get("DEEPSEEK_MODEL_FLASH", _DS_V41_FLASH)
-MODEL_PRO = os.environ.get("DEEPSEEK_MODEL_PRO", _DS_V41_FLASH)
+# Official production DeepSeek Flash id (no separate pro id).
+_DS_FLASH = "deepseek-flash"
+MODEL_FLASH = os.environ.get("DEEPSEEK_MODEL_FLASH", _DS_FLASH)
+MODEL_PRO = os.environ.get("DEEPSEEK_MODEL_PRO", _DS_FLASH)
 # Agent：DeepSeek Flash 直连
-AGENT_MODEL = os.environ.get("AGENT_MODEL", _DS_V41_FLASH)
+AGENT_MODEL = os.environ.get("AGENT_MODEL", _DS_FLASH)
 # 审查异厂：默认阿里云百炼（北京）qwen-plus；可改 REVIEWER_PROVIDER=openrouter|deepseek
 REVIEWER_PROVIDER = (os.environ.get("REVIEWER_PROVIDER") or "dashscope").strip().lower()
 REVIEWER_MODEL = os.environ.get("REVIEWER_MODEL", "qwen-plus")

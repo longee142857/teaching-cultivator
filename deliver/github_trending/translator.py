@@ -19,7 +19,7 @@ def translate_descriptions(repos: list[dict]) -> list[dict]:
 
     api_key = _get_config("DEEPSEEK_API_KEY")
     api_base = _get_config("DEEPSEEK_API_BASE") or "https://api.deepseek.com"
-    model = _get_config("MODEL_FLASH") or "deepseek-v4.1-flash-expires-on-0910"
+    model = _get_config("MODEL_FLASH") or "deepseek-flash"
 
     if not api_key:
         logger.warning("[translate] DEEPSEEK_API_KEY 未配置，跳过翻译")

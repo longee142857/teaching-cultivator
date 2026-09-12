@@ -25,25 +25,27 @@ def main() -> None:
 
     print("\n=== select_model matrix ===")
     check(
-        MODEL_FLASH == MODEL_PRO == AGENT_MODEL == "deepseek-v4.1-flash-expires-on-0910",
-        "flash/pro/agent default to V4.1 Flash beta id",
+        MODEL_FLASH == MODEL_PRO == AGENT_MODEL == "deepseek-flash",
+        "flash/pro/agent default to deepseek-flash",
         fails,
     )
     src = open(os.path.join(ROOT, "config.py"), encoding="utf-8").read()
     check(
-        "deepseek-v4.1-flash-expires-on-0910" in src
+        '"deepseek-flash"' in src
+        and "expires-on-0910" not in src
         and "deepseek-v4-flash" not in src
         and "deepseek-v4-pro" not in src,
-        "config.py default strings are V4.1 Flash beta",
+        "config.py default is deepseek-flash (no beta/v4 ids)",
         fails,
     )
     env_ex = open(os.path.join(ROOT, ".env.example"), encoding="utf-8").read()
     check(
-        "DEEPSEEK_MODEL_FLASH=deepseek-v4.1-flash-expires-on-0910" in env_ex
-        and "DEEPSEEK_MODEL_PRO=deepseek-v4.1-flash-expires-on-0910" in env_ex
-        and "AGENT_MODEL=deepseek-v4.1-flash-expires-on-0910" in env_ex
-        and "TUTOR_MODEL=deepseek-v4.1-flash-expires-on-0910" in env_ex
-        and "qwen-plus" in env_ex,
+        "DEEPSEEK_MODEL_FLASH=deepseek-flash" in env_ex
+        and "DEEPSEEK_MODEL_PRO=deepseek-flash" in env_ex
+        and "AGENT_MODEL=deepseek-flash" in env_ex
+        and "TUTOR_MODEL=deepseek-flash" in env_ex
+        and "qwen-plus" in env_ex
+        and "expires-on-0910" not in env_ex,
         ".env.example model ids + qwen-plus kept",
         fails,
     )
@@ -52,9 +54,10 @@ def main() -> None:
         encoding="utf-8",
     ).read()
     check(
-        "env('TUTOR_MODEL', 'deepseek-v4.1-flash-expires-on-0910')" in host
-        and "deepseek-chat" not in host,
-        "host.js TUTOR_MODEL default is V4.1 Flash beta",
+        "env('TUTOR_MODEL', 'deepseek-flash')" in host
+        and "deepseek-chat" not in host
+        and "expires-on-0910" not in host,
+        "host.js TUTOR_MODEL default is deepseek-flash",
         fails,
     )
     for t in ("generate", "grade", "explain"):
