@@ -12,6 +12,9 @@ from unittest.mock import patch
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
+_KL = os.path.join(ROOT, "knowledge-lib")
+if _KL not in sys.path:
+    sys.path.insert(0, _KL)
 
 _fails = 0
 
@@ -347,6 +350,101 @@ def test_book_db_path_prefers_git_layout() -> None:
         os.environ.pop("ZHOU_COMM_DB", None)
 
 
+def test_retired_pass_not_already_pass() -> None:
+    """当前原子仅 retired 旧 pass 时仍视为缺口；ready+pass 才 already_pass。"""
+    from learner.db import Store
+    from learner.advance import (
+        set_learning_mode,
+        reserved_comm_spec,
+        ensure_reserved_comm_item,
+    )
+    from learner.context import bind_learner
+    from cultivate_bank import _pregenerate_one_inner
+
+    atom = "zhou.ch2.fourier"
+    with tempfile.TemporaryDirectory() as td:
+        zhou = os.path.join(td, "zhou_comm.db")
+        _make_zhou(zhou)
+        store = Store(os.path.join(td, "t.db"))
+        _bind(store, zhou, accepted=True)
+        former = store.insert_bank_item(
+            subject="comm", question="傅里叶已推", answer="1",
+            kp="确定信号与频谱分析", l3_id="comm.sig_rand.fourier.series",
+            status="ready", atom_id=atom, book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(former, verdict="pass", reasons=["t"], confidence=1.0)
+        store.record_push_for_item(item_id=former, learner_id="owner_adv", slot="comm")
+        check((store.get_item(former) or {}).get("status") == "retired", "former pass retired")
+        check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "retired pass not atom stock")
+
+        pend = store.insert_bank_item(
+            subject="comm", question="pending 原子", answer="x",
+            kp="确定信号与频谱分析", status="ready", atom_id=atom, book_id="zhou_comm",
+        )
+        check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "pending not pass stock")
+        check(store.count_atom_items("comm", atom, quality=("pending",)) == 1, "ready pending is in-flight")
+        store.quarantine_item(pend)
+        check(store.count_atom_items("comm", atom, quality=("pending",)) == 0, "quarantine pending not in-flight")
+
+        poor = store.insert_bank_item(
+            subject="comm", question="poor 原子", answer="x",
+            kp="确定信号与频谱分析", status="ready", atom_id=atom, book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(poor, verdict="fail", reasons=["x"], confidence=1.0)
+        check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "poor not pass stock")
+
+        qid = store.insert_bank_item(
+            subject="comm", question="quarantine 原子", answer="x",
+            kp="确定信号与频谱分析", status="ready", atom_id=atom, book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(qid, verdict="pass", reasons=["t"], confidence=1.0)
+        store.quarantine_item(qid)
+        check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "quarantine not atom stock")
+
+        with bind_learner("owner_adv", binding="schedule"):
+            set_learning_mode("comm", "advance", "zhou_comm")
+            spec = reserved_comm_spec("owner_adv")
+            check(spec is not None, f"retired/poor/quarantine still reserved gap {spec}")
+            check((spec or {}).get("atom_id") == atom, f"pin current atom {spec}")
+
+            def fake_author(subject, spec_in):
+                iid = store.insert_bank_item(
+                    subject="comm",
+                    question="傅里叶补货",
+                    answer="级数",
+                    kp=spec_in.get("kp") or "确定信号与频谱分析",
+                    l3_id=spec_in.get("l3_id") or "",
+                    status="ready",
+                    atom_id=spec_in["atom_id"],
+                    book_id=spec_in.get("book_id") or "zhou_comm",
+                )
+                store.apply_judge_verdict(iid, verdict="pass", reasons=["t"], confidence=1.0)
+                return {"ok": True, "item_id": iid}
+
+            with patch("cultivate_bank._author_spec", side_effect=fake_author) as auth:
+                fill = ensure_reserved_comm_item("owner_adv", judge=False)
+            check(fill.get("reason") != "already_pass", f"ensure not skip retired {fill}")
+            check(fill.get("ok") is True, f"ensure authors after retire {fill}")
+            check(auth.called, "author called after retired pass")
+            check(store.count_atom_items("comm", atom, quality=("pass",)) >= 1, "new ready+pass stocked")
+
+            skip = ensure_reserved_comm_item("owner_adv", judge=False)
+            check(skip.get("reason") == "already_pass", f"ready+pass is already_pass {skip}")
+            check(reserved_comm_spec("owner_adv") is None, "ready+pass fills reserved")
+
+            live = store._query(
+                "SELECT id FROM items WHERE question=? AND status='ready'",
+                ("傅里叶补货",),
+            )
+            check(live, "live pass row exists")
+            store.record_push_for_item(item_id=int(live[0][0]), learner_id="owner_adv", slot="comm")
+            check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "push again clears stock")
+            with patch("cultivate_bank._author_spec", return_value={"ok": True, "item_id": 99}) as auth2:
+                out = _pregenerate_one_inner("comm")
+            check(out.get("ok") is True and out.get("reserved") is True, f"pregen reserved after retire {out}")
+            check(auth2.called, "pregen authors reserved atom after retire")
+
+
 def test_ensure_reserved_fills_pass_for_pick() -> None:
     from learner.db import Store
     from learner.advance import set_learning_mode, ensure_reserved_comm_item
@@ -400,6 +498,7 @@ def main() -> int:
     test_three_way_missing_atom_no_cursor()
     test_book_db_path_prefers_git_layout()
     test_ensure_reserved_fills_pass_for_pick()
+    test_retired_pass_not_already_pass()
     print("fails", _fails)
     return 1 if _fails else 0
 

@@ -1779,6 +1779,7 @@ class Store:
     def count_atom_items(
         self, subject: str, atom_id: str, *, quality: tuple[str, ...] = ("pass",)
     ) -> int:
+        """只数 status=ready 且 quality_tier 命中。retired/quarantine 不算库存。"""
         aid = (atom_id or "").strip()
         if not aid:
             return 0
@@ -1788,7 +1789,8 @@ class Store:
         placeholders = ",".join("?" * len(tiers))
         rows = self._query(
             f"""SELECT COUNT(*) FROM items
-                WHERE COALESCE(bank_subject, subject)=?
+                WHERE status='ready'
+                  AND COALESCE(bank_subject, subject)=?
                   AND COALESCE(atom_id,'')=?
                   AND COALESCE(quality_tier, 'pending') IN ({placeholders})""",
             ((subject or "").strip(), aid, *tiers),
@@ -1803,6 +1805,7 @@ class Store:
         quality: tuple[str, ...] = ("pending",),
         limit: int = 8,
     ) -> list[dict]:
+        """只列 status=ready 且 quality_tier 命中（审判/预留不看 retired）。"""
         aid = (atom_id or "").strip()
         if not aid:
             return []
@@ -1812,7 +1815,8 @@ class Store:
         placeholders = ",".join("?" * len(tiers))
         rows = self._query(
             f"""SELECT * FROM items
-                WHERE COALESCE(bank_subject, subject)=?
+                WHERE status='ready'
+                  AND COALESCE(bank_subject, subject)=?
                   AND COALESCE(atom_id,'')=?
                   AND COALESCE(quality_tier, 'pending') IN ({placeholders})
                 ORDER BY id DESC LIMIT ?""",

@@ -579,6 +579,66 @@ def test_comm_walk_uses_stocked_pass() -> None:
             )
 
 
+def test_retired_pending_poor_quarantine_not_stock() -> None:
+    """同 KP 仅 retired 旧 pass / pending / poor / quarantine 不算库存；ready+pass 才算。"""
+    from learner.db import Store
+    from learner.item_bank import select_gap_spec
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+        cdps = [
+            {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+            {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+        ]
+
+        def _item(q: str, kp: str = "极限") -> int:
+            return store.insert_bank_item(
+                subject="math", question=q, answer="1", kp=kp,
+                techniques=["t"], solution=sol, cdps=cdps, status="ready",
+            )
+
+        retired = _item("retired former pass")
+        _mark_pass(store, retired)
+        store.record_push_for_item(item_id=retired, learner_id="u1", reason="极限")
+        check((store.get_item(retired) or {}).get("status") == "retired", "push retires pass")
+        check(store.count_ready("math", kp="极限") == 0, "retired pass not stock")
+
+        pend = _item("pending only")
+        check(store.count_ready("math", kp="极限") == 0, "pending not stock")
+
+        poor = _item("poor only")
+        store.apply_judge_verdict(poor, verdict="fail", reasons=["x"], confidence=1.0)
+        check(store.count_ready("math", kp="极限") == 0, "poor not stock")
+
+        qid = _item("quarantine former pass")
+        _mark_pass(store, qid)
+        store.quarantine_item(qid)
+        check((store.get_item(qid) or {}).get("status") == "quarantine", "quarantined")
+        check(store.count_ready("math", kp="极限") == 0, "quarantine not stock")
+
+        ranked = [("极限", 4.0), ("幂级数与函数展开", 2.0)]
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", return_value=ranked), \
+             patch("learner.item_bank.pick_technique_for_kp", return_value=""):
+            spec = select_gap_spec("math")
+        check(spec and spec.get("kp") == "极限", f"gap still wants KP with only retired pass {spec}")
+
+        live = _item("live ready pass")
+        _mark_pass(store, live)
+        check(store.count_ready("math", kp="极限") == 1, "ready+pass is stock")
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", return_value=ranked), \
+             patch("learner.item_bank.pick_technique_for_kp", return_value=""):
+            spec2 = select_gap_spec("math")
+        check(
+            spec2 and spec2.get("kp") == "幂级数与函数展开",
+            f"gap prefers unstocked KP over ready+pass {spec2}",
+        )
+
+
 def test_author_spec_drops_cross_subject_ref() -> None:
     from learner.db import Store
     from types import SimpleNamespace
@@ -630,6 +690,7 @@ def main() -> int:
     test_pick_rejects_pending_poor_and_sanitizes_stored_ref()
     test_review_walk_uses_next_stocked_kp()
     test_comm_walk_uses_stocked_pass()
+    test_retired_pending_poor_quarantine_not_stock()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")

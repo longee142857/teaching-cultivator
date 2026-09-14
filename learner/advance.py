@@ -219,7 +219,11 @@ def resolve_advance_target(learner_id: str = "") -> dict[str, Any]:
 
 
 def reserved_comm_spec(learner_id: str = "") -> dict[str, str] | None:
-    """凌晨预留槽：当前原子 pin L3，不受薄弱配额。已有 pass/pending 则 None。"""
+    """凌晨预留槽：当前原子 pin L3，不受薄弱配额。
+
+    仅 ready+pass 算库存；ready+pending 视为在途不出第二道。
+    retired / quarantine / poor 不算满，推过即补。
+    """
     if not advance_active("comm", learner_id):
         return None
     target = resolve_advance_target(learner_id)
@@ -260,6 +264,7 @@ def ensure_reserved_comm_item(learner_id: str = "", *, judge: bool = True) -> di
     if not atom_id:
         return {"ok": False, "error": "no_atom"}
     store = get_store()
+    # already_pass = 当前仍有可抽的 ready+pass；retired 旧 pass 必须再出。
     if store.count_atom_items("comm", atom_id, quality=("pass",)) >= 1:
         return {"ok": True, "skipped": True, "reason": "already_pass", "atom_id": atom_id}
 
