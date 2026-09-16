@@ -130,6 +130,10 @@ def test_bootstrap_submit(tmp_db: str):
     check(len(boot["items"]) >= 3, f"items>={len(boot['items'])}")
     today = [i for i in boot["items"] if not i.get("backlog")]
     check(len(today) >= 3, "today items")
+    backlog = [i for i in boot["items"] if i.get("backlog")]
+    check(len(backlog) >= 1, "bootstrap includes unanswered backlog")
+    check(all(i.get("kind") for i in today), "today items have kinds")
+    check(boot["stats"]["today"] == len(today), "stats.today excludes backlog")
     item = today[0]
     # math demo answer is 0
     math_item = next(i for i in today if i["kind"] == "math")
