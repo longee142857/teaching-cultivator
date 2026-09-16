@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-bandpass-sig-001",
+  "subject": "comm",
+  "l2": "带通信号与希尔伯特变换",
+  "l3_id": "comm.sig_rand.bandpass.sig",
+  "atom_id": "zhou.ch2.bandpass.iq.phase",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "带通信号 s(t)=I(t)cos(2πf_c t)-Q(t)sin(2πf_c t)，其中 I(t)=cos(2πf_m t)、Q(t)=sin(2πf_m t)（f_m≪f_c）。构造等效低通复包络 a(t) 并写出 |a(t)|。",
+  "answer": "a(t)=I(t)+jQ(t)=e^{j2πf_m t}；|a(t)|=1。",
+  "techniques": ["IQ 正交表示", "复包络合成", "模读包络"],
+  "solution": "1) 标准形式 s=Re{(I+jQ)e^{j2πf_c t}}，故 a(t)=I+jQ。2) 代入 I,Q 得 a(t)=cos(2πf_m t)+j sin(2πf_m t)=e^{j2πf_m t}。3) |a(t)|=1。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

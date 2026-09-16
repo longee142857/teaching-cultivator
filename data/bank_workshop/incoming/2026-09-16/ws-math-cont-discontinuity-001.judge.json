@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-math-cont-discontinuity-001",
+  "decision": "accept",
+  "reasons": ["左右极限与 f(1) 计算正确，结论为连续点"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

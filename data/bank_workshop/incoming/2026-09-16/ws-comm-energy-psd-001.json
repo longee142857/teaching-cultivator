@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-energy-psd-001",
+  "subject": "comm",
+  "l2": "确定信号与频谱分析",
+  "l3_id": "comm.sig_rand.energy_psd",
+  "atom_id": "zhou.ch2.energy.autocorr.wk",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "能量信号 x(t) 的自相关为 R_x(τ)=e^{-2|τ|}。求其能量谱密度 E_x(f) 与总能量 E（积分域为全体频率）。",
+  "answer": "E_x(f)=4/(4+(2πf)^2)；E=1。",
+  "techniques": ["Wiener-Khinchin 关系", "能量谱为自相关 FT", "帕塞瓦尔"],
+  "solution": "1) 已知 R_x(τ)↔E_x(f)，与 e^{-2|τ|} 的 FT 同型：E_x(f)=4/(4+(2πf)^2)。2) 总能量 E=R_x(0)=1，或由 E=∫ E_x(f)df 验证。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

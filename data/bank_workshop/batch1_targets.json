@@ -1,0 +1,98 @@
+[
+  {
+    "l3_id": "comm.sig_rand.fourier.series",
+    "l3_name": "傅里叶级数",
+    "l2": "确定信号与频谱分析",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.fourier.series.def",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.fourier.transform",
+    "l3_name": "傅里叶变换",
+    "l2": "确定信号与频谱分析",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.fourier.transform.def",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.energy_psd",
+    "l3_name": "能量谱与功率谱",
+    "l2": "确定信号与频谱分析",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.energy.autocorr.wk",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.lti",
+    "l3_name": "LTI系统与频域响应",
+    "l2": "确定信号与频谱分析",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.lti.convolution",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.signal.props",
+    "l3_name": "信号分类与基本运算",
+    "l2": "确定信号与频谱分析",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.inner.product.energy",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.hilbert",
+    "l3_name": "希尔伯特变换",
+    "l2": "带通信号与希尔伯特变换",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.hilbert.transform",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.analytic",
+    "l3_name": "解析信号与复包络",
+    "l2": "带通信号与希尔伯特变换",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.analytic.signal",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "comm.sig_rand.bandpass.sig",
+    "l3_name": "带通信号表示",
+    "l2": "带通信号与希尔伯特变换",
+    "subject": "comm",
+    "atom_id": "zhou.ch2.bandpass.iq.phase",
+    "book_id": "zhou_comm"
+  },
+  {
+    "l3_id": "math.calc.limit.def",
+    "l3_name": "极限定义与ε语言",
+    "l2": "函数极限与连续",
+    "subject": "math",
+    "atom_id": "",
+    "book_id": ""
+  },
+  {
+    "l3_id": "math.calc.limit.compute",
+    "l3_name": "极限计算（通法）",
+    "l2": "函数极限与连续",
+    "subject": "math",
+    "atom_id": "",
+    "book_id": ""
+  },
+  {
+    "l3_id": "math.calc.limit.equiv",
+    "l3_name": "等价无穷小与阶比较",
+    "l2": "函数极限与连续",
+    "subject": "math",
+    "atom_id": "",
+    "book_id": ""
+  },
+  {
+    "l3_id": "math.calc.cont.discontinuity",
+    "l3_name": "间断点分类",
+    "l2": "函数极限与连续",
+    "subject": "math",
+    "atom_id": "",
+    "book_id": ""
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-comm-bandpass-sig-001",
+  "decision": "accept",
+  "reasons": ["IQ 复包络 a=I+jQ 与 |a|=1 推导正确"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

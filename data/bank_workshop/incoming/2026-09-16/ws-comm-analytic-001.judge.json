@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-comm-analytic-001",
+  "decision": "accept",
+  "reasons": ["解析信号与复包络 a(t)=2 一致"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

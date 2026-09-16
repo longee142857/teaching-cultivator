@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-fourier-transform-001",
+  "subject": "comm",
+  "l2": "确定信号与频谱分析",
+  "l3_id": "comm.sig_rand.fourier.transform",
+  "atom_id": "zhou.ch2.fourier.transform.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求矩形脉冲 g(t)=A rect(t/T) 的傅里叶变换 G(f)，并写出主瓣零点带宽。",
+  "answer": "G(f)=A T sinc(f T)；主瓣零点带宽 2/T（Hz）。",
+  "techniques": ["傅里叶变换定义", "rect↔sinc 对偶", "零点带宽读谱"],
+  "solution": "1) 写 FT 积分；2) 代入 rect 得 A∫_{-T/2}^{T/2} e^{-j2πft} dt；3) 得 AT sinc(fT)；4) 主瓣零点在 ±1/T，带宽 2/T。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

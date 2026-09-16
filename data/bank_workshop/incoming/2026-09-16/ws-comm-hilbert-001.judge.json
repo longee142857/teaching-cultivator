@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-comm-hilbert-001",
+  "decision": "accept",
+  "reasons": ["希尔伯特→解析信号 e^{j2πf0 t} 与包络说明正确"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-math-cont-discontinuity-001",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.discontinuity",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "设 f(x)={x^2, x<1; 2x-1, x≥1}。判断 x=1 处间断点类型，并分别求左极限、右极限与 f(1)。",
+  "answer": "左极限 1、右极限与函数值均为 1；f 在 x=1 连续（非间断点）。",
+  "techniques": ["分段函数左右极限", "连续性判定", "间断点分类"],
+  "solution": "1) x→1^- 时 f(x)=x^2→1。2) x→1^+ 时 f(x)=2x-1→1，且 f(1)=1。3) 左右极限相等且等于函数值，故 x=1 连续。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}
