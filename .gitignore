@@ -1,3 +1,6 @@
+# Cloud agent lifecycle state (no secrets; local only)
+data/cloud-agents-state.json
+
 # Secrets & local env
 .env
 .venv/

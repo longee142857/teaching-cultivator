@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-fourier-transform-001",
+  "subject": "comm",
+  "l2": "确定信号与频谱分析",
+  "l3_id": "comm.sig_rand.fourier.transform",
+  "atom_id": "zhou.ch2.fourier.transform.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 g(t)=e^{-a|t|}（a>0），利用傅里叶变换定义与偶函数性质，推导其频谱 G(f)（含收敛条件说明）。",
+  "answer": "G(f)=2a/(a^2+(2πf)^2)。",
+  "techniques": ["FT 定义积分", "偶函数对称化", "有理化简"],
+  "solution": "1) G(f)=∫_{-∞}^{∞} e^{-a|t|}e^{-j2πft}dt=2∫_0^{∞} e^{-at}cos(2πft)dt（偶部）。2) 用 ∫_0^∞ e^{-at}cos(ωt)dt=a/(a^2+ω^2)，ω=2πf。3) 得 G(f)=2a/(a^2+(2πf)^2)，a>0 保证绝对可积。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

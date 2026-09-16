@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-math-limit-equiv-001",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.equiv",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "当 x→0 时，比较 ln(1+x) 与 x-x^2/2 的阶：求 lim_{x→0} [ln(1+x)-x+x^2/2]/x^3。",
+  "answer": "极限为 1/3。",
+  "techniques": ["麦克劳林展开", "阶比较", "分式极限"],
+  "solution": "1) ln(1+x)=x-x^2/2+x^3/3+o(x^3)。2) 代入得分子 ln(1+x)-x+x^2/2 = x^3/3+o(x^3)。3) 除以 x^3 令 x→0，极限为 1/3。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

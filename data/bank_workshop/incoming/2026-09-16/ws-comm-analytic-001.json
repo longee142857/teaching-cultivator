@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-analytic-001",
+  "subject": "comm",
+  "l2": "带通信号与希尔伯特变换",
+  "l3_id": "comm.sig_rand.analytic",
+  "atom_id": "zhou.ch2.analytic.signal",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "实带通信号 s(t)=A(t)cos(2πf_c t+φ(t))，解析信号 z(t)=s(t)+jŝ(t)。若 A(t)=2、φ(t)=0，写出 z(t) 并求复包络 a(t) 使 s(t)=Re{a(t)e^{j2πf_c t}}。",
+  "answer": "z(t)=2e^{j2πf_c t}；a(t)=2（常数复包络）。",
+  "techniques": ["解析信号定义", "复包络提取", "实部还原"],
+  "solution": "1) A(t)=2、φ=0 时 s(t)=2cos(2πf_c t)，希尔伯特项 ŝ(t)=2sin(2πf_c t)。2) z(t)=2(cos+j sin)=2e^{j2πf_c t}。3) 对比 s=Re{a e^{j2πf_c t}} 得 a(t)=2。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

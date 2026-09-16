@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-fourier-series-001",
+  "subject": "comm",
+  "l2": "确定信号与频谱分析",
+  "l3_id": "comm.sig_rand.fourier.series",
+  "atom_id": "zhou.ch2.fourier.series.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "周期为 T 的方波 s(t)=A（0≤t<T/2）且 s(t)=-A（T/2≤t<T），在 t∈[0,T) 上按指数形式傅里叶级数展开。求直流分量 a0 与基波（n=±1）复系数 c1（用 A、T 表示）。",
+  "answer": "a0=0；c1 = A/(jπ)（等价地 c_{-1}=-A/(jπ)）。",
+  "techniques": ["指数傅里叶级数系数公式", "奇对称方波去直流", "基波积分"],
+  "solution": "1) a0=(1/T)∫_0^T s(t)dt，正负半周抵消得 a0=0。2) c_n=(1/T)∫_0^T s(t)e^{-j2πnt/T}dt；n=1 时拆成两段：c1=(A/T)[∫_0^{T/2}e^{-j2πt/T}dt - ∫_{T/2}^T e^{-j2πt/T}dt]。3) 计算得 c1=A/(jπ)。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}

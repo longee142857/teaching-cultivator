@@ -1,0 +1,21 @@
+{
+  "id": "ws-20260916-comm-lti-001",
+  "subject": "comm",
+  "l2": "确定信号与频谱分析",
+  "l3_id": "comm.sig_rand.lti",
+  "atom_id": "zhou.ch2.lti.convolution",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "LTI 系统冲激响应 h(t)=e^{-t}u(t)。构造输入 x(t)=δ(t)-δ(t-1) 时输出 y(t) 的时域表达式（用 u(t) 分段写出）。",
+  "answer": "y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
+  "techniques": ["卷积与冲激串", "因果系统移位叠加", "u(t) 分段"],
+  "solution": "1) y=h*x，x 为两冲激之和。2) h(t)*δ(t)=h(t)；h(t)*δ(t-1)=h(t-1)=e^{-(t-1)}u(t-1)。3) 相减得 y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch1",
+    "workshop_date": "2026-09-16"
+  }
+}
