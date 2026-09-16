@@ -281,7 +281,8 @@ def _author_one(
         )
         try:
             content = generate(
-                subject, decision, source="schedule", exam_allow_low_rag=allow_low_rag
+                subject, decision, source="schedule", exam_allow_low_rag=allow_low_rag,
+                llm_task="author",
             )
         except Exception:
             return None

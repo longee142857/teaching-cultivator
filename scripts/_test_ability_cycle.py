@@ -144,12 +144,12 @@ def test_due_stable():
 # ═══════════════════════════════════════════
 
 def test_ability_cold():
-    """opp=0/explain → recognize。"""
+    """explain → recognize；push 即使 opp=0 → compute（不降成定义判断）。"""
     from learner.ability_cycle import decide_ability
     result = decide_ability("math", "explain", opportunity_count=0)
     check("ability_cold_explain_recognize", result == "recognize", f"got={result}")
     result2 = decide_ability("math", "push", opportunity_count=0)
-    check("ability_cold_push_recognize", result2 == "recognize", f"got={result2}")
+    check("ability_cold_push_compute", result2 == "compute", f"got={result2}")
 
 
 def test_ability_after_wrong():
@@ -170,11 +170,11 @@ def test_ability_mastered():
 
 
 def test_ability_mastered_due():
-    """已掌握 + 到期 → recognize 或 transfer。"""
+    """已掌握 + 到期 → compute 或 transfer（不再 recognize 轻测）。"""
     from learner.ability_cycle import decide_ability
     result = decide_ability("math", "push", is_mastered=True, is_due=True,
                             mastery=0.85, opportunity_count=5)
-    check("ability_mastered_due", result in ("recognize", "transfer"), f"got={result}")
+    check("ability_mastered_due", result in ("compute", "transfer"), f"got={result}")
 
 
 def test_ability_due():
@@ -265,6 +265,53 @@ def test_push_template_has_form_placeholders():
           "{{item_form_user_constraint}}" in text)
     check("push_no_hardcoded_mcq_distractor",
           "改干扰项" not in text)
+    check("push_no_difficulty_placeholder",
+          "{{difficulty}}" not in text)
+    check("push_has_hit_constraint",
+          "必须命中给定知识点" in text)
+
+
+def test_polish_branches_lecture():
+    from prompts.prompt_builder import PromptBuilder
+    b = PromptBuilder()
+    _, push_u = b.build_polish(draft_body="草稿", answer_body="A", decision_type="push")
+    _, exp_u = b.build_polish(draft_body="草稿", answer_body="A", decision_type="explain")
+    _, rev_u = b.build_polish(draft_body="草稿", answer_body="A", decision_type="review")
+    check("polish_push_strips", "只保留恰好一道题的题干" in push_u, push_u[-200:])
+    check("polish_explain_keeps", "保留：概念直觉" in exp_u, exp_u[-200:])
+    check("polish_review_keeps", "错因说明" in rev_u, rev_u[-200:])
+    orch_push_s, _ = b.build_orchestrate(
+        draft_body="d", answer_body="a", source="bank", decision_type="push"
+    )
+    orch_exp_s, _ = b.build_orchestrate(
+        draft_body="d", answer_body="a", source="bank", decision_type="explain"
+    )
+    check("orch_push_strips", "只留题干" in orch_push_s, orch_push_s[:400])
+    check("orch_explain_keeps", "保留概念直觉" in orch_exp_s, orch_exp_s[:400])
+
+
+def test_strategy_hint_hits_kp_not_downgrade():
+    """出题策略强调命中，不再要求降低复杂度。"""
+    from prompts.prompt_builder import PromptBuilder
+    hint = PromptBuilder.build_strategy_hint(0.1, 3, 0)
+    check("hint_has_hit", "命中" in hint, hint)
+    check("hint_no_downgrade_ask",
+          "降低题目复杂度" not in hint
+          and "最基础的定义" not in hint
+          and "请出概念判断" not in hint,
+          hint)
+
+
+def test_author_item_form_atom_skips_mcq():
+    from learner.ability_cycle import author_item_form, decide_advance_ability
+    ab, form = author_item_form("recognize", atom_id="zhou.ch2.fourier")
+    check("atom_upgrades_recognize", ab == "compute" and form != "mcq", f"{ab}/{form}")
+    ab2, form2 = author_item_form("compute", atom_id="zhou.ch2.fourier", forced_form="mcq")
+    check("atom_ignores_forced_mcq", form2 != "mcq", f"{ab2}/{form2}")
+    ab3, form3 = author_item_form("construct", atom_id="zhou.ch2.fourier")
+    check("atom_construct_proof", ab3 == "construct" and form3 == "proof_outline", f"{ab3}/{form3}")
+    a1 = decide_advance_ability("comm")
+    check("advance_ability_pool", a1 in ("compute", "construct"), a1)
 
 
 def test_ability_parse_reason():
@@ -357,6 +404,9 @@ def main() -> int:
     print("\n--- 4. item_form mapping ---")
     test_item_form_mapping()
     test_push_template_has_form_placeholders()
+    test_polish_branches_lecture()
+    test_strategy_hint_hits_kp_not_downgrade()
+    test_author_item_form_atom_skips_mcq()
     test_ability_parse_reason()
     test_ability_goal_in_decision()
 

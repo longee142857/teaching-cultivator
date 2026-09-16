@@ -408,15 +408,18 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
                         "defer", "basic",
                         f"{target['atom_id']}: 映射 L3 无对应 L2", 5,
                     )
-                pref = get_difficulty_pref("comm") or "basic"
+                from learner.ability_cycle import decide_advance_ability
+
+                ability = decide_advance_ability("comm")
                 reason = (
                     f"{l2}: 书序原子 {target['atom_id']} "
                     f"[l3={l3_id}] [atom={target['atom_id']}] "
                     f"[book={target['book_id']}] [advance=1] "
-                    f"[content_subject=comm] {encode_ability_reason('recognize')}"
+                    f"[content_subject=comm] {encode_ability_reason(ability)}"
                 )
-                decision = InterventionDecision("push", pref, reason, 3)
-                decision.ability_goal = "recognize"
+                # 难度字段只为签名兼容；出题不再按 basic 降级
+                decision = InterventionDecision("push", "intermediate", reason, 3)
+                decision.ability_goal = ability
                 return decision
         except Exception as e:
             print(f"[cultivate] advance decide fallback free: {e}")
@@ -544,9 +547,6 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         decision.ability_goal = ability_goal
         decision.reason = f"{decision.reason} {encode_ability_reason(ability_goal)}"
 
-    pref = get_difficulty_pref(subject)
-    if pref:
-        decision.difficulty = pref
     if content_subj in ("math", "comm"):
         tag = f"[content_subject={content_subj}]"
         if tag not in (decision.reason or ""):
@@ -617,9 +617,14 @@ def _author_once(
     return draft, answer
 
 
-def _polish_once(builder: PromptBuilder, draft: str, answer: str, difficulty: str) -> str:
+def _polish_once(
+    builder: PromptBuilder, draft: str, answer: str, difficulty: str,
+    decision_type: str = "push",
+) -> str:
     """阶段2：整理发送文案（不含答案）。"""
-    system, user = builder.build_polish(draft_body=draft, answer_body=answer)
+    system, user = builder.build_polish(
+        draft_body=draft, answer_body=answer, decision_type=decision_type
+    )
     polished = call_llm(system, user, "polish", difficulty)
     # 防模型把 <answer> 又带出来
     from math_format import split_question_answer, normalize_markdown_body
@@ -655,8 +660,7 @@ def generate(subject: str, decision: InterventionDecision, *,
         gen_subj = content_subject_for_kp(kp_name) or "math"
 
     topic_desc = TOPIC_MAP.get(gen_subj, TOPIC_MAP.get(subject, subject))
-    difficulty_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
-    diff = difficulty_map.get(decision.difficulty, "中等")
+    diff = "考点命中（不按难度降级）"
     intervention_map = {"push": "出题", "explain": "讲解概念", "review": "复诊错题", "defer": "", "escalate": ""}
     action = intervention_map.get(decision.type, "出题")
 
@@ -677,7 +681,7 @@ def generate(subject: str, decision: InterventionDecision, *,
     if not atom_id:
         try:
             picker = RefPicker(gen_subj)
-            ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
+            ref_entry = picker.pick(kp=kp, difficulty="")
             if ref_entry:
                 src = ref_entry.get("source", {})
                 if isinstance(src, dict):
@@ -768,25 +772,20 @@ def generate(subject: str, decision: InterventionDecision, *,
     # ── ability_goal → item_form (BIG-TEACH-011d)；transfer 继承上次 form ──
     # 双周卷可在 reason 写 [item_form=blank|proof_outline] 强制大题
     from learner.ability_cycle import (
-        ability_to_item_form,
+        author_item_form,
         parse_ability_from_reason,
         parse_item_form_from_reason,
-        _load_last_push_item_form,
     )
     ability_goal = getattr(decision, 'ability_goal', '') or parse_ability_from_reason(decision.reason) or ''
     global _last_item_form
     forced_form = parse_item_form_from_reason(decision.reason)
-    if atom_id:
-        ability_goal = "recognize"
-        _last_item_form = forced_form or "mcq"
-    elif forced_form:
-        _last_item_form = forced_form
-    else:
-        last_form = _load_last_push_item_form() if ability_goal == "transfer" else ""
-        _last_item_form = (
-            ability_to_item_form(ability_goal, last_form=last_form or None, subject=gen_subj)
-            if ability_goal else "mcq"
-        )
+    ability_goal, _last_item_form = author_item_form(
+        ability_goal,
+        atom_id=atom_id or "",
+        forced_form=forced_form,
+        subject=gen_subj,
+    )
+    decision.ability_goal = ability_goal
 
     author_kwargs = dict(
         subject_cn=subject_cn,

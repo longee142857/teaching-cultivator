@@ -119,8 +119,19 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
     state = assess_state(gen_subject if gen_subject in ("math", "comm") else subject)
     decision = decide(subject, state["bkt_log"])
     ability = getattr(decision, "ability_goal", "") or ""
-    diff = getattr(decision, "difficulty", "intermediate") or "intermediate"
-    dtype = decision.type if decision.type != "defer" else "push"
+    diff = ""
+    orig_type = (getattr(decision, "type", "") or "push").strip()
+    dtype = orig_type if orig_type in ("push", "explain", "review") else "push"
+    if dtype == "push" and orig_type not in ("push", "explain", "review", "defer"):
+        # escalate 等残余类型被收成 push 时，按 push 重算 ability（避免仍停在 recognize）
+        from learner.ability_cycle import decide_ability
+
+        ability = decide_ability(
+            gen_subject if gen_subject in ("math", "comm") else subject,
+            "push",
+            opportunity_count=1,
+            mastery=0.5,
+        )
 
     if force_kp:
         # 强制 L2 时必须挂上 [l3=…]，否则 generate 在 RAG_STRICT 下直接 abort
@@ -162,14 +173,14 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
                 )
         if pin_book:
             reason = f"{reason} [book={pin_book}]"
-        if pin_atom:
-            ability = "recognize"
+        if pin_atom and (not ability or ability in ("recognize", "diagnose")):
+            ability = "compute"
         if ability:
             reason = f"{reason} {encode_ability_reason(ability)}"
         if content_subj in ("math", "comm"):
             reason = f"{reason} [content_subject={content_subj}]"
         decision = InterventionDecision(
-            type=dtype, difficulty=diff, reason=reason, priority=3, ability_goal=ability
+            type=dtype, difficulty="intermediate", reason=reason, priority=3, ability_goal=ability
         )
     elif decision.type == "defer":
         return {"ok": False, "error": "defer", "reason": decision.reason, "subject": subject}

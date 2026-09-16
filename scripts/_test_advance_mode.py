@@ -620,6 +620,29 @@ def test_reserved_skips_unattempted_and_authors_after_wrong() -> None:
             )
 
 
+def test_advance_decide_hits_atom_not_easy_mcq() -> None:
+    """推进 decide：钉原子 + compute/construct，忽略难度偏好。"""
+    from cultivate import decide
+
+    target = {
+        "ok": True,
+        "l3_id": "comm.sig_rand.fourier.series",
+        "atom_id": "zhou.ch2.fourier",
+        "book_id": "zhou_comm",
+    }
+    with patch("learner.advance.advance_active", return_value=True), \
+         patch("learner.advance.resolve_advance_target", return_value=target), \
+         patch("learner.kp_registry.l2_for_l3", return_value="确定信号与频谱分析"), \
+         patch("learner.ability_cycle.decide_advance_ability", return_value="compute"), \
+         patch("cultivate.get_difficulty_pref", return_value="basic"):
+        d = decide("comm", object())
+    check(d.type == "push", f"advance push {d.type}")
+    check(d.ability_goal == "compute", f"ability {d.ability_goal}")
+    check("[ability=recognize]" not in (d.reason or ""), d.reason)
+    check("[atom=zhou.ch2.fourier]" in (d.reason or ""), d.reason)
+    check(d.difficulty != "basic", f"difficulty pref ignored {d.difficulty}")
+
+
 def main() -> int:
     test_accept_missing()
     test_book_order_and_unmapped()
@@ -633,6 +656,7 @@ def main() -> int:
     test_retired_pass_not_already_pass()
     test_grade_item_atom_advances_without_last_class()
     test_reserved_skips_unattempted_and_authors_after_wrong()
+    test_advance_decide_hits_atom_not_easy_mcq()
     print("fails", _fails)
     return 1 if _fails else 0
 

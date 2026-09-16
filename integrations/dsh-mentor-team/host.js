@@ -229,7 +229,7 @@ return {
         required: [],
       },
       adjust_difficulty: {
-        desc: '学员明确要求改变难度时，调整科目整体出题难度偏好（basic/intermediate/challenge）。只改偏好，不改 BKT/η，不改已推送的今日题，不批改、不出题。',
+        desc: '学员明确要求改变难度时，记录科目难度偏好（basic/intermediate/challenge）。只改偏好文件，不改 BKT/η，不改已推送的今日题；出题已改为知识点命中，该偏好不再升降下一题。',
         params: {
           subject: { type: 'string', enum: ['math', 'comm', 'review'], description: '科目' },
           level: { type: 'string', enum: ['basic', 'intermediate', 'challenge'], description: 'basic=基础, intermediate=中等, challenge=挑战' },

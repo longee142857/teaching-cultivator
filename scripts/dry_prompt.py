@@ -45,14 +45,13 @@ def dry_run(subject: str):
 
     decision = _build_decision(subject)
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
-    diff_map = {"basic": "基础", "intermediate": "中等", "challenge": "挑战"}
     act_map = {"push": "出题", "explain": "讲解概念", "review": "复诊错题", "defer": "", "escalate": ""}
 
     ref_entry = None
     ref_source = ""
     try:
         picker = RefPicker(subject)
-        ref_entry = picker.pick(kp=kp, difficulty=decision.difficulty)
+        ref_entry = picker.pick(kp=kp, difficulty="")
         if ref_entry:
             src = ref_entry.get("source", {})
             if isinstance(src, dict):
@@ -82,7 +81,7 @@ def dry_run(subject: str):
     system, user = builder.build(
         subject_cn=subject_map.get(subject, subject),
         kp=kp,
-        difficulty_cn=diff_map.get(decision.difficulty, "中等"),
+        difficulty_cn="考点命中（不按难度降级）",
         action_cn=act_map.get(decision.type, "出题"),
         reason=decision.reason,
         decision_type=decision.type,

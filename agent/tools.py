@@ -486,7 +486,7 @@ def adjust_difficulty(subject: str, level: str) -> str:
     """调整科目难度偏好（只改偏好，不改变掌握度 — BIG-TEACH-012a #5）。"""
     from cultivate import set_difficulty_pref
     ok = set_difficulty_pref(subject, level)
-    result = f"{subject} 难度已调整为 {level}" if ok else "调整失败"
+    result = f"{subject} 已记录难度偏好 {level}。出题现按知识点命中，不再按此偏好升降难度；下一题不会因此变简单或变难。" if ok else "调整失败"
     # 可选审计日志（不影响 mastery）
     try:
         from learner.roster import allows_learning_writes

@@ -92,7 +92,7 @@ def _review_item(
         "你是一个题目质量审查员。检查以下题目是否存在问题。\n"
         "检查要点：\n"
         "1. 题干是否有歧义或存在多解\n"
-        "2. 难度与知识点是否匹配\n"
+        "2. 是否命中给定知识点（禁止用定义判断替身）\n"
         "3. 答案与题干是否矛盾\n"
         "4. 题目表述是否清晰完整\n"
         "5. 选择题选项是否互斥且恰有一解\n\n"
@@ -100,7 +100,7 @@ def _review_item(
         '{"decision": "accept|reject", "issues": ["问题1", ...], "suggestion": "改进建议"}'
     )
     prompt = (
-        f"知识点：{kp}\n难度：{difficulty}\n题型：{type_hint}\n"
+        f"知识点：{kp}\n题型：{type_hint}\n审查重点：是否命中该知识点（禁止定义判断替身）。\n"
         f"题目：\n{draft}\n\n答案：\n{answer}\n\n请审查并输出 JSON。"
     )
     raw = call_llm(system, prompt, "review_item", difficulty) or ""
@@ -203,6 +203,7 @@ def _polish_or_orchestrate(
     subject: str,
     kp: str,
     source: str,
+    decision_type: str = "push",
 ) -> str:
     """优先走 orchestrate 模板（含 digest）；失败回退 polish。"""
     from prompts.prompt_builder import PromptBuilder
@@ -222,6 +223,7 @@ def _polish_or_orchestrate(
             subject=subject,
             kp=kp,
             source=source,
+            decision_type=decision_type,
         )
         raw = call_llm(system, user, "orchestrate", difficulty)
         body, leaked = split_question_answer(raw)
@@ -236,7 +238,9 @@ def _polish_or_orchestrate(
         print(f"[orchestrate] orchestrate template failed: {e}")
 
     try:
-        system, user = builder.build_polish(draft_body=draft, answer_body=answer)
+        system, user = builder.build_polish(
+            draft_body=draft, answer_body=answer, decision_type=decision_type
+        )
         raw = call_llm(system, user, "polish", difficulty)
         body, leaked = split_question_answer(raw)
         if leaked:
@@ -376,6 +380,7 @@ def orchestrate_push(
             subject=subject,
             kp=kp,
             source=source,
+            decision_type=str(art.get("decision_type") or "push"),
         )
         # 发送稿再扫一遍泄答 / 污染
         send_issues = check_draft_answer(content, answer)

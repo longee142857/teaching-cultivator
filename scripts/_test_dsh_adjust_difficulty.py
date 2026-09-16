@@ -89,6 +89,7 @@ def main() -> int:
                 check(cultivate_mod.get_difficulty_pref("math") == "challenge", "pref persisted math=challenge")
                 msg = tools_mod.adjust_difficulty("math", "basic")
                 check("basic" in msg and "math" in msg, f"old tool message={msg[:80]!r}")
+                check("不再" in msg or "命中" in msg, f"tool discloses unused pref {msg[:120]!r}")
                 check(cultivate_mod.get_difficulty_pref("math") == "basic", "old tool writes same difficulty.json")
                 from learner import paths as P
                 path = P.difficulty_path()

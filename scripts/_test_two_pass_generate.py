@@ -67,8 +67,27 @@ def test_author_templates_exist():
         print(f"OK author template {t}")
 
 
+def test_daily_author_uses_generate_task():
+    """PR #8 把 generate 接到 flash，但出题入口曾仍传 author（Pro）。"""
+    import inspect
+    import cultivate
+    from learner.item_bank import structure_item_via_llm
+    from learner import biweekly_exam
+
+    src = inspect.getsource(cultivate._author_once)
+    assert "llm_task" in src
+    src_gen = inspect.getsource(cultivate.generate)
+    assert 'llm_task if llm_task in ("generate", "author") else "generate"' in src_gen
+    src_struct = inspect.getsource(structure_item_via_llm)
+    assert '"generate"' in src_struct
+    src_exam = inspect.getsource(biweekly_exam._author_one)
+    assert 'llm_task="author"' in src_exam
+    print("OK daily generate task; biweekly keeps author")
+
+
 if __name__ == "__main__":
     test_model_tiers()
     test_polish_template()
     test_author_templates_exist()
+    test_daily_author_uses_generate_task()
     print("ALL PASS")

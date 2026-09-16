@@ -326,6 +326,53 @@ def test_author_spec_inserts_ready() -> None:
         check((it.get("meta") or {}).get("content_subject") == "math", "content_subject math")
 
 
+def test_author_spec_keeps_explain_type() -> None:
+    """预生成不得把 explain 改成 push。"""
+    from learner.db import Store
+    from types import SimpleNamespace
+    from cultivate_bank import _author_spec
+
+    captured: dict = {}
+
+    def fake_generate(_subj, decision, **_k):
+        captured["type"] = decision.type
+        captured["ability"] = getattr(decision, "ability_goal", "")
+        return "讲解稿加巩固题"
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        decision = SimpleNamespace(
+            type="explain", difficulty="basic",
+            reason="函数极限与连续 [l3=math.calc.limit.def] [ability=recognize]",
+            ability_goal="recognize",
+        )
+        structured = {
+            "techniques": ["t_a"],
+            "solution": {"steps": [{"id": "s1", "text": "步骤"}],
+                         "final_answer": "答案", "techniques_used": ["t_a"]},
+            "cdps": [{"id": "c1", "prompt": "p", "expected": "e", "technique": "t_a", "depends_on": []},
+                     {"id": "c2", "prompt": "p2", "expected": "e2", "technique": "t_a", "depends_on": ["c1"]}],
+        }
+        with patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("cultivate_bank.get_store", return_value=store), \
+             patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+             patch("cultivate.decide", return_value=decision), \
+             patch("cultivate.generate", side_effect=fake_generate), \
+             patch("cultivate.get_last_answer", return_value="答案X"), \
+             patch("cultivate.get_last_ref_source", return_value="2024年数学一"), \
+             patch("cultivate.get_last_item_form", return_value="mcq"), \
+             patch("cultivate._bkt_available", True), \
+             patch("learner.kp_registry.pick_l3", return_value="math.calc.limit.def"), \
+             patch("learner.kp_registry.list_l3_for_l2", return_value=[{"id": "x"}]), \
+             patch("cultivate_bank.structure_item_via_llm", return_value=structured):
+            spec = {"kp": "函数极限与连续", "technique": "t_a", "subject": "math"}
+            r = _author_spec("math", spec)
+        check(r.get("ok") is True, "explain author ok")
+        check(captured.get("type") == "explain", f"kept explain {captured}")
+        check(captured.get("ability") == "recognize", f"explain ability {captured}")
+
+
 def test_pregen_fallback_next_gap() -> None:
     """首个缺口出题失败后，预生成回退到次优缺口。"""
     from learner.db import Store
@@ -684,6 +731,7 @@ def main() -> int:
     test_schema_and_pick()
     test_cultivate_uses_bank_no_author()
     test_author_spec_inserts_ready()
+    test_author_spec_keeps_explain_type()
     test_author_spec_drops_cross_subject_ref()
     test_pregen_fallback_next_gap()
     test_offpeak_slots_and_ref_gate()

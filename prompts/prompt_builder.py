@@ -102,7 +102,7 @@ class PromptBuilder:
             f"\n## 真题锚点\n"
             f"参考真题（{src_str}，知识点：{kp_list}）：\n"
             f"{q[:600]}\n"
-            f"请参考上述真题的题型和难度，出一道同知识点、同水平的变式题。"
+            f"请参考上述真题的题型，出一道同知识点的变式题；禁止为降难度改成定义判断。"
         )
 
     @staticmethod
@@ -135,19 +135,17 @@ class PromptBuilder:
         consecutive_failures: int,
         opportunity_count: int,
     ) -> str:
-        """BKT 数字 → 一条自然语言出题策略（多条件取最严重）。"""
+        """出题只要求命中给定知识点，不再按掌握度降复杂度。"""
+        _ = mastery
+        bits = [
+            "题目必须命中给定知识点（L3/原子）的核心对象、符号与适用条件，",
+            "禁止用相邻章节或更易考点替身，禁止降成定义辨识/概念判断选择题。",
+        ]
         if consecutive_failures >= 2:
-            return (
-                "该生该知识点连续错误，请降低题目复杂度，拆成小步骤，"
-                "优先考察基础概念"
-            )
-        if mastery < 0.3:
-            return "该生对该知识点几乎未掌握，请从最基础的定义和公式出发出题"
-        if mastery >= 0.8:
-            return "该生已熟练掌握该知识点，可以出综合题，跨知识点联系"
-        if opportunity_count <= 1:
-            return "该知识点首次练习，请出概念判断或简单计算题"
-        return ""
+            bits.append("该生连续答错，须换数字或情境做变式，但考点与方法不得换轻。")
+        elif opportunity_count <= 1:
+            bits.append("该知识点首次练习，直接出能检验该点的计算或推导题。")
+        return "".join(bits)
 
     @staticmethod
     def _format_strategy_hint(hint: str) -> str:
@@ -267,13 +265,43 @@ class PromptBuilder:
 
         return system, user
 
-    def build_polish(self, *, draft_body: str, answer_body: str) -> tuple[str, str]:
+    @staticmethod
+    def lecture_policy(decision_type: str) -> str:
+        """polish：讲解/复诊保留讲义，出题只留题干。"""
+        if (decision_type or "").strip() in ("explain", "review"):
+            return (
+                "- 保留：概念直觉/讲解/错因说明（若有）+ 恰好一道巩固题；"
+                "删除「上一题」套话与出题元思考"
+            )
+        return (
+            "- 删除：概念直觉/讲解/课堂衔接/「刚才我们」类旁白；只保留恰好一道题的题干"
+        )
+
+    @staticmethod
+    def orchestrate_send_policy(decision_type: str, source: str = "") -> str:
+        dt = (decision_type or "push").strip()
+        if source == "bank" and dt in ("explain", "review"):
+            return (
+                "来源为 bank 的讲解/复诊：禁止以「上一题」开头，"
+                "但保留概念直觉与错因说明 + 巩固题"
+            )
+        if source == "bank":
+            return (
+                "来源为 bank 的出题：禁止衔接，不得以「上一题」开头，"
+                "删除课堂旁白与直觉讲解，只留题干"
+            )
+        return "其它来源若摘要显示学生刚在做别的题，可用一句短衔接，然后出本题"
+
+    def build_polish(
+        self, *, draft_body: str, answer_body: str, decision_type: str = "push"
+    ) -> tuple[str, str]:
         """第二阶段：把已验算草稿整理成推送正文。"""
         system_tpl, user_tpl = self._load_template("polish")
         vals = {
             "draft_body": (draft_body or "").strip() or "（草稿为空）",
             "answer_body": (answer_body or "").strip() or "（无答案）",
             "format_rules": load_format_rules(),
+            "lecture_policy": self.lecture_policy(decision_type),
         }
         system, user = system_tpl, user_tpl
         for key, val in vals.items():
@@ -291,6 +319,7 @@ class PromptBuilder:
         subject: str = "",
         kp: str = "",
         source: str = "schedule",
+        decision_type: str = "push",
     ) -> tuple[str, str]:
         """编排层：带会话摘要的发送文案（Phase C）。"""
         system_tpl, user_tpl = self._load_template("orchestrate")
@@ -302,6 +331,7 @@ class PromptBuilder:
             "kp": kp or "",
             "source": source or "schedule",
             "format_rules": load_format_rules(),
+            "send_policy": self.orchestrate_send_policy(decision_type, source),
         }
         system, user = system_tpl, user_tpl
         for key, val in vals.items():

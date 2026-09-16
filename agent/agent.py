@@ -393,7 +393,7 @@ class TeachingAgent:
                 "type": "function",
                 "function": {
                     "name": "adjust_difficulty",
-                    "description": "仅当用户嫌题目太难或太简单时，调整科目整体出题难度偏好（不改变掌握度）",
+                    "description": "仅当用户嫌题目太难或太简单时，记录科目难度偏好（不改变掌握度）。出题已改为知识点命中，该偏好不再升降下一题难度。",
                     "parameters": {
                         "type": "object",
                         "properties": {

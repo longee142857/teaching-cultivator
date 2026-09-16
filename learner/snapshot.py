@@ -150,7 +150,7 @@ def build_learner_snapshot(days: int = 7) -> str:
         prefs = ", ".join(
             f"{_SUBJECT_CN.get(k, k)}={v}" for k, v in sorted(difficulty.items())
         )
-        lines.append(f"- 难度偏好：{prefs}")
+        lines.append(f"- 难度偏好（仅记录，出题不再使用）：{prefs}")
     else:
         lines.append("- 难度偏好：（未设置，按 BKT 推荐）")
 

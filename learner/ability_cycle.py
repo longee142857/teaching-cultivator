@@ -128,24 +128,27 @@ def decide_ability(
     """根据学习者状态 + 干预类型选择 ability_goal。
 
     States:
-      cold (opp=0)         → recognize
+      explain              → recognize（讲解干预仍走概念）
       after_wrong/review   → diagnose
+      cold push (opp=0)    → compute（首次也出能命中该点的计算/推导，不降成定义判断）
       near_mastery         → construct / transfer
-      mastered+due         → recognize 轻测
+      mastered+due         → compute / transfer
       mastered (stable)    → transfer
-      learning (default)   → 加权选，降权近期连续项
+      learning (default)   → 加权选，降权近期连续项；不再因低掌握度抬 recognize
     """
     # after_wrong / review → diagnose
     if intervention_type == "review" or (recent_correct is False):
         return "diagnose"
 
-    # cold / opp=0 / explain → recognize
-    if opportunity_count == 0 or intervention_type == "explain":
+    # 讲解干预仍走概念识别；出题（push）即使 opp=0 也要命中知识点
+    if intervention_type == "explain":
         return "recognize"
+    if opportunity_count == 0:
+        return "compute"
 
-    # 已掌握 + 到期 → recognize 轻测
+    # 已掌握 + 到期 → 再测该点，不做定义轻测
     if is_mastered and is_due:
-        return "recognize" if mastery < 0.9 else "transfer"
+        return "compute" if mastery < 0.9 else "transfer"
 
     # 已掌握（稳）→ transfer
     if is_mastered:
@@ -157,15 +160,16 @@ def decide_ability(
 
     # learning 阶段：加权选，降权近期连续项
     base_scores: dict[str, float] = {
-        "recognize": 0.3,
+        "recognize": 0.1,
         "compute": 1.0,
         "construct": 0.3,
         "transfer": 0.1,
         "diagnose": 0.1,
     }
     if mastery < 0.3:
-        base_scores["recognize"] = 1.0
-        base_scores["compute"] = 0.8
+        base_scores["compute"] = 1.0
+        base_scores["construct"] = 0.4
+        base_scores["recognize"] = 0.1
     elif mastery >= 0.7:
         base_scores["construct"] = 1.0
         base_scores["transfer"] = 0.7
@@ -247,14 +251,47 @@ def parse_item_form_from_reason(reason: str) -> str | None:
 
 
 def exam_item_form(ability_goal: str) -> str:
-    """双周检测卷题型：尽量大题，禁止默认选择题。
+    """双周检测卷 / 原子推进题型：尽量大题，禁止默认选择题。
 
     compute → blank；construct/transfer → proof_outline；
-    recognize/diagnose 也抬成 blank（检测卷不考单选辨识）。
+    recognize/diagnose 也抬成 blank（不考单选辨识）。
     """
     if ability_goal in ("construct", "transfer"):
         return "proof_outline"
     return "blank"
+
+
+def decide_advance_ability(subject: str = "comm") -> str:
+    """推进模式能力：在 compute/construct 间轮换，永远不走 recognize。"""
+    recent = load_recent_abilities(subject)
+    last = recent[0] if recent else ""
+    if last == "compute":
+        return "construct"
+    return "compute"
+
+
+def author_item_form(
+    ability_goal: str,
+    *,
+    atom_id: str = "",
+    forced_form: str | None = None,
+    subject: str = "",
+) -> tuple[str, str]:
+    """出题用 (ability, item_form)。原子题禁止 recognize→mcq。"""
+    ab = (ability_goal or "").strip()
+    aid = (atom_id or "").strip()
+    if aid and (not ab or ab in ("recognize", "diagnose")):
+        ab = "compute"
+    if aid and forced_form == "mcq":
+        forced_form = None
+    if forced_form in ("mcq", "blank", "proof_outline"):
+        return ab, forced_form
+    if aid:
+        return ab, exam_item_form(ab or "compute")
+    if not ab:
+        return "compute", "blank"
+    last_form = _load_last_push_item_form() if ab == "transfer" else ""
+    return ab, ability_to_item_form(ab, last_form=last_form or "", subject=subject)
 
 
 def _load_last_push_item_form() -> str:
