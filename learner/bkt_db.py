@@ -94,6 +94,7 @@ class DbBKTLogger:
         overrides: dict | None = None,
         push_id: int | None = None,
         item_id: int | None = None,
+        atom_id: str | None = None,
         cdp_results: list | None = None,
         confidence: float | None = None,
         user_answer: str = "",
@@ -158,7 +159,7 @@ class DbBKTLogger:
                 f"(user={user_id} kp={knowledge_point})"
             )
         self._store.add_attempt_entry(
-            {**entry, "push_id": push_id, "item_id": item_id}
+            {**entry, "push_id": push_id, "item_id": item_id, "atom_id": atom_id or ""}
         )
         self._store.set_mastery(user_id, knowledge_point, state.to_dict(), entry["ts"])
 

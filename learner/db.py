@@ -577,6 +577,13 @@ class Store:
         rows = self._query(self._PUSH_SELECT + "WHERE p.id = ?", (int(push_id),))
         return self._push_row(rows[0]) if rows else None
 
+    def get_push_for_item(self, item_id: int) -> dict | None:
+        rows = self._query(
+            self._PUSH_SELECT + "WHERE p.item_id=? ORDER BY p.id DESC LIMIT 1",
+            (int(item_id),),
+        )
+        return self._push_row(rows[0]) if rows else None
+
     def delete_push(self, push_id: int) -> None:
         self._txn(lambda conn: conn.execute("DELETE FROM pushes WHERE id=?", (int(push_id),)))
 
@@ -858,6 +865,11 @@ class Store:
                 entry["credit"] = r["credit"]
             if r["confidence"] is not None:
                 entry["confidence"] = r["confidence"]
+            try:
+                if r["atom_id"]:
+                    entry["atom_id"] = r["atom_id"]
+            except (IndexError, KeyError):
+                pass
             entry.setdefault("state", {})
             out.append(entry)
         return out
@@ -1679,6 +1691,37 @@ class Store:
 
         self._txn(_do)
 
+    def get_atom_progress(
+        self, learner_id: str, book_id: str, atom_id: str
+    ) -> dict | None:
+        rows = self._query(
+            "SELECT * FROM atom_progress WHERE learner_id=? AND book_id=? AND atom_id=?",
+            (
+                (learner_id or "").strip(),
+                (book_id or "").strip(),
+                (atom_id or "").strip(),
+            ),
+        )
+        if not rows:
+            return None
+        r = rows[0]
+        recent = []
+        try:
+            recent = json.loads(r["recent_verdicts"] or "[]")
+        except (TypeError, json.JSONDecodeError):
+            recent = []
+        return {
+            "learner_id": r["learner_id"],
+            "book_id": r["book_id"],
+            "atom_id": r["atom_id"] or "",
+            "status": r["status"] or "",
+            "streak_correct": int(r["streak_correct"] or 0),
+            "streak_incorrect": int(r["streak_incorrect"] or 0),
+            "total_correct": int(r["total_correct"] or 0),
+            "total_attempts": int(r["total_attempts"] or 0),
+            "recent_verdicts": recent if isinstance(recent, list) else [],
+        }
+
     def mark_atom_status(
         self, learner_id: str, book_id: str, atom_id: str, status: str
     ) -> None:
@@ -1777,9 +1820,14 @@ class Store:
         return self._txn(_do)
 
     def count_atom_items(
-        self, subject: str, atom_id: str, *, quality: tuple[str, ...] = ("pass",)
+        self,
+        subject: str,
+        atom_id: str,
+        *,
+        quality: tuple[str, ...] = ("pass",),
+        status: tuple[str, ...] | None = ("ready",),
     ) -> int:
-        """只数 status=ready 且 quality_tier 命中。retired/quarantine 不算库存。"""
+        """默认只数 status=ready。retired/quarantine 不算库存；status=None 则不限。"""
         aid = (atom_id or "").strip()
         if not aid:
             return 0
@@ -1787,15 +1835,93 @@ class Store:
         if not tiers:
             return 0
         placeholders = ",".join("?" * len(tiers))
-        rows = self._query(
+        sql = (
             f"""SELECT COUNT(*) FROM items
-                WHERE status='ready'
-                  AND COALESCE(bank_subject, subject)=?
+                WHERE COALESCE(bank_subject, subject)=?
                   AND COALESCE(atom_id,'')=?
-                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})""",
-            ((subject or "").strip(), aid, *tiers),
+                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})"""
         )
+        params: list = [(subject or "").strip(), aid, *tiers]
+        if status is not None:
+            st = [s for s in status if s]
+            if not st:
+                return 0
+            ph2 = ",".join("?" * len(st))
+            sql += f" AND COALESCE(status,'ready') IN ({ph2})"
+            params.extend(st)
+        rows = self._query(sql, tuple(params))
         return int(rows[0][0]) if rows else 0
+
+    def has_unattempted_atom_push(self, subject: str, atom_id: str) -> bool:
+        """当前原子已推送但还没有 applied 作答 → 禁止再克隆一题。"""
+        aid = (atom_id or "").strip()
+        if not aid:
+            return False
+        rows = self._query(
+            """SELECT 1 FROM items i
+               JOIN pushes p ON p.item_id = i.id
+               WHERE COALESCE(i.bank_subject, i.subject)=?
+                 AND COALESCE(i.atom_id,'')=?
+                 AND NOT EXISTS (
+                   SELECT 1 FROM attempts a
+                   WHERE a.item_id = i.id
+                     AND COALESCE(a.status,'applied')='applied'
+                 )
+               LIMIT 1""",
+            ((subject or "").strip(), aid),
+        )
+        return bool(rows)
+
+    def list_atom_questions(
+        self, subject: str, atom_id: str, limit: int = 8
+    ) -> list[str]:
+        aid = (atom_id or "").strip()
+        if not aid:
+            return []
+        rows = self._query(
+            """SELECT question FROM items
+               WHERE COALESCE(bank_subject, subject)=?
+                 AND COALESCE(atom_id,'')=?
+                 AND COALESCE(question,'') != ''
+               ORDER BY id DESC LIMIT ?""",
+            ((subject or "").strip(), aid, int(limit)),
+        )
+        return [str(r["question"] or "").strip() for r in rows if r["question"]]
+
+    def list_atom_grade_events(self) -> list[dict]:
+        """历史 comm 原子作答（按时间），供回填 atom_progress。"""
+        rows = self._query(
+            """SELECT a.id AS attempt_id, a.user_id, a.item_id, a.correct, a.credit,
+                      a.status, a.answered_at,
+                      COALESCE(i.atom_id, a.atom_id, '') AS atom_id,
+                      COALESCE(i.book_id, '') AS book_id,
+                      COALESCE(i.subject, '') AS subject,
+                      COALESCE(p.slot, '') AS slot
+               FROM attempts a
+               JOIN items i ON i.id = a.item_id
+               LEFT JOIN pushes p ON p.item_id = i.id
+               WHERE COALESCE(i.atom_id, a.atom_id, '') != ''
+               ORDER BY a.answered_at ASC, a.id ASC""",
+            (),
+        )
+        out = []
+        for r in rows:
+            out.append(
+                {
+                    "attempt_id": int(r["attempt_id"]),
+                    "user_id": r["user_id"] or "",
+                    "item_id": int(r["item_id"]) if r["item_id"] is not None else None,
+                    "correct": None if r["correct"] is None else bool(r["correct"]),
+                    "credit": r["credit"],
+                    "status": r["status"] or "applied",
+                    "answered_at": r["answered_at"] or "",
+                    "atom_id": r["atom_id"] or "",
+                    "book_id": r["book_id"] or "",
+                    "subject": r["subject"] or "",
+                    "slot": r["slot"] or "",
+                }
+            )
+        return out
 
     def list_atom_items(
         self,
@@ -1804,8 +1930,9 @@ class Store:
         *,
         quality: tuple[str, ...] = ("pending",),
         limit: int = 8,
+        status: tuple[str, ...] | None = ("ready",),
     ) -> list[dict]:
-        """只列 status=ready 且 quality_tier 命中（审判/预留不看 retired）。"""
+        """默认只列 status=ready。status=None 则不限。"""
         aid = (atom_id or "").strip()
         if not aid:
             return []
@@ -1813,15 +1940,23 @@ class Store:
         if not tiers:
             return []
         placeholders = ",".join("?" * len(tiers))
-        rows = self._query(
+        sql = (
             f"""SELECT * FROM items
-                WHERE status='ready'
-                  AND COALESCE(bank_subject, subject)=?
+                WHERE COALESCE(bank_subject, subject)=?
                   AND COALESCE(atom_id,'')=?
-                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})
-                ORDER BY id DESC LIMIT ?""",
-            ((subject or "").strip(), aid, *tiers, int(limit)),
+                  AND COALESCE(quality_tier, 'pending') IN ({placeholders})"""
         )
+        params: list = [(subject or "").strip(), aid, *tiers]
+        if status is not None:
+            st = [s for s in status if s]
+            if not st:
+                return []
+            ph2 = ",".join("?" * len(st))
+            sql += f" AND COALESCE(status,'ready') IN ({ph2})"
+            params.extend(st)
+        sql += " ORDER BY id DESC LIMIT ?"
+        params.append(int(limit))
+        rows = self._query(sql, tuple(params))
         return [self._item_dict(r) for r in rows]
 
 

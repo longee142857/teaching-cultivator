@@ -381,30 +381,81 @@ def _mixed_cdp_credit(cdp_results: list | None) -> float | None:
     return None
 
 
+def _item_atom_book(item: dict | None) -> tuple[str, str]:
+    if not item:
+        return "", ""
+    atom = str(item.get("atom_id") or "").strip()
+    book = str(item.get("book_id") or "").strip()
+    meta = item.get("meta")
+    if isinstance(meta, dict):
+        atom = atom or str(meta.get("atom_id") or "").strip()
+        book = book or str(meta.get("book_id") or "").strip()
+    return atom, book
+
+
 def _maybe_advance_grade(
     *,
     question: str,
     verdict: str,
     status: str,
     credit: float | None,
+    item_id: int | None = None,
+    push_id: int | None = None,
 ) -> None:
-    """三条都有 atom_id 才回写 cursor：item + last_push + 15:00 comm 槽。"""
+    """item.atom_id + comm 槽才回写 cursor。不要求 last_class 也带 atom_id。"""
     from learner.db import get_store
     from learner.advance import apply_atom_grade, _owner_id
 
     store = get_store()
     sid = _uid()
-    item = get_store().get_item_by_question(question, "comm")
+    item = None
+    if item_id:
+        try:
+            item = store.get_item(int(item_id))
+        except (TypeError, ValueError):
+            item = None
     if not item:
-        item = get_store().get_item_by_question(question, "")
-    item_atom = str((item or {}).get("atom_id") or "").strip()
-    item_book = str((item or {}).get("book_id") or "").strip()
-    if isinstance((item or {}).get("meta"), dict):
-        item_atom = item_atom or str(item["meta"].get("atom_id") or "").strip()
-        item_book = item_book or str(item["meta"].get("book_id") or "").strip()
+        item = store.get_item_by_question(question, "comm")
+    if not item:
+        item = store.get_item_by_question(question, "")
+    item_atom, item_book = _item_atom_book(item)
+    resolved_item_id = None
+    if item and item.get("id") is not None:
+        try:
+            resolved_item_id = int(item["id"])
+        except (TypeError, ValueError):
+            resolved_item_id = None
+    if item_id:
+        try:
+            resolved_item_id = int(item_id)
+        except (TypeError, ValueError):
+            pass
 
-    file_atom = ""
-    file_book = ""
+    slot = ""
+    push = None
+    if push_id:
+        try:
+            push = store.get_push(int(push_id))
+        except (TypeError, ValueError):
+            push = None
+    if not push and resolved_item_id:
+        push = store.get_push_for_item(int(resolved_item_id))
+    if not push:
+        try:
+            resolved = store.resolve_push_for_question(sid or None, question)
+            if resolved:
+                push = store.get_push(int(resolved[0]))
+                if not resolved_item_id:
+                    resolved_item_id = int(resolved[1])
+        except Exception:
+            push = None
+    if push:
+        slot = str(push.get("slot") or "").strip().lower()
+        if not item_atom:
+            item_atom = str(push.get("atom_id") or "").strip()
+        if not item_book:
+            item_book = str(push.get("book_id") or "").strip()
+
     file_subj = ""
     for path in (P.last_push_path(), P.public_last_class_path()):
         try:
@@ -416,35 +467,26 @@ def _maybe_advance_grade(
                 rec.get("question") or ""
             ).strip()[:80] != (question or "").strip()[:80]:
                 continue
-            file_atom = str(rec.get("atom_id") or "").strip()
-            file_book = str(rec.get("book_id") or "").strip()
             file_subj = str(rec.get("subject") or "").strip()
-            if file_atom:
+            if not item_atom:
+                item_atom = str(rec.get("atom_id") or "").strip()
+            if not item_book:
+                item_book = str(rec.get("book_id") or "").strip()
+            if item_atom:
                 break
         except Exception:
             continue
 
-    slot = ""
-    try:
-        resolved = store.resolve_push_for_question(sid or None, question)
-        if resolved:
-            push = store.get_push(int(resolved[0]))
-            if push:
-                slot = str(push.get("slot") or "").strip().lower()
-                if not item_atom:
-                    item_atom = str(push.get("atom_id") or "").strip()
-                if not item_book:
-                    item_book = str(push.get("book_id") or "").strip()
-    except Exception:
-        pass
-
-    if not item_atom or not file_atom or item_atom != file_atom:
+    if not item_atom:
         return
-    if (file_subj and file_subj != "comm") or slot == "review":
+    item_subj = str((item or {}).get("subject") or (item or {}).get("bank_subject") or "").strip().lower()
+    if (file_subj and file_subj != "comm" and item_subj != "comm") or slot == "review":
         return
     if slot and slot != "comm":
         return
-    book = item_book or file_book or "zhou_comm"
+    if not slot and item_subj and item_subj != "comm":
+        return
+    book = item_book or "zhou_comm"
     apply_atom_grade(
         learner_id=_owner_id() or sid,
         book_id=book,
@@ -461,6 +503,8 @@ def grade_answer(
     user_answer: str,
     kp_name: str = "",
     subject: str = "",
+    item_id: int | None = None,
+    push_id: int | None = None,
 ) -> GradeResult:
     """批改用户作答，更新 BKT（按考纲 L2），返回结果。"""
     q = (question or "").strip()
@@ -484,14 +528,36 @@ def grade_answer(
 
     ref_answer = _find_reference_answer(kp_name)
 
+    rec_item_id = None
+    rec_push_id = None
+    try:
+        if item_id is not None and item_id != "":
+            rec_item_id = int(item_id)
+    except (TypeError, ValueError):
+        rec_item_id = None
+    try:
+        if push_id is not None and push_id != "":
+            rec_push_id = int(push_id)
+    except (TypeError, ValueError):
+        rec_push_id = None
+
     item_cdps: list = []
+    item = None
+    item_atom_id = ""
     try:
         from learner.db import get_store
-        item = get_store().get_item_by_question(q, subject or "")
+        st = get_store()
+        if rec_item_id:
+            item = st.get_item(rec_item_id)
+        if not item:
+            item = st.get_item_by_question(q, subject or "")
         if item:
             item_cdps = list(item.get("cdps") or [])
             if not ref_answer and item.get("answer"):
                 ref_answer = item.get("answer") or ""
+            item_atom_id, _ = _item_atom_book(item)
+            if rec_item_id is None and item.get("id") is not None:
+                rec_item_id = int(item["id"])
     except Exception:
         item_cdps = []
 
@@ -578,17 +644,23 @@ def grade_answer(
             if extracted_kp and extracted_kp != "未分类":
                 try:
                     from learner.db import get_store
-                    resolved = get_store().resolve_push_for_question(_uid(), q)
-                    push_id = resolved[0] if resolved else None
-                    item_id = resolved[1] if resolved else None
+                    if rec_push_id is None or rec_item_id is None:
+                        resolved = get_store().resolve_push_for_question(_uid(), q)
+                        if resolved:
+                            rec_push_id = rec_push_id or resolved[0]
+                            rec_item_id = rec_item_id or resolved[1]
+                    if not item_atom_id and rec_item_id:
+                        it = get_store().get_item(int(rec_item_id))
+                        item_atom_id, _ = _item_atom_book(it)
                 except Exception:
-                    push_id = item_id = None
+                    pass
                 try:
                     bkt.record(
                         _uid(), extracted_kp, rec_correct, kc,
                         subject=subj, item_type=item_type, credit=credit,
                         status="applied", overrides=_kp_overrides,
-                        push_id=push_id, item_id=item_id,
+                        push_id=rec_push_id, item_id=rec_item_id,
+                        atom_id=item_atom_id or None,
                         cdp_results=cdp_results or None,
                         confidence=round(effective_conf, 4),
                         user_answer=ua,
@@ -687,6 +759,8 @@ def grade_answer(
             verdict=verdict,
             status=status,
             credit=credit,
+            item_id=rec_item_id,
+            push_id=rec_push_id,
         )
     except Exception as e:
         print(f"[grade] advance cursor skipped: {e}")

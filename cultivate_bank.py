@@ -149,6 +149,17 @@ def _author_spec(subject: str, spec: dict) -> dict[str, Any]:
         reason = f"{l2} [l3={l3_id}]"
         if pin_atom:
             reason = f"{reason} [atom={pin_atom}]"
+            prev_q = store.list_atom_questions(content_subj or gen_subject or "comm", pin_atom, limit=6)
+            snippets = []
+            for q in prev_q:
+                one = " ".join((q or "").split())
+                if one:
+                    snippets.append(one[:70])
+            if snippets:
+                reason = (
+                    f"{reason} 必须换例子/问法出新题，禁止复述或同构改写："
+                    + " || ".join(snippets)
+                )
         if pin_book:
             reason = f"{reason} [book={pin_book}]"
         if pin_atom:

@@ -351,7 +351,7 @@ def test_book_db_path_prefers_git_layout() -> None:
 
 
 def test_retired_pass_not_already_pass() -> None:
-    """当前原子仅 retired 旧 pass 时仍视为缺口；ready+pass 才 already_pass。"""
+    """retired 旧 pass 不算库存；未作答不补克隆，作答后未过关才补变体。"""
     from learner.db import Store
     from learner.advance import (
         set_learning_mode,
@@ -404,7 +404,20 @@ def test_retired_pass_not_already_pass() -> None:
         with bind_learner("owner_adv", binding="schedule"):
             set_learning_mode("comm", "advance", "zhou_comm")
             spec = reserved_comm_spec("owner_adv")
-            check(spec is not None, f"retired/poor/quarantine still reserved gap {spec}")
+            check(spec is None, f"unattempted retired must not clone {spec}")
+            wait = ensure_reserved_comm_item("owner_adv", judge=False)
+            check(wait.get("reason") == "waiting_attempt", f"ensure waits unanswered {wait}")
+
+            store.add_attempt_entry({
+                "user_id": "owner_adv",
+                "item_id": former,
+                "knowledge_point": "确定信号与频谱分析",
+                "correct": False,
+                "status": "applied",
+                "atom_id": atom,
+            })
+            spec = reserved_comm_spec("owner_adv")
+            check(spec is not None, f"after attempt, retired/poor/quarantine is reserved gap {spec}")
             check((spec or {}).get("atom_id") == atom, f"pin current atom {spec}")
 
             def fake_author(subject, spec_in):
@@ -424,8 +437,8 @@ def test_retired_pass_not_already_pass() -> None:
             with patch("cultivate_bank._author_spec", side_effect=fake_author) as auth:
                 fill = ensure_reserved_comm_item("owner_adv", judge=False)
             check(fill.get("reason") != "already_pass", f"ensure not skip retired {fill}")
-            check(fill.get("ok") is True, f"ensure authors after retire {fill}")
-            check(auth.called, "author called after retired pass")
+            check(fill.get("ok") is True, f"ensure authors after retire+attempt {fill}")
+            check(auth.called, "author called after retired pass + attempt")
             check(store.count_atom_items("comm", atom, quality=("pass",)) >= 1, "new ready+pass stocked")
 
             skip = ensure_reserved_comm_item("owner_adv", judge=False)
@@ -437,12 +450,25 @@ def test_retired_pass_not_already_pass() -> None:
                 ("傅里叶补货",),
             )
             check(live, "live pass row exists")
-            store.record_push_for_item(item_id=int(live[0][0]), learner_id="owner_adv", slot="comm")
+            live_id = int(live[0][0])
+            store.record_push_for_item(item_id=live_id, learner_id="owner_adv", slot="comm")
             check(store.count_atom_items("comm", atom, quality=("pass",)) == 0, "push again clears stock")
             with patch("cultivate_bank._author_spec", return_value={"ok": True, "item_id": 99}) as auth2:
                 out = _pregenerate_one_inner("comm")
-            check(out.get("ok") is True and out.get("reserved") is True, f"pregen reserved after retire {out}")
-            check(auth2.called, "pregen authors reserved atom after retire")
+            check(not out.get("reserved"), f"pregen must not reserved-clone unanswered {out}")
+            check(reserved_comm_spec("owner_adv") is None, "spec none while unanswered")
+            store.add_attempt_entry({
+                "user_id": "owner_adv",
+                "item_id": live_id,
+                "knowledge_point": "确定信号与频谱分析",
+                "correct": False,
+                "status": "applied",
+                "atom_id": atom,
+            })
+            with patch("cultivate_bank._author_spec", return_value={"ok": True, "item_id": 99}) as auth3:
+                out2 = _pregenerate_one_inner("comm")
+            check(out2.get("ok") is True and out2.get("reserved") is True, f"pregen reserved after attempt {out2}")
+            check(auth3.called, "pregen authors variant after attempt")
 
 
 def test_ensure_reserved_fills_pass_for_pick() -> None:
@@ -488,6 +514,112 @@ def test_ensure_reserved_fills_pass_for_pick() -> None:
             check(hit is not None and "傅里叶预留" in (hit.get("question") or ""), f"pick reserved {hit}")
 
 
+def test_grade_item_atom_advances_without_last_class() -> None:
+    from grade import _maybe_advance_grade
+    from learner.db import Store
+    from learner.advance import set_learning_mode, ensure_cursor, get_cursor
+    from learner.context import bind_learner
+
+    with tempfile.TemporaryDirectory() as td:
+        zhou = os.path.join(td, "zhou_comm.db")
+        _make_zhou(zhou)
+        store = Store(os.path.join(td, "t.db"))
+        _bind(store, zhou, accepted=True)
+        q = "指数傅里叶级数推进回写题 unique-stem"
+        iid = store.insert_bank_item(
+            subject="comm", question=q, answer="级数",
+            kp="确定信号与频谱分析", l3_id="comm.sig_rand.fourier.series",
+            status="ready", atom_id="zhou.ch2.fourier", book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(iid, verdict="pass", reasons=["t"], confidence=1.0)
+        store.record_push_for_item(item_id=iid, learner_id=None, slot="comm")
+        with bind_learner("owner_adv", binding="schedule"):
+            set_learning_mode("comm", "advance", "zhou_comm")
+            ensure_cursor("owner_adv", "zhou_comm")
+            _maybe_advance_grade(
+                question=q, verdict="correct", status="applied", credit=None, item_id=iid,
+            )
+            _maybe_advance_grade(
+                question=q, verdict="correct", status="applied", credit=None, item_id=iid,
+            )
+            cur = get_cursor("owner_adv", "zhou_comm")
+            check(
+                (cur or {}).get("atom_id") in ("zhou.ch2.unmapped", "zhou.ch3.capacity"),
+                f"item atom_id advances without last_class {cur}",
+            )
+
+
+def test_reserved_skips_unattempted_and_authors_after_wrong() -> None:
+    from learner.db import Store
+    from learner.advance import set_learning_mode, reserved_comm_spec, replay_atom_attempts, get_cursor
+    from learner.context import bind_learner
+
+    with tempfile.TemporaryDirectory() as td:
+        zhou = os.path.join(td, "zhou_comm.db")
+        _make_zhou(zhou)
+        store = Store(os.path.join(td, "t.db"))
+        _bind(store, zhou, accepted=True)
+        q = "未作答不克隆"
+        iid = store.insert_bank_item(
+            subject="comm", question=q, answer="1",
+            kp="确定信号与频谱分析", l3_id="comm.sig_rand.fourier.series",
+            status="ready", atom_id="zhou.ch2.fourier", book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(iid, verdict="pass", reasons=["t"], confidence=1.0)
+        store.record_push_for_item(item_id=iid, learner_id=None, slot="comm")
+        with bind_learner("owner_adv", binding="schedule"):
+            set_learning_mode("comm", "advance", "zhou_comm")
+            spec = reserved_comm_spec("owner_adv")
+            check(spec is None, f"unattempted push must not clone {spec}")
+
+            store.add_attempt_entry({
+                "user_id": "owner_adv",
+                "item_id": iid,
+                "knowledge_point": "确定信号与频谱分析",
+                "correct": False,
+                "status": "applied",
+                "atom_id": "zhou.ch2.fourier",
+            })
+            spec2 = reserved_comm_spec("owner_adv")
+            check(spec2 is not None, f"after wrong attempt may author variant {spec2}")
+            check((spec2 or {}).get("atom_id") == "zhou.ch2.fourier", f"still same atom {spec2}")
+
+        q2 = "第二道傅里叶变体"
+        iid2 = store.insert_bank_item(
+            subject="comm", question=q2, answer="2",
+            kp="确定信号与频谱分析", l3_id="comm.sig_rand.fourier.series",
+            status="ready", atom_id="zhou.ch2.fourier", book_id="zhou_comm",
+        )
+        store.apply_judge_verdict(iid2, verdict="pass", reasons=["t"], confidence=1.0)
+        store.record_push_for_item(item_id=iid2, learner_id=None, slot="comm")
+        store.add_attempt_entry({
+            "user_id": "owner_adv",
+            "item_id": iid2,
+            "knowledge_point": "确定信号与频谱分析",
+            "correct": True,
+            "status": "applied",
+            "atom_id": "zhou.ch2.fourier",
+        })
+        with bind_learner("owner_adv", binding="schedule"):
+            # 第一题错、第二题对应一次对；再补一次对（同一 item 只回放已有 attempts）
+            store.add_attempt_entry({
+                "user_id": "owner_adv",
+                "item_id": iid2,
+                "knowledge_point": "确定信号与频谱分析",
+                "correct": True,
+                "status": "applied",
+                "atom_id": "zhou.ch2.fourier",
+            })
+            rep = replay_atom_attempts("owner_adv")
+            check(rep.get("ok") is True, f"replay ok {rep}")
+            cur = get_cursor("owner_adv", "zhou_comm")
+            # 错+对+对：streak_correct=2 过关
+            check(
+                (cur or {}).get("atom_id") in ("zhou.ch2.unmapped", "zhou.ch3.capacity"),
+                f"replay 2-correct streak advances {cur} {rep}",
+            )
+
+
 def main() -> int:
     test_accept_missing()
     test_book_order_and_unmapped()
@@ -499,6 +631,8 @@ def main() -> int:
     test_book_db_path_prefers_git_layout()
     test_ensure_reserved_fills_pass_for_pick()
     test_retired_pass_not_already_pass()
+    test_grade_item_atom_advances_without_last_class()
+    test_reserved_skips_unattempted_and_authors_after_wrong()
     print("fails", _fails)
     return 1 if _fails else 0
 

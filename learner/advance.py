@@ -218,11 +218,30 @@ def resolve_advance_target(learner_id: str = "") -> dict[str, Any]:
     }
 
 
-def reserved_comm_spec(learner_id: str = "") -> dict[str, str] | None:
-    """凌晨预留槽：当前原子 pin L3，不受薄弱配额。
+def _reserved_blocked(learner_id: str, book: str, atom_id: str) -> str:
+    """返回跳过原因；空串表示可以出新题。"""
+    lid = (learner_id or "").strip() or _owner_id()
+    store = get_store()
+    if lid:
+        prog = store.get_atom_progress(lid, book, atom_id)
+        if prog and (prog.get("status") or "") in ("passed", "escaped"):
+            return "atom_passed"
+    if store.has_unattempted_atom_push("comm", atom_id):
+        return "waiting_attempt"
+    if store.count_atom_items(
+        "comm", atom_id, quality=("pass",), status=("ready",)
+    ) >= 1:
+        return "already_pass"
+    if store.count_atom_items(
+        "comm", atom_id, quality=("pending",), status=("ready",)
+    ) >= 1:
+        return "already_pending"
+    return ""
 
-    仅 ready+pass 算库存；ready+pending 视为在途不出第二道。
-    retired / quarantine / poor 不算满，推过即补。
+
+def reserved_comm_spec(learner_id: str = "") -> dict[str, str] | None:
+    """凌晨预留槽：当前原子无 ready+pass 则补一题。
+    已过关或上一题未作答则不出；retired 旧 pass 在已作答且未过关时才补变体。
     """
     if not advance_active("comm", learner_id):
         return None
@@ -231,10 +250,7 @@ def reserved_comm_spec(learner_id: str = "") -> dict[str, str] | None:
         return None
     atom_id = target["atom_id"]
     book = target["book_id"]
-    store = get_store()
-    if store.count_atom_items("comm", atom_id, quality=("pass",)) >= 1:
-        return None
-    if store.count_atom_items("comm", atom_id, quality=("pending",)) >= 1:
+    if _reserved_blocked(learner_id, book, atom_id):
         return None
     from learner.kp_registry import l2_for_l3
 
@@ -263,10 +279,20 @@ def ensure_reserved_comm_item(learner_id: str = "", *, judge: bool = True) -> di
     atom_id = (target.get("atom_id") or "").strip()
     if not atom_id:
         return {"ok": False, "error": "no_atom"}
+    book = target.get("book_id") or BOOK_ZHOU
     store = get_store()
-    # already_pass = 当前仍有可抽的 ready+pass；retired 旧 pass 必须再出。
-    if store.count_atom_items("comm", atom_id, quality=("pass",)) >= 1:
-        return {"ok": True, "skipped": True, "reason": "already_pass", "atom_id": atom_id}
+    blocked = _reserved_blocked(learner_id, book, atom_id)
+    if blocked:
+        n_ready = store.count_atom_items(
+            "comm", atom_id, quality=("pass",), status=("ready",)
+        )
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": blocked,
+            "atom_id": atom_id,
+            "n_pass": n_ready,
+        }
 
     authored: dict[str, Any] | None = None
     spec = reserved_comm_spec(learner_id)
@@ -279,11 +305,15 @@ def ensure_reserved_comm_item(learner_id: str = "", *, judge: bool = True) -> di
     if judge:
         from cultivate_judge import judge_one_item
 
-        pending = store.list_atom_items("comm", atom_id, quality=("pending",), limit=2)
+        pending = store.list_atom_items(
+            "comm", atom_id, quality=("pending",), limit=2, status=("ready",)
+        )
         for it in pending:
             judged.append(judge_one_item(it, use_llm=True))
 
-    n_pass = store.count_atom_items("comm", atom_id, quality=("pass",))
+    n_pass = store.count_atom_items(
+        "comm", atom_id, quality=("pass",), status=("ready",)
+    )
     return {
         "ok": n_pass >= 1,
         "atom_id": atom_id,
@@ -365,6 +395,72 @@ def apply_atom_grade(
         else:
             store.set_book_cursor(lid, book, aid, status="passed_book")
             out["book_complete"] = True
+    return out
+
+
+def replay_atom_attempts(learner_id: str = "") -> dict[str, Any]:
+    """把尚未计入 atom_progress 的 comm 槽 applied 作答补进去（每原子只在 total_attempts=0 时重放）。"""
+    lid = (learner_id or "").strip() or _owner_id()
+    store = get_store()
+    out: dict[str, Any] = {
+        "ok": True,
+        "learner_id": lid,
+        "replayed": [],
+        "skipped": [],
+        "advanced": [],
+    }
+    if not lid:
+        return {"ok": False, "error": "no_learner"}
+    by_atom: dict[str, list[dict[str, Any]]] = {}
+    for ev in store.list_atom_grade_events():
+        if (ev.get("status") or "").strip() != "applied":
+            continue
+        slot = (ev.get("slot") or "").strip().lower()
+        subj = (ev.get("subject") or "").strip().lower()
+        if slot and slot != "comm":
+            continue
+        if not slot and subj and subj != "comm":
+            continue
+        aid = (ev.get("atom_id") or "").strip()
+        if not aid:
+            continue
+        by_atom.setdefault(aid, []).append(ev)
+    for aid, events in by_atom.items():
+        book = (events[0].get("book_id") or "").strip() or BOOK_ZHOU
+        prog = store.get_atom_progress(lid, book, aid)
+        if prog and int(prog.get("total_attempts") or 0) > 0:
+            out["skipped"].append({"atom_id": aid, "reason": "already_counted"})
+            continue
+        for ev in events:
+            credit = ev.get("credit")
+            if credit is not None:
+                try:
+                    credit = float(credit)
+                except (TypeError, ValueError):
+                    credit = None
+            verdict = "correct" if ev.get("correct") is True and credit is None else "incorrect"
+            if credit is not None:
+                verdict = "partial"
+            r = apply_atom_grade(
+                learner_id=lid,
+                book_id=book,
+                atom_id=aid,
+                slot="comm",
+                verdict=verdict,
+                status="applied",
+                credit=credit,
+            )
+            rec = {
+                "atom_id": aid,
+                "attempt_id": ev.get("attempt_id"),
+                "item_id": ev.get("item_id"),
+                "verdict": verdict,
+                "advanced": bool(r.get("advanced")),
+            }
+            if r.get("next_atom_id"):
+                rec["next_atom_id"] = r["next_atom_id"]
+                out["advanced"].append(rec)
+            out["replayed"].append(rec)
     return out
 
 
