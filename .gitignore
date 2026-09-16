@@ -1,5 +1,7 @@
 # Cloud agent lifecycle state (no secrets; local only)
 data/cloud-agents-state.json
+data/capability_events.json
+data/ops/
 
 # Secrets & local env
 .env
