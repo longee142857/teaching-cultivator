@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-comm-lti-001",
+  "decision": "accept",
+  "reasons": ["冲激串卷积分段结果正确"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

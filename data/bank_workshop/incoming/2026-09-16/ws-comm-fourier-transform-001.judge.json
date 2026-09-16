@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-comm-fourier-transform-001",
+  "decision": "accept",
+  "reasons": ["考纲与 atom/book 配对正确", "FT 推导与答案 2a/(a²+(2πf)²) 一致"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

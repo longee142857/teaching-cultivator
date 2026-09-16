@@ -1,0 +1,13 @@
+{
+  "item_id": "ws-20260916-math-limit-equiv-001",
+  "decision": "accept",
+  "reasons": ["ln(1+x) 三阶余项得极限 1/3"],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

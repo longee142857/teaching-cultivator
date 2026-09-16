@@ -1,0 +1,16 @@
+{
+  "item_id": "ws-20260916-comm-fourier-series-001",
+  "decision": "reject",
+  "reasons": [
+    "基波复系数 c1 应为 2A/(jπ)（标准指数级数积分），答案与解析均写为 A/(jπ)，少因子 2"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  },
+  "issues": ["wrong_c1_coefficient"]
+}
