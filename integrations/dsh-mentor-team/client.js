@@ -69,6 +69,7 @@ return {
       const [detached, setDetached] = React.useState(false)
       const [conn, setConn] = React.useState('…')
       const [blank, setBlank] = React.useState(false)
+      const [generalId, setGeneralId] = React.useState('general')
       const urlItem = (function () {
         try {
           return (new URLSearchParams(window.location.search || '').get('item') || '').trim()
@@ -103,7 +104,7 @@ return {
           message: text,
           item: item,
           push: push,
-          threadId: blank ? 'general' : (item || 'general'),
+          threadId: blank ? (generalId || 'general') : (item || 'general'),
           blank: !!blank,
         })
           .then(function (res) {
@@ -142,6 +143,8 @@ return {
       function pickM(id) { setMentor(id) }
 
       function startBlank() {
+        const nid = 'general-' + Date.now()
+        setGeneralId(nid)
         setBlank(true)
         setMsgs([])
         setInput('')
@@ -178,17 +181,18 @@ return {
       const header = React.createElement('div', { className: 'mt-head' },
         React.createElement('span', null, '🎓 导师团'),
         React.createElement('span', { className: 'mt-badge' + (detached ? ' is-detached' : '') }, conn),
-        blank
+        React.createElement('button', {
+          className: 'mt-blank' + (blank ? ' is-on' : ''),
+          onClick: startBlank,
+          title: '开启新的通用对话，不绑定题目；其它线程保留',
+        }, '新建对话'),
+        blank && urlItem
           ? React.createElement('button', {
-              className: 'mt-blank is-on',
-              onClick: urlItem ? bindItemAgain : undefined,
-              title: urlItem ? '回到 URL 绑定题目' : '当前为通用对话',
-            }, urlItem ? '回到本题' : '通用对话')
-          : React.createElement('button', {
               className: 'mt-blank',
-              onClick: startBlank,
-              title: '开启空白聊天，不绑定当前题目（适合问周卷/学情）',
-            }, '空白聊天'),
+              onClick: bindItemAgain,
+              title: '回到 URL 绑定题目',
+            }, '回到本题')
+          : null,
         React.createElement('button', { className: 'mt-close', onClick: function () { setOpen(false) }, title: '收起' }, '—'),
       )
 

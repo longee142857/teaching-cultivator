@@ -165,27 +165,84 @@ def list_recent_entries(days: int = 7) -> str:
     return "\n".join(lines)
 
 
-def list_today_questions(subject: str = "") -> str:
-    """列出今日（Asia/Shanghai）可见推送题，带已答标记；按推送时间序（非未答优先）。"""
+def _as_bool(v) -> bool:
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)):
+        return v != 0
+    return str(v or "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _push_index_line(r: dict, *, backlog: bool = False) -> str:
+    answered = "已作答" if r.get("answered") else "未作答"
+    try:
+        iid = int(r.get("item_id") or 0)
+    except (TypeError, ValueError):
+        iid = 0
+    pub = f"i{iid}" if iid else ""
+    tag = "历史未答" if backlog else answered
+    day = f"{r.get('day', '')} " if backlog else ""
+    return (
+        f"- {day}{r.get('time', '')} #{r.get('seq')} {pub} [{tag}] "
+        f"{r.get('subject', '')}/{r.get('difficulty', '')} | {r.get('kp', '-')}"
+    )
+
+
+def list_today_questions(subject: str = "", include_backlog: bool | str = False) -> str:
+    """列出今日（Asia/Shanghai）可见推送题。
+
+    include_backlog 为真时另附未答积压（不计入今日排程槽），供讲师/助教索引过期未答题。
+    """
     try:
         from learner.db import get_store, shanghai_day
         today = shanghai_day(None)
-        rows = get_store().list_today_pushes(_db_sid() or None, today)
+        store = get_store()
+        sid = _db_sid() or None
+        rows = store.list_today_pushes(sid, today)
     except Exception:
         return "今日题目查询失败"
-    if subject:
-        subj = (subject or "").strip().lower()
+    subj = (subject or "").strip().lower()
+    if subj:
         rows = [r for r in rows if (r.get("subject") or "").lower() == subj]
-    if not rows:
+    want_backlog = _as_bool(include_backlog)
+    if not rows and not want_backlog:
         return f"今日（{today}）没有进行中的题目"
-    lines = [f"今日（{today}）共 {len(rows)} 道："]
-    for r in rows:
-        answered = "已作答" if r.get("answered") else "未作答"
-        lines.append(
-            f"- {r.get('time', '')} #{r.get('seq')} [{answered}] "
-            f"{r.get('subject', '')}/{r.get('difficulty', '')} | {r.get('kp', '-')}"
-        )
-    lines.append("需要全文时调用 find_record_entry(date, num)。")
+    lines: list[str] = []
+    if not rows:
+        lines.append(f"今日（{today}）没有排程推送题")
+    else:
+        lines.append(f"今日（{today}）共 {len(rows)} 道：")
+        for r in rows:
+            lines.append(_push_index_line(r))
+    if want_backlog:
+        try:
+            recent = store.list_recent_pushes(sid, days=7)
+        except Exception:
+            recent = []
+        backlog: list[dict] = []
+        for r in recent:
+            if (r.get("day") or "") >= today:
+                continue
+            if subj and (r.get("subject") or "").lower() != subj:
+                continue
+            try:
+                pid = int(r.get("push_id") or 0)
+            except (TypeError, ValueError):
+                pid = 0
+            if pid and store._push_answered(pid, sid):
+                continue
+            row = dict(r)
+            row["answered"] = False
+            backlog.append(row)
+        if backlog:
+            lines.append(
+                f"历史未答 {len(backlog)} 道（可索引讲解，不计入今日排程槽）："
+            )
+            for r in backlog:
+                lines.append(_push_index_line(r, backlog=True))
+        else:
+            lines.append("历史未答 0 道（不计入今日排程槽）。")
+    lines.append("需要全文时调用 find_record_entry(date, num) 或 practice_get_item(item)。")
     return "\n".join(lines)
 
 

@@ -140,14 +140,16 @@ export default function teachingApiClient(pi: ExtensionAPI) {
   pi.registerTool({
     name: "list_today_questions",
     label: "今日题库",
-    description: "今日推送题列表（含 answered；按推送时间升序，非未答优先）",
+    description: "今日推送题列表（含 answered；按推送时间升序。include_backlog 时另附历史未答，不计入今日槽）",
     parameters: Type.Object({
       subject: Type.Optional(SUBJECT),
+      include_backlog: Type.Optional(Type.Boolean()),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       return textResult(
         await apiCall("list_today_questions", {
           subject: params.subject ?? "",
+          include_backlog: params.include_backlog ?? false,
         }, ctx)
       );
     },

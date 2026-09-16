@@ -211,8 +211,11 @@ return {
         required: [],
       },
       list_today_questions: {
-        desc: '列出今日推送题目（只读）',
-        params: { subject: { type: 'string' } },
+        desc: '列出今日推送题目（只读）。include_backlog=true 时另附历史未答/积压，不计入今日排程槽。',
+        params: {
+          subject: { type: 'string' },
+          include_backlog: { type: 'boolean', description: '是否附带未答积压（默认 false）' },
+        },
         required: [],
       },
       build_report: {
@@ -550,6 +553,8 @@ return {
         stem: it.stem || '',
         explain: it.explain || '',
         answered: !!it.answered,
+        backlog: !!it.backlog,
+        day: it.day || '',
         solutionSteps: it.solutionSteps || (it.explain ? [String(it.explain)] : []),
       }
     }
@@ -693,7 +698,8 @@ return {
       if (mentorId === 'assistant') {
         const isPlan = /计划|今日|复习|周报|安排|节奏|下一题|规划/.test(msg)
         if (isPlan) {
-          const items = g.items || []
+          const items = (g.items || []).filter(function (it) { return !it.backlog })
+          const backlog = (g.items || []).filter(function (it) { return it.backlog })
           const slots = [
             { label: '高等数学', win: '08:00–12:00' },
             { label: '通信', win: '14:00–18:00' },
@@ -705,6 +711,13 @@ return {
             const s = slots[i] || { label: '补位', win: '机动' }
             lines.push('· ' + s.label + '（' + s.win + '）— ' + (it.title || it.kp) + (it.answered ? '（已答✓）' : ''))
           })
+          if (backlog.length) {
+            lines.push('')
+            lines.push('历史未答（不占今日槽，可索引讲解）：')
+            backlog.forEach(function (it) {
+              lines.push('· ' + (it.id || '') + ' ' + (it.title || it.kp) + (it.day ? '（' + it.day + '）' : ''))
+            })
+          }
           if (weak.length) lines.push('')
           if (weak.length) lines.push('建议顺序：先做最弱的「' + weak[0].kp + '」。')
           else if (g.weakHint) lines.push('薄弱提示：' + g.weakHint)
@@ -799,8 +812,11 @@ return {
         state: stateLine(learnerId),
         weakTop: weak.slice(0, 5),
         eta: (learner.eta || []).slice(0, 6),
-        todayItems: (g.items || []).slice(0, 6).map(function (it) {
+        todayItems: (g.items || []).filter(function (it) { return !it.backlog }).slice(0, 6).map(function (it) {
           return { id: it.id, title: it.title, kp: it.kp, answered: !!it.answered }
+        }),
+        backlogItems: (g.items || []).filter(function (it) { return it.backlog }).slice(0, 12).map(function (it) {
+          return { id: it.id, title: it.title, kp: it.kp, answered: !!it.answered, backlog: true, day: it.day || '' }
         }),
         activeItem: item ? { id: item.id, title: item.title, kp: item.kp, stem: (item.stem || item.content || '').slice(0, 2500) } : null,
         groundKind: g.kind || '',
@@ -906,6 +922,11 @@ return {
       }
     }
 
+    function isGeneralThreadId(id) {
+      const s = String(id == null ? '' : id)
+      return !s || s === 'general' || /^general-\d+$/.test(s)
+    }
+
     // ── 主对话 ──
     async function runChat(args, sse) {
       const msg = String((args && args.message) || '').trim()
@@ -913,7 +934,7 @@ return {
       const threadId = (args && args.threadId) || (args && args.item) || 'general'
       const itemId = (args && args.item) || ''
       const pushId = (args && args.push) || ''
-      const blankChat = !!(args && args.blank) || ((!itemId && !pushId) && String(threadId) === 'general')
+      const blankChat = !!(args && args.blank) || ((!itemId && !pushId) && isGeneralThreadId(threadId))
       const pickOpts = blankChat ? { allowFallback: false } : {}
       let mentorId = (args && args.mentor) || 'auto'
       let routedFrom = null
@@ -1176,7 +1197,7 @@ return {
             push: body.push || '',
             threadId: body.threadId || body.item || 'general',
             mentor: body.mentor || 'auto',
-            blank: !!body.blank || ((!body.item && !body.push) && String(body.threadId || 'general') === 'general'),
+            blank: !!body.blank || ((!body.item && !body.push) && isGeneralThreadId(body.threadId || 'general')),
           }
 
           if (wantsSse) {

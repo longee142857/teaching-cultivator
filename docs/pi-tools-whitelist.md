@@ -12,7 +12,7 @@
 | `find_record_entry` | `find_record_entry(date, num=0)` | 某条题目全文 | 无 |
 | `get_learner_snapshot` | `get_learner_snapshot(days=7)` | 学习指标快照 | 无 |
 | `get_active_question` | `get_active_question()` | 当前题（单一真相源） | 无 |
-| `list_today_questions` | `list_today_questions(subject)` | 今日推送题（含 `answered`；时间升序，非未答优先） | 无 |
+| `list_today_questions` | `list_today_questions(subject, include_backlog)` | 今日推送题（含 `answered`；时间升序）。`include_backlog` 另附历史未答，不计入今日槽 | 无 |
 | `list_knowledge_points` | `list_knowledge_points(subject, query)` | 考纲 L2/L3 | 无 |
 | `kb_query` | `kb_query(subject, kp)` | 小库只读 peek | 无（不增命中计数） |
 | `list_exam_bank` | `list_exam_bank(query, limit)` | 双周卷目录 | 无 |

@@ -219,6 +219,27 @@ def _test_today_ordering(store) -> None:
         check(i_old != -1 and i_new != -1 and i_old < i_new,
               "tool text 未答在前（时间序，非未答优先）")
         check("未作答" in text and "已作答" in text, "tool text has answered flags")
+        check("历史未答" not in text, "default list_today_questions omits backlog")
+
+        from datetime import datetime, timedelta
+        from learner.db import TZ_SHANGHAI
+
+        yday = (datetime.now(TZ_SHANGHAI) - timedelta(days=1)).strftime("%Y-%m-%d")
+        store.record_push(
+            subject="math", question="积压未答：换元积分", answer="",
+            difficulty="basic", kp="积压换元", learner_id="learnerX",
+            pushed_at=utc_from_shanghai(yday, "10:00"),
+        )
+        text_nb = list_today_questions()
+        check("积压换元" not in text_nb and "历史未答" not in text_nb,
+              "default still omits yesterday unanswered")
+        text_b = list_today_questions(include_backlog=True)
+        check("历史未答" in text_b and "积压换元" in text_b,
+              "include_backlog lists unanswered backlog")
+        check("共 2 道" in text_b and text_b.find("共 2 道") < text_b.find("历史未答"),
+              "backlog not counted in today's scheduled slots")
+        check("i" in text_b and "practice_get_item" in text_b,
+              "backlog lines expose public item id / get_item hint")
 
 
 def _test_cultivate_record(store, td) -> None:

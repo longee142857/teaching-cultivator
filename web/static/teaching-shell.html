@@ -132,6 +132,12 @@
       background: color-mix(in oklch, var(--accent) 8%, var(--surface));
     }
     .tutor-chip.is-general .tc-title { color: var(--accent); }
+    .tutor-chip.is-new {
+      border-style: dashed;
+      justify-content: center;
+      min-width: 4.5em;
+    }
+    .tutor-chip.is-new .tc-title { color: var(--accent); }
     .text-link.is-warn { color: #b45309; }
     .tc-empty {
       font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em;
@@ -1076,6 +1082,25 @@
       function qs() { return new URLSearchParams(location.search); }
       function currentItem() { return ITEMS[state.index] || null; }
       function contextItem() { return itemById(state.contextItemId); }
+      function isGeneralThreadId(id) {
+        var s = String(id == null ? "" : id);
+        return !s || s === "general" || /^general-\d+$/.test(s);
+      }
+      function newGeneralThreadId() {
+        return "general-" + Date.now();
+      }
+      function generalTitle(id) {
+        var key = String(id || "general");
+        var msgs = (state.threads && state.threads[key]) || [];
+        var i, t;
+        for (i = 0; i < msgs.length; i++) {
+          if (msgs[i] && msgs[i].role === "user") {
+            t = previewText(msgs[i].text);
+            if (t) return t.length > 28 ? t.slice(0, 28) : t;
+          }
+        }
+        return key === "general" ? "通用对话" : "新对话";
+      }
       function threadOf(id) {
         var key = id || "general";
         if (!state.threads[key]) state.threads[key] = [];
@@ -1214,9 +1239,16 @@
         state.recents = (state.recents || []).filter(function (r) { return r.id !== item.id; });
         state.recents.unshift({ id: item.id, title: item.subject + " · " + item.title, subject: item.subject });
       }
-      function bumpGeneralRecent() {
-        state.recents = (state.recents || []).filter(function (r) { return r.id !== "general"; });
-        state.recents.unshift({ id: "general", title: "通用对话", subject: "" });
+      function bumpGeneralRecent(id) {
+        id = id || state.contextItemId || "general";
+        if (!isGeneralThreadId(id)) return;
+        var prev = null;
+        (state.recents || []).forEach(function (r) { if (r && r.id === id) prev = r; });
+        var title = (prev && prev.title && prev.title !== "通用对话" && prev.title !== "新对话")
+          ? prev.title
+          : generalTitle(id);
+        state.recents = (state.recents || []).filter(function (r) { return r.id !== id; });
+        state.recents.unshift({ id: id, title: title, subject: "" });
       }
       function seedRecents() {
         if (state.recents && state.recents.length) return;
@@ -1224,7 +1256,7 @@
           return { id: it.id, title: it.subject + " · " + it.title, subject: it.subject };
         });
       }
-      /* 讲师会话列表：通用对话 ∪ recents LRU ∪ threads ∪ 今日题。不截断。 */
+      /* 讲师会话列表：recents LRU ∪ threads（含 general-*）∪ 今日题 ∪ 未答积压。不截断；不把通用对话压进单一 general。 */
       function listTutorSessions() {
         var seen = {};
         var out = [];
@@ -1234,19 +1266,41 @@
           seen[id] = true;
           var it = itemById(id);
           var rec = extra || {};
+          var general = isGeneralThreadId(id);
           out.push({
             id: id,
-            title: rec.title || (id === "general" ? "通用对话" : (it ? ((it.subject || "") + " · " + (it.title || id)) : id)),
-            subject: rec.subject || (it && it.subject) || ""
+            title: general ? generalTitle(id) : (rec.title || (it ? ((it.subject || "") + " · " + (it.title || id)) : id)),
+            subject: rec.subject || (it && it.subject) || "",
+            general: general
           });
         }
-        add("general", { title: "通用对话", subject: "" });
         (state.recents || []).forEach(function (r) { if (r && r.id) add(r.id, r); });
         Object.keys(state.threads || {}).forEach(function (id) { add(id); });
+        if (isGeneralThreadId(state.contextItemId)) add(state.contextItemId || "general");
         todayItems().forEach(function (it) {
           add(it.id, { title: (it.subject || "") + " · " + (it.title || it.id), subject: it.subject });
         });
+        backlogItems().forEach(function (it) {
+          add(it.id, {
+            title: "历史未答 · " + ((it.subject || "") + " · " + (it.title || it.id)),
+            subject: it.subject || ""
+          });
+        });
         return out;
+      }
+
+      function selectTutorThread(id) {
+        state.contextItemId = id;
+        if (isGeneralThreadId(id)) {
+          bumpGeneralRecent(id);
+          composerInput.placeholder = "问周卷成绩、学情或计划…（不绑题）";
+        } else {
+          var it = itemById(id);
+          if (it) bumpRecent(it);
+          composerInput.placeholder = "问这题卡住的步骤…";
+        }
+        persist();
+        render();
       }
 
       function startBlankTutor() {
@@ -1254,8 +1308,16 @@
         state.pending = false;
         setSendEnabled(true);
         state.mode = "tutor";
-        state.contextItemId = "general";
-        bumpGeneralRecent();
+        var cur = state.contextItemId;
+        var emptyCurrent = isGeneralThreadId(cur) && threadOf(cur).length === 0;
+        if (!emptyCurrent) {
+          var nid = newGeneralThreadId();
+          state.threads[nid] = [];
+          state.contextItemId = nid;
+        } else if (!cur) {
+          state.contextItemId = "general";
+        }
+        bumpGeneralRecent(state.contextItemId);
         persist();
         render();
         composerInput.focus();
@@ -1642,8 +1704,11 @@
           state.contextItemId = item.id;
           bumpRecent(item);
         } else {
-          state.contextItemId = "general";
-          bumpGeneralRecent();
+          if (!isGeneralThreadId(state.contextItemId)) {
+            state.contextItemId = newGeneralThreadId();
+            state.threads[state.contextItemId] = [];
+          }
+          bumpGeneralRecent(state.contextItemId);
         }
         persist();
         render();
@@ -1744,9 +1809,9 @@
         var tid = state.contextItemId || "general";
         threadOf(tid).push({ role: "user", text: trimmed });
         var item = contextItem();
-        var blank = !item || tid === "general";
-        if (item) bumpRecent(item);
-        else bumpGeneralRecent();
+        var blank = !item || isGeneralThreadId(tid);
+        if (item && !blank) bumpRecent(item);
+        else bumpGeneralRecent(tid);
         composerInput.value = "";
         state.pending = true;
         setSendEnabled(false);
@@ -1760,7 +1825,7 @@
             item: blank ? null : (item ? item.id : null),
             push: blank ? null : (item && item.pushId != null ? String(item.pushId) : state.push),
             message: trimmed,
-            threadId: blank ? "general" : tid,
+            threadId: tid,
             blank: blank
           })
         }).then(function (r) {
@@ -1964,14 +2029,14 @@
         headerEl.classList.toggle("is-expanded-detail", state.mode === "tutor" && !!state.tutorHeaderDetail);
         if (state.mode === "tutor") {
           var it = contextItem();
-          var isGeneral = !it || state.contextItemId === "general";
-          var title = isGeneral ? "通用对话" : ((it.subject || "") + " · " + (it.title || it.id || ""));
+          var isGeneral = isGeneralThreadId(state.contextItemId);
+          var title = isGeneral ? generalTitle(state.contextItemId) : ((it && it.subject ? it.subject + " · " : "") + ((it && (it.title || it.id)) || state.contextItemId || ""));
           var badge = state.tutorDetached === true
             ? '<span class="tutor-badge is-detached">脱机</span>'
             : '<span class="tutor-badge">已连接</span>';
           var detail = isGeneral
-            ? "可问周卷成绩、学情或计划；点会话条「通用对话」或练习台「不懂」绑题"
-            : (it.kp || "");
+            ? "可问周卷成绩、学情或计划；「新建对话」开空白线程，练习台「不懂」绑题"
+            : ((it && it.kp) || "");
           headerEl.innerHTML =
             '<div class="tutor-head" data-od-id="tutor-context">' +
               badge +
@@ -1979,13 +2044,13 @@
               '<span class="meta">' + esc(state.learner) + (isGeneral || !it ? "" : (" · " + it.id)) + "</span>" +
             "</div>" +
             '<div class="tutor-ops">' +
-              (isGeneral ? "" : '<button type="button" class="text-link" id="btn-blank-tutor" data-od-id="btn-blank-tutor">空白聊天</button>') +
+              '<button type="button" class="text-link" id="btn-new-tutor" data-od-id="btn-new-tutor">新建对话</button>' +
               '<button type="button" class="recents-toggle" id="btn-tutor-detail" data-od-id="btn-tutor-detail" aria-expanded="' +
                 (state.tutorHeaderDetail ? "true" : "false") + '">' + (state.tutorHeaderDetail ? "收起" : "详情") + "</button>" +
             "</div>" +
             '<div class="sub">' + esc(detail) + "</div>";
-          var blankBtn = document.getElementById("btn-blank-tutor");
-          if (blankBtn) blankBtn.addEventListener("click", startBlankTutor);
+          var newBtn = document.getElementById("btn-new-tutor");
+          if (newBtn) newBtn.addEventListener("click", startBlankTutor);
           var detailBtn = document.getElementById("btn-tutor-detail");
           if (detailBtn) detailBtn.addEventListener("click", function () {
             state.tutorHeaderDetail = !state.tutorHeaderDetail;
@@ -2481,13 +2546,13 @@
       function renderChatList() {
         var msgs = threadOf(state.contextItemId);
         if (!msgs.length && !state.pending) {
-          var general = !state.contextItemId || state.contextItemId === "general";
+          var general = isGeneralThreadId(state.contextItemId);
           return (
             '<div class="empty" data-od-id="view-tutor-empty">' +
               '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg></div>' +
-              "<h1>" + (general ? "通用对话" : "问讲师") + "</h1>" +
+              "<h1>" + (general ? "新对话" : "问讲师") + "</h1>" +
               "<p>" + (general
-                ? "不绑定当前题目。可问周卷成绩、学情、计划；需要讲某题时从练习台点「不懂，问讲师」。"
+                ? "空白通用对话，不绑定题目。可问周卷成绩、学情、计划；需要讲某题时从练习台或历史未答点进讲师。"
                 : "结合当前题目提问。讲师由导师团 agent 驱动（按需取数后作答），非演示。") + "</p>" +
             "</div>"
           );
@@ -2513,31 +2578,24 @@
         if (!strip) return;
         if (state.mode !== "tutor") { strip.innerHTML = ""; return; }
         var recents = listTutorSessions();
-        if (!recents.length) {
-          strip.innerHTML = '<span class="tc-empty">从练习台打开题目后，可在此切换讲师话题</span>';
-          return;
-        }
-        strip.innerHTML = recents.map(function (r) {
-          var active = r.id === state.contextItemId || (r.id === "general" && (!state.contextItemId || state.contextItemId === "general")) ? " is-active" : "";
-          var isGen = r.id === "general";
+        var newChip = '<button type="button" class="tutor-chip is-new" data-od-id="tchip-new" id="btn-new-tutor-strip">' +
+          '<span class="tc-title">新建对话</span><span class="tc-sub">空白通用</span></button>';
+        strip.innerHTML = newChip + recents.map(function (r) {
+          var active = r.id === state.contextItemId ? " is-active" : "";
+          var isGen = isGeneralThreadId(r.id);
           var it = isGen ? null : itemById(r.id);
-          var sub = isGen ? "不绑题" : (it ? it.kp : (r.subject || ""));
+          var isBacklog = !!(it && it.backlog);
+          var sub = isGen ? "不绑题" : (isBacklog ? "历史未答" : (it ? it.kp : (r.subject || "")));
           return '<button type="button" class="tutor-chip' + active + (isGen ? " is-general" : "") + '" data-od-id="tchip-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
             '<span class="tc-title">' + esc(r.title) + "</span>" +
             '<span class="tc-sub">' + esc(previewText(sub) || sub || "") + "</span>" +
           "</button>";
         }).join("");
+        var stripNew = document.getElementById("btn-new-tutor-strip");
+        if (stripNew) stripNew.addEventListener("click", startBlankTutor);
         strip.querySelectorAll("[data-thread-id]").forEach(function (btn) {
           btn.addEventListener("click", function () {
-            state.contextItemId = btn.getAttribute("data-thread-id");
-            if (state.contextItemId === "general") {
-              bumpGeneralRecent();
-              composerInput.placeholder = "问周卷成绩、学情或计划…（不绑题）";
-            } else {
-              composerInput.placeholder = "问这题卡住的步骤…";
-            }
-            persist();
-            render();
+            selectTutorThread(btn.getAttribute("data-thread-id"));
           });
         });
       }
@@ -2548,6 +2606,9 @@
         var html =
           '<div class="recents-head">' +
             (collapsed ? "" : "<h2>最近会话</h2>") +
+            '<button type="button" class="recents-toggle" id="btn-new-tutor-rail" data-od-id="btn-new-tutor-rail" title="新建对话">' +
+              (collapsed ? "＋" : "新建对话") +
+            "</button>" +
             '<button type="button" class="recents-toggle" id="btn-recents-toggle" data-od-id="btn-recents-toggle" title="' +
               (collapsed ? "展开最近会话" : "收起最近会话") + '" aria-expanded="' + (collapsed ? "false" : "true") + '">' +
               (collapsed ? "›" : "‹ 收起") +
@@ -2556,8 +2617,11 @@
           '<div class="recents-body">';
         listTutorSessions().forEach(function (r) {
           var msgs = threadOf(r.id);
-          var last = msgs.length ? (previewText(msgs[msgs.length - 1].text) || "（公式）") : "尚无消息";
-          var active = r.id === state.contextItemId || (r.id === "general" && (!state.contextItemId || state.contextItemId === "general")) ? " is-active" : "";
+          var it = isGeneralThreadId(r.id) ? null : itemById(r.id);
+          var last = msgs.length
+            ? (previewText(msgs[msgs.length - 1].text) || "（公式）")
+            : (it && it.backlog ? "历史未答" : "尚无消息");
+          var active = r.id === state.contextItemId ? " is-active" : "";
           html +=
             '<button type="button" class="recent-btn' + active + '" data-od-id="recent-' + escAttr(r.id) + '" data-thread-id="' + escAttr(r.id) + '">' +
               '<div class="recent-title">' + esc(r.title) + "</div>" +
@@ -2566,6 +2630,8 @@
         });
         html += "</div>";
         recentsEl.innerHTML = html;
+        var railNew = document.getElementById("btn-new-tutor-rail");
+        if (railNew) railNew.addEventListener("click", startBlankTutor);
         var toggle = document.getElementById("btn-recents-toggle");
         if (toggle) toggle.addEventListener("click", function () {
           state.recentsCollapsed = !state.recentsCollapsed;
@@ -2575,10 +2641,7 @@
         });
         recentsEl.querySelectorAll("[data-thread-id]").forEach(function (btn) {
           btn.addEventListener("click", function () {
-            state.contextItemId = btn.getAttribute("data-thread-id");
-            if (state.contextItemId === "general") bumpGeneralRecent();
-            persist();
-            render();
+            selectTutorThread(btn.getAttribute("data-thread-id"));
           });
         });
       }

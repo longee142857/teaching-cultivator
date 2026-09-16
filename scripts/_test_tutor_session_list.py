@@ -11,7 +11,7 @@ SHELL = os.path.join(ROOT, "web", "static", "teaching-shell.html")
 HOST = os.path.join(ROOT, "integrations", "dsh-mentor-team", "host.js")
 
 
-def list_tutor_sessions(recents, threads, today):
+def list_tutor_sessions(recents, threads, today, backlog=None, context_id=None):
     """Mirror teaching-shell.html listTutorSessions merge order."""
     seen = set()
     out = []
@@ -26,9 +26,36 @@ def list_tutor_sessions(recents, threads, today):
         add(r.get("id"))
     for key in threads or {}:
         add(key)
+    if context_id:
+        add(context_id)
     for it in today or []:
         add(it.get("id"))
+    for it in backlog or []:
+        add(it.get("id"))
     return out
+
+
+def is_general_thread_id(sid) -> bool:
+    s = "" if sid is None else str(sid)
+    return (not s) or s == "general" or bool(re.match(r"^general-\d+$", s))
+
+
+def start_blank_tutor(state, now_ms=1700000000000):
+    """Mirror teaching-shell.html startBlankTutor (mint general-<ts> unless current empty general)."""
+    threads = state.setdefault("threads", {})
+    recents = state.setdefault("recents", [])
+    cur = state.get("contextItemId")
+    empty_current = is_general_thread_id(cur) and not threads.get(cur or "general")
+    if not empty_current:
+        nid = "general-%s" % now_ms
+        threads[nid] = []
+        state["contextItemId"] = nid
+    elif not cur:
+        state["contextItemId"] = "general"
+        threads.setdefault("general", [])
+    recents[:] = [r for r in recents if r.get("id") != state["contextItemId"]]
+    recents.insert(0, {"id": state["contextItemId"], "title": "新对话", "subject": ""})
+    return state
 
 
 def preview_text(raw: str) -> str:
@@ -60,6 +87,18 @@ def main() -> int:
     check("function listTutorSessions" in html, "listTutorSessions helper")
     check("Object.keys(state.threads" in html, "union thread keys")
     check("todayItems().forEach" in html and "listTutorSessions" in html, "union today items")
+    check("backlogItems().forEach" in html and "listTutorSessions" in html, "union unanswered backlog")
+    check("function isGeneralThreadId" in html, "isGeneralThreadId helper")
+    check("function newGeneralThreadId" in html, "newGeneralThreadId helper")
+    check('return "general-" + Date.now()' in html, "new thread id is general-<timestamp>")
+    check("function startBlankTutor" in html, "startBlankTutor helper")
+    check("新建对话" in html, "新建对话 control present")
+    check("data-od-id=\"btn-new-tutor\"" in html, "desktop header 新建对话")
+    check("data-od-id=\"tchip-new\"" in html, "mobile strip 新建对话")
+    check("data-od-id=\"btn-new-tutor-rail\"" in html, "desktop recents 新建对话")
+    check("空白聊天" not in html, "replaced 空白聊天 with 新建对话")
+    check("threadId: tid" in html, "sendChat passes actual thread id")
+    check('threadId: blank ? "general" : tid' not in html, "sendChat does not collapse to general")
     check("state.recents = state.recents.slice(0, 3)" not in html, "bumpRecent no longer caps at 3")
     check("(state.recents || []).slice(0, 3)" not in html, "renderRecents no longer slices 3")
     check("(state.recents || []).slice(0, 6)" not in html, "tutor strip no longer slices 6")
@@ -72,6 +111,49 @@ def main() -> int:
     ids = list_tutor_sessions(recents, threads, today)
     check(ids == ["i1", "i2", "i3", "i4", "i5", "i6"], f"all ids listed, got {ids}")
     check(len(ids) > 3, ">3 sessions visible")
+
+    backlog = [{"id": "i99", "title": "昨日未答", "backlog": True}]
+    ids_bl = list_tutor_sessions(recents, threads, today, backlog=backlog)
+    check("i99" in ids_bl, "unanswered backlog enters session list")
+    check(ids_bl[-1] == "i99", f"backlog appended after today, got {ids_bl}")
+
+    item_thread = {"i12": [{"role": "user", "text": "这题怎么做"}]}
+    stale_general = {"general": [{"role": "user", "text": "旧通用对话"}]}
+    state = {
+        "contextItemId": "i12",
+        "threads": dict(item_thread, **stale_general),
+        "recents": [{"id": "i12", "title": "高等数学 · 夹逼"}],
+    }
+    start_blank_tutor(state, now_ms=1700000000123)
+    nid = state["contextItemId"]
+    check(nid == "general-1700000000123", f"minted general-<ts>, got {nid}")
+    check(state["threads"][nid] == [], "new thread empty")
+    check(state["threads"]["general"] == stale_general["general"], "legacy general intact")
+    check(state["threads"]["i12"] == item_thread["i12"], "item-bound thread intact")
+    check(any(r["id"] == nid for r in state["recents"]), "new general listed in recents")
+    # switching back
+    state["contextItemId"] = "i12"
+    check(state["threads"]["i12"][0]["text"] == "这题怎么做", "switch back keeps item messages")
+    state["contextItemId"] = "general"
+    check(len(state["threads"]["general"]) == 1, "switch back to old general")
+    start_blank_tutor(state, now_ms=1700000000999)
+    check(state["contextItemId"] == "general-1700000000999", "second 新建对话 mints another id")
+    check("general-1700000000123" in state["threads"], "prior new general remains")
+
+    empty = {"contextItemId": "general", "threads": {"general": []}, "recents": []}
+    start_blank_tutor(empty, now_ms=1)
+    check(empty["contextItemId"] == "general", "reuse empty current general instead of stacking blanks")
+
+    check(is_general_thread_id("general"), "legacy general is general")
+    check(is_general_thread_id("general-1700000000123"), "timestamped general is general")
+    check(not is_general_thread_id("i12"), "item id is not general")
+
+    check("include_backlog" in host, "DSH list_today_questions advertises include_backlog")
+    check("function isGeneralThreadId" in host, "DSH host treats general-* as blank threads")
+    check("新建对话" in open(os.path.join(ROOT, "integrations", "dsh-mentor-team", "client.js"), encoding="utf-8").read(),
+          "DSH client 新建对话")
+    lect = re.search(r"id:\s*'lecturer'.*?tools:\s*\[([^\]]*)\]", host, re.S)
+    check(lect is not None and "adjust_difficulty" not in lect.group(1), "lecturer stays read-only")
 
     # Do not treat DSH T1 40 msgs/thread as this bug
     check("if (arr.length > 40) arr.splice(0, arr.length - 40)" in host, "host T1 40 msgs/thread left in place")
@@ -92,7 +174,7 @@ def main() -> int:
         and "-webkit-box-orient: vertical" in prev.group(0),
         "recent-preview two-line clamp + min-width:0",
     )
-    btn = re.search(r"\.recent-btn\s*\{[^}]+\}", html)
+    btn = re.search(r"\.recent-btn\s*\{[^}]*min-width:\s*0[^}]*\}", html)
     check(btn is not None and "min-width: 0" in btn.group(0), "recent-btn min-width:0")
     chip = re.search(r"\.tutor-chip \.tc-title,\s*\n\s*\.tutor-chip \.tc-sub\s*\{[^}]+\}", html)
     check(
