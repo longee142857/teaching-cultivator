@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-nodistortion-001",
+  "subject": "comm",
+  "l2": "带通信号与希尔伯特变换",
+  "l3_id": "comm.sig_rand.nodistortion",
+  "atom_id": "zhou.ch2.nodistortion.hf",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "理想信道幅频特性 |H(f)|=K（常数），群时延 τ_g(f)=−(1/2π)dφ/df=τ_0（常数）。证明输出 y(t)=K·s(t−τ_0)，并说明对带通信号为何要求 τ_g 在通带内平坦。",
+  "answer": "y(t)=K s(t−τ_0)；通带内 τ_g 平坦保证各频率分量同延时，波形无包络畸变。",
+  "techniques": [
+    "无失真条件",
+    "群时延定义",
+    "傅里叶变换时移"
+  ],
+  "solution": "1) H(f)=K e^{−j2πfτ_0} ⇒ h(t)=K δ(t−τ_0)。2) y(t)=s(t)*h(t)=K s(t−τ_0)。3) 带通信号带宽内各分量若时延不同则包络与相位关系破坏，故需 τ_g 常数。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

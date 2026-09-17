@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-pm-fm-rel-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.pm_fm.rel",
+  "atom_id": "zhou.ch4.pm.fm.relation",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设相位调制 s_PM=A_c cos[ω_c t+k_p m(t)]，调频 s_FM=A_c cos[ω_c t+k_f∫m(τ)dτ]。对单音 m(t)=A_m cos ω_m t，写出 PM 与 FM 的等效条件（k_p,k_f 关系）。",
+  "answer": "FM 的 ∫m dt ∝ sin ω_m t；PM 的 m∝ cos ω_m t ⇒ k_f A_m/ω_m = k_p A_m，即 k_f/ω_m=k_p（该单音下）。",
+  "techniques": [
+    "PM/FM 定义",
+    "积分变相位",
+    "单音等效"
+  ],
+  "solution": "1) FM 相位含 sin ω_m t 项，系数 k_f A_m/ω_m。2) PM 相位含 cos ω_m t，系数 k_p A_m。3) 要使谱相同需 k_f/ω_m=k_p（固定 f_m）。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

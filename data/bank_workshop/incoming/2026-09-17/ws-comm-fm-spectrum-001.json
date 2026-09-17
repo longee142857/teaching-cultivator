@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-fm-spectrum-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.fm.spectrum",
+  "atom_id": "zhou.ch4.fm.bessel.spectrum",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "单音 FM s(t)=A_c cos[ω_c t+β sin ω_m t]。写出谱线一般形式（贝塞尔函数 J_n(β)）并说明 β≪1 时谱近似。",
+  "answer": "s(t)=A_c Re{∑ J_n(β) e^{j(ω_c+nω_m)t}}；β≪1 时 mainly n=0,±1，近似窄带。",
+  "techniques": [
+    "贝塞尔展开",
+    "单音 FM 谱线",
+    "窄带近似"
+  ],
+  "solution": "1) e^{jβ sin ω_m t}=∑ J_n(β)e^{jnω_m t。2) 载波与各阶边带幅度 J_n(β)。3) β 小则 J_n 迅速衰减，仅少数谱线显著。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

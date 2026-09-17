@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-noise-compare-001",
+  "subject": "comm",
+  "l2": "模拟调制抗噪声性能",
+  "l3_id": "comm.analog_mod.noise.compare",
+  "atom_id": "zhou.ch4.noise.ssb.coherent",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "在相同输入信噪比、相同消息带宽 W 下，比较 AM（包络）、DSB、SSB 相干解调、(S/N)_o 相对关系（定性排序即可，并一句说明 AM 为何最差）。",
+  "answer": "SSB≈DSB > AM；AM 有载波功率不携带信息且包络检波非线性，(S/N)_o 差且存在门限。",
+  "techniques": [
+    "体制 SNR 比较",
+    "AM 效率",
+    "SSB/DSB 相干"
+  ],
+  "solution": "1) DSB/SSB 相干：(S/N)_o=(S/N)_i（SSB 带宽半但定义方式下相当）。2) AM 调制效率 ≤1/3，同样功率下消息分量小。3) 包络检波低 SNR 门限效应。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

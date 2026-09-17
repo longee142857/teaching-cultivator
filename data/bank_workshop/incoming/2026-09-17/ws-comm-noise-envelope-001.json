@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-noise-envelope-001",
+  "subject": "comm",
+  "l2": "模拟调制抗噪声性能",
+  "l3_id": "comm.analog_mod.noise.envelope",
+  "atom_id": "zhou.ch4.noise.am.envelope",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "AM 包络检波在大输入 SNR 下 (S/N)_o 近似公式（用 μ 为调制指数、η=1/(1+μ^2/2) 效率因子表述）。",
+  "answer": "(S/N)_o ≈ η·(S/N)_i，η=1/(1+μ^2/2)（大 SNR，单音 AM 常用结果）。",
+  "techniques": [
+    "AM 包络 SNR",
+    "调制效率",
+    "门限概念"
+  ],
+  "solution": "1) 大 SNR 包络近似线性。2) 输出 SNR 相对输入乘效率 η<1。3) μ 大则 η 降；小 SNR 需考虑门限。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

@@ -1,0 +1,270 @@
+{
+  "date": "2026-09-17",
+  "n": 30,
+  "targets": [
+    {
+      "l3_id": "comm.sig_rand.fourier.series",
+      "l3_name": "傅里叶级数",
+      "l2": "确定信号与频谱分析",
+      "subject": "comm",
+      "reason": "rejected_redo",
+      "atom_id": "zhou.ch2.fourier.series.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.bandpass.sys",
+      "l3_name": "带通系统",
+      "l2": "带通信号与希尔伯特变换",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch2.bandpass.equiv.baseband",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.nodistortion",
+      "l3_name": "无失真传输条件",
+      "l2": "带通信号与希尔伯特变换",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch2.nodistortion.hf",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "math.calc.cont.closed",
+      "l3_name": "闭区间连续性质",
+      "l2": "函数极限与连续",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.limit.lhopital",
+      "l3_name": "洛必达法则适用条件",
+      "l2": "函数极限与连续",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.sig_rand.awgn.def",
+      "l3_name": "高斯白噪声模型",
+      "l2": "AWGN与匹配滤波器",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.awgn.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.awgn.filter",
+      "l3_name": "白噪声通过滤波器",
+      "l2": "AWGN与匹配滤波器",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.awgn.band.independence",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.mf.corr",
+      "l3_name": "匹配滤波与相关接收等价",
+      "l2": "AWGN与匹配滤波器",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.mf.as.correlator",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.mf.def",
+      "l3_name": "匹配滤波器原理",
+      "l2": "AWGN与匹配滤波器",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.mf.bandpass.example",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.mf.snr",
+      "l3_name": "匹配滤波器输出SNR",
+      "l2": "AWGN与匹配滤波器",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.mf.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.am",
+      "l3_name": "AM调制与包络检波",
+      "l2": "模拟线性调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.am.envelope.demod",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.dsb",
+      "l3_name": "DSB-SC原理与频谱",
+      "l2": "模拟线性调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.dsb.sc.gen",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.linear.demod",
+      "l3_name": "相干解调框图",
+      "l2": "模拟线性调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.coherent.demod.principle",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.linear.spectrum",
+      "l3_name": "线性调制频谱与带宽",
+      "l2": "模拟线性调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.dsb.spectrum.bw",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.ssb",
+      "l3_name": "SSB原理与实现",
+      "l2": "模拟线性调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.ssb.concept",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.fm.carson",
+      "l3_name": "卡松公式与带宽",
+      "l2": "模拟角度调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.fm.carson",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.fm.gen_demod",
+      "l3_name": "FM产生与鉴频解调",
+      "l2": "模拟角度调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.fm.discriminator",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.fm.spectrum",
+      "l3_name": "单音FM频谱",
+      "l2": "模拟角度调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.fm.bessel.spectrum",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.nbfm",
+      "l3_name": "窄带调频",
+      "l2": "模拟角度调制",
+      "subject": "comm",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.analog_mod.pm_fm.rel",
+      "l3_name": "PM与FM关系",
+      "l2": "模拟角度调制",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.pm.fm.relation",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.noise.coherent",
+      "l3_name": "相干解调抗噪声",
+      "l2": "模拟调制抗噪声性能",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.noise.dsb.coherent",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.noise.compare",
+      "l3_name": "各体制抗噪声比较",
+      "l2": "模拟调制抗噪声性能",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.noise.ssb.coherent",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.noise.envelope",
+      "l3_name": "包络检波抗噪声与门限",
+      "l2": "模拟调制抗噪声性能",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.noise.am.envelope",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.noise.fm",
+      "l3_name": "FM鉴频抗噪声",
+      "l2": "模拟调制抗噪声性能",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.noise.fm.snr",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.analog_mod.noise.preemp",
+      "l3_name": "预加重去加重概念",
+      "l2": "模拟调制抗噪声性能",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch4.fdm.stereo.fm",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.source.pcm.alaw",
+      "l3_name": "非均匀量化与A律",
+      "l2": "采样与PCM量化编码",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch7.alaw.mulaw",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.source.pcm.tdm",
+      "l3_name": "PCM编码与时分复用",
+      "l2": "采样与PCM量化编码",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch7.pcm.tdm",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.source.pcm.uniform",
+      "l3_name": "均匀量化",
+      "l2": "采样与PCM量化编码",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch7.uniform.quantizer",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.source.sample.bandpass",
+      "l3_name": "带通采样",
+      "l2": "采样与PCM量化编码",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch7.bandpass.sampling",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.source.sample.lowpass",
+      "l3_name": "低通采样定理",
+      "l2": "采样与PCM量化编码",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch7.lowpass.sampling.theorem",
+      "book_id": "zhou_comm"
+    }
+  ]
+}

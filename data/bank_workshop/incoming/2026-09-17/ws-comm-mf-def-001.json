@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-mf-def-001",
+  "subject": "comm",
+  "l2": "AWGN与匹配滤波器",
+  "l3_id": "comm.sig_rand.mf.def",
+  "atom_id": "zhou.ch3.mf.bandpass.example",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "能量信号 s(t)=A rect((t−T/2)/T)（0≤t≤T），AWGN 双边谱 N_0/2。写出匹配滤波器 h(t) 及 t=T 时刻输出 SNR 的表达式（用 E_s=∫s^2 dt 表示）。",
+  "answer": "h(t)=s(T−t)；(SNR)_max=2E_s/N_0。",
+  "techniques": [
+    "匹配滤波定义",
+    "输出 SNR 公式",
+    "能量 E_s"
+  ],
+  "solution": "1) h(t)=s(T−t) 为时间反转。2) 峰值出现在 t=T，噪声方差 N_0 E_s/2 量级推导得 (SNR)_max=2E_s/N_0。3) 本题 E_s=A^2 T。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

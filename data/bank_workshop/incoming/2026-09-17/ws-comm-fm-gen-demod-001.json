@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-fm-gen-demod-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.fm.gen_demod",
+  "atom_id": "zhou.ch4.fm.discriminator",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "简述 FM 的直接调频与间接调频（Armstrong）思想各一句；鉴频器输出与输入瞬时频率偏差何关系？",
+  "answer": "直接调频：用 m(t) 控振荡器瞬时频率；间接：先窄带 PM 再倍频扩频偏。鉴频输出 ∝ 瞬时频偏（微分/斜率检波）。",
+  "techniques": [
+    "FM 产生",
+    "鉴频器",
+    "瞬时频率"
+  ],
+  "solution": "1) 直接调频 VCO 线性控频。2) 间接法 NBFM→倍频链。3) 鉴频 y∝ dφ/dt−f_c ∝ 频偏。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

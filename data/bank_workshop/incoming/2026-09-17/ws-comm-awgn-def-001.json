@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-awgn-def-001",
+  "subject": "comm",
+  "l2": "AWGN与匹配滤波器",
+  "l3_id": "comm.sig_rand.awgn.def",
+  "atom_id": "zhou.ch3.awgn.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "写出高斯白噪声 n(t) 在时域与频域的统计特性（均值、自相关、功率谱密度），并说明「白」的含义。",
+  "answer": "E[n(t)]=0；R_n(τ)=σ_n^2 δ(τ)；S_n(f)=N_0/2（W/Hz，双边）。「白」指功率谱平坦。",
+  "techniques": [
+    "AWGN 定义",
+    "δ 自相关",
+    "双边 PSD"
+  ],
+  "solution": "1) 零均值高斯过程。2) 宽平稳且 R_n(τ) 仅在 τ=0 非零 ⇒ 白。3) 维纳–辛钦：S_n(f)=F{R_n}=N_0/2 常数。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

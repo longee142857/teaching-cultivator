@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-mf-corr-001",
+  "subject": "comm",
+  "l2": "AWGN与匹配滤波器",
+  "l3_id": "comm.sig_rand.mf.corr",
+  "atom_id": "zhou.ch3.mf.as.correlator",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "在 AWGN 下，接收信号 r(t)=s(t)+n(t)，0≤t≤T。说明匹配滤波器输出 y(T) 与相关器 ∫_0^T r(t)s(t)dt 在 t=T 时刻的取样等价（差一常数因子亦可）。",
+  "answer": "匹配滤波 h(t)=s(T−t) ⇒ y(T)=∫_0^T r(t)s(t)dt，即相关器在 t=T 的输出。",
+  "techniques": [
+    "匹配滤波冲激响应",
+    "相关接收",
+    "t=T 取样"
+  ],
+  "solution": "1) y(t)=r(t)*h(t)，h(t)=s(T−t)。2) y(T)=∫ r(τ)h(T−τ)dτ=∫_0^T r(τ)s(τ)dτ。3) 与相关器 ∫ r(t)s(t)dt 一致。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

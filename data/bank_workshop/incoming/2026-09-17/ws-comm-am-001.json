@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-am-001",
+  "subject": "comm",
+  "l2": "模拟线性调制",
+  "l3_id": "comm.analog_mod.am",
+  "atom_id": "zhou.ch4.am.envelope.demod",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "常规 AM：s_AM(t)=[A_0+m(t)]cos ω_c t，m(t) 无直流、|m(t)|≤A_0。写出包络检波近似恢复的表达式，并说明为何需要 A_0≥|m(t)|。",
+  "answer": "包络 ≈ A_0+m(t)（去掉直流得 m(t)）；A_0 保证包络与 m(t)+A_0 同形无过零失真。",
+  "techniques": [
+    "AM 波形",
+    "包络检波",
+    "过调制条件"
+  ],
+  "solution": "1) 包络 E(t)=|s_AM(t)|≈A_0+m(t) 当 m 变化慢于载波。2) 若 |m|>A_0，包络与 m 不同形，产生失真。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-linear-demod-001",
+  "subject": "comm",
+  "l2": "模拟线性调制",
+  "l3_id": "comm.analog_mod.linear.demod",
+  "atom_id": "zhou.ch4.coherent.demod.principle",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "对 s(t)=m(t)cos ω_c t，画出/描述相干解调框图（乘法器+低通），并写出低通输出（含 2ω_c 项说明如何滤除）。",
+  "answer": "×本地 cos ω_c t → (1/2)m(t)+高频项；LPF 截止 >W 滤除 2ω_c 分量得 m(t)/2。",
+  "techniques": [
+    "相干解调",
+    "乘积检波",
+    "低通滤波"
+  ],
+  "solution": "1) r(t)·cos ω_c t = m(t)cos^2 ω_c t = m(t)(1+cos2ω_c t)/2。2) LPF 保留基带得 m/2，放大恢复 m。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}
