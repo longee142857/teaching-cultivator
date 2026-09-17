@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-mf-snr-001",
+  "subject": "comm",
+  "l2": "AWGN与匹配滤波器",
+  "l3_id": "comm.sig_rand.mf.snr",
+  "atom_id": "zhou.ch3.mf.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "证明：在 AWGN 下，任意线性滤波器在 t=T 的输出信噪比不超过匹配滤波器，并写出匹配滤波达到的上界 (SNR)_max=2E_s/N_0。",
+  "answer": "由 Schwarz 不等式对 ∫ R_s(τ)h(T−τ)dτ 与噪声方差比较得任意 h 的 SNR ≤ 2E_s/N_0，等号当 h∝s(T−t)。",
+  "techniques": [
+    "匹配滤波 SNR 上界",
+    "Schwarz 不等式",
+    "E_s 能量"
+  ],
+  "solution": "1) 信号分量 ∝ ∫ s(t)h(T−t)dt。2) 噪声方差 N_0/2 ∫ h^2 dt。3) Schwarz 给出比值上界 2E_s/N_0，取 h(t)=s(T−t) 达到。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

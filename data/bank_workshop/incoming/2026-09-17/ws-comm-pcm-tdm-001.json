@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-pcm-tdm-001",
+  "subject": "comm",
+  "l2": "采样与PCM量化编码",
+  "l3_id": "comm.source.pcm.tdm",
+  "atom_id": "zhou.ch7.pcm.tdm",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "8 路 PCM 话路时分复用，每路采样 8 kHz、8 bit 编码。求合路码率 R（kb/s）及帧周期（若每帧含各路 1 样值）。",
+  "answer": "R=8×8000×8=512 kb/s；帧周期 T_f=1/8000=125 μs。",
+  "techniques": [
+    "PCM 码率",
+    "TDM 帧结构",
+    "采样定理应用"
+  ],
+  "solution": "1) 每路 R_i=8000×8 bit/s。2) 8 路并行时分 ⇒ R=8 R_i=512 kb/s。3) 每帧 8 时隙，帧率=采样率 8 kHz。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

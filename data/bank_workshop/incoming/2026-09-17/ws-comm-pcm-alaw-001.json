@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-pcm-alaw-001",
+  "subject": "comm",
+  "l2": "采样与PCM量化编码",
+  "l3_id": "comm.source.pcm.alaw",
+  "atom_id": "zhou.ch7.alaw.mulaw",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "简述 A 律 13 折线压扩的目的（相对均匀量化），并说明小信号段量化步长相对大信号段如何变化。",
+  "answer": "压扩使小信号相对量化步长变小、等效 SNR 提升；小信号段步长短、大信号段步长长（对数型）。",
+  "techniques": [
+    "A 律压扩",
+    "非均匀量化",
+    "小信号 SNR"
+  ],
+  "solution": "1) 语音小幅度概率大，均匀量化 SNR 差。2) A 律分段：小|x| 细量化，大|x| 粗量化。3) 折线近似对数压缩特性。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

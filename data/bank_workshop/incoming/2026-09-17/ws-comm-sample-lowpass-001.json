@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-sample-lowpass-001",
+  "subject": "comm",
+  "l2": "采样与PCM量化编码",
+  "l3_id": "comm.source.sample.lowpass",
+  "atom_id": "zhou.ch7.lowpass.sampling.theorem",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "叙述低通采样定理（Nyquist）：条件、采样率要求、重建方式各一句。",
+  "answer": "f(t) 带宽限于 W（|f|>W 无分量）⇒ f_s≥2W 可无失真恢复；理想内插 sinc 重建。",
+  "techniques": [
+    "Nyquist 定理",
+    "2W 采样率",
+    "sinc 重建"
+  ],
+  "solution": "1) 带限是前提。2) f_s≥2W 时周期谱不重叠。3) 低通内插恢复基带谱。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

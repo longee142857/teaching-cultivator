@@ -1,0 +1,15 @@
+{
+  "item_id": "ws-20260917-math-lhopital-001",
+  "decision": "accept",
+  "reasons": [
+    "(1)−1/6 正确；(2) 导数无极限，夹逼得 1"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

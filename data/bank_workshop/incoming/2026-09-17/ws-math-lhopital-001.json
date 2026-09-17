@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-math-lhopital-001",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.lhopital",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "判断下列极限是否可直接用洛必达法则，并给出结论或说明应改用何种方法：（1）lim_{x→0} (sin x − x)/x^3；（2）lim_{x→∞} (x+sin x)/x。",
+  "answer": "（1）可用（0/0，分子分母可导）得 −1/6；（2）不可用洛必达于 sin 振荡项，用夹逼：极限为 1。",
+  "techniques": [
+    "洛必达适用条件",
+    "0/0 型",
+    "夹逼准则"
+  ],
+  "solution": "1) (1) x→0 时 sin x−x→0，x^3→0；邻域内可导，洛必达三次或泰勒：sin x=x−x^3/6+o(x^3) ⇒ −1/6。2) (2) 为 ∞/∞ 但 (x+sin x)'=1+cos x 无极限，洛必达条件不满足；|sin x/x|≤1 ⇒ 1−1/x ≤ (x+sin x)/x ≤ 1+1/x →1。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

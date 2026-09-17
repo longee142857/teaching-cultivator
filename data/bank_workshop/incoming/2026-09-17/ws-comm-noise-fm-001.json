@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-noise-fm-001",
+  "subject": "comm",
+  "l2": "模拟调制抗噪声性能",
+  "l3_id": "comm.analog_mod.noise.fm",
+  "atom_id": "zhou.ch4.noise.fm.snr",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "大 SNR 单音 FM 鉴频后，写出 (S/N)_o 与 (S/N)_i、调频指数 β_f 的关系（标准 3β_f^2 形式），并解释 FM 相对 AM 的 SNR 增益来源。",
+  "answer": "(S/N)_o ≈ 3β_f^2 (S/N)_i（在适当带宽定义下）；增益来自扩带宽换 SNR（处理增益）。",
+  "techniques": [
+    "FM 鉴频 SNR",
+    "带宽扩展",
+    "β_f 增益"
+  ],
+  "solution": "1) 鉴频输出噪声随带宽增加但信号斜率检波增益 ∝ β_f^2。2) 经典结果给出 3β_f^2 因子。3) 代价是 occupied 带宽远大于基带。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

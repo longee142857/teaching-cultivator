@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-noise-coherent-001",
+  "subject": "comm",
+  "l2": "模拟调制抗噪声性能",
+  "l3_id": "comm.analog_mod.noise.coherent",
+  "atom_id": "zhou.ch4.noise.dsb.coherent",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "DSB-SC 相干解调，输入 SNR_i=(S/N)_i（大信噪比）。写出输出 (S/N)_o 与 (S/N)_i 的关系（标准公式）。",
+  "answer": "(S/N)_o = (S/N)_i（DSB 相干解调信噪比不变，定义在相同基带带宽下）。",
+  "techniques": [
+    "DSB 抗噪声",
+    "相干解调 SNR",
+    "带宽归一"
+  ],
+  "solution": "1) 相干解调后信号与噪声同带宽 B=W。2) 推导得输出 SNR 等于输入 SNR（无 FM 增益）。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

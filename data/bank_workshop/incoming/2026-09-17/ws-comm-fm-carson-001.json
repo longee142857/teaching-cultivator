@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-fm-carson-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.fm.carson",
+  "atom_id": "zhou.ch4.fm.carson",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "单音 FM：m(t)=A_m cos ω_m t，调频指数 β_f=Δf/f_m。用卡松公式估算有效带宽 B（含 98% 功率意义）。",
+  "answer": "B ≈ 2(Δf + f_m) = 2f_m(1+β_f)（Hz）。",
+  "techniques": [
+    "卡松公式",
+    "调频指数",
+    "有效带宽"
+  ],
+  "solution": "1) Δf 为峰值频偏，f_m 为调制频率。2) 卡松：B ≈ 2(Δf+f_m)。3) β_f=Δf/f_m 大时带宽主要由 Δf 决定。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

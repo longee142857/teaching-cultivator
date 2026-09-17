@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-bandpass-sys-001",
+  "subject": "comm",
+  "l2": "带通信号与希尔伯特变换",
+  "l3_id": "comm.sig_rand.bandpass.sys",
+  "atom_id": "zhou.ch2.bandpass.equiv.baseband",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "带通信号 r(t) 通过理想带通系统 H(f)（通带 [f_c−B/2,f_c+B/2]，B≪f_c）。简述等效基带分析思路：写出复包络 r_l(t) 与等效低通系统 h_l(t) 应满足的关系，并说明为何可只分析基带。",
+  "answer": "令 r(t)=Re{r_a(t)}，r_a(t)=r_l(t)e^{j2πf_c t}；系统输出复包络 y_l(t)=r_l(t)*h_l(t)，其中 H(f_c+f)=H_l(f)（f 为相对于 f_c 的偏移）。B≪f_c 时带内谱可平移至基带而不混叠，故性能由 h_l 决定。",
+  "techniques": [
+    "复包络表示",
+    "频谱平移",
+    "等效低通系统"
+  ],
+  "solution": "1) 解析信号/复包络：r_a 的谱集中在 +f_c 附近。2) 带通 LTI 可写为 r_a 经 H(f) 再取实部；在通带内 H(f)≈H_l(f−f_c)。3) 定义 h_l 为 H_l 的冲激响应，则 y_l=r_l*h_l。4) B≪f_c 保证正负频分量分离，基带模型不丢信息。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-dsb-001",
+  "subject": "comm",
+  "l2": "模拟线性调制",
+  "l3_id": "comm.analog_mod.dsb",
+  "atom_id": "zhou.ch4.dsb.sc.gen",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "说明 DSB-SC 的产生方式（平衡调制器思想），并写出 s_DSB(t)=m(t)cos ω_c t 的单边谱大致位置（以 m 带宽 W 为例）。",
+  "answer": "m(t) 与载波相乘抑制载波；谱在 f_c±W 两处，带宽 2W，无 f_c 离散谱线（m 无直流时）。",
+  "techniques": [
+    "DSB-SC 相乘",
+    "频谱搬移",
+    "带宽 2W"
+  ],
+  "solution": "1) 平衡调制：两路载波相乘相减抵消载波泄漏。2) M(f) 搬至 ±f_c，占用 [f_c−W,f_c+W] 共 2W。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

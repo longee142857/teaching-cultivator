@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-noise-preemp-001",
+  "subject": "comm",
+  "l2": "模拟调制抗噪声性能",
+  "l3_id": "comm.analog_mod.noise.preemp",
+  "atom_id": "zhou.ch4.fdm.stereo.fm",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "说明 FM 广播中预加重（发射端）与去加重（接收端）的目的，并写出理想高通预加重 H_pre(f) 与去加重 H_de(f) 应满足的关系。",
+  "answer": "提升高音频 SNR（噪声谱随 f 升）；H_pre·H_de=1（或互补使基带平坦）。",
+  "techniques": [
+    "预加重去加重",
+    "FM 噪声谱",
+    "互补滤波"
+  ],
+  "solution": "1) 鉴频噪声 ∝ f^2，高频 SNR 差。2) 预加重提升高频调制指数。3) 去加重恢复频响，H_pre H_de≈1。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

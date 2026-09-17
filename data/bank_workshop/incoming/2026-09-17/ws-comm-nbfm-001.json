@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-nbfm-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.nbfm",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "窄带 FM：β_f≪1 时，写出 s_NBFM(t) 对 AM/DSB 形式的近似展开（保留至 β 一阶），并说明带宽近似。",
+  "answer": "s≈A_c cos ω_c t − A_c β_f sin ω_m t·sin ω_c t；带宽仍近似 2W（与 AM 同量级）。",
+  "techniques": [
+    "窄带 FM 近似",
+    "三角恒等式",
+    "带宽对比"
+  ],
+  "solution": "1) cos(β sin ω_m t)≈1，sin(β sin ω_m t)≈β sin ω_m t。2) 展开得 AM 型载波+正交分量。3) 频谱仍集中在 f_c 附近 ±f_m，带宽 ~2W。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-sample-bandpass-001",
+  "subject": "comm",
+  "l2": "采样与PCM量化编码",
+  "l3_id": "comm.source.sample.bandpass",
+  "atom_id": "zhou.ch7.bandpass.sampling",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "带通信号频带 [f_L,f_H]，带宽 B=f_H−f_L。写出带通采样最低采样率 f_s 的不等式形式（用 n=⌊f_H/B⌋ 表示的经典条件之一）。",
+  "answer": "f_s ≥ 2B（当 f_H/n 与 B 关系满足不混叠条件）；常用：2f_H/n ≤ f_s ≤ 2f_L/(n−1) 区间内取最小 2B。",
+  "techniques": [
+    "带通采样定理",
+    "频谱搬移不混叠",
+    "最低采样率"
+  ],
+  "solution": "1) 将带通谱搬至基带需避免与镜像重叠。2) n=f_H/B 整数段划分。3) 最低 f_s 常取 2B（当 n 合适时），否则按不等式选。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

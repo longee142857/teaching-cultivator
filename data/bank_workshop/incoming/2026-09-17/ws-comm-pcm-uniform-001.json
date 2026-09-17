@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-pcm-uniform-001",
+  "subject": "comm",
+  "l2": "采样与PCM量化编码",
+  "l3_id": "comm.source.pcm.uniform",
+  "atom_id": "zhou.ch7.uniform.quantizer",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "均匀量化：峰值 A、量化级数 L=2^n。写出量化步长 Δ 与最大量化信噪比（正弦输入，经典 6.02n+1.76 dB 公式）的关系推导要点。",
+  "answer": "Δ=2A/L；(SNR)_q≈6.02n+1.76 dB（满幅正弦，每 bit 约 6 dB）。",
+  "techniques": [
+    "均匀量化步长",
+    "量化噪声功率",
+    "6.02n 规律"
+  ],
+  "solution": "1) 量化误差均匀分布 ±Δ/2 ⇒ 噪声功率 Δ^2/12。2) 正弦信号功率 A^2/2。3) 化简得 SNR∝ L^2，即 6.02n dB/bit。",
+  "cdps": 3,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}

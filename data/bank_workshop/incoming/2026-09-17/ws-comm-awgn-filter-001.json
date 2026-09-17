@@ -1,0 +1,25 @@
+{
+  "id": "ws-20260917-comm-awgn-filter-001",
+  "subject": "comm",
+  "l2": "AWGN与匹配滤波器",
+  "l3_id": "comm.sig_rand.awgn.filter",
+  "atom_id": "zhou.ch3.awgn.band.independence",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "白噪声 n(t)（N_0/2）通过理想低通 |H(f)|=1（|f|≤W），0 否则。求输出噪声功率与输出自相关 R_y(τ)。",
+  "answer": "P_y=N_0 W；R_y(τ)=N_0 W·sinc(2Wτ)（或 N_0 sin(2πWτ)/(2πτ)）。",
+  "techniques": [
+    "白噪声通过滤波器",
+    "PSD 积分",
+    "sinc 傅里叶对"
+  ],
+  "solution": "1) S_y(f)=|H(f)|^2·N_0/2 ⇒ 输出功率 ∫_{−W}^W N_0/2 df=N_0 W。2) R_y=F^{-1}{S_y}=N_0∫_{−W}^W e^{j2πfτ}df/2 = N_0 sin(2πWτ)/(2πτ)。",
+  "cdps": 2,
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-17",
+    "workshop_date": "2026-09-17"
+  }
+}
