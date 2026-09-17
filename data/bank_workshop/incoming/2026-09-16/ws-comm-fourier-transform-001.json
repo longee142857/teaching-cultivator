@@ -10,9 +10,60 @@
   "difficulty": "hit",
   "question": "设 g(t)=e^{-a|t|}（a>0），利用傅里叶变换定义与偶函数性质，推导其频谱 G(f)（含收敛条件说明）。",
   "answer": "G(f)=2a/(a^2+(2πf)^2)。",
-  "techniques": ["FT 定义积分", "偶函数对称化", "有理化简"],
-  "solution": "1) G(f)=∫_{-∞}^{∞} e^{-a|t|}e^{-j2πft}dt=2∫_0^{∞} e^{-at}cos(2πft)dt（偶部）。2) 用 ∫_0^∞ e^{-at}cos(ωt)dt=a/(a^2+ω^2)，ω=2πf。3) 得 G(f)=2a/(a^2+(2πf)^2)，a>0 保证绝对可积。",
-  "cdps": 3,
+  "techniques": [
+    "FT 定义积分",
+    "偶函数对称化",
+    "有理化简"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "G(f)=∫_{-∞}^{∞} e^{-a|t|}e^{-j2πft}dt=2∫_0^{∞} e^{-at}cos(2πft)dt（偶部）"
+      },
+      {
+        "id": "s2",
+        "text": "用 ∫_0^∞ e^{-at}cos(ωt)dt=a/(a^2+ω^2)，ω=2πf"
+      },
+      {
+        "id": "s3",
+        "text": "得 G(f)=2a/(a^2+(2πf)^2)，a>0 保证绝对可积。"
+      }
+    ],
+    "final_answer": "G(f)=2a/(a^2+(2πf)^2)。",
+    "techniques_used": [
+      "FT 定义积分",
+      "偶函数对称化",
+      "有理化简"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「FT 定义积分」写出第一步关键变形或定义。",
+      "expected": "G(f)=∫_{-∞}^{∞} e^{-a|t|}e^{-j2πft}dt=2∫_0^{∞} e^{-at}cos(2πft)dt（偶部）",
+      "technique": "FT 定义积分",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「偶函数对称化」完成第 2 步可核验计算或判定。",
+      "expected": "用 ∫_0^∞ e^{-at}cos(ωt)dt=a/(a^2+ω^2)，ω=2πf",
+      "technique": "偶函数对称化",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「有理化简」得到与题意一致的最终结论。",
+      "expected": "得 G(f)=2a/(a^2+(2πf)^2)，a>0 保证绝对可积。",
+      "technique": "有理化简",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",

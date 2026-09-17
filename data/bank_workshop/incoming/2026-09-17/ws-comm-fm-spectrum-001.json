@@ -15,8 +15,55 @@
     "单音 FM 谱线",
     "窄带近似"
   ],
-  "solution": "1) e^{jβ sin ω_m t}=∑ J_n(β)e^{jnω_m t。2) 载波与各阶边带幅度 J_n(β)。3) β 小则 J_n 迅速衰减，仅少数谱线显著。",
-  "cdps": 3,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "e^{jβ sin ω_m t}=∑ J_n(β)e^{jnω_m t"
+      },
+      {
+        "id": "s2",
+        "text": "载波与各阶边带幅度 J_n(β)"
+      },
+      {
+        "id": "s3",
+        "text": "β 小则 J_n 迅速衰减，仅少数谱线显著。"
+      }
+    ],
+    "final_answer": "s(t)=A_c Re{∑ J_n(β) e^{j(ω_c+nω_m)t}}；β≪1 时 mainly n=0,±1，近似窄带。",
+    "techniques_used": [
+      "贝塞尔展开",
+      "单音 FM 谱线",
+      "窄带近似"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「贝塞尔展开」写出第一步关键变形或定义。",
+      "expected": "e^{jβ sin ω_m t}=∑ J_n(β)e^{jnω_m t",
+      "technique": "贝塞尔展开",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「单音 FM 谱线」完成第 2 步可核验计算或判定。",
+      "expected": "载波与各阶边带幅度 J_n(β)",
+      "technique": "单音 FM 谱线",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「窄带近似」得到与题意一致的最终结论。",
+      "expected": "β 小则 J_n 迅速衰减，仅少数谱线显著。",
+      "technique": "窄带近似",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

@@ -15,8 +15,55 @@
     "相移法",
     "Hilbert 相移"
   ],
-  "solution": "1) 滤波法需陡峭边带滤波器。2) 相移法：上下边带分量相消/保留由 ± 号决定。3) m̂ 使各频率分量相移 90° 实现单边带。",
-  "cdps": 3,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "滤波法需陡峭边带滤波器"
+      },
+      {
+        "id": "s2",
+        "text": "相移法：上下边带分量相消/保留由 ± 号决定"
+      },
+      {
+        "id": "s3",
+        "text": "m̂ 使各频率分量相移 90° 实现单边带。"
+      }
+    ],
+    "final_answer": "滤波法：DSB 后理想边带滤波；相移法：m(t)cos ω_c t ± m̂(t)sin ω_c t 合成单边带，m̂ 为 m 的 Hilbert 变换。",
+    "techniques_used": [
+      "SSB 滤波法",
+      "相移法",
+      "Hilbert 相移"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「SSB 滤波法」写出第一步关键变形或定义。",
+      "expected": "滤波法需陡峭边带滤波器",
+      "technique": "SSB 滤波法",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「相移法」完成第 2 步可核验计算或判定。",
+      "expected": "相移法：上下边带分量相消/保留由 ± 号决定",
+      "technique": "相移法",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「Hilbert 相移」得到与题意一致的最终结论。",
+      "expected": "m̂ 使各频率分量相移 90° 实现单边带。",
+      "technique": "Hilbert 相移",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

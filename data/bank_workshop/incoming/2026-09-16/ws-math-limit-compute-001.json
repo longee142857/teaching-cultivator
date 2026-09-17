@@ -10,9 +10,60 @@
   "difficulty": "",
   "question": "求极限 L=lim_{x→0} (e^x-1-x)/x^2（写出主要变形步骤，勿跳步）。",
   "answer": "L=1/2。",
-  "techniques": ["泰勒/麦克劳林一阶", "等价无穷小 e^x-1~x", "代数消去"],
-  "solution": "1) e^x=1+x+x^2/2+o(x^2)，故 e^x-1-x=x^2/2+o(x^2)。2) 分子除以 x^2 得 1/2+o(1)。3) x→0 时 L=1/2。",
-  "cdps": 3,
+  "techniques": [
+    "泰勒/麦克劳林一阶",
+    "等价无穷小 e^x-1~x",
+    "代数消去"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "e^x=1+x+x^2/2+o(x^2)，故 e^x-1-x=x^2/2+o(x^2)"
+      },
+      {
+        "id": "s2",
+        "text": "分子除以 x^2 得 1/2+o(1)"
+      },
+      {
+        "id": "s3",
+        "text": "x→0 时 L=1/2。"
+      }
+    ],
+    "final_answer": "L=1/2。",
+    "techniques_used": [
+      "泰勒/麦克劳林一阶",
+      "等价无穷小 e^x-1~x",
+      "代数消去"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「泰勒/麦克劳林一阶」写出第一步关键变形或定义。",
+      "expected": "e^x=1+x+x^2/2+o(x^2)，故 e^x-1-x=x^2/2+o(x^2)",
+      "technique": "泰勒/麦克劳林一阶",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「等价无穷小 e^x-1~x」完成第 2 步可核验计算或判定。",
+      "expected": "分子除以 x^2 得 1/2+o(1)",
+      "technique": "等价无穷小 e^x-1~x",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「代数消去」得到与题意一致的最终结论。",
+      "expected": "x→0 时 L=1/2。",
+      "technique": "代数消去",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",

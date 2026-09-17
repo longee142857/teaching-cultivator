@@ -15,8 +15,55 @@
     "Schwarz 不等式",
     "E_s 能量"
   ],
-  "solution": "1) 信号分量 ∝ ∫ s(t)h(T−t)dt。2) 噪声方差 N_0/2 ∫ h^2 dt。3) Schwarz 给出比值上界 2E_s/N_0，取 h(t)=s(T−t) 达到。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "信号分量 ∝ ∫ s(t)h(T−t)dt"
+      },
+      {
+        "id": "s2",
+        "text": "噪声方差 N_0/2 ∫ h^2 dt"
+      },
+      {
+        "id": "s3",
+        "text": "Schwarz 给出比值上界 2E_s/N_0，取 h(t)=s(T−t) 达到。"
+      }
+    ],
+    "final_answer": "由 Schwarz 不等式对 ∫ R_s(τ)h(T−τ)dτ 与噪声方差比较得任意 h 的 SNR ≤ 2E_s/N_0，等号当 h∝s(T−t)。",
+    "techniques_used": [
+      "匹配滤波 SNR 上界",
+      "Schwarz 不等式",
+      "E_s 能量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「匹配滤波 SNR 上界」写出第一步关键变形或定义。",
+      "expected": "信号分量 ∝ ∫ s(t)h(T−t)dt",
+      "technique": "匹配滤波 SNR 上界",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「Schwarz 不等式」完成第 2 步可核验计算或判定。",
+      "expected": "噪声方差 N_0/2 ∫ h^2 dt",
+      "technique": "Schwarz 不等式",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「E_s 能量」得到与题意一致的最终结论。",
+      "expected": "Schwarz 给出比值上界 2E_s/N_0，取 h(t)=s(T−t) 达到。",
+      "technique": "E_s 能量",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

@@ -15,8 +15,55 @@
     "输出 SNR 公式",
     "能量 E_s"
   ],
-  "solution": "1) h(t)=s(T−t) 为时间反转。2) 峰值出现在 t=T，噪声方差 N_0 E_s/2 量级推导得 (SNR)_max=2E_s/N_0。3) 本题 E_s=A^2 T。",
-  "cdps": 3,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "h(t)=s(T−t) 为时间反转"
+      },
+      {
+        "id": "s2",
+        "text": "峰值出现在 t=T，噪声方差 N_0 E_s/2 量级推导得 (SNR)_max=2E_s/N_0"
+      },
+      {
+        "id": "s3",
+        "text": "本题 E_s=A^2 T。"
+      }
+    ],
+    "final_answer": "h(t)=s(T−t)；(SNR)_max=2E_s/N_0。",
+    "techniques_used": [
+      "匹配滤波定义",
+      "输出 SNR 公式",
+      "能量 E_s"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「匹配滤波定义」写出第一步关键变形或定义。",
+      "expected": "h(t)=s(T−t) 为时间反转",
+      "technique": "匹配滤波定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「输出 SNR 公式」完成第 2 步可核验计算或判定。",
+      "expected": "峰值出现在 t=T，噪声方差 N_0 E_s/2 量级推导得 (SNR)_max=2E_s/N_0",
+      "technique": "输出 SNR 公式",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「能量 E_s」得到与题意一致的最终结论。",
+      "expected": "本题 E_s=A^2 T。",
+      "technique": "能量 E_s",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

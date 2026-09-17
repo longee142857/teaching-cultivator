@@ -15,8 +15,55 @@
     "调频指数",
     "有效带宽"
   ],
-  "solution": "1) Δf 为峰值频偏，f_m 为调制频率。2) 卡松：B ≈ 2(Δf+f_m)。3) β_f=Δf/f_m 大时带宽主要由 Δf 决定。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "Δf 为峰值频偏，f_m 为调制频率"
+      },
+      {
+        "id": "s2",
+        "text": "卡松：B ≈ 2(Δf+f_m)"
+      },
+      {
+        "id": "s3",
+        "text": "β_f=Δf/f_m 大时带宽主要由 Δf 决定。"
+      }
+    ],
+    "final_answer": "B ≈ 2(Δf + f_m) = 2f_m(1+β_f)（Hz）。",
+    "techniques_used": [
+      "卡松公式",
+      "调频指数",
+      "有效带宽"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「卡松公式」写出第一步关键变形或定义。",
+      "expected": "Δf 为峰值频偏，f_m 为调制频率",
+      "technique": "卡松公式",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「调频指数」完成第 2 步可核验计算或判定。",
+      "expected": "卡松：B ≈ 2(Δf+f_m)",
+      "technique": "调频指数",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「有效带宽」得到与题意一致的最终结论。",
+      "expected": "β_f=Δf/f_m 大时带宽主要由 Δf 决定。",
+      "technique": "有效带宽",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

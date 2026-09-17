@@ -15,8 +15,42 @@
     "PSD 积分",
     "sinc 傅里叶对"
   ],
-  "solution": "1) S_y(f)=|H(f)|^2·N_0/2 ⇒ 输出功率 ∫_{−W}^W N_0/2 df=N_0 W。2) R_y=F^{-1}{S_y}=N_0∫_{−W}^W e^{j2πfτ}df/2 = N_0 sin(2πWτ)/(2πτ)。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "S_y(f)=|H(f)|^2·N_0/2 ⇒ 输出功率 ∫_{−W}^W N_0/2 df=N_0 W"
+      },
+      {
+        "id": "s2",
+        "text": "R_y=F^{-1}{S_y}=N_0∫_{−W}^W e^{j2πfτ}df/2 = N_0 sin(2πWτ)/(2πτ)。"
+      }
+    ],
+    "final_answer": "P_y=N_0 W；R_y(τ)=N_0 W·sinc(2Wτ)（或 N_0 sin(2πWτ)/(2πτ)）。",
+    "techniques_used": [
+      "白噪声通过滤波器",
+      "PSD 积分",
+      "sinc 傅里叶对"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「白噪声通过滤波器」写出第一步关键变形或定义。",
+      "expected": "S_y(f)=|H(f)|^2·N_0/2 ⇒ 输出功率 ∫_{−W}^W N_0/2 df=N_0 W",
+      "technique": "白噪声通过滤波器",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「PSD 积分」得到与题意一致的最终结论。",
+      "expected": "R_y=F^{-1}{S_y}=N_0∫_{−W}^W e^{j2πfτ}df/2 = N_0 sin(2πWτ)/(2πτ)。",
+      "technique": "PSD 积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

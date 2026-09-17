@@ -15,8 +15,42 @@
     "双边带/单边带",
     "频谱对称性"
   ],
-  "solution": "1) AM/DSB 上下边带各 W ⇒ 2W。2) SSB 只保留一侧边带 ⇒ W。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "AM/DSB 上下边带各 W ⇒ 2W"
+      },
+      {
+        "id": "s2",
+        "text": "SSB 只保留一侧边带 ⇒ W。"
+      }
+    ],
+    "final_answer": "AM 与 DSB：2W；SSB：W。",
+    "techniques_used": [
+      "线性调制带宽",
+      "双边带/单边带",
+      "频谱对称性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「线性调制带宽」写出第一步关键变形或定义。",
+      "expected": "AM/DSB 上下边带各 W ⇒ 2W",
+      "technique": "线性调制带宽",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「双边带/单边带」得到与题意一致的最终结论。",
+      "expected": "SSB 只保留一侧边带 ⇒ W。",
+      "technique": "双边带/单边带",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

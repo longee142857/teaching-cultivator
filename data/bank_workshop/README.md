@@ -12,8 +12,8 @@
 - `validate_incoming.py` — hard checks vs syllabus URLs/paths
 
 ## How to accept (human)
-1. Run `python3 data/bank_workshop/validate_incoming.py incoming/2026-09-16 --require-judge-accept` (from repo root)
-2. Review accepted items for pedagogy / correctness.
+1. Run `python3 data/bank_workshop/validate_incoming.py --require-judge-accept` (from repo root; scans all `incoming/YYYY-MM-DD/`)
+2. Review accepted items for pedagogy / correctness. `solution` must be an object (`steps` ≥2); `cdps` must be an object list (≥2, each with `technique`) — **not** integer counts or a solution string.
 3. 验收通过后走隔离入库脚本（见下方「入库」），不要让 cultivate*.py 自动扫本目录。
 4. Never point cultivate*.py at this folder automatically.
 

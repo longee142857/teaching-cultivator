@@ -10,9 +10,60 @@
   "difficulty": "",
   "question": "LTI 系统冲激响应 h(t)=e^{-t}u(t)。构造输入 x(t)=δ(t)-δ(t-1) 时输出 y(t) 的时域表达式（用 u(t) 分段写出）。",
   "answer": "y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
-  "techniques": ["卷积与冲激串", "因果系统移位叠加", "u(t) 分段"],
-  "solution": "1) y=h*x，x 为两冲激之和。2) h(t)*δ(t)=h(t)；h(t)*δ(t-1)=h(t-1)=e^{-(t-1)}u(t-1)。3) 相减得 y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
-  "cdps": 3,
+  "techniques": [
+    "卷积与冲激串",
+    "因果系统移位叠加",
+    "u(t) 分段"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "y=h*x，x 为两冲激之和"
+      },
+      {
+        "id": "s2",
+        "text": "h(t)*δ(t)=h(t)；h(t)*δ(t-1)=h(t-1)=e^{-(t-1)}u(t-1)"
+      },
+      {
+        "id": "s3",
+        "text": "相减得 y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。"
+      }
+    ],
+    "final_answer": "y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
+    "techniques_used": [
+      "卷积与冲激串",
+      "因果系统移位叠加",
+      "u(t) 分段"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「卷积与冲激串」写出第一步关键变形或定义。",
+      "expected": "y=h*x，x 为两冲激之和",
+      "technique": "卷积与冲激串",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「因果系统移位叠加」完成第 2 步可核验计算或判定。",
+      "expected": "h(t)*δ(t)=h(t)；h(t)*δ(t-1)=h(t-1)=e^{-(t-1)}u(t-1)",
+      "technique": "因果系统移位叠加",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「u(t) 分段」得到与题意一致的最终结论。",
+      "expected": "相减得 y(t)=e^{-t}u(t)-e^{-(t-1)}u(t-1)。",
+      "technique": "u(t) 分段",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",
