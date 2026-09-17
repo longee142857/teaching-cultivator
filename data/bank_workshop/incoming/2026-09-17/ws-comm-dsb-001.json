@@ -15,8 +15,42 @@
     "频谱搬移",
     "带宽 2W"
   ],
-  "solution": "1) 平衡调制：两路载波相乘相减抵消载波泄漏。2) M(f) 搬至 ±f_c，占用 [f_c−W,f_c+W] 共 2W。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "平衡调制：两路载波相乘相减抵消载波泄漏"
+      },
+      {
+        "id": "s2",
+        "text": "M(f) 搬至 ±f_c，占用 [f_c−W,f_c+W] 共 2W。"
+      }
+    ],
+    "final_answer": "m(t) 与载波相乘抑制载波；谱在 f_c±W 两处，带宽 2W，无 f_c 离散谱线（m 无直流时）。",
+    "techniques_used": [
+      "DSB-SC 相乘",
+      "频谱搬移",
+      "带宽 2W"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「DSB-SC 相乘」写出第一步关键变形或定义。",
+      "expected": "平衡调制：两路载波相乘相减抵消载波泄漏",
+      "technique": "DSB-SC 相乘",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「频谱搬移」得到与题意一致的最终结论。",
+      "expected": "M(f) 搬至 ±f_c，占用 [f_c−W,f_c+W] 共 2W。",
+      "technique": "频谱搬移",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

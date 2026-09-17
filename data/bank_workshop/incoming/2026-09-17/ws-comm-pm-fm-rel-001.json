@@ -15,8 +15,55 @@
     "积分变相位",
     "单音等效"
   ],
-  "solution": "1) FM 相位含 sin ω_m t 项，系数 k_f A_m/ω_m。2) PM 相位含 cos ω_m t，系数 k_p A_m。3) 要使谱相同需 k_f/ω_m=k_p（固定 f_m）。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "FM 相位含 sin ω_m t 项，系数 k_f A_m/ω_m"
+      },
+      {
+        "id": "s2",
+        "text": "PM 相位含 cos ω_m t，系数 k_p A_m"
+      },
+      {
+        "id": "s3",
+        "text": "要使谱相同需 k_f/ω_m=k_p（固定 f_m）。"
+      }
+    ],
+    "final_answer": "FM 的 ∫m dt ∝ sin ω_m t；PM 的 m∝ cos ω_m t ⇒ k_f A_m/ω_m = k_p A_m，即 k_f/ω_m=k_p（该单音下）。",
+    "techniques_used": [
+      "PM/FM 定义",
+      "积分变相位",
+      "单音等效"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「PM/FM 定义」写出第一步关键变形或定义。",
+      "expected": "FM 相位含 sin ω_m t 项，系数 k_f A_m/ω_m",
+      "technique": "PM/FM 定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「积分变相位」完成第 2 步可核验计算或判定。",
+      "expected": "PM 相位含 cos ω_m t，系数 k_p A_m",
+      "technique": "积分变相位",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「单音等效」得到与题意一致的最终结论。",
+      "expected": "要使谱相同需 k_f/ω_m=k_p（固定 f_m）。",
+      "technique": "单音等效",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

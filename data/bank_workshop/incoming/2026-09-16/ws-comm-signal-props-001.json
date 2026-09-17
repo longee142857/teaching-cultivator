@@ -10,9 +10,60 @@
   "difficulty": "",
   "question": "在 (-∞,∞) 上定义 s1(t)=e^{-t}u(t)，s2(t)=e^{-2t}u(t)。求内积 ⟨s1,s2⟩=∫ s1(t)s2(t)dt 及两信号各自能量 E1、E2。",
   "answer": "⟨s1,s2⟩=1/3；E1=1/2；E2=1/4。",
-  "techniques": ["能量信号内积", "指数积分", "能量定义"],
-  "solution": "1) ⟨s1,s2⟩=∫_0^∞ e^{-3t}dt=1/3。2) E1=∫_0^∞ e^{-2t}dt=1/2。3) E2=∫_0^∞ e^{-4t}dt=1/4。",
-  "cdps": 2,
+  "techniques": [
+    "能量信号内积",
+    "指数积分",
+    "能量定义"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "⟨s1,s2⟩=∫_0^∞ e^{-3t}dt=1/3"
+      },
+      {
+        "id": "s2",
+        "text": "E1=∫_0^∞ e^{-2t}dt=1/2"
+      },
+      {
+        "id": "s3",
+        "text": "E2=∫_0^∞ e^{-4t}dt=1/4。"
+      }
+    ],
+    "final_answer": "⟨s1,s2⟩=1/3；E1=1/2；E2=1/4。",
+    "techniques_used": [
+      "能量信号内积",
+      "指数积分",
+      "能量定义"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「能量信号内积」写出第一步关键变形或定义。",
+      "expected": "⟨s1,s2⟩=∫_0^∞ e^{-3t}dt=1/3",
+      "technique": "能量信号内积",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「指数积分」完成第 2 步可核验计算或判定。",
+      "expected": "E1=∫_0^∞ e^{-2t}dt=1/2",
+      "technique": "指数积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「能量定义」得到与题意一致的最终结论。",
+      "expected": "E2=∫_0^∞ e^{-4t}dt=1/4。",
+      "technique": "能量定义",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",

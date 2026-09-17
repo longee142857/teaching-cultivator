@@ -15,8 +15,55 @@
     "δ 自相关",
     "双边 PSD"
   ],
-  "solution": "1) 零均值高斯过程。2) 宽平稳且 R_n(τ) 仅在 τ=0 非零 ⇒ 白。3) 维纳–辛钦：S_n(f)=F{R_n}=N_0/2 常数。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "零均值高斯过程"
+      },
+      {
+        "id": "s2",
+        "text": "宽平稳且 R_n(τ) 仅在 τ=0 非零 ⇒ 白"
+      },
+      {
+        "id": "s3",
+        "text": "维纳–辛钦：S_n(f)=F{R_n}=N_0/2 常数。"
+      }
+    ],
+    "final_answer": "E[n(t)]=0；R_n(τ)=σ_n^2 δ(τ)；S_n(f)=N_0/2（W/Hz，双边）。「白」指功率谱平坦。",
+    "techniques_used": [
+      "AWGN 定义",
+      "δ 自相关",
+      "双边 PSD"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「AWGN 定义」写出第一步关键变形或定义。",
+      "expected": "零均值高斯过程",
+      "technique": "AWGN 定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「δ 自相关」完成第 2 步可核验计算或判定。",
+      "expected": "宽平稳且 R_n(τ) 仅在 τ=0 非零 ⇒ 白",
+      "technique": "δ 自相关",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「双边 PSD」得到与题意一致的最终结论。",
+      "expected": "维纳–辛钦：S_n(f)=F{R_n}=N_0/2 常数。",
+      "technique": "双边 PSD",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

@@ -6,8 +6,9 @@ You review AUTHOR workshop drafts. For each item JSON under
 
 ## Decision
 - `decision`: `accept` | `reject`
-- Reject if any hard rule fails (form, MCQ pattern, syllabus mismatch, cdps<2, basic difficulty, missing fields, bad atom/book pairing, weak/wrong solution).
-- Accept only if the item is syllabus-aligned, non-MCQ, solvable, and `cdps>=2`.
+- Reject if any hard rule fails (form, MCQ pattern, syllabus mismatch, `cdps` not an object list of length ≥2, string/`integer` `solution`/`cdps`, basic difficulty, missing fields, bad atom/book pairing, weak/wrong solution).
+- Accept only if the item is syllabus-aligned, non-MCQ, solvable, `solution` is `{steps, final_answer, techniques_used}` with ≥2 steps, and `cdps` is an object list (≥2, each with `technique`).
+- **Never** treat `"cdps": 2` (integer) or `"solution": "1) ..."` (string) as valid.
 
 ## Judge file shape
 ```json

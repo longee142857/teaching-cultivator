@@ -10,9 +10,60 @@
   "difficulty": "",
   "question": "当 x→0 时，比较 ln(1+x) 与 x-x^2/2 的阶：求 lim_{x→0} [ln(1+x)-x+x^2/2]/x^3。",
   "answer": "极限为 1/3。",
-  "techniques": ["麦克劳林展开", "阶比较", "分式极限"],
-  "solution": "1) ln(1+x)=x-x^2/2+x^3/3+o(x^3)。2) 代入得分子 ln(1+x)-x+x^2/2 = x^3/3+o(x^3)。3) 除以 x^3 令 x→0，极限为 1/3。",
-  "cdps": 2,
+  "techniques": [
+    "麦克劳林展开",
+    "阶比较",
+    "分式极限"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "ln(1+x)=x-x^2/2+x^3/3+o(x^3)"
+      },
+      {
+        "id": "s2",
+        "text": "代入得分子 ln(1+x)-x+x^2/2 = x^3/3+o(x^3)"
+      },
+      {
+        "id": "s3",
+        "text": "除以 x^3 令 x→0，极限为 1/3。"
+      }
+    ],
+    "final_answer": "极限为 1/3。",
+    "techniques_used": [
+      "麦克劳林展开",
+      "阶比较",
+      "分式极限"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「麦克劳林展开」写出第一步关键变形或定义。",
+      "expected": "ln(1+x)=x-x^2/2+x^3/3+o(x^3)",
+      "technique": "麦克劳林展开",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「阶比较」完成第 2 步可核验计算或判定。",
+      "expected": "代入得分子 ln(1+x)-x+x^2/2 = x^3/3+o(x^3)",
+      "technique": "阶比较",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「分式极限」得到与题意一致的最终结论。",
+      "expected": "除以 x^3 令 x→0，极限为 1/3。",
+      "technique": "分式极限",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",

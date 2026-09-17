@@ -15,8 +15,55 @@
     "带宽扩展",
     "β_f 增益"
   ],
-  "solution": "1) 鉴频输出噪声随带宽增加但信号斜率检波增益 ∝ β_f^2。2) 经典结果给出 3β_f^2 因子。3) 代价是 occupied 带宽远大于基带。",
-  "cdps": 3,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "鉴频输出噪声随带宽增加但信号斜率检波增益 ∝ β_f^2"
+      },
+      {
+        "id": "s2",
+        "text": "经典结果给出 3β_f^2 因子"
+      },
+      {
+        "id": "s3",
+        "text": "代价是 occupied 带宽远大于基带。"
+      }
+    ],
+    "final_answer": "(S/N)_o ≈ 3β_f^2 (S/N)_i（在适当带宽定义下）；增益来自扩带宽换 SNR（处理增益）。",
+    "techniques_used": [
+      "FM 鉴频 SNR",
+      "带宽扩展",
+      "β_f 增益"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「FM 鉴频 SNR」写出第一步关键变形或定义。",
+      "expected": "鉴频输出噪声随带宽增加但信号斜率检波增益 ∝ β_f^2",
+      "technique": "FM 鉴频 SNR",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「带宽扩展」完成第 2 步可核验计算或判定。",
+      "expected": "经典结果给出 3β_f^2 因子",
+      "technique": "带宽扩展",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「β_f 增益」得到与题意一致的最终结论。",
+      "expected": "代价是 occupied 带宽远大于基带。",
+      "technique": "β_f 增益",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

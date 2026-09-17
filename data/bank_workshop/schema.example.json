@@ -11,8 +11,30 @@
   "question": "求矩形脉冲 g(t)=A rect(t/T) 的傅里叶变换 G(f)，并写出主瓣零点带宽。",
   "answer": "G(f)=A T sinc(f T)；主瓣零点带宽 2/T（Hz）。",
   "techniques": ["傅里叶变换定义", "rect↔sinc 对偶", "零点带宽读谱"],
-  "solution": "1) 写 FT 积分；2) 代入 rect 得 A∫_{-T/2}^{T/2} e^{-j2πft} dt；3) 得 AT sinc(fT)；4) 主瓣零点在 ±1/T，带宽 2/T。",
-  "cdps": 3,
+  "solution": {
+    "steps": [
+      {"id": "s1", "text": "写 FT 积分并代入 rect，得 A∫_{-T/2}^{T/2} e^{-j2πft} dt。"},
+      {"id": "s2", "text": "积出 G(f)=AT sinc(fT)；主瓣零点在 ±1/T，带宽 2/T。"}
+    ],
+    "final_answer": "G(f)=A T sinc(f T)；主瓣零点带宽 2/T（Hz）。",
+    "techniques_used": ["傅里叶变换定义", "rect↔sinc 对偶", "零点带宽读谱"]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「傅里叶变换定义」写出第一步关键变形或定义。",
+      "expected": "写 FT 积分并代入 rect，得 A∫_{-T/2}^{T/2} e^{-j2πft} dt。",
+      "technique": "傅里叶变换定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「零点带宽读谱」得到与题意一致的最终结论。",
+      "expected": "积出 G(f)=AT sinc(fT)；主瓣零点在 ±1/T，带宽 2/T。",
+      "technique": "零点带宽读谱",
+      "depends_on": ["cdp1"]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch1",

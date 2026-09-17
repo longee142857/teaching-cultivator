@@ -15,8 +15,55 @@
     "FM 噪声谱",
     "互补滤波"
   ],
-  "solution": "1) 鉴频噪声 ∝ f^2，高频 SNR 差。2) 预加重提升高频调制指数。3) 去加重恢复频响，H_pre H_de≈1。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "鉴频噪声 ∝ f^2，高频 SNR 差"
+      },
+      {
+        "id": "s2",
+        "text": "预加重提升高频调制指数"
+      },
+      {
+        "id": "s3",
+        "text": "去加重恢复频响，H_pre H_de≈1。"
+      }
+    ],
+    "final_answer": "提升高音频 SNR（噪声谱随 f 升）；H_pre·H_de=1（或互补使基带平坦）。",
+    "techniques_used": [
+      "预加重去加重",
+      "FM 噪声谱",
+      "互补滤波"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「预加重去加重」写出第一步关键变形或定义。",
+      "expected": "鉴频噪声 ∝ f^2，高频 SNR 差",
+      "technique": "预加重去加重",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「FM 噪声谱」完成第 2 步可核验计算或判定。",
+      "expected": "预加重提升高频调制指数",
+      "technique": "FM 噪声谱",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「互补滤波」得到与题意一致的最终结论。",
+      "expected": "去加重恢复频响，H_pre H_de≈1。",
+      "technique": "互补滤波",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

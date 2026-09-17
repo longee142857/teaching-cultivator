@@ -41,6 +41,95 @@ def load_item(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _check_solution(sol: Any) -> list[str]:
+    """Bank payload: solution must be {steps>=2, final_answer, techniques_used}."""
+    errs: list[str] = []
+    if isinstance(sol, str):
+        errs.append("solution must be object, not string")
+        return errs
+    if not isinstance(sol, dict):
+        errs.append(f"solution must be object, got {type(sol).__name__}")
+        return errs
+    steps = sol.get("steps")
+    if not isinstance(steps, list) or len(steps) < 2:
+        n = len(steps) if isinstance(steps, list) else type(steps).__name__
+        errs.append(f"solution.steps must be list >= 2, got {n!r}")
+    else:
+        for i, s in enumerate(steps):
+            if not isinstance(s, dict) or not s.get("id") or not str(s.get("text") or "").strip():
+                errs.append(f"solution.steps[{i}] missing id/text")
+    if not str(sol.get("final_answer") or "").strip():
+        errs.append("solution.final_answer missing")
+    return errs
+
+
+def _check_cdps(cdps: Any) -> list[str]:
+    """Object list is required for import; int count is a legacy workshop shorthand.
+
+    import_incoming.item_for_workshop_check maps a CDP list to len(cdps) before
+    calling this, so integers (>=2) remain accepted here. Direct validate of
+    incoming JSON should see a list of objects.
+    """
+    errs: list[str] = []
+    if isinstance(cdps, list):
+        if len(cdps) < 2:
+            errs.append(f"cdps must be object list >= 2, got {len(cdps)}")
+            return errs
+        for i, c in enumerate(cdps):
+            if not isinstance(c, dict):
+                errs.append(f"cdps[{i}] must be object, got {type(c).__name__}")
+                continue
+            cid = c.get("id") or f"#{i}"
+            if not c.get("id"):
+                errs.append(f"cdp[{cid}] missing id")
+            if not str(c.get("technique") or "").strip():
+                errs.append(f"cdp[{cid}] missing technique")
+            if not str(c.get("prompt") or "").strip():
+                errs.append(f"cdp[{cid}] missing prompt")
+            if not str(c.get("expected") or "").strip():
+                errs.append(f"cdp[{cid}] missing expected")
+        return errs
+    if isinstance(cdps, int) or (isinstance(cdps, str) and str(cdps).strip().lstrip("-").isdigit()):
+        try:
+            n = int(cdps)
+        except (TypeError, ValueError):
+            n = -1
+        if n < 2:
+            errs.append(f"cdps must be >= 2, got {cdps!r}")
+        return errs
+    errs.append(f"cdps must be object list (not integer count) or int-like >=2, got {cdps!r}")
+    return errs
+
+
+def payload_err(item: dict) -> str:
+    """Local replica of learner.item_bank.validate_bank_payload (+ ≥2 steps).
+
+    Used when teaching.db / import dry-run is unavailable. Empty string = pass.
+    """
+    if not str(item.get("question") or "").strip():
+        return "empty_question"
+    techs = item.get("techniques") or []
+    if not techs:
+        return "no_techniques"
+    sol = item.get("solution")
+    if not isinstance(sol, dict):
+        return "solution_not_object"
+    steps = sol.get("steps") or []
+    if not isinstance(steps, list) or not steps:
+        return "no_solution_steps"
+    if len(steps) < 2:
+        return "solution_steps_lt_2"
+    cdps = item.get("cdps")
+    if not isinstance(cdps, list) or len(cdps) < 2:
+        return "cdps_lt_2"
+    for c in cdps:
+        if not isinstance(c, dict) or not c.get("id"):
+            return "cdp_missing_id"
+        if not c.get("technique"):
+            return "cdp_missing_technique"
+    return ""
+
+
 def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, judge: dict | None) -> list[str]:
     errs: list[str] = []
     l3_id = item.get("l3_id") or ""
@@ -72,12 +161,8 @@ def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, ju
         if str(diff).lower() == "basic":
             errs.append("difficulty must be empty or hit (not basic)")
 
-    cdps = item.get("cdps")
-    try:
-        if cdps is None or int(cdps) < 2:
-            errs.append(f"cdps must be >= 2, got {cdps!r}")
-    except (TypeError, ValueError):
-        errs.append(f"cdps not int-like: {cdps!r}")
+    errs.extend(_check_cdps(item.get("cdps")))
+    errs.extend(_check_solution(item.get("solution")))
 
     atom_id = item.get("atom_id") or ""
     book_id = item.get("book_id") or ""
@@ -113,7 +198,7 @@ def main() -> int:
     ap.add_argument(
         "incoming_dir",
         nargs="?",
-        default=str(ROOT / "data" / "bank_workshop" / "incoming" / "2026-09-16"),
+        default=str(ROOT / "data" / "bank_workshop" / "incoming"),
     )
     ap.add_argument("--syllabus-comm", default=DEFAULT_COMM)
     ap.add_argument("--syllabus-math", default=DEFAULT_MATH)
@@ -132,7 +217,11 @@ def main() -> int:
         print(f"incoming dir missing: {d}", file=sys.stderr)
         return 2
 
-    files = sorted(p for p in d.glob("*.json") if not p.name.endswith(".judge.json"))
+    files = sorted(
+        p
+        for p in d.rglob("*.json")
+        if p.is_file() and not p.name.endswith(".judge.json") and "rejected" not in p.parts
+    )
     if not files:
         print(f"no item JSON in {d}")
         return 0
@@ -143,13 +232,17 @@ def main() -> int:
         judge_path = path.with_name(path.stem + ".judge.json")
         judge = load_item(judge_path) if judge_path.exists() else None
         errs = check_item(item, syll, args.require_judge_accept, judge)
+        pay = payload_err(item)
+        if pay:
+            errs.append(f"payload:{pay}")
+        rel = path.relative_to(d) if path.is_relative_to(d) else path
         if errs:
             failed += 1
-            print(f"FAIL {path.name}")
+            print(f"FAIL {rel}")
             for e in errs:
                 print(f"  - {e}")
         else:
-            print(f"OK   {path.name}")
+            print(f"OK   {rel}")
 
     print(f"checked={len(files)} failed={failed}")
     return 1 if failed else 0

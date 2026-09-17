@@ -15,8 +15,55 @@
     "相关接收",
     "t=T 取样"
   ],
-  "solution": "1) y(t)=r(t)*h(t)，h(t)=s(T−t)。2) y(T)=∫ r(τ)h(T−τ)dτ=∫_0^T r(τ)s(τ)dτ。3) 与相关器 ∫ r(t)s(t)dt 一致。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "y(t)=r(t)*h(t)，h(t)=s(T−t)"
+      },
+      {
+        "id": "s2",
+        "text": "y(T)=∫ r(τ)h(T−τ)dτ=∫_0^T r(τ)s(τ)dτ"
+      },
+      {
+        "id": "s3",
+        "text": "与相关器 ∫ r(t)s(t)dt 一致。"
+      }
+    ],
+    "final_answer": "匹配滤波 h(t)=s(T−t) ⇒ y(T)=∫_0^T r(t)s(t)dt，即相关器在 t=T 的输出。",
+    "techniques_used": [
+      "匹配滤波冲激响应",
+      "相关接收",
+      "t=T 取样"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「匹配滤波冲激响应」写出第一步关键变形或定义。",
+      "expected": "y(t)=r(t)*h(t)，h(t)=s(T−t)",
+      "technique": "匹配滤波冲激响应",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「相关接收」完成第 2 步可核验计算或判定。",
+      "expected": "y(T)=∫ r(τ)h(T−τ)dτ=∫_0^T r(τ)s(τ)dτ",
+      "technique": "相关接收",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「t=T 取样」得到与题意一致的最终结论。",
+      "expected": "与相关器 ∫ r(t)s(t)dt 一致。",
+      "technique": "t=T 取样",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",

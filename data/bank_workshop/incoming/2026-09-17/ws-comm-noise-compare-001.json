@@ -15,8 +15,55 @@
     "AM 效率",
     "SSB/DSB 相干"
   ],
-  "solution": "1) DSB/SSB 相干：(S/N)_o=(S/N)_i（SSB 带宽半但定义方式下相当）。2) AM 调制效率 ≤1/3，同样功率下消息分量小。3) 包络检波低 SNR 门限效应。",
-  "cdps": 2,
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "DSB/SSB 相干：(S/N)_o=(S/N)_i（SSB 带宽半但定义方式下相当）"
+      },
+      {
+        "id": "s2",
+        "text": "AM 调制效率 ≤1/3，同样功率下消息分量小"
+      },
+      {
+        "id": "s3",
+        "text": "包络检波低 SNR 门限效应。"
+      }
+    ],
+    "final_answer": "SSB≈DSB > AM；AM 有载波功率不携带信息且包络检波非线性，(S/N)_o 差且存在门限。",
+    "techniques_used": [
+      "体制 SNR 比较",
+      "AM 效率",
+      "SSB/DSB 相干"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「体制 SNR 比较」写出第一步关键变形或定义。",
+      "expected": "DSB/SSB 相干：(S/N)_o=(S/N)_i（SSB 带宽半但定义方式下相当）",
+      "technique": "体制 SNR 比较",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「AM 效率」完成第 2 步可核验计算或判定。",
+      "expected": "AM 调制效率 ≤1/3，同样功率下消息分量小",
+      "technique": "AM 效率",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「SSB/DSB 相干」得到与题意一致的最终结论。",
+      "expected": "包络检波低 SNR 门限效应。",
+      "technique": "SSB/DSB 相干",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
   "meta": {
     "source": "cloud_cursor_workshop",
     "batch": "batch_2026-09-17",
