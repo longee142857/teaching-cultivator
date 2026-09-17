@@ -108,7 +108,7 @@ return {
     // ── 角色（工具 = 只读白名单 + 助教可写 adjust_difficulty） ──
     const ROSTER = [
       { id: 'auto', name: '团长', role: '自动分派', emoji: '🧭', tools: [] },
-      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points'] },
+      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points', 'list_today_questions'] },
       { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty'] },
     ]
 
@@ -181,8 +181,8 @@ return {
         required: [],
       },
       show_solution: {
-        desc: '读取当前/指定题的完整解题步骤与参考要点（只读）',
-        params: { item: { type: 'string' }, push: { type: 'string' } },
+        desc: '读取指定题的完整解题步骤与参考要点（只读）。必须传 item 或 push；不要省略，否则会落到最新题。',
+        params: { item: { type: 'string', description: '公开题号，如 i12' }, push: { type: 'string', description: '推送号' } },
         required: [],
       },
       kb_query: {
@@ -211,10 +211,10 @@ return {
         required: [],
       },
       list_today_questions: {
-        desc: '列出今日推送题目（只读）。include_backlog=true 时另附历史未答/积压，不计入今日排程槽。',
+        desc: '列出今日推送题目（只读）。导师团默认附带历史未答/积压（include_backlog=true），不计入今日排程槽。只要今日题时传 include_backlog=false。',
         params: {
           subject: { type: 'string' },
-          include_backlog: { type: 'boolean', description: '是否附带未答积压（默认 false）' },
+          include_backlog: { type: 'boolean', description: '是否附带未答积压（导师团默认 true）' },
         },
         required: [],
       },
@@ -257,6 +257,17 @@ return {
       const q = [ 'learner=' + encodeURIComponent(lid || 'demo1') ]
       if (args.item) q.push('item=' + encodeURIComponent(String(args.item)))
       if (args.push) q.push('push=' + encodeURIComponent(String(args.push)))
+      if (name === 'show_solution') {
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        if (r.data && r.data.ok && r.data.item) {
+          const it = r.data.item
+          const steps = it.solutionSteps || (it.explain ? [String(it.explain)] : [])
+          const lines = ['题目：' + (it.title || it.id || ''), it.stem || '', '讲解：']
+          steps.forEach(function (s) { lines.push('- ' + s) })
+          return { ok: true, source: 'practice_web:show_solution', text: lines.filter(Boolean).join('\n') }
+        }
+        return null
+      }
       const map = {
         practice_get_item: '/api/v1/practice/item',
         practice_bootstrap: '/api/v1/practice/bootstrap',
@@ -341,6 +352,11 @@ return {
     async function execTool(name, args, lid, allowed) {
       if (Array.isArray(allowed) && allowed.indexOf(name) < 0) {
         return { ok: false, source: name, text: '当前角色无权调用 ' + name }
+      }
+      args = Object.assign({}, args || {})
+      if (name === 'list_today_questions') {
+        const raw = args.include_backlog
+        if (raw === undefined || raw === null || String(raw) === '') args.include_backlog = true
       }
       const headers = await sysHeaders(lid)
       // 1) system_api :8770 — 写工具必须 POST（与 system_api 白名单一致）
@@ -833,7 +849,8 @@ return {
         '可做：讲题、追问、概念澄清、薄弱诊断建议、学习节奏建议；需要数据时【调用工具】获取，不要编造；Capability Brain 事件写入由系统特殊指令处理。',
         '工具返回的内容是权威证据；引用时用 [n] 标注。若工具不可用或数据缺失，明确说明「暂未取到」，不要硬编。',
         '用简洁中文；有当前题时紧扣题干与知识点。',
-        ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。' : '',
+        '接地：todayItems 是今日排程；backlogItems 是历史未答（可索引讲解，不占今日槽）。学员问历史/过期/未答/索引或点名某题号时，先 list_today_questions（导师团默认含积压）或直接用上下文 id，再 practice_get_item(item) 取题干、show_solution(item 或 push) 取解答。禁止编造题干。show_solution 必须带 item/push，勿默认讲最新题。',
+        ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。问历史未答题时仍可按 backlogItems / list_today_questions 索引后讲解。' : '',
       ].filter(Boolean).join('\n')
       return [
         { role: 'system', content: system },

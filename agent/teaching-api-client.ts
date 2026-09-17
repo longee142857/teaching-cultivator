@@ -277,10 +277,16 @@ export default function teachingApiClient(pi: ExtensionAPI) {
   pi.registerTool({
     name: "show_solution",
     label: "看解答",
-    description: "系统生成解答（不写 BKT）",
-    parameters: Type.Object({}),
-    async execute(_id, _params, _signal, _onUpdate, ctx) {
-      return textResult(await apiCall("show_solution", {}, ctx));
+    description: "系统生成解答（不写 BKT）。可传 item/push 指定题，省略则最新题。",
+    parameters: Type.Object({
+      item: Type.Optional(Type.String()),
+      push: Type.Optional(Type.String()),
+    }),
+    async execute(_id, params, _signal, _onUpdate, ctx) {
+      return textResult(await apiCall("show_solution", {
+        item: params.item ?? "",
+        push: params.push ?? "",
+      }, ctx));
     },
   });
 

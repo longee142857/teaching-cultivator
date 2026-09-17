@@ -11,7 +11,7 @@
 
 | 角色 | 工具 | 数据源 |
 |------|------|--------|
-| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points`（只读） | system_api:8770 → practice_web:8768 → demo |
+| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points` `list_today_questions`（只读） | system_api:8770 → practice_web:8768 → demo |
 | 助教 | `get_learner_params` `get_capability_evidence` `get_learner_snapshot` `list_today_questions` `build_report` `practice_bootstrap`（只读）+ `adjust_difficulty`（写，POST `:8770/v1/tools/adjust_difficulty` → 旧 `agent/tools.py` / `cultivate.set_difficulty_pref`） | 同上 |
 
 执行链：**system_api(:8770，`X-System-Token`)** → **practice_web(:8768)** → **本地演示数据（前缀「【演示数据】」）**。写工具 `adjust_difficulty` **仅 POST JSON**，不走 GET。LLM（DeepSeek 直连）**按需调用工具**取数，工具结果成为 `citations`（逐条证据引用）。批改/命题仍由教学运行时负责（边界闸）；学员明确要求改变难度时助教可写难度偏好，不改 BKT/η、不改已推送今日题。
