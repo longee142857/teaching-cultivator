@@ -261,6 +261,29 @@ def test_quota_full_reserved_and_rag() -> None:
         check(all("樊" not in (s.get("source") or "") for s in rag.snippets), "no fan chroma")
 
 
+def test_advance_skips_quota_gap_fill() -> None:
+    from learner.db import Store
+    from learner.advance import set_learning_mode
+    from learner.context import bind_learner
+    from cultivate_bank import _pregenerate_one_inner
+
+    with tempfile.TemporaryDirectory() as td:
+        zhou = os.path.join(td, "zhou_comm.db")
+        _make_zhou(zhou)
+        store = Store(os.path.join(td, "t.db"))
+        _bind(store, zhou, accepted=True)
+        with bind_learner("owner_adv", binding="schedule"):
+            set_learning_mode("comm", "advance", "zhou_comm")
+            with patch("learner.advance.reserved_comm_spec", return_value=None), \
+                 patch("cultivate_bank.select_gap_spec") as gap, \
+                 patch("cultivate_bank._author_spec") as auth:
+                out = _pregenerate_one_inner("comm")
+            check(out.get("skipped") is True, f"advance skip {out}")
+            check(out.get("reason") == "advance_reserved_only", out)
+            check(not gap.called, "advance must not quota-fill")
+            check(not auth.called, "no author without reserved spec")
+
+
 def test_grade_gate_partial_and_advance() -> None:
     from learner.db import Store
     from learner.advance import apply_atom_grade, get_cursor, ensure_cursor
@@ -649,6 +672,7 @@ def main() -> int:
     test_mode_refused_without_accept()
     test_atom_hard_filter_no_walk()
     test_quota_full_reserved_and_rag()
+    test_advance_skips_quota_gap_fill()
     test_grade_gate_partial_and_advance()
     test_three_way_missing_atom_no_cursor()
     test_book_db_path_prefers_git_layout()

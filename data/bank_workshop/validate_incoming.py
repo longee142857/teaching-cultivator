@@ -132,6 +132,11 @@ def payload_err(item: dict) -> str:
 
 def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, judge: dict | None) -> list[str]:
     errs: list[str] = []
+    subj = (item.get("subject") or "").strip().lower()
+    if subj == "review":
+        errs.append("workshop must not produce subject=review")
+    elif subj not in ("math", "comm"):
+        errs.append(f"subject must be math|comm, got {item.get('subject')!r}")
     l3_id = item.get("l3_id") or ""
     if l3_id not in syll:
         errs.append(f"l3_id not in syllabus: {l3_id}")
@@ -139,9 +144,9 @@ def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, ju
         expected_l2 = syll[l3_id]["l2"]
         if item.get("l2") and item.get("l2") != expected_l2:
             errs.append(f"l2 mismatch: item={item.get('l2')} syllabus={expected_l2}")
-        subj = item.get("subject")
-        if subj and syll[l3_id].get("subject") and subj != syll[l3_id]["subject"]:
-            errs.append(f"subject mismatch: item={subj} syllabus={syll[l3_id]['subject']}")
+        syll_subj = syll[l3_id].get("subject")
+        if subj and syll_subj and subj != syll_subj:
+            errs.append(f"subject mismatch: item={subj} syllabus={syll_subj}")
 
     form = item.get("item_form")
     if form not in ALLOWED_FORMS:
@@ -166,7 +171,14 @@ def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, ju
 
     atom_id = item.get("atom_id") or ""
     book_id = item.get("book_id") or ""
-    if atom_id:
+    if subj == "comm":
+        if not atom_id:
+            errs.append("comm items require atom_id in Zhou book")
+        elif not str(atom_id).startswith("zhou."):
+            errs.append(f"atom_id must be zhou.*, got {atom_id!r}")
+        if book_id != "zhou_comm":
+            errs.append(f"book_id must be zhou_comm for comm, got {book_id!r}")
+    elif atom_id:
         if not str(atom_id).startswith("zhou."):
             errs.append(f"atom_id if set must be zhou.*, got {atom_id!r}")
         if book_id != "zhou_comm":

@@ -5,6 +5,7 @@
     kp_need = weight×(1−mastery) + tech_boost + η_domain_boost
               （due×3；近轮同 KP×0.05，与 pick_kp_weighted 对齐）
     item_score = quality′ + α·kp_need + prefer_kp_bonus + prefer_tech_bonus
+                 + workshop_source_bonus（同池 meta.source=cloud_cursor_workshop，0.15）
 
 η 仅对有作答观测的域提权；不把 mastery/η 当事件成功概率。
 """
@@ -20,6 +21,8 @@ ETA_BOOST_SCALE = 0.15
 KP_NEED_WEIGHT = 1.0
 PREFER_KP_BONUS = 0.40
 PREFER_TECH_BONUS = 0.20
+WORKSHOP_SOURCE = "cloud_cursor_workshop"
+WORKSHOP_SOURCE_BONUS = 0.15
 DUE_MULT = 3.0
 RECENT_MULT = 0.05
 DEFAULT_MASTERY = 0.2
@@ -132,6 +135,20 @@ def quality_component(item: dict) -> float:
     return max(0.0, sc)
 
 
+def item_source(item: dict) -> str:
+    meta = item.get("meta") if isinstance(item, dict) else None
+    if isinstance(meta, str):
+        try:
+            import json
+
+            meta = json.loads(meta)
+        except Exception:
+            meta = {}
+    if not isinstance(meta, dict):
+        meta = {}
+    return str(meta.get("source") or "").strip()
+
+
 def score_ready_item(
     item: dict,
     ctx: PickContext,
@@ -161,6 +178,8 @@ def score_ready_item(
                 techs = []
         if pref_tech in [str(t) for t in (techs or [])]:
             score += prefer_tech_bonus
+    if item_source(item) == WORKSHOP_SOURCE:
+        score += WORKSHOP_SOURCE_BONUS
     return score
 
 

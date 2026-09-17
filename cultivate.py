@@ -1002,14 +1002,41 @@ def cultivate(subject: str):
         _cultivate_inner(subject)
 
 
+def _live_author_and_deliver(subject: str, decision, *, source: str = "schedule") -> None:
+    """原机当场出题并推送（review 槽；以及 BANK_LIVE_FALLBACK=1）。"""
+    global _last_answer, _last_ref_source, _last_item_form
+    kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
+    kp = kp.split("[")[0].strip()
+    content = generate(subject, decision, source=source)
+    if not content:
+        print(f"[cultivate] {subject}: live author 失败")
+        return
+    answer = _last_answer
+    ref_source = _last_ref_source
+    try:
+        record(subject, content, decision, answer, ref_source)
+    except Exception as e:
+        print(f"[cultivate] {subject}: record failed: {e}")
+        return
+    _save_last_push(
+        subject, decision, content, answer, ref_source, kp=kp, source=source
+    )
+    if deliver(content):
+        print(f"[cultivate] {subject}: OK live / {kp}")
+
+
 def _cultivate_inner(subject: str):
-    """推送：优先从 ready 题库抽取；默认不做 live author。"""
+    """推送：math/comm 从 ready 题库抽；review 始终原机当场出题。"""
     global _last_answer, _last_ref_source, _last_item_form
     state = assess_state(subject)
     bkt_log = state["bkt_log"]
     decision = decide(subject, bkt_log)
     if decision.type == "defer":
         print(f"[cultivate] {subject}: 跳过（{decision.reason}）")
+        return
+
+    if (subject or "").strip().lower() == "review":
+        _live_author_and_deliver(subject, decision, source="schedule")
         return
 
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
@@ -1073,23 +1100,8 @@ def _cultivate_inner(subject: str):
             except Exception:
                 pass
             return
-        # 旧路径 live author（仅 flag 打开）
-        content = generate(subject, decision, source="schedule")
-        if not content:
-            print(f"[cultivate] {subject}: live fallback 也失败")
-            return
-        answer = _last_answer
-        ref_source = _last_ref_source
-        try:
-            record(subject, content, decision, answer, ref_source)
-        except Exception as e:
-            print(f"[cultivate] {subject}: record failed: {e}")
-            return
-        _save_last_push(
-            subject, decision, content, answer, ref_source, kp=kp, source="schedule"
-        )
-        if deliver(content):
-            print(f"[cultivate] {subject}: OK live / {kp}")
+        # 旧路径 live author（仅 flag 打开；math/comm 默认关闭）
+        _live_author_and_deliver(subject, decision, source="schedule")
         return
 
     # bank pick → push only

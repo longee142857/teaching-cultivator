@@ -277,6 +277,17 @@ def generate_question(subject: str, kp_hint: str = "") -> str:
 
     kp = decision.reason.split(":")[0] if ":" in decision.reason else decision.reason
     kp = kp.split("[")[0].strip()
+    if (subject or "").strip().lower() == "review":
+        from cultivate import generate, record, get_last_answer, _last_ref_source
+        content = generate(subject, decision, source="chat")
+        if not content:
+            return "【生成失败：编排质检未通过】"
+        answer = get_last_answer()
+        record(subject, content, decision, answer)
+        _save_last_push(
+            subject, decision, content, answer, _last_ref_source, kp=kp, source="personal",
+        )
+        return content
     tech = pick_technique_for_kp(kp)
     item = pick_for_push(subject, kp=kp, technique=tech, learner_id=_db_sid() or None)
     if not item:

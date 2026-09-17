@@ -2,6 +2,16 @@
 
 **尚未入库，等人验收。** These drafts are **NOT** in the live item bank.
 
+工坊只产 **math / comm**，**禁止 `subject=review`**（错题复盘始终由原机 19:00 当场出题）。
+
+## Inventory (Bot 水位，不是全库 30)
+
+Bot 补货目标（ready+pass、未消耗）：
+
+- 当前原子：**2–5** 道（过关是 2 连对）
+- 下一原子：最多 **1–2** 道预放
+- **单批上限 30**；到上限或水位满即停。不要按全库 ready=30 回流补货。
+
 ## Layout
 - `AUTHOR_PROMPT.md` / `CRITIC_PROMPT.md` — reusable cloud prompts
 - `schema.example.json` — example item
@@ -31,7 +41,8 @@ python3 tool-scripts/tools/bank-workshop/import_incoming.py          # 默认 dr
 python3 tool-scripts/tools/bank-workshop/import_incoming.py --apply
 ```
 
-- `kp` ← workshop **L2 名**；`l3_id` ← `l3_id`。`subject` 仅 math/comm。
+- `kp` ← workshop **L2 名**；`l3_id` ← `l3_id`。`subject` 仅 math/comm；**拒绝 review**。
+- 通信题硬闸：`atom_id` 必须在周书库存在。
 - `validate_bank_payload` 不过则 failed、不入库、不 move。
 - insert 后走 `apply_judge_verdict(..., verdict='pass', reasons=['workshop_accept'])`。
 - 只动 items/item_kcs；不发钉钉、默认不重启。失败不半挪。

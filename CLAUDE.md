@@ -24,8 +24,8 @@ modules/notify/         仅通知 + FRONTEND_BASE_URL 深链（答题/讲解不�
 modules/PARKED.md       旁路资讯 / IM 全量 UX 降级清单
 main.py                 entry: Stream + scheduler (+ optional kb_cache HTTP)
 config.py               env / .env only — no hardcoded secrets
-cultivate.py            cultivate loop（推送：bank pick，默认不 live author）
-cultivate_bank.py       分时段预生成 → items status=ready
+cultivate.py            cultivate loop（math/comm：bank pick；review：原机当场 generate）
+cultivate_bank.py       分时段预生成 → items status=ready（review 不预生成；comm 推进只 reserved 1-shot）
 cultivate_judge.py      题库审判层（双槽质检，劣质降权）
 grade.py                grading + mastery + CDP 对齐
 orchestrate.py          polish / delivery-side checks
@@ -53,12 +53,12 @@ scripts/                acceptance tests and ops helpers
 5. **Runtime learner files stay local** (`answer-log.jsonl`, conversation ids, `kb_cache/store.json`, `teaching.db`, …).
 6. **知识点写入只经 `learner/kp_edit.py`**：只允许追加 **L3** 到已存在 L2；**绝不新建 L2**（BKT 掌握度主键挂 L2）；必须经确认卡片 + 审计，未确认一律不落盘。
 7. **推送/列表/当前题以 SQLite 为权威**（`learner/db.py`）。MD/JSON 镜像仅导出或兼容，不得单独冒充成功落库。
-8. **日推默认从 ready 题库抽取**（`BANK_LIVE_FALLBACK=0`）。YAML structured 是 **RAG/风格种子**，不是题源；题源是 `cultivate_bank` 预生成。
+8. **日推 math/comm 从 ready 题库抽取**（`BANK_LIVE_FALLBACK=0`）。**review 19:00 始终原机当场出题**。YAML structured 是 **RAG/风格种子**，不是题源。
 
 ## 预出题库 + CDP + 审判（2026-08-12）
 
-- **补货**：`cultivate_bank.PREGEN_SLOTS` 分时段、每槽最多 1 道；按薄弱 KP/技巧缺口选规格再 author；入库 `status=ready` + `techniques` / `solution` / `cdps`（≥2）
-- **抽题**：`pick_ready_item` 顺序 KP+technique → KP → L1 → 任意；同档按 `quality_score`（pass > pending > poor）；候选 `LIMIT 40`（非全库遍历最优）
+- **补货**：`cultivate_bank.PREGEN_SLOTS` 分时段、每槽最多 1 道；math（及未推进 comm）按薄弱 KP/技巧缺口选规格。**comm 推进开启时只 reserved 1-shot**，不按 `BANK_QUOTA` 灌水。**review 不预生成**。入库 `status=ready` + `techniques` / `solution` / `cdps`（≥2）
+- **抽题**：math/comm 硬过滤贴合（有 `atom_id` 只抽该原子）；同池 `meta.source=cloud_cursor_workshop` 小加分（0.15）。review 不抽库。候选 `LIMIT 40`
 - **CDP**：题级写死；批改对齐 id；仅 `attributable` 失败进入技巧/能力信号（对齐占位 `missing_from_grade` 等不计）
 - **审判**：每日约 08:30 / 17:30；机器硬闸 + `review_item` 异模型；不合格 `quality_tier=poor` 压抽题权重，不删题
 - **解答**：`items.answer` 出题层；结构化 `items.solution` 入库前抽取；`show_solution` 优先渲染 steps

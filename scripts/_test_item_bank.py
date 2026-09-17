@@ -420,6 +420,94 @@ def test_offpeak_slots_and_ref_gate() -> None:
     stripped = _strip_bank_transition("上一题你刚做完极限。\n\n求 lim x→0 sinx/x")
     check(not stripped.startswith("上一题") and "sinx" in stripped, "strip fake transition")
     check("11:00" not in hours, "no 11:00 peak pregen")
+    check("review" not in [s for _, s in PREGEN_SLOTS], "no review pregen slots")
+
+
+def test_review_pregen_and_fill_skip() -> None:
+    from cultivate_bank import _pregenerate_one_inner, run_pregen_slot
+
+    with patch("cultivate_bank.select_gap_spec") as gap, \
+         patch("cultivate_bank._author_spec") as auth:
+        r = _pregenerate_one_inner("review")
+    check(r.get("skipped") is True, f"review pregen skipped {r}")
+    check(r.get("reason") == "review_live_only", r)
+    check(not gap.called, "review must not gap-fill")
+    check(not auth.called, "review must not author in pregen")
+
+    class _S:
+        def count_ready(self, s):
+            return 0 if s == "review" else 99
+
+    with patch("cultivate_bank.get_store", return_value=_S()), \
+         patch("cultivate_bank.bank_quota", return_value=6), \
+         patch("cultivate_bank.pregenerate_one") as pre:
+        fill = run_pregen_slot("fill")
+    check(fill.get("reason") == "all_full", f"fill should ignore review gap {fill}")
+    check(not pre.called, "fill must not pregenerate review")
+
+
+def test_review_cultivate_live_no_pick() -> None:
+    from types import SimpleNamespace
+    from cultivate import _cultivate_inner
+
+    called = {"generate": 0, "pick": 0}
+
+    def fake_generate(*a, **k):
+        called["generate"] += 1
+        return "live review Q"
+
+    def fake_pick(*a, **k):
+        called["pick"] += 1
+        return {"id": 1, "question": "bank Q"}
+
+    decision = SimpleNamespace(
+        type="review", difficulty="medium", reason="极限", ability_goal="compute"
+    )
+    with patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+         patch("cultivate.decide", return_value=decision), \
+         patch("cultivate.generate", side_effect=fake_generate), \
+         patch("cultivate.record"), \
+         patch("cultivate.deliver", return_value=True), \
+         patch("cultivate._save_last_push"), \
+         patch("learner.item_bank.pick_for_push", side_effect=fake_pick), \
+         patch("learner.item_bank.pick_for_push_walk", side_effect=fake_pick):
+        _cultivate_inner("review")
+    check(called["generate"] == 1, f"review must live generate {called}")
+    check(called["pick"] == 0, f"review must not pick bank {called}")
+
+
+def test_agent_review_live_no_pick() -> None:
+    from types import SimpleNamespace
+    from agent.tools import generate_question
+
+    called = {"generate": 0, "pick": 0}
+
+    def fake_generate(*a, **k):
+        called["generate"] += 1
+        return "agent live review"
+
+    def fake_pick(*a, **k):
+        called["pick"] += 1
+        return {"id": 1, "question": "bank Q"}
+
+    decision = SimpleNamespace(
+        type="review", difficulty="medium", reason="极限",
+        ability_goal="compute", priority=3,
+    )
+    with patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+         patch("cultivate.decide", return_value=decision), \
+         patch("cultivate.generate", side_effect=fake_generate), \
+         patch("cultivate.record"), \
+         patch("cultivate.get_last_answer", return_value="A"), \
+         patch("cultivate._last_ref_source", ""), \
+         patch("cultivate._save_last_push"), \
+         patch("cultivate._bkt_available", True), \
+         patch("learner.item_bank.pick_for_push", side_effect=fake_pick), \
+         patch("learner.item_bank.pick_technique_for_kp", return_value="t"):
+        out = generate_question("review")
+    check(out == "agent live review", f"agent review live {out!r}")
+    check(called["generate"] == 1, f"agent review generate {called}")
+    check(called["pick"] == 0, f"agent review no pick {called}")
 
 
 def test_pick_rejects_pending_poor_and_sanitizes_stored_ref() -> None:
@@ -735,6 +823,9 @@ def main() -> int:
     test_author_spec_drops_cross_subject_ref()
     test_pregen_fallback_next_gap()
     test_offpeak_slots_and_ref_gate()
+    test_review_pregen_and_fill_skip()
+    test_review_cultivate_live_no_pick()
+    test_agent_review_live_no_pick()
     test_pick_rejects_pending_poor_and_sanitizes_stored_ref()
     test_review_walk_uses_next_stocked_kp()
     test_comm_walk_uses_stocked_pass()

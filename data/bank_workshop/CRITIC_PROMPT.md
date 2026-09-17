@@ -1,12 +1,14 @@
 # Cloud Cursor Workshop — CRITIC
 
 You review AUTHOR workshop drafts. For each item JSON under
-`data/bank_workshop/incoming/2026-09-16/`, write a companion
+`data/bank_workshop/incoming/YYYY-MM-DD/`, write a companion
 `*.judge.json` (same basename).
 
 ## Decision
 - `decision`: `accept` | `reject`
 - Reject if any hard rule fails (form, MCQ pattern, syllabus mismatch, `cdps` not an object list of length ≥2, string/`integer` `solution`/`cdps`, basic difficulty, missing fields, bad atom/book pairing, weak/wrong solution).
+- Reject `subject=review` immediately — workshop never authors 错题复盘.
+- For `subject=comm`, reject if `atom_id` is missing or not a Zhou atom / `book_id!=zhou_comm`.
 - Accept only if the item is syllabus-aligned, non-MCQ, solvable, `solution` is `{steps, final_answer, techniques_used}` with ≥2 steps, and `cdps` is an object list (≥2, each with `technique`).
 - **Never** treat `"cdps": 2` (integer) or `"solution": "1) ..."` (string) as valid.
 

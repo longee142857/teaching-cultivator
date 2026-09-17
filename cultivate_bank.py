@@ -29,7 +29,24 @@ def pregenerate_one(subject: str, *, max_items: int = 1) -> dict[str, Any]:
 MAX_GAP_ATTEMPTS = 3
 
 
+def _comm_advance_reserved_only() -> bool:
+    try:
+        from learner.advance import advance_active
+
+        return bool(advance_active("comm"))
+    except Exception:
+        return False
+
+
 def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
+    if subject == "review":
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "review_live_only",
+            "subject": subject,
+        }
+
     store = get_store()
     reserved = None
     if subject == "comm":
@@ -46,6 +63,15 @@ def _pregenerate_one_inner(subject: str) -> dict[str, Any]:
             result["reserved"] = True
             return result
         print(f"[cultivate_bank] reserved author failed: {result}")
+
+    if subject == "comm" and _comm_advance_reserved_only():
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "advance_reserved_only",
+            "subject": subject,
+            "reserved": bool(reserved),
+        }
 
     if store.count_ready(subject) >= bank_quota(subject):
         return {
@@ -285,8 +311,8 @@ PREGEN_SLOTS: list[tuple[str, str]] = [
     ("01:30", "comm"),
     ("02:00", "math"),
     ("02:30", "comm"),
-    ("03:00", "review"),
-    ("03:30", "review"),
+    ("03:00", "math"),
+    ("03:30", "comm"),
     ("04:00", "fill"),
 ]
 
@@ -296,7 +322,7 @@ def run_pregen_slot(subject_or_fill: str) -> dict[str, Any]:
         return pregenerate_one(subject_or_fill, max_items=1)
     store = get_store()
     candidates = []
-    for subj in ("math", "comm", "review"):
+    for subj in ("math", "comm"):
         ready = store.count_ready(subj)
         q = bank_quota(subj)
         if ready < q:

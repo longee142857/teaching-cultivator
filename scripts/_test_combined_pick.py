@@ -79,6 +79,56 @@ def test_score_prefers_weak_domain_and_quality():
     print("ok score_prefers", "best=", best["id"], "prefer_kp→", best2["id"])
 
 
+def test_workshop_source_bonus_same_kp():
+    from modules.capability.select import (
+        PickContext,
+        WORKSHOP_SOURCE_BONUS,
+        pick_best_item,
+        score_ready_item,
+    )
+
+    ctx = PickContext(
+        learner_id="u",
+        mastery={"极限": 0.5},
+        kp_weights={"极限": 1.0},
+        domain_boosts={},
+        tech_boost={},
+        due_kps=set(),
+        recent_kps=[],
+    )
+    pregen = {
+        "id": 1,
+        "kp": "极限",
+        "quality_score": 1.0,
+        "quality_tier": "pass",
+        "techniques": ["t"],
+        "meta": {"source": "pregen"},
+    }
+    workshop = {
+        "id": 2,
+        "kp": "极限",
+        "quality_score": 1.0,
+        "quality_tier": "pass",
+        "techniques": ["t"],
+        "meta": {"source": "cloud_cursor_workshop"},
+    }
+    delta = score_ready_item(workshop, ctx) - score_ready_item(pregen, ctx)
+    assert abs(delta - WORKSHOP_SOURCE_BONUS) < 1e-9, (delta, WORKSHOP_SOURCE_BONUS)
+    best, _ = pick_best_item([pregen, workshop], ctx, prefer_kp="极限")
+    assert best and best["id"] == 2, best
+    wrong_kp = {
+        "id": 3,
+        "kp": "矩阵与初等变换",
+        "quality_score": 1.0,
+        "quality_tier": "pass",
+        "techniques": ["t"],
+        "meta": {"source": "cloud_cursor_workshop"},
+    }
+    best2, _ = pick_best_item([pregen, wrong_kp], ctx, prefer_kp="极限")
+    assert best2 and best2["id"] == 1, best2
+    print("ok workshop_source_bonus")
+
+
 def test_pick_for_push_combined():
     from types import ModuleType
     from unittest.mock import patch
@@ -184,5 +234,6 @@ def test_pick_for_push_combined():
 
 if __name__ == "__main__":
     test_score_prefers_weak_domain_and_quality()
+    test_workshop_source_bonus_same_kp()
     test_pick_for_push_combined()
     print("ALL PASS")
