@@ -18,7 +18,7 @@
 | `list_exam_bank` | `list_exam_bank(query, limit)` | 双周卷目录 | 无 |
 | `get_exam_paper` | `get_exam_paper(paper_id)` | 试卷全文 | 无 |
 | `get_exam_result` | `get_exam_result(paper_id, user_id)` | 批改报告/作答 | 无 |
-| `show_solution` | `show_solution()` | 系统生成解答 | 无（不写 BKT） |
+| `show_solution` | `show_solution(item, push)` | 指定题或最新题的解答；不写 BKT | 无 |
 | `build_report` | `build_report(days=7)` | 学习周报 | 无 |
 
 ## 二、action:* — 动作（调系统，写状态由系统闸决定）
