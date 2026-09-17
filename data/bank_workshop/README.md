@@ -19,20 +19,22 @@
 
 ## 入库
 
-隔离脚本：`tool-scripts/tools/bank-workshop/import_incoming.py`  
-操作说明：`tool-scripts/tools/bank-workshop/README.md`
+隔离脚本与 CK 操作说明（工作目录 / DB / 备份 / 红线）：  
+`tool-scripts/tools/bank-workshop/README.md`
 
-合仓后由 CK 在教学云调度树 `git pull`，先 dry-run，再：
+合 master 后 **@ CK**，由他在调度树 ff 后执行（不要假设 SSH）：
 
 ```bash
+cd /home/ubuntu/teaching-cultivator
+cp -a data/teaching.db data/teaching.db.bak-$(date +%Y%m%d-%H%M%S)   # 勿 git add
 python3 tool-scripts/tools/bank-workshop/import_incoming.py          # 默认 dry-run
-python3 tool-scripts/tools/bank-workshop/import_incoming.py --apply  # 写 teaching.db 并 move
+python3 tool-scripts/tools/bank-workshop/import_incoming.py --apply
 ```
 
-- 只导入 `incoming/` 下 `decision==accept` 的题；**不导入** `rejected/`。
-- 写入 `insert_bank_item` 后立刻 `apply_judge_verdict(..., verdict="pass")`，否则日推抽不到（默认 pending）。
-- `subject` 仅 math/comm；不为复习槽服务。
-- 成功后文件落到 `data/bank_workshop/imported/<yyyy-mm-dd>/`。
+- `kp` ← workshop **L2 名**；`l3_id` ← `l3_id`。`subject` 仅 math/comm。
+- `validate_bank_payload` 不过则 failed、不入库、不 move。
+- insert 后走 `apply_judge_verdict(..., verdict='pass', reasons=['workshop_accept'])`。
+- 只动 items/item_kcs；不发钉钉、默认不重启。失败不半挪。
 
 ## Isolation
 Workshop artifacts live under `data/bank_workshop/` in this repo only. Do not wire cultivate*.py to this folder automatically. Live import is the isolated script above, run by CK after merge.

@@ -6,11 +6,13 @@ learner/item_bank.py / learner/db.py / prompts / web.
 
 Writes via the same store API as cultivate_bank:
 
-    store.insert_bank_item(...)
-    store.apply_judge_verdict(item_id, verdict="pass", ...)
+    store.insert_bank_item(..., status="ready")  # quality_tier starts pending
+    store.apply_judge_verdict(iid, verdict="pass", reasons=["workshop_accept"],
+                              confidence=1.0)
 
 Default is dry-run (no DB writes, no file moves). Pass --apply to commit.
-Never prints secrets. Never scans rejected/.
+Never prints secrets. Never scans rejected/. Never touches learners /
+attempts / pushes / BKT / sessions / .env.
 """
 from __future__ import annotations
 
@@ -23,7 +25,7 @@ import shutil
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 ROOT = Path(__file__).resolve().parents[3]
 VALIDATE_PATH = ROOT / "data" / "bank_workshop" / "validate_incoming.py"
@@ -33,10 +35,16 @@ LOCAL_SYLL_COMM = ROOT / "data" / "syllabus_comm.json"
 LOCAL_SYLL_MATH = ROOT / "data" / "syllabus_math.json"
 
 ALLOWED_SUBJECTS = {"math", "comm"}
+ALLOWED_DIFFICULTY = {"", "hit"}
 REF_SOURCE = "cloud_cursor_workshop"
 TZ_SHANGHAI = timezone(timedelta(hours=8), name="Asia/Shanghai")
 DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 STEP_SPLIT = re.compile(r"(?=(?:^|[；;.。]\s*)\d+[\)）.、]\s*)")
+
+
+def _ensure_root_on_path() -> None:
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
 
 
 def _load_validate():
@@ -50,6 +58,13 @@ def _load_validate():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def load_payload_validator() -> Callable[..., str]:
+    _ensure_root_on_path()
+    from learner.item_bank import validate_bank_payload
+
+    return validate_bank_payload
 
 
 def _resolve(path: str | Path, *, default_root: Path = ROOT) -> Path:
@@ -102,17 +117,19 @@ def batch_day(item_path: Path, incoming_root: Path) -> str:
     return datetime.now(TZ_SHANGHAI).strftime("%Y-%m-%d")
 
 
-def _difficulty(item: dict) -> str:
+def difficulty_of(item: dict) -> tuple[str, str]:
     meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
     raw = meta.get("difficulty")
     if raw in (None, ""):
         raw = item.get("difficulty")
     if raw in (None, ""):
-        return ""
+        return "", ""
     text = str(raw).strip()
     if text.lower() == "basic":
-        return ""
-    return text
+        return "", "difficulty_forbidden_basic"
+    if text not in ALLOWED_DIFFICULTY:
+        return "", f"difficulty_not_hit_or_empty={text!r}"
+    return text, ""
 
 
 def _steps_from_text(text: str) -> list[dict[str, str]]:
@@ -131,20 +148,20 @@ def _steps_from_text(text: str) -> list[dict[str, str]]:
 
 
 def as_solution(raw: Any, *, answer: str, techniques: list) -> dict:
-    """Workshop solution is a string; teaching.db stores a steps dict."""
+    """Normalize to {steps, final_answer, techniques_used}. No placeholder steps."""
     if isinstance(raw, dict):
         sol = dict(raw)
         if not (sol.get("steps") or []):
-            fallback = str(sol.get("text") or answer or "").strip()
-            sol["steps"] = _steps_from_text(fallback) or [
-                {"id": "s1", "text": fallback or "见题干推导"}
-            ]
-        sol.setdefault("final_answer", (answer or "")[:500])
-        sol.setdefault("techniques_used", list(techniques or []))
-        return sol
+            fallback = str(sol.get("text") or raw.get("workshop_text") or "").strip()
+            sol["steps"] = _steps_from_text(fallback)
+        sol["final_answer"] = sol.get("final_answer") or (answer or "")[:500]
+        sol["techniques_used"] = list(sol.get("techniques_used") or techniques or [])
+        return {
+            "steps": list(sol.get("steps") or []),
+            "final_answer": sol.get("final_answer") or "",
+            "techniques_used": list(sol.get("techniques_used") or []),
+        }
     steps = _steps_from_text(str(raw or ""))
-    if not steps:
-        steps = [{"id": "s1", "text": (answer or "见题干推导")[:2000]}]
     return {
         "steps": steps,
         "final_answer": (answer or "")[:500],
@@ -152,73 +169,64 @@ def as_solution(raw: Any, *, answer: str, techniques: list) -> dict:
     }
 
 
-def as_cdps(raw: Any, techniques: list) -> list[dict]:
-    """Workshop cdps is an integer count; teaching.db stores a CDP list."""
-    if isinstance(raw, list) and len(raw) >= 2:
+def as_cdps(raw: Any, techniques: list) -> tuple[list[dict], str]:
+    """Require a CDP object list. Do not invent dummy prompts.
+
+    If workshop already stored objects, keep them as-is (missing technique →
+    validate_bank_payload fails). Integer count is not a payload — fail rather
+    than fabricate cultivate_bank-style placeholder CDPs.
+    """
+    if isinstance(raw, list):
         out = []
-        for i, c in enumerate(raw, 1):
+        for c in raw:
             if isinstance(c, dict):
-                row = dict(c)
-                row.setdefault("id", f"cdp{i}")
-                row.setdefault("technique", (techniques[:1] or ["core_method"])[0])
-                out.append(row)
-        if len(out) >= 2:
-            return out
-    n = 2
-    try:
-        n = max(2, int(raw))
-    except (TypeError, ValueError):
-        n = 2
-    techs = [str(t).strip() for t in (techniques or []) if str(t).strip()] or [
-        "core_method"
-    ]
-    out = []
-    for i in range(n):
-        tech = techs[i] if i < len(techs) else techs[0]
-        out.append(
-            {
-                "id": f"cdp{i + 1}",
-                "prompt": (
-                    "识别本题关键方法/定理" if i == 0 else "执行关键步骤并得到结论"
-                ),
-                "expected": tech if i == 0 else "正确推导",
-                "technique": tech,
-                "depends_on": [] if i == 0 else [f"cdp{i}"],
-            }
-        )
-    return out
+                out.append(dict(c))
+        return out, ""
+    return [], "cdps_not_object_list"
 
 
-def workshop_to_bank_kwargs(item: dict) -> dict[str, Any]:
+def workshop_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
     subject = str(item.get("subject") or "").strip()
+    if subject not in ALLOWED_SUBJECTS:
+        return None, f"subject_not_math_comm={subject!r}"
+    l2 = str(item.get("l2") or "").strip()
     l3_id = str(item.get("l3_id") or "").strip()
-    techniques = list(item.get("techniques") or [])
+    if not l2:
+        return None, "missing_l2"
+    if not l3_id:
+        return None, "missing_l3_id"
+    techniques = [str(t).strip() for t in (item.get("techniques") or []) if str(t).strip()]
     answer = str(item.get("answer") or "")
-    meta = {}
+    diff, diff_err = difficulty_of(item)
+    if diff_err:
+        return None, diff_err
+    cdps, cdp_err = as_cdps(item.get("cdps"), techniques)
+    if cdp_err:
+        return None, cdp_err
+    meta: dict[str, Any] = {}
     if isinstance(item.get("meta"), dict):
         meta.update(item["meta"])
-    meta["workshop_id"] = item.get("id") or ""
     meta["source"] = REF_SOURCE
-    atom_id = str(item.get("atom_id") or "").strip()
-    book_id = str(item.get("book_id") or "").strip()
-    return {
+    meta["workshop_id"] = item.get("id") or ""
+    kwargs = {
         "subject": subject,
         "question": str(item.get("question") or ""),
         "answer": answer,
-        "difficulty": _difficulty(item),
-        "kp": l3_id,
+        "difficulty": diff,
+        "kp": l2,
         "l3_id": l3_id,
         "item_form": str(item.get("item_form") or ""),
         "ability_goal": str(item.get("ability_goal") or ""),
         "ref_source": REF_SOURCE,
         "techniques": techniques,
         "solution": as_solution(item.get("solution"), answer=answer, techniques=techniques),
-        "cdps": as_cdps(item.get("cdps"), techniques),
+        "cdps": cdps,
         "meta": meta,
         "status": "ready",
-        "atom_id": atom_id,
-        "book_id": book_id,
+        "atom_id": str(item.get("atom_id") or "").strip(),
+        "book_id": str(item.get("book_id") or "").strip(),
     }
+    return kwargs, ""
 
 
 def load_syllabus_index(validate, comm: str, math: str) -> dict[str, dict]:
@@ -238,8 +246,7 @@ def _syllabus_arg(cli: Optional[str], local: Path, url_fallback: str) -> str:
 
 
 def open_store(db_path: Path):
-    if str(ROOT) not in sys.path:
-        sys.path.insert(0, str(ROOT))
+    _ensure_root_on_path()
     from learner.db import get_store
 
     return get_store(str(db_path))
@@ -262,6 +269,15 @@ def move_pair(
     if judge_file.exists():
         shutil.move(str(judge_file), str(dest_judge))
     return dest_item
+
+
+def item_for_workshop_check(item: dict) -> dict:
+    """validate_incoming treats cdps as an int count; bank payload uses objects."""
+    copy = dict(item)
+    cdps = item.get("cdps")
+    if isinstance(cdps, list):
+        copy["cdps"] = len(cdps)
+    return copy
 
 
 def classify_skip(item: dict | None, judge: dict | None, judge_file: Path) -> str:
@@ -297,6 +313,12 @@ def process(
         validate = _load_validate()
     except Exception as e:
         print(f"failed to load validate_incoming.py: {e}", file=sys.stderr)
+        return 2
+
+    try:
+        payload_check = load_payload_validator()
+    except Exception as e:
+        print(f"failed to import validate_bank_payload: {e}", file=sys.stderr)
         return 2
 
     try:
@@ -355,7 +377,7 @@ def process(
             print(f"SKIP {path.relative_to(incoming)} {skip_reason}")
             continue
 
-        errs = validate.check_item(item, syll, True, judge)
+        errs = validate.check_item(item_for_workshop_check(item), syll, True, judge)
         if errs:
             failed += 1
             print(f"FAIL {path.relative_to(incoming)}")
@@ -363,26 +385,50 @@ def process(
                 print(f"  - {e}")
             continue
 
-        kwargs = workshop_to_bank_kwargs(item)
+        kwargs, map_err = workshop_to_bank_kwargs(item)
+        if map_err or not kwargs:
+            failed += 1
+            print(f"FAIL {path.relative_to(incoming)} map:{map_err}")
+            continue
+
+        payload_err = payload_check(
+            question=kwargs["question"],
+            techniques=kwargs["techniques"],
+            solution=kwargs["solution"],
+            cdps=kwargs["cdps"],
+        )
+        if payload_err:
+            failed += 1
+            print(f"FAIL {path.relative_to(incoming)} payload:{payload_err}")
+            continue
+
         if not apply:
             imported += 1
             print(
                 f"DRY  {path.relative_to(incoming)} "
                 f"id={kwargs['meta'].get('workshop_id')} "
-                f"subject={kwargs['subject']} l3={kwargs['l3_id']}"
+                f"subject={kwargs['subject']} kp={kwargs['kp']} l3={kwargs['l3_id']}"
             )
             continue
 
         assert store is not None
+        item_id = None
         try:
             item_id = store.insert_bank_item(**kwargs)
             store.apply_judge_verdict(
                 item_id,
                 verdict="pass",
-                reasons=["bank_workshop_accept"],
+                reasons=["workshop_accept"],
+                confidence=1.0,
                 details=judge or {},
             )
-            if move:
+        except Exception as e:
+            failed += 1
+            print(f"FAIL {path.relative_to(incoming)} insert:{e}")
+            continue
+
+        if move:
+            try:
                 dest = move_pair(
                     path,
                     jpath,
@@ -390,16 +436,20 @@ def process(
                     day=batch_day(path, incoming),
                 )
                 loc = dest.relative_to(imported_root)
-            else:
-                loc = path.relative_to(incoming)
-            imported += 1
-            print(
-                f"OK   {path.name} item_id={item_id} "
-                f"subject={kwargs['subject']} -> {loc}"
-            )
-        except Exception as e:
-            failed += 1
-            print(f"FAIL {path.relative_to(incoming)} insert:{e}")
+            except Exception as e:
+                failed += 1
+                print(
+                    f"FAIL {path.relative_to(incoming)} "
+                    f"item_id={item_id} moved=0 move:{e}"
+                )
+                continue
+        else:
+            loc = path.relative_to(incoming)
+        imported += 1
+        print(
+            f"OK   {path.name} item_id={item_id} "
+            f"subject={kwargs['subject']} kp={kwargs['kp']} -> {loc}"
+        )
 
     print(f"imported={imported} skipped={skipped} failed={failed}")
     return 1 if failed else 0
@@ -433,7 +483,7 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--apply",
         action="store_true",
-        help="actually insert_bank_item + apply_judge_verdict(pass) and move files",
+        help="insert_bank_item + apply_judge_verdict(pass) and move on success",
     )
     ap.add_argument(
         "--no-move",
@@ -453,7 +503,6 @@ def main(argv: list[str] | None = None) -> int:
     imported_root = _resolve(args.imported)
     db_path = _resolve(args.db) if args.db else default_db_path()
 
-    validate_mod = None
     url_comm = url_math = ""
     try:
         validate_mod = _load_validate()
