@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-gauss-proc-001",
+  "subject": "comm",
+  "l2": "高斯过程与窄带噪声",
+  "l3_id": "comm.sig_rand.gauss.process",
+  "atom_id": "zhou.ch3.gauss.process.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "高斯过程 X(t) 在 t1,t2 的联合分布为二元高斯，均值 0，协方差 Cov(X(t1),X(t2))=R(t1−t2)。若 R(0)=σ²，求 Var(X(t))。",
+  "answer": "Var(X(t))=R(0)=σ²，与 t 无关。",
+  "techniques": [
+    "高斯过程定义",
+    "协方差函数",
+    "平稳方差"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "二元高斯边际仍高斯，方差为对角协方差。"
+      },
+      {
+        "id": "s2",
+        "text": "R(0) 即方差，平稳时与时间无关。"
+      }
+    ],
+    "final_answer": "Var(X(t))=R(0)=σ²，与 t 无关。",
+    "techniques_used": [
+      "高斯过程定义",
+      "协方差函数",
+      "平稳方差"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「高斯过程定义」写出第 1 步关键推导或结论。",
+      "expected": "二元高斯边际仍高斯，方差为对角协方差。",
+      "technique": "高斯过程定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「协方差函数」得到与题意一致的最终结论。",
+      "expected": "R(0) 即方差，平稳时与时间无关。",
+      "technique": "协方差函数",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

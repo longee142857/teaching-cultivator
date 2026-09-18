@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-psd-nrz-001",
+  "subject": "comm",
+  "l2": "基带信号功率谱密度",
+  "l3_id": "comm.baseband.psd.nrz",
+  "atom_id": "zhou.ch5.psd.nrz.bipolar.formula",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "双极 NRZ 随机序列，等概独立，比特能量归一。写出功率谱形状与 R_b 的主瓣带宽量级关系（不必常数系数）。",
+  "answer": "S(f)∝ sinc²(fT_b)；主瓣带宽量级 2R_b。",
+  "techniques": [
+    "NRZ 功率谱",
+    "sinc² 形状",
+    "带宽量级"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "脉冲成形 rect ⇒ 谱含 sinc²。"
+      },
+      {
+        "id": "s2",
+        "text": "零点 1/T_b ⇒ 主瓣约 2R_b。"
+      }
+    ],
+    "final_answer": "S(f)∝ sinc²(fT_b)；主瓣带宽量级 2R_b。",
+    "techniques_used": [
+      "NRZ 功率谱",
+      "sinc² 形状",
+      "带宽量级"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「NRZ 功率谱」写出第 1 步关键推导或结论。",
+      "expected": "脉冲成形 rect ⇒ 谱含 sinc²。",
+      "technique": "NRZ 功率谱",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「sinc² 形状」得到与题意一致的最终结论。",
+      "expected": "零点 1/T_b ⇒ 主瓣约 2R_b。",
+      "technique": "sinc² 形状",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

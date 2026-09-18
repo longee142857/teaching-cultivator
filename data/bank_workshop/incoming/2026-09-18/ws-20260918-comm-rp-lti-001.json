@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-rp-lti-001",
+  "subject": "comm",
+  "l2": "随机过程统计特性",
+  "l3_id": "comm.sig_rand.rp.through_lti",
+  "atom_id": "zhou.ch3.rp.psd.through.lti",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "平稳输入 X(t) 通过 LTI h(t)，输出 Y(t)。用输入功率谱 S_X(f) 与 H(f) 写出 S_Y(f)，并说明推导要点。",
+  "answer": "S_Y(f)=|H(f)|² S_X(f)。",
+  "techniques": [
+    "LTI 输出谱",
+    "传递函数模平方",
+    "平稳通过系统"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "Y=X*h ⇒ 互谱 S_XY=S_X H*，S_Y=|H|² S_X。"
+      },
+      {
+        "id": "s2",
+        "text": "在平稳零均值条件下用维纳–李关系。"
+      }
+    ],
+    "final_answer": "S_Y(f)=|H(f)|² S_X(f)。",
+    "techniques_used": [
+      "LTI 输出谱",
+      "传递函数模平方",
+      "平稳通过系统"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「LTI 输出谱」写出第 1 步关键推导或结论。",
+      "expected": "Y=X*h ⇒ 互谱 S_XY=S_X H*，S_Y=|H|² S_X。",
+      "technique": "LTI 输出谱",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「传递函数模平方」得到与题意一致的最终结论。",
+      "expected": "在平稳零均值条件下用维纳–李关系。",
+      "technique": "传递函数模平方",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

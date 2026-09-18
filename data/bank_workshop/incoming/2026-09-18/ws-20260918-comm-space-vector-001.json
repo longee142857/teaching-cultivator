@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-space-vector-001",
+  "subject": "comm",
+  "l2": "信号空间与统计判决",
+  "l3_id": "comm.passband.space.vector",
+  "atom_id": "zhou.ch6.space.vector.expand",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "能量有限信号 s1(t)、s2(t) 在 [0,T] 上内积 ⟨s1,s2⟩=∫s1 s2 dt。若 s2=α s1，求 signal space 维数及 s1 的正交归一基表示系数。",
+  "answer": "维数 1；任意 s∈span{s1} 的坐标为 ⟨s,s1⟩/||s1||²。",
+  "techniques": [
+    "信号矢量展开",
+    "内积能量",
+    "维数判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "s2 与 s1 线性相关 ⇒ 张成 1 维子空间。"
+      },
+      {
+        "id": "s2",
+        "text": "正交归一后坐标即投影系数 ⟨s,φ1⟩。"
+      }
+    ],
+    "final_answer": "维数 1；任意 s∈span{s1} 的坐标为 ⟨s,s1⟩/||s1||²。",
+    "techniques_used": [
+      "信号矢量展开",
+      "内积能量",
+      "维数判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「信号矢量展开」写出第 1 步关键推导或结论。",
+      "expected": "s2 与 s1 线性相关 ⇒ 张成 1 维子空间。",
+      "technique": "信号矢量展开",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「内积能量」得到与题意一致的最终结论。",
+      "expected": "正交归一后坐标即投影系数 ⟨s,φ1⟩。",
+      "technique": "内积能量",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}
