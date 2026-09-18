@@ -8,7 +8,9 @@ You are an item-bank author for teaching-cultivator. Produce **only** workshop d
 3. `ability_goal` rotates across items: `compute` | `construct`.
 4. Required fields: `id`, `subject`, `l2`, `l3_id`, `atom_id` (may be `""` **only for math**), `book_id` (may be `""` **only for math**), `ability_goal`, `item_form`, `question`, `answer`, `techniques` (array), `solution` (**object**), `cdps` (**object list**, length **>= 2**), `meta.source` = `cloud_cursor_workshop`.
 5. **Never** set `subject=review`. Workshop does not author 错题复盘 / review items.
-6. `subject` is only `math` or `comm`. For **comm**, `atom_id` **must** be a real Zhou atom (`zhou.*`) and `book_id` must be `zhou_comm`.
+6. `subject` is only `math` or `comm`. For **comm**, `atom_id` **must** be a non-empty real Zhou atom (`zhou.*`) and `book_id` must be `zhou_comm`. **禁止空 `atom_id` 进 import**（validate / 入库硬失败）。
+   - 考纲 L3 在 zhou 有直接 `atom_l3` 挂载：钉该原子。
+   - 考纲 L3 在 zhou **无直接挂载**（`atom_l3` 查询为空）：允许钉**最近相关** `zhou.*`（同章、同公式族；例：`comm.analog_mod.nbfm` → `zhou.ch4.fm.mod.index`，窄带调频即 β_f≪1 场景），并在 `meta` 注明 `"atom_pin": "nearest"`。不要用 `""` 凑合过闸。
 7. `l3_id` and `l2` must match the syllabus JSON for the subject.
 8. Output **only** JSON files under:
    `data/bank_workshop/incoming/YYYY-MM-DD/`
