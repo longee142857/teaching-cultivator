@@ -1,8 +1,8 @@
 {
-  "item_id": "ws-20260917-comm-nbfm-001",
+  "item_id": "ws-20260918-comm-nbfm-001",
   "decision": "accept",
   "reasons": [
-    "窄带近似一阶"
+    "考纲 L3 无直接 zhou 挂载，已钉最近原子 zhou.ch4.fm.mod.index（β_f≪1 窄带调频）并 meta.atom_pin=nearest；对象结构完整，可入库"
   ],
   "checks": {
     "l3_in_syllabus": true,
