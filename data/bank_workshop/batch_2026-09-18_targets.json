@@ -1,0 +1,250 @@
+{
+  "date": "2026-09-18",
+  "n": 30,
+  "targets": [
+    {
+      "l3_id": "comm.passband.space.error",
+      "l3_name": "错误概率与判决域",
+      "l2": "信号空间与统计判决",
+      "subject": "comm",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.passband.space.map",
+      "l3_name": "MAP与似然比",
+      "l2": "信号空间与统计判决",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch6.space.map",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.passband.space.ml",
+      "l3_name": "最大似然判决",
+      "l2": "信号空间与统计判决",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch6.space.ml",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.passband.space.opt",
+      "l3_name": "最佳接收机结构",
+      "l2": "信号空间与统计判决",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch6.space.opt.awgn",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.passband.space.vector",
+      "l3_name": "信号矢量表示",
+      "l2": "信号空间与统计判决",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch6.space.vector.expand",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.ergodic",
+      "l3_name": "遍历性",
+      "l2": "随机过程统计特性",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.ergodic.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.mean_var",
+      "l3_name": "均值方差与相关函数",
+      "l2": "随机过程统计特性",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.rp.autocorr",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.psd",
+      "l3_name": "功率谱密度与维纳辛钦",
+      "l2": "随机过程统计特性",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.rp.avg.psd",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.stationary",
+      "l3_name": "严平稳与宽平稳",
+      "l2": "随机过程统计特性",
+      "subject": "comm",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.sig_rand.rp.through_lti",
+      "l3_name": "随机过程通过线性系统",
+      "l2": "随机过程统计特性",
+      "subject": "comm",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.sig_rand.gauss.process",
+      "l3_name": "高斯过程性质",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.gauss.process.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.nb.envelope",
+      "l3_name": "包络与相位分布",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.nb.rayleigh.envelope",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.nb.iq",
+      "l3_name": "同相正交分量",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.nb.iq.props",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.nb.noise",
+      "l3_name": "窄带平稳高斯噪声",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.nb.noise.power",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.sig_rand.nb.rice",
+      "l3_name": "正弦加窄带噪声",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.nb.rice.envelope",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "math.calc.diff.concavity",
+      "l3_name": "凹凸性与渐近线",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.diff.def",
+      "l3_name": "导数与微分定义",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.diff.mono_ext",
+      "l3_name": "单调性与极值",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.diff.opt",
+      "l3_name": "最值应用题",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.diff.rules",
+      "l3_name": "求导法则与隐函数参数方程",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.int.def",
+      "l3_name": "定积分定义与性质",
+      "l2": "一元积分学（计算）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.int.indef",
+      "l3_name": "不定积分基本计算",
+      "l2": "一元积分学（计算）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.int.parts",
+      "l3_name": "分部积分法",
+      "l2": "一元积分学（计算）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.int.special",
+      "l3_name": "有理三角无理积分",
+      "l2": "一元积分学（计算）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.int.sub",
+      "l3_name": "换元积分法",
+      "l2": "一元积分学（计算）",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.baseband.psd.app",
+      "l3_name": "功率谱与带宽估计",
+      "l2": "基带信号功率谱密度",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.pam.mpam.bw",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.psd.formula",
+      "l3_name": "功率谱公式与连续离散谱",
+      "l2": "基带信号功率谱密度",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.psd.continuous.discrete",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.psd.mainlobe",
+      "l3_name": "主瓣带宽",
+      "l2": "基带信号功率谱密度",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.pam.mpam.bw",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.psd.nrz",
+      "l3_name": "NRZ等码型功率谱",
+      "l2": "基带信号功率谱密度",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.psd.nrz.bipolar.formula",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.psd.random",
+      "l3_name": "随机序列PAM功率谱",
+      "l2": "基带信号功率谱密度",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.psd.formula",
+      "book_id": "zhou_comm"
+    }
+  ]
+}

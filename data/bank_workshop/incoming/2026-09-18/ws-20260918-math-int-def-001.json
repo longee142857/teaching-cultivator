@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-int-def-001",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "用定积分定义说明：f(x)=x 在 [0,1] 上可积，并求 ∫₀¹ x dx（写出黎曼和极限思路）。",
+  "answer": "∫₀¹ x dx=1/2。",
+  "techniques": [
+    "黎曼和",
+    "定积分定义",
+    "等距分割"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "取等分 Δx=1/n，选右端点 ξ_i=i/n。"
+      },
+      {
+        "id": "s2",
+        "text": "和 Σ i/n·1/n → ∫ x dx=1/2。"
+      }
+    ],
+    "final_answer": "∫₀¹ x dx=1/2。",
+    "techniques_used": [
+      "黎曼和",
+      "定积分定义",
+      "等距分割"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「黎曼和」写出第 1 步关键推导或结论。",
+      "expected": "取等分 Δx=1/n，选右端点 ξ_i=i/n。",
+      "technique": "黎曼和",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「定积分定义」得到与题意一致的最终结论。",
+      "expected": "和 Σ i/n·1/n → ∫ x dx=1/2。",
+      "technique": "定积分定义",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

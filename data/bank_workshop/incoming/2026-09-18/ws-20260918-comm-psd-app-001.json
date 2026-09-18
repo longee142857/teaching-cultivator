@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-psd-app-001",
+  "subject": "comm",
+  "l2": "基带信号功率谱密度",
+  "l3_id": "comm.baseband.psd.app",
+  "atom_id": "zhou.ch5.pam.mpam.bw",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "双极 NRZ 比特率 R_b，主瓣零点带宽近似 2/T_b=2R_b。若 R_b=1 Mb/s，估计主瓣带宽（Hz）。",
+  "answer": "约 2 MHz。",
+  "techniques": [
+    "主瓣带宽估计",
+    "NRZ 比特率",
+    "零点带宽"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "T_b=1/R_b，主瓣零点带宽 ≈ 2/T_b。"
+      },
+      {
+        "id": "s2",
+        "text": "代入 R_b=10⁶ ⇒ 2 MHz。"
+      }
+    ],
+    "final_answer": "约 2 MHz。",
+    "techniques_used": [
+      "主瓣带宽估计",
+      "NRZ 比特率",
+      "零点带宽"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「主瓣带宽估计」写出第 1 步关键推导或结论。",
+      "expected": "T_b=1/R_b，主瓣零点带宽 ≈ 2/T_b。",
+      "technique": "主瓣带宽估计",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「NRZ 比特率」得到与题意一致的最终结论。",
+      "expected": "代入 R_b=10⁶ ⇒ 2 MHz。",
+      "technique": "NRZ 比特率",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

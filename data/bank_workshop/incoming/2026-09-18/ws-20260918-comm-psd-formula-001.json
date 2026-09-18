@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-psd-formula-001",
+  "subject": "comm",
+  "l2": "基带信号功率谱密度",
+  "l3_id": "comm.baseband.psd.formula",
+  "atom_id": "zhou.ch5.psd.continuous.discrete",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "周期脉冲序列 g_T(t) 的线谱与同一成形但随机符号 PAM 的连续谱有何区别？各写一句。",
+  "answer": "周期：离散线谱；随机 PAM：一般连续谱（除 DC 等特殊点）。",
+  "techniques": [
+    "线谱与连续谱",
+    "周期与随机",
+    "PAM 功率谱"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "周期信号 ⇒ 傅里叶级数离散频率。"
+      },
+      {
+        "id": "s2",
+        "text": "随机符号使统计平均平滑为连续 S(f)。"
+      }
+    ],
+    "final_answer": "周期：离散线谱；随机 PAM：一般连续谱（除 DC 等特殊点）。",
+    "techniques_used": [
+      "线谱与连续谱",
+      "周期与随机",
+      "PAM 功率谱"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「线谱与连续谱」写出第 1 步关键推导或结论。",
+      "expected": "周期信号 ⇒ 傅里叶级数离散频率。",
+      "technique": "线谱与连续谱",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「周期与随机」得到与题意一致的最终结论。",
+      "expected": "随机符号使统计平均平滑为连续 S(f)。",
+      "technique": "周期与随机",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

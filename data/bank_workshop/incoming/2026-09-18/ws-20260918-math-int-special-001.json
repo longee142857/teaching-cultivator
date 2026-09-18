@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-int-special-001",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "求 ∫ sin²x cos x dx。",
+  "answer": "sin³x/3 + C。",
+  "techniques": [
+    "凑微分",
+    "三角幂次",
+    "换元 u=sin x"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "cos x dx 作 d(sin x)。"
+      },
+      {
+        "id": "s2",
+        "text": "∫ u² du = u³/3 + C。"
+      }
+    ],
+    "final_answer": "sin³x/3 + C。",
+    "techniques_used": [
+      "凑微分",
+      "三角幂次",
+      "换元 u=sin x"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「凑微分」写出第 1 步关键推导或结论。",
+      "expected": "cos x dx 作 d(sin x)。",
+      "technique": "凑微分",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「三角幂次」得到与题意一致的最终结论。",
+      "expected": "∫ u² du = u³/3 + C。",
+      "technique": "三角幂次",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

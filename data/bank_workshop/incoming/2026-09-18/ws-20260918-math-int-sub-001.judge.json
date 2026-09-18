@@ -1,0 +1,15 @@
+{
+  "item_id": "ws-20260918-math-int-sub-001",
+  "decision": "accept",
+  "reasons": [
+    "题干与解析符合 L3 考点，schema 合规"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  }
+}

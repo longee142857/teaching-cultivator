@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-diff-concavity-001",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.concavity",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求曲线 y=(x²+1)/(x−1) 的垂直渐近线、斜渐近线，并判定 x>1 时函数的凹凸性。",
+  "answer": "垂直渐近线 x=1；斜渐近线 y=x+1；x>1 时 y''>0 下凸。",
+  "techniques": [
+    "垂直渐近线",
+    "斜渐近线",
+    "二阶导凹凸"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分母零点 x=1 为垂直渐近线；多项式除法得 y=x+1+2/(x−1)。"
+      },
+      {
+        "id": "s2",
+        "text": "求 y'' 并在 x>1 判定符号。"
+      }
+    ],
+    "final_answer": "垂直渐近线 x=1；斜渐近线 y=x+1；x>1 时 y''>0 下凸。",
+    "techniques_used": [
+      "垂直渐近线",
+      "斜渐近线",
+      "二阶导凹凸"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「垂直渐近线」写出第 1 步关键推导或结论。",
+      "expected": "分母零点 x=1 为垂直渐近线；多项式除法得 y=x+1+2/(x−1)。",
+      "technique": "垂直渐近线",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「斜渐近线」得到与题意一致的最终结论。",
+      "expected": "求 y'' 并在 x>1 判定符号。",
+      "technique": "斜渐近线",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

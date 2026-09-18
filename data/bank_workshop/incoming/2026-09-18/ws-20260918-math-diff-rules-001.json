@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-diff-rules-001",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "设 x²+y²=1，求 dy/dx；又 x=cos t，y=sin t，求 dy/dx。",
+  "answer": "隐函数：dy/dx=−x/y；参数式：dy/dx=−cot t。",
+  "techniques": [
+    "隐函数求导",
+    "参数方程求导",
+    "链式法则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "对 x²+y²=1 两边对 x 求导得 2x+2y y'=0。"
+      },
+      {
+        "id": "s2",
+        "text": "参数式 dy/dx=(dy/dt)/(dx/dt)=−sin t/−sin t 化简。"
+      }
+    ],
+    "final_answer": "隐函数：dy/dx=−x/y；参数式：dy/dx=−cot t。",
+    "techniques_used": [
+      "隐函数求导",
+      "参数方程求导",
+      "链式法则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「隐函数求导」写出第 1 步关键推导或结论。",
+      "expected": "对 x²+y²=1 两边对 x 求导得 2x+2y y'=0。",
+      "technique": "隐函数求导",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「参数方程求导」得到与题意一致的最终结论。",
+      "expected": "参数式 dy/dx=(dy/dt)/(dx/dt)=−sin t/−sin t 化简。",
+      "technique": "参数方程求导",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

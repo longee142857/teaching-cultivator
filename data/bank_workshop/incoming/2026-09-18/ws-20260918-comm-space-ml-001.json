@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-space-ml-001",
+  "subject": "comm",
+  "l2": "信号空间与统计判决",
+  "l3_id": "comm.passband.space.ml",
+  "atom_id": "zhou.ch6.space.ml",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "等概二元信号 s0、s1，AWGN 下接收矢量 r。写出 ML 判决：选择使 ||r−s_i||² 最小的 i，并说明为何等价于最大相关。",
+  "answer": "选 min_i ||r−s_i||²；等价于 max_i r·s_i（差常数项）。",
+  "techniques": [
+    "ML 判决",
+    "欧氏距离",
+    "相关接收"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "ML 最大化 f(r|si) ⇒ 最小化 ||r−si||²。"
+      },
+      {
+        "id": "s2",
+        "text": "展开平方项，−2 r·si 起决定作用，即最大相关。"
+      }
+    ],
+    "final_answer": "选 min_i ||r−s_i||²；等价于 max_i r·s_i（差常数项）。",
+    "techniques_used": [
+      "ML 判决",
+      "欧氏距离",
+      "相关接收"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「ML 判决」写出第 1 步关键推导或结论。",
+      "expected": "ML 最大化 f(r|si) ⇒ 最小化 ||r−si||²。",
+      "technique": "ML 判决",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「欧氏距离」得到与题意一致的最终结论。",
+      "expected": "展开平方项，−2 r·si 起决定作用，即最大相关。",
+      "technique": "欧氏距离",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

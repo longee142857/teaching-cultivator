@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-diff-def-001",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "用导数定义证明：f(x)=√x 在 x>0 可导，并求 f'(x)。",
+  "answer": "f'(x)=1/(2√x)。",
+  "techniques": [
+    "导数定义",
+    "根式极限",
+    "可导性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "写 [√(x+h)−√x]/h 有理化。"
+      },
+      {
+        "id": "s2",
+        "text": "令 h→0 得 1/(2√x)。"
+      }
+    ],
+    "final_answer": "f'(x)=1/(2√x)。",
+    "techniques_used": [
+      "导数定义",
+      "根式极限",
+      "可导性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「导数定义」写出第 1 步关键推导或结论。",
+      "expected": "写 [√(x+h)−√x]/h 有理化。",
+      "technique": "导数定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「根式极限」得到与题意一致的最终结论。",
+      "expected": "令 h→0 得 1/(2√x)。",
+      "technique": "根式极限",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}
