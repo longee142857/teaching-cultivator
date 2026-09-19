@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-isi-def-001",
+  "subject": "comm",
+  "l2": "ISI与奈奎斯特准则",
+  "l3_id": "comm.baseband.isi.def",
+  "atom_id": "zhou.ch5.isi.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "定义码间干扰 ISI：在抽样时刻，除当前符号外还有哪些分量影响判决？",
+  "answer": "ISI 为其他符号通过信道/滤波拖尾在当前抽样时刻叠加的干扰分量。",
+  "techniques": [
+    "ISI 定义",
+    "抽样时刻",
+    "符号拖尾"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "信道有限带宽使脉冲展宽跨符号周期。"
+      },
+      {
+        "id": "s2",
+        "text": "当前抽样含前后符号的叠加 ⇒ ISI。"
+      }
+    ],
+    "final_answer": "ISI 为其他符号通过信道/滤波拖尾在当前抽样时刻叠加的干扰分量。",
+    "techniques_used": [
+      "ISI 定义",
+      "抽样时刻",
+      "符号拖尾"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "用文字定义 ISI。",
+      "expected": "邻符号在抽样点的叠加。",
+      "technique": "ISI 定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明产生机制。",
+      "expected": "脉冲展宽导致。",
+      "technique": "符号拖尾",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-pam-wave-001",
+  "subject": "comm",
+  "l2": "数字基带波形与线路码型",
+  "l3_id": "comm.baseband.pam.wave",
+  "atom_id": "zhou.ch5.pam.wave.def",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "PAM 基带波形 s(t)=Σ a_k g(t−kT)。说明 a_k 与 g(t) 的物理含义。",
+  "answer": "a_k 为第 k 符号幅度（离散电平）；g(t) 为脉冲成形，决定每符号时域波形与频谱。",
+  "techniques": [
+    "PAM 定义",
+    "符号序列",
+    "脉冲成形"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "a_k 为数字符号幅度序列。"
+      },
+      {
+        "id": "s2",
+        "text": "g 为单脉冲形状，叠加得基带 PAM。"
+      }
+    ],
+    "final_answer": "a_k 为第 k 符号幅度（离散电平）；g(t) 为脉冲成形，决定每符号时域波形与频谱。",
+    "techniques_used": [
+      "PAM 定义",
+      "符号序列",
+      "脉冲成形"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出 PAM 合成式并解释 a_k。",
+      "expected": "a_k 为符号电平。",
+      "technique": "PAM 定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "解释 g(t) 的作用。",
+      "expected": "g 决定波形与带宽。",
+      "technique": "脉冲成形",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

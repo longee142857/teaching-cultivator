@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-isi-rcos-001",
+  "subject": "comm",
+  "l2": "ISI与奈奎斯特准则",
+  "l3_id": "comm.baseband.isi.rcos",
+  "atom_id": "zhou.ch5.isi.rcos",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "升余弦滚降 α=1 时，相对 α=0（理想 Nyquist）主瓣带宽如何变化？",
+  "answer": "α=1 时带宽为 (1+α)R_s/2=R_s，较 α=0 的 R_s/2 加宽一倍。",
+  "techniques": [
+    "升余弦滚降",
+    "滚降系数",
+    "带宽公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "升余弦占用带宽 B=(1+α)R_s/2。"
+      },
+      {
+        "id": "s2",
+        "text": "α=1 ⇒ B=R_s；α=0 ⇒ B=R_s/2。"
+      }
+    ],
+    "final_answer": "α=1 时带宽为 (1+α)R_s/2=R_s，较 α=0 的 R_s/2 加宽一倍。",
+    "techniques_used": [
+      "升余弦滚降",
+      "滚降系数",
+      "带宽公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出 B 与 α 关系。",
+      "expected": "B=(1+α)R_s/2。",
+      "technique": "滚降系数",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "比较 α=1 与 α=0。",
+      "expected": "α=1 带宽加倍。",
+      "technique": "带宽公式",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

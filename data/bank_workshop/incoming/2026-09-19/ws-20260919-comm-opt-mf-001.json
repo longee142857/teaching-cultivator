@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-opt-mf-001",
+  "subject": "comm",
+  "l2": "基带最佳接收",
+  "l3_id": "comm.baseband.opt.mf",
+  "atom_id": "zhou.ch5.opt.mf.receive",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "AWGN 下单脉冲 s(t) 能量 E，匹配滤波器 h(t)=Ks(T−t)。求 t=T 输出 SNR 最大的 K 取值（差常数）。",
+  "answer": "K 为任意正常数时 SNR 最大（能量匹配；常取 K=1 归一化）。",
+  "techniques": [
+    "匹配滤波",
+    "SNR 最大",
+    "能量归一"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "MF 使输出 SNR 最大要求 h 与 s 时间反转匹配。"
+      },
+      {
+        "id": "s2",
+        "text": "K 仅缩放输出幅度，不改变 SNR；取 K=1/E 或 1 视定义。"
+      }
+    ],
+    "final_answer": "K 为任意正常数时 SNR 最大（能量匹配；常取 K=1 归一化）。",
+    "techniques_used": [
+      "匹配滤波",
+      "SNR 最大",
+      "能量归一"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出 h(t) 与 s 的匹配关系。",
+      "expected": "h(t)∝s(T−t)。",
+      "technique": "匹配滤波",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明 K 对 SNR 的影响。",
+      "expected": "K>0 常数不改变 SNR 最大性。",
+      "technique": "SNR 最大",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

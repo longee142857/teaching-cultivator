@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-app-volume-001",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.volume",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "曲线 y=√x (0≤x≤1) 绕 x 轴旋转，求所得旋转体体积。",
+  "answer": "V=π/2。",
+  "techniques": [
+    "圆盘法",
+    "旋转体体积",
+    "定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "圆盘法 V=π∫₀¹ y² dx=π∫₀¹ x dx。"
+      },
+      {
+        "id": "s2",
+        "text": "V=π[x²/2]₀¹=π/2。"
+      }
+    ],
+    "final_answer": "V=π/2。",
+    "techniques_used": [
+      "圆盘法",
+      "旋转体体积",
+      "定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "对 y=√x 绕 x 轴写 V=π∫ y² dx。",
+      "expected": "V=π∫₀¹ x dx。",
+      "technique": "圆盘法",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "计算定积分。",
+      "expected": "V=π/2。",
+      "technique": "旋转体体积",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,0 +1,254 @@
+{
+  "date": "2026-09-19",
+  "n": 30,
+  "targets": [
+    {
+      "l3_id": "comm.sig_rand.nb.iq",
+      "l3_name": "同相正交分量",
+      "l2": "高斯过程与窄带噪声",
+      "subject": "comm",
+      "reason": "retry_reject",
+      "atom_id": "zhou.ch3.nb.iq.props",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "math.calc.diff.concavity",
+      "l3_name": "凹凸性与渐近线",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "retry_reject"
+    },
+    {
+      "l3_id": "math.calc.diff.rules",
+      "l3_name": "求导法则与隐函数参数方程",
+      "l2": "一元微分学（求导与作图）",
+      "subject": "math",
+      "reason": "retry_reject"
+    },
+    {
+      "l3_id": "math.calc.ode.const2",
+      "l3_name": "二阶常系数线性方程",
+      "l2": "常微分方程",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.ode.euler",
+      "l3_name": "欧拉方程与非齐次特解",
+      "l2": "常微分方程",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.ode.first",
+      "l3_name": "一阶方程可分离齐次",
+      "l2": "常微分方程",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.ode.linear1",
+      "l3_name": "一阶线性与伯努利",
+      "l2": "常微分方程",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.ode.reduce",
+      "l3_name": "可降阶高阶方程",
+      "l2": "常微分方程",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.app.area",
+      "l3_name": "平面图形面积",
+      "l2": "变限积分与积分应用",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.app.phys",
+      "l3_name": "物理应用与平均值",
+      "l2": "变限积分与积分应用",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.app.volume",
+      "l3_name": "旋转体体积与弧长",
+      "l2": "变限积分与积分应用",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.dbl.cart",
+      "l3_name": "直角坐标计算二重积分",
+      "l2": "二重积分与三重积分",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "math.calc.dbl.concept",
+      "l3_name": "二重积分概念与性质",
+      "l2": "二重积分与三重积分",
+      "subject": "math",
+      "reason": "uncovered"
+    },
+    {
+      "l3_id": "comm.baseband.line.ami",
+      "l3_name": "AMI与HDB3码",
+      "l2": "数字基带波形与线路码型",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.line.ami",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.line.codes",
+      "l3_name": "常用线路码型",
+      "l2": "数字基带波形与线路码型",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.line.cmi.manchester",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.line.psd_shape",
+      "l3_name": "码型与频谱形状",
+      "l2": "数字基带波形与线路码型",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.psd.correlated.coding",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.line.select",
+      "l3_name": "码型选择原则",
+      "l2": "数字基带波形与线路码型",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.line.select",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.pam.wave",
+      "l3_name": "PAM基带波形",
+      "l2": "数字基带波形与线路码型",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.pam.wave.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.opt.ber",
+      "l3_name": "误码率基础",
+      "l2": "基带最佳接收",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.opt.ber.bipolar",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.opt.corr",
+      "l3_name": "相关接收机结构",
+      "l2": "基带最佳接收",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch3.mf.as.correlator",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.opt.mf",
+      "l3_name": "AWGN下匹配滤波接收",
+      "l2": "基带最佳接收",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.opt.mf.receive",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.opt.sample",
+      "l3_name": "抽样判决",
+      "l2": "基带最佳接收",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.opt.mf.receive",
+      "book_id": "zhou_comm",
+      "meta_atom_pin": "nearest"
+    },
+    {
+      "l3_id": "comm.baseband.opt.snr",
+      "l3_name": "接收SNR与错误概率关系",
+      "l2": "基带最佳接收",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.opt.ber.bipolar",
+      "book_id": "zhou_comm",
+      "meta_atom_pin": "nearest"
+    },
+    {
+      "l3_id": "comm.baseband.isi.best",
+      "l3_name": "最佳基带系统",
+      "l2": "ISI与奈奎斯特准则",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.isi.best.design",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.isi.def",
+      "l3_name": "码间干扰概念",
+      "l2": "ISI与奈奎斯特准则",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.isi.def",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.isi.ideal",
+      "l3_name": "理想基带系统",
+      "l2": "ISI与奈奎斯特准则",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.isi.ideal.channel",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.isi.nyquist",
+      "l3_name": "奈奎斯特无ISI准则",
+      "l2": "ISI与奈奎斯特准则",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.isi.nyquist",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.isi.rcos",
+      "l3_name": "升余弦滚降",
+      "l2": "ISI与奈奎斯特准则",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.isi.rcos",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.eq.adaptive",
+      "l3_name": "自适应均衡概念",
+      "l2": "眼图均衡与部分响应",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.eq.adaptive",
+      "book_id": "zhou_comm"
+    },
+    {
+      "l3_id": "comm.baseband.eq.linear",
+      "l3_name": "线性均衡",
+      "l2": "眼图均衡与部分响应",
+      "subject": "comm",
+      "reason": "uncovered",
+      "atom_id": "zhou.ch5.eq.linear.zf",
+      "book_id": "zhou_comm"
+    }
+  ]
+}

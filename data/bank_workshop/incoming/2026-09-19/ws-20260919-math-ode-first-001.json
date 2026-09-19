@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-ode-first-001",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "求微分方程 y'=y tan x 满足 y(0)=1 的特解。",
+  "answer": "y=sec x。",
+  "techniques": [
+    "可分离变量",
+    "分离积分",
+    "定解条件"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "dy/y=tan x dx，两边积分 ln|y|=−ln|cos x|+C。"
+      },
+      {
+        "id": "s2",
+        "text": "y=K/cos x；y(0)=1 ⇒ K=1，y=sec x。"
+      }
+    ],
+    "final_answer": "y=sec x。",
+    "techniques_used": [
+      "可分离变量",
+      "分离积分",
+      "定解条件"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "将 y'=y tan x 分离变量。",
+      "expected": "dy/y=tan x dx。",
+      "technique": "可分离变量",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "用 y(0)=1 定常数。",
+      "expected": "y=1/cos x=sec x。",
+      "technique": "定解条件",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-app-area-001",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.area",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "求由 y=x 与 y=x² 所围平面图形的面积。",
+  "answer": "S=1/6。",
+  "techniques": [
+    "交点定界",
+    "上减下积分",
+    "定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "交点 x=0,1；在 [0,1] 上 x≥x²。"
+      },
+      {
+        "id": "s2",
+        "text": "S=∫₀¹(x−x²)dx=[x²/2−x³/3]₀¹=1/2−1/3=1/6。"
+      }
+    ],
+    "final_answer": "S=1/6。",
+    "techniques_used": [
+      "交点定界",
+      "上减下积分",
+      "定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "求两曲线交点与积分区间。",
+      "expected": "x=0,1；[0,1] 上 x 在上。",
+      "technique": "交点定界",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "用「上减下积分」算面积。",
+      "expected": "S=1/2−1/3=1/6。",
+      "technique": "定积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

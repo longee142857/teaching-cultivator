@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-ode-const2-001",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.const2",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 y''−3y'+2y=4e^x 的通解。",
+  "answer": "y=C₁e^x+C₂e^{2x}−2x e^x（或等价常数形式）。",
+  "techniques": [
+    "特征方程",
+    "特解待定",
+    "常系数叠加"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "齐次特征 r²−3r+2=0 ⇒ r=1,2，y_h=C₁e^x+C₂e^{2x}。"
+      },
+      {
+        "id": "s2",
+        "text": "右端 4e^x 与 r=1 重根，设特解 y*=Ax e^x，代入得 A=−2。"
+      }
+    ],
+    "final_answer": "y=C₁e^x+C₂e^{2x}−2x e^x（或等价常数形式）。",
+    "techniques_used": [
+      "特征方程",
+      "特解待定",
+      "常系数叠加"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出齐次方程特征根与 y_h。",
+      "expected": "r=1,2 ⇒ y_h=C₁e^x+C₂e^{2x}。",
+      "technique": "特征方程",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "对 4e^x 用「特解待定」求 y*。",
+      "expected": "y*=−2x e^x；通解 y=y_h+y*。",
+      "technique": "特解待定",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

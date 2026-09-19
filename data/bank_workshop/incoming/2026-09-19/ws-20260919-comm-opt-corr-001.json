@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-opt-corr-001",
+  "subject": "comm",
+  "l2": "基带最佳接收",
+  "l3_id": "comm.baseband.opt.corr",
+  "atom_id": "zhou.ch3.mf.as.correlator",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "匹配滤波器与相关接收机等价：写出在 t=T 时刻相关器输出与匹配滤波器输出的关系（单符号情形）。",
+  "answer": "相关器 ∫ r(t)s(T−t)dt 与 MF 输出在 t=T 采样值相同（差常数/时移约定下等价）。",
+  "techniques": [
+    "相关接收",
+    "匹配滤波",
+    "采样时刻"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "MF 冲激响应 h(t)=s(T−t) 与相关核一致。"
+      },
+      {
+        "id": "s2",
+        "text": "t=T 采样 MF 输出等于相关器积分结果。"
+      }
+    ],
+    "final_answer": "相关器 ∫ r(t)s(T−t)dt 与 MF 输出在 t=T 采样值相同（差常数/时移约定下等价）。",
+    "techniques_used": [
+      "相关接收",
+      "匹配滤波",
+      "采样时刻"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出相关器积分形式。",
+      "expected": "∫ r(t)s(T−t)dt。",
+      "technique": "相关接收",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明与 MF 在 t=T 的等价。",
+      "expected": "MF 采样=相关输出。",
+      "technique": "匹配滤波",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-line-codes-001",
+  "subject": "comm",
+  "l2": "数字基带波形与线路码型",
+  "l3_id": "comm.baseband.line.codes",
+  "atom_id": "zhou.ch5.line.cmi.manchester",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "比较 NRZ 与曼彻斯特码：哪一种自带时钟、哪一种直流分量更小？简要说明。",
+  "answer": "曼彻斯特自带时钟（每位中间必跳变）；AMI/曼彻斯特相对单极 NRZ 更易抑制直流（视具体码型）。",
+  "techniques": [
+    "曼彻斯特跳变",
+    "时钟恢复",
+    "直流分量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "曼彻斯特每位中点有跳变，便于提取时钟。"
+      },
+      {
+        "id": "s2",
+        "text": "双极/交替类码型相对单极 NRZ 直流分量更低。"
+      }
+    ],
+    "final_answer": "曼彻斯特自带时钟（每位中间必跳变）；AMI/曼彻斯特相对单极 NRZ 更易抑制直流（视具体码型）。",
+    "techniques_used": [
+      "曼彻斯特跳变",
+      "时钟恢复",
+      "直流分量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明曼彻斯特的时钟特性。",
+      "expected": "位内跳变⇒易时钟恢复。",
+      "technique": "曼彻斯特跳变",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "比较 NRZ 与曼彻斯特直流特性。",
+      "expected": "曼彻斯特/交替码直流更小。",
+      "technique": "直流分量",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

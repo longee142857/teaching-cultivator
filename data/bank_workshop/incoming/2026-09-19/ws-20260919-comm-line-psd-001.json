@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-line-psd-001",
+  "subject": "comm",
+  "l2": "数字基带波形与线路码型",
+  "l3_id": "comm.baseband.line.psd_shape",
+  "atom_id": "zhou.ch5.psd.correlated.coding",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "相关编码（如部分响应）相对独立 NRZ，功率谱主瓣通常更窄还是更宽？为何？",
+  "answer": "通常更窄：引入符号间相关使高频分量受抑，能量更集中于低频主瓣。",
+  "techniques": [
+    "相关编码",
+    "频谱压缩",
+    "主瓣带宽"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "相关编码使符号序列有记忆，等效频域加权。"
+      },
+      {
+        "id": "s2",
+        "text": "高频抑止 ⇒ 主瓣常变窄，但可能引入 ISI 需均衡。"
+      }
+    ],
+    "final_answer": "通常更窄：引入符号间相关使高频分量受抑，能量更集中于低频主瓣。",
+    "techniques_used": [
+      "相关编码",
+      "频谱压缩",
+      "主瓣带宽"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明相关编码对序列频谱的影响机制。",
+      "expected": "符号相关⇒频谱加权。",
+      "technique": "相关编码",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "判断主瓣宽窄并简述原因。",
+      "expected": "主瓣通常更窄。",
+      "technique": "主瓣带宽",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

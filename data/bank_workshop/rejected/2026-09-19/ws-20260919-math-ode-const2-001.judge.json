@@ -1,0 +1,19 @@
+{
+  "item_id": "ws-20260919-math-ode-const2-001",
+  "decision": "reject",
+  "reasons": [
+    "特解待定系数错误：y*=Ax e^x 代入得 A=−4，非 −2",
+    "答案与解析均写成 −2x e^x，不满足 4e^x 右端"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  },
+  "issues": [
+    "solution_correctness"
+  ]
+}

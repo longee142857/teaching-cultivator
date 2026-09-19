@@ -1,0 +1,60 @@
+{
+  "id": "ws-20260919-comm-opt-snr-001",
+  "subject": "comm",
+  "l2": "基带最佳接收",
+  "l3_id": "comm.baseband.opt.snr",
+  "atom_id": "zhou.ch5.opt.ber.bipolar",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "接收 SNR 提高 3 dB（功率加倍），双极 NRZ 等概 AWGN 下 Q 型 P_e 如何变化？定性说明。",
+  "answer": "E_b/N_0 加倍 ⇒ 根号内加倍 ⇒ P_e 显著下降（约按 Q 曲线指数改善）。",
+  "techniques": [
+    "SNR 与 Pe",
+    "3 dB 改善",
+    "Q 函数单调"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "3 dB⇒线性 SNR×2，E_b/N_0 同比。"
+      },
+      {
+        "id": "s2",
+        "text": "P_e=Q(√(2E_b/N_0)) 中自变量增大 ⇒ P_e 减小。"
+      }
+    ],
+    "final_answer": "E_b/N_0 加倍 ⇒ 根号内加倍 ⇒ P_e 显著下降（约按 Q 曲线指数改善）。",
+    "techniques_used": [
+      "SNR 与 Pe",
+      "3 dB 改善",
+      "Q 函数单调"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "3 dB 对接收 SNR/E_b/N_0 的影响。",
+      "expected": "线性 SNR 加倍。",
+      "technique": "3 dB 改善",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明 P_e 变化趋势。",
+      "expected": "P_e 明显降低。",
+      "technique": "Q 函数单调",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19",
+    "atom_pin": "nearest"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-ode-reduce-001",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.reduce",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "方程 y''=(y')²/y 不显含自变量 x，求其通解（可含任意常数）。",
+  "answer": "y=(C₁x+C₂)²/4 或等价二次型（由积分常数决定）。",
+  "techniques": [
+    "降阶法",
+    "令y'=p",
+    "可分离积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "令 p=y'，则 y''=p dp/dy，方程化为 p dp/dy=p²/y。"
+      },
+      {
+        "id": "s2",
+        "text": "dp/p=dy/y ⇒ p=Cy；再积分 y' = Cy 得 y 的二次型通解。"
+      }
+    ],
+    "final_answer": "y=(C₁x+C₂)²/4 或等价二次型（由积分常数决定）。",
+    "techniques_used": [
+      "降阶法",
+      "令y'=p",
+      "可分离积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "用「令y'=p」消去 x。",
+      "expected": "p dp/dy=p²/y。",
+      "technique": "降阶法",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "对 p 与 y 分离积分并回代。",
+      "expected": "p=Cy，积分得 y 关于 x 的二次通解。",
+      "technique": "可分离积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

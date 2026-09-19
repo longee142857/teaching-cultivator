@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-ode-linear1-001",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.linear1",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求一阶线性方程 y'+y/x=x² 的通解（x≠0）。",
+  "answer": "y=x³/4+C/x。",
+  "techniques": [
+    "积分因子",
+    "线性标准形",
+    "通解公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "标准形 y'+P(x)y=Q(x)，P=1/x，积分因子 μ=x。"
+      },
+      {
+        "id": "s2",
+        "text": "(xy)'=x³，xy=x⁴/4+C ⇒ y=x³/4+C/x。"
+      }
+    ],
+    "final_answer": "y=x³/4+C/x。",
+    "techniques_used": [
+      "积分因子",
+      "线性标准形",
+      "通解公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "求 P=1/x 的积分因子并乘方程。",
+      "expected": "μ=x；(xy)'=x³。",
+      "technique": "积分因子",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "积分并写出 y。",
+      "expected": "y=x³/4+C/x。",
+      "technique": "通解公式",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}
