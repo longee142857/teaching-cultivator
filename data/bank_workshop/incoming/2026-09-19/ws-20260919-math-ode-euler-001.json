@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-ode-euler-001",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "求欧拉方程 x²y''+xy'−y=0 (x>0) 的通解。",
+  "answer": "y=C₁ x+C₂/x。",
+  "techniques": [
+    "欧拉代换",
+    "常系数化",
+    "特征根"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "令 x=e^t 或设 y=x^m 得指标方程 m(m−1)+m−1=0。"
+      },
+      {
+        "id": "s2",
+        "text": "m²−1=0 ⇒ m=±1，通解 y=C₁ x+C₂ x^{−1}。"
+      }
+    ],
+    "final_answer": "y=C₁ x+C₂/x。",
+    "techniques_used": [
+      "欧拉代换",
+      "常系数化",
+      "特征根"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "将欧拉方程化为常系数或求指标方程。",
+      "expected": "指标 m(m−1)+m−1=0。",
+      "technique": "欧拉代换",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "解指标方程得通解形式。",
+      "expected": "m=±1 ⇒ y=C₁ x+C₂/x。",
+      "technique": "特征根",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

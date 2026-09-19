@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-isi-best-001",
+  "subject": "comm",
+  "l2": "ISI与奈奎斯特准则",
+  "l3_id": "comm.baseband.isi.best",
+  "atom_id": "zhou.ch5.isi.best.design",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "最佳基带系统（无 ISI + 限带）设计目标：在 Nyquist 带宽内实现什么传输特性？",
+  "answer": "在符号间隔处无 ISI（总体响应满足 Nyquist 零 ISI 条件），同时尽量抑带外辐射并最大化抗噪。",
+  "techniques": [
+    "最佳基带",
+    "Nyquist 无 ISI",
+    "限带传输"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "信道+发送+接收合成 H(f) 需满足零 ISI 时域条件。"
+      },
+      {
+        "id": "s2",
+        "text": "在 R_s/2 带宽内实现无 ISI 传输为 Nyquist 最佳框架。"
+      }
+    ],
+    "final_answer": "在符号间隔处无 ISI（总体响应满足 Nyquist 零 ISI 条件），同时尽量抑带外辐射并最大化抗噪。",
+    "techniques_used": [
+      "最佳基带",
+      "Nyquist 无 ISI",
+      "限带传输"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出无 ISI 的设计目标。",
+      "expected": "合成响应满足零 ISI。",
+      "technique": "Nyquist 无 ISI",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明带宽约束。",
+      "expected": "Nyquist 带宽 R_s/2 内传输。",
+      "technique": "限带传输",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

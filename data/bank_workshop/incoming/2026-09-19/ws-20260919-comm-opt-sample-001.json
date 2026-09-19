@@ -1,0 +1,60 @@
+{
+  "id": "ws-20260919-comm-opt-sample-001",
+  "subject": "comm",
+  "l2": "基带最佳接收",
+  "l3_id": "comm.baseband.opt.sample",
+  "atom_id": "zhou.ch5.opt.mf.receive",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "无 ISI 时，在匹配滤波器输出峰值时刻 T 进行抽样判决。说明为何选峰值时刻而非任意时刻。",
+  "answer": "峰值时刻 SNR 最大，使判决距离最大、误码率最小（与 MF 设计一致）。",
+  "techniques": [
+    "抽样判决",
+    "峰值时刻",
+    "SNR 最大"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "MF 输出包络在 t=T 达最大。"
+      },
+      {
+        "id": "s2",
+        "text": "该时刻噪声与信号比最优，利于门限判决。"
+      }
+    ],
+    "final_answer": "峰值时刻 SNR 最大，使判决距离最大、误码率最小（与 MF 设计一致）。",
+    "techniques_used": [
+      "抽样判决",
+      "峰值时刻",
+      "SNR 最大"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明判决在哪个时刻取样。",
+      "expected": "t=T 峰值时刻。",
+      "technique": "抽样判决",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "解释选峰值时刻的原因。",
+      "expected": "SNR 最大⇒误码率最小。",
+      "technique": "SNR 最大",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19",
+    "atom_pin": "nearest"
+  }
+}
