@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-06",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f \\in C[a, +\\infty)$ ，并且 $\\lim_{x \\to +\\infty} f(x)$ 存在，证明 $f$ 在 $[a, +\\infty)$ 上有界.",
+  "answer": "$f(x)$ 在 $[a, X]$ 上有界，即 $\\exists M_1 > 0$ ，使 $|f(x)| < M_1$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "闭区间连续",
+    "有界性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由 $\\lim_{x\\to +\\infty}f(x)$ 存在，知 $\\exists X > 0$ ， $f(x)$ 在 $(X, + \\infty)$ 内有界； $f(x)$ 在 $[a,X]$ 上显然有界．从而问题得到解决."
+      },
+      {
+        "id": "s2",
+        "text": "若 $\\lim_{x\\to +\\infty}f(x)$ 存在，不妨设 $\\lim_{x\\to +\\infty}f(x) = a$ ："
+      },
+      {
+        "id": "s3",
+        "text": "对 $\\varepsilon = 1$ ， $\\exists X > 0$ ，当 $x > X$ 时，有 $|f(x) - a| < 1$ 。所以，在 $(X, +\\infty)$ 内，有 $|f(x)| < |a| + 1$ 。"
+      },
+      {
+        "id": "s4",
+        "text": "又 $f(x)$ 在 $[a, X]$ 上连续，故 $f(x)$ 在 $[a, X]$ 上有界，即 $\\exists M_1 > 0$ ，使 $|f(x)| < M_1$ ."
+      },
+      {
+        "id": "s5",
+        "text": "取 $M = \\max \\left\\{M_1, |a| + 1\\right\\}$ ，则 $\\forall x \\in [a, +\\infty)$ ，有 $|f(x)| < M$ 。"
+      }
+    ],
+    "final_answer": "$f(x)$ 在 $[a, X]$ 上有界，即 $\\exists M_1 > 0$ ，使 $|f(x)| < M_1$ .",
+    "techniques_used": [
+      "闭区间连续",
+      "有界性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "应调用闭区间连续的哪条性质（介值/最值/零点）？",
+      "technique": "闭区间连续",
+      "expected": "根据结论形态选择介值、零点或有界性等闭区间连续性质。"
+    },
+    {
+      "id": "c2",
+      "prompt": "如何构造辅助函数把题设化为该性质的条件？",
+      "technique": "有界性",
+      "expected": "$f(x)$ 在 $[a, X]$ 上有界，即 $\\exists M_1 > 0$ ，使 $|f(x)| < M_1$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例6",
+    "page": 54,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-11",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "$ 是否存在区间[0,1]上的连续函数 $f(x)$ ，使得 $f(x^{2})=x-f(x)$ .",
+  "answer": "满足题设条件的函数不存在。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "函数复合",
+    "函数方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若能由所给条件得到 $f(x)$ 的表达式，问题就解决了."
+      },
+      {
+        "id": "s2",
+        "text": "若存在，显然 $f(0) = 0$ ， $f(1) = 1 / 2$ ，且有"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} f (x) & = x - f \\left(x ^ {2}\\right) = x - x ^ {2} + f \\left(x ^ {4}\\right) = \\dots \\\\ & = x - x ^ {2} + x ^ {4} - x ^ {8} + \\dots + (- 1) ^ {n} x ^ {2 ^ {n}} + (- 1) ^ {n + 1} f \\left(x ^ {2 ^ {n + 1}}\\right). \\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "$\\forall x \\in (0,1)$ ，由于 $\\lim_{n \\to \\infty} f(x^{2^{n+1}}) = f(0) = 0$ ，得到"
+      },
+      {
+        "id": "s5",
+        "text": "f (x) = x - x ^ {2} + x ^ {4} - x ^ {8} + \\dots + (- 1) ^ {n} x ^ {2 ^ {n}} + \\dots , 0 \\leqslant x <   1."
+      },
+      {
+        "id": "s6",
+        "text": "即有"
+      },
+      {
+        "id": "s7",
+        "text": "f (x) = \\left\\{ \\begin{array}{l l} \\sum_ {n = 0} ^ {\\infty} (- 1) ^ {n} x ^ {2 ^ {n}}, & 0 \\leqslant x <   1, \\\\ 1 / 2, & x = 1. \\end{array} \\right."
+      }
+    ],
+    "final_answer": "满足题设条件的函数不存在。",
+    "techniques_used": [
+      "函数复合",
+      "函数方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "函数复合",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "函数方程",
+      "expected": "f (x) = \\left\\{ \\begin{array}{l l} \\sum_ {n = 0} ^ {\\infty} (- 1) ^ {n} x ^ {2 ^ {n}}, & 0 \\leqslant x < 1, \\\\ 1 / 2, & x = 1. \\end{array} \\right."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例11*",
+    "page": 13,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true,
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

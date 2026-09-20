@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-29",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $x_{1} = \\ln a$ ， $x_{n} = \\sum_{i=1}^{n-1} \\ln (a - x_{i})$ ， $n > 1$ 。证明 $\\lim_{n \\to \\infty} x_{n} = a - 1$ 。",
+  "answer": "$\\{x_{n}\\}$ 单调递增有上界，极限存在（后同方法1）.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "递推数列",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 所给数列满足递推公式： $x_{n + 1} = x_n + \\ln (a - x_n)$ ，为判断数列的有界性与单调性，可考虑函数 $f(x) = x + \\ln (a - x)(x < a)$ 的最值，以及 $f(x)$ 与 $x$ 的大小关系。也可利用不等式 $\\ln x\\leqslant x - 1$ 直接得到 $\\{x_{n}\\}$ 的有界性与单调性."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为 $x_{n} = \\sum_{i=1}^{n-1} \\ln(a - x_{i}), n > 1$ ，则有 $x_{n+1} = x_{n} + \\ln(a - x_{n})$ ."
+      },
+      {
+        "id": "s3",
+        "text": "令 $f(x) = x + \\ln (a - x)(x < a)$ ，则 $f'(x) = 1 - \\frac{1}{a - x}$ ， $x = a - 1$ 是函数的唯一驻点."
+      },
+      {
+        "id": "s4",
+        "text": "当 $x < a - 1$ 时， $f'(x)$ 为正，当 $x > a - 1$ 时， $f'(x)$ 为负，所以 $f(a - 1) = a - 1$ 是 $f$ 的最大值，即有 $f(x) \\leqslant a - 1$ . 故 $\\{x_n\\}$ 有上界."
+      },
+      {
+        "id": "s5",
+        "text": "又若 $x \\leqslant a - 1$ ，则 $\\ln (a - x) \\geqslant 0$ ，故 $f(x) \\geqslant x$ 。即 $\\{x_n\\}$ 单调递增，故数列 $\\{x_n\\}$ 有极限，记为 $A$ 。"
+      },
+      {
+        "id": "s6",
+        "text": "在 $x_{n + 1} = x_n + \\ln (a - x_n)$ 的两边取极限得"
+      },
+      {
+        "id": "s7",
+        "text": "A = A + \\ln (a - A) \\Rightarrow \\ln (a - A) = 0."
+      }
+    ],
+    "final_answer": "$\\{x_{n}\\}$ 单调递增有上界，极限存在（后同方法1）.",
+    "techniques_used": [
+      "递推数列",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "递推数列",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "极限计算",
+      "expected": "$\\{x_{n}\\}$ 单调递增有上界，极限存在（后同方法1）."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例29",
+    "page": 29,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

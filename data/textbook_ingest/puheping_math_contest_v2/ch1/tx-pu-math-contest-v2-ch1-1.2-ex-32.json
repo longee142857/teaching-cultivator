@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-32",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "^{*}$ 求极限 $\\lim_{x\\to 0}\\frac{\\sqrt{\\frac{1 + x}{1 - x}}\\sqrt[4]{\\frac{1 + 2x}{1 - 2x}}\\sqrt[6]{\\frac{1 + 3x}{1 - 3x}}\\cdots\\sqrt[2n]{\\frac{1 + nx}{1 - nx}} - 1}{3\\pi\\arcsin x - (x^{2} + 1)\\arctan^{3}x}$ ，其中 $n$ 为正整数.",
+  "answer": "可用 $f'(0)$ 的定义来求极限.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $f(x) = \\sqrt{\\frac{1 + x}{1 - x}}\\sqrt[4]{\\frac{1 + 2x}{1 - 2x}}\\sqrt[6]{\\frac{1 + 3x}{1 - 3x}}\\cdots \\sqrt[2n]{\\frac{1 + nx}{1 - nx}}$ ，显然 $f(0) = 1$ ，而极限式的分母是 $x$ 的一阶无穷小，故可用 $f'(0)$ 的定义来求极限."
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\sqrt{\\frac{1 + x}{1 - x}}\\sqrt[4]{\\frac{1 + 2x}{1 - 2x}}\\sqrt[6]{\\frac{1 + 3x}{1 - 3x}}\\cdots \\sqrt[2n]{\\frac{1 + nx}{1 - nx}}$ ，则 $f(0) = 1$ ，且"
+      },
+      {
+        "id": "s3",
+        "text": "\\ln f (x) = \\frac {1}{2} \\ln \\frac {1 + x}{1 - x} + \\frac {1}{4} \\ln \\frac {1 + 2 x}{1 - 2 x} + \\frac {1}{6} \\ln \\frac {1 + 3 x}{1 - 3 x} + \\dots + \\frac {1}{2 n} \\ln \\frac {1 + n x}{1 - n x},"
+      },
+      {
+        "id": "s4",
+        "text": "\\frac {f ^ {\\prime} (x)}{f (x)} = \\frac {1}{2} \\left(\\frac {1}{1 + x} + \\frac {1}{1 - x}\\right) + \\frac {1}{4} \\left(\\frac {2}{1 + 2 x} + \\frac {2}{1 - 2 x}\\right) + \\dots + \\frac {1}{2 n} \\left(\\frac {n}{1 + n x} + \\frac {n}{1 - n x}\\right)."
+      },
+      {
+        "id": "s5",
+        "text": "得 $f^{\\prime}(0) = n$ ，注意到 $\\lim_{x\\to 0}\\frac{\\arcsin x}{x} = 1 = \\lim_{x\\to 0}\\frac{\\arctan x}{x}$ ，因此"
+      },
+      {
+        "id": "s6",
+        "text": "\\text {原式} = \\lim _ {x \\to 0} \\frac {x}{3 \\pi \\arcsin x - (x ^ {2} + 1) \\arctan^ {3} x} \\cdot \\frac {f (x) - f (0)}{x - 0} = \\frac {n}{3 \\pi}."
+      }
+    ],
+    "final_answer": "可用 $f'(0)$ 的定义来求极限.",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\text {原式} = \\lim _ {x \\to 0} \\frac {x}{3 \\pi \\arcsin x - (x ^ {2} + 1) \\arctan^ {3} x} \\cdot \\frac {f (x) - f (0)}{x - 0} = \\frac {n}{3 \\pi}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例32*",
+    "page": 31,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-15",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a, b \\in \\left(0, \\frac{1}{2}\\right)$ ， $f(x)$ 是定义在 $\\mathbb{R}$ 上的连续函数，且满足 $f(f(x)) = af(x) + bx$ 。证明 $f(x)$ 有唯一的不动点 $x = 0$ ，即 $f(0) = 0$ 。",
+  "answer": "存在唯一的 $x_0 \\in \\mathbb{R}$ ，使得 $f(x_0) = x_0$ ，且有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "零点存在"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 即证方程 $f(x) = x$ 有唯一的根 $x = 0$ 。由于题设并没给出函数的大小关系，因此很难用零点定理做判断。可考虑用反证法，利用 $a, b$ 的范围制造不等式。如果 $f(x)$ 具有单调性，那么若其有根，则根就是唯一的。"
+      },
+      {
+        "id": "s2",
+        "text": "首先， $f$ 是一一映射."
+      },
+      {
+        "id": "s3",
+        "text": "注意到 $bx$ 可以取任意值，当 $f(x)$ 的定义域为 $\\mathbb{R}$ 时，其值域也为 $\\mathbb{R}$ 。即 $f$ 是 $\\mathbb{R}$ 上的满射。"
+      },
+      {
+        "id": "s4",
+        "text": "另一方面，若 $f(x) = f(y)$ ，则有 $f(f(x)) = f(f(y))$ ，所以 $bx = by$ ，进而 $x = y$ 。即 $f$ 是 $\\mathbb{R}$ 上的单射。所以 $f$ 是 $\\mathbb{R}$ 上的一一映射。"
+      },
+      {
+        "id": "s5",
+        "text": "下证 $f(x)$ 有唯一的不动点."
+      },
+      {
+        "id": "s6",
+        "text": "若 $\\forall x\\in \\mathbb{R}$ ，均有 $f(x) > x$ ，则"
+      },
+      {
+        "id": "s7",
+        "text": "f (f (x)) > f (x) \\Rightarrow a f (x) + b x > f (x) \\Rightarrow f (x) <   \\frac {b x}{1 - a},"
+      }
+    ],
+    "final_answer": "存在唯一的 $x_0 \\in \\mathbb{R}$ ，使得 $f(x_0) = x_0$ ，且有",
+    "techniques_used": [
+      "介值定理",
+      "零点存在"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "应调用闭区间连续的哪条性质（介值/最值/零点）？",
+      "technique": "介值定理",
+      "expected": "根据结论形态选择介值、零点或有界性等闭区间连续性质。"
+    },
+    {
+      "id": "c2",
+      "prompt": "如何构造辅助函数把题设化为该性质的条件？",
+      "technique": "零点存在",
+      "expected": "f \\left(f \\left(x _ {0}\\right)\\right) = a f \\left(x _ {0}\\right) + b x _ {0} \\Rightarrow x _ {0} = a x _ {0} + b x _ {0} \\Rightarrow x _ {0} (1 - a - b) = 0 \\Rightarrow x _ {0} = 0"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例15",
+    "page": 59,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

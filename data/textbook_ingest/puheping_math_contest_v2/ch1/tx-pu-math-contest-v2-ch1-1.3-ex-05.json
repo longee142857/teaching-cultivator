@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-05",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f$ 在 $(a, b)$ 内每一点处的左、右极限都存在，又 $\\forall x, y \\in (a, b)$ ，有\n\nf \\left(\\frac {x + y}{2}\\right) \\leqslant \\frac {1}{2} [ f (x) + f (y) ],",
+  "answer": "$y \\to x_0^+$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "闭区间连续"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "$f$ 在 $(a, b)$ 内连续."
+      },
+      {
+        "id": "s2",
+        "text": "分析 只需证明 $f$ 在 $(a, b)$ 内任一点的左、右极限都与其函数值相等."
+      },
+      {
+        "id": "s3",
+        "text": "证明 $\\forall x_0\\in (a,b)$ ，记 $f(x_0 - 0) = A^{-}$ ， $f(x_0 + 0) = A^{+}$"
+      },
+      {
+        "id": "s4",
+        "text": "下面证明 $A^{-} = A^{+} = f(x_{0})$"
+      },
+      {
+        "id": "s5",
+        "text": "在所给不等式中，令 $x = x_0$ ，分别取 $y \\to x_0^-$ 与 $y \\to x_0^+$ ，得"
+      },
+      {
+        "id": "s6",
+        "text": "\\left\\{ \\begin{array}{l} A ^ {-} \\leqslant \\frac {1}{2} f (x _ {0}) + \\frac {1}{2} A ^ {-}, \\\\ A ^ {+} \\leqslant \\frac {1}{2} f (x _ {0}) + \\frac {1}{2} A ^ {+}. \\end{array} \\Rightarrow \\left\\{ \\begin{array}{l} A ^ {-} \\leqslant f (x _ {0}), \\\\ A ^ {+} \\leqslant f (x _ {0}). \\end{array} \\right. \\right.\\tag{①}"
+      }
+    ],
+    "final_answer": "$y \\to x_0^+$",
+    "techniques_used": [
+      "介值定理",
+      "闭区间连续"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "连续性讨论需检查哪些点的左右极限与函数值？",
+      "technique": "介值定理",
+      "expected": "在可疑点分别计算左右极限并与 f(x0) 比较以判定间断类型。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于连续性/间断类型的结论是什么？",
+      "technique": "闭区间连续",
+      "expected": "$y \\to x_0^+$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例5",
+    "page": 54,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

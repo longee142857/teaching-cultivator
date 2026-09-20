@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-18",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\lim_{n\\to \\infty}a_n = A, \\lim_{n\\to \\infty}b_n = B$ ，记 $c_n = \\frac{a_1b_n + a_2b_{n-1} + \\cdots + a_nb_1}{n}$ ，求证： $\\lim_{n\\to \\infty}c_n = AB$ .",
+  "answer": "在①式中令 $n \\to \\infty$ ，即得 $\\lim_{n \\to \\infty} c_n = AB$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明 $c_{n} = AB + \\gamma_{n}$ ， $\\gamma_{n}\\rightarrow 0(n\\to \\infty)$ .为此，可将已知条件写成 $a_{n} = A + \\alpha_{n}, b_{n} = B + \\beta_{n}$ 其中 $\\alpha_{n}\\rightarrow 0,\\beta_{n}\\rightarrow 0(n\\rightarrow \\infty)$ ，再做运算."
+      },
+      {
+        "id": "s2",
+        "text": "因为 $\\lim_{n\\to \\infty}a_n = A,\\lim_{n\\to \\infty}b_n = B$ ，则有 $a_{n} = A + \\alpha_{n},b_{n} = B + \\beta_{n}$ ，其中 $\\alpha_{n}\\rightarrow 0,\\beta_{n}\\rightarrow 0(n\\rightarrow \\infty)$ 于是"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} c _ {n} & = \\frac {1}{n} [ (A + \\alpha_ {1}) (B + \\beta_ {n}) + (A + \\alpha_ {2}) (B + \\beta_ {n - 1}) + \\dots + (A + \\alpha_ {n}) (B + \\beta_ {1}) ] \\\\ & = A B + \\frac {B}{n} (\\alpha_ {1} + \\alpha_ {2} + \\dots + \\alpha_ {n}) + \\frac {A}{n} (\\beta_ {1} + \\beta_ {2} + \\dots + \\beta_ {n}) + \\frac {1}{n} (\\alpha_ {1} \\beta_ {n} + \\alpha_ {2} \\beta_ {n - 1} + \\dots + \\alpha_ {n} \\beta_ {1}). \\end{array}\\tag{①}"
+      },
+      {
+        "id": "s4",
+        "text": "由数列极限的施笃兹定理（见本节8），有"
+      },
+      {
+        "id": "s5",
+        "text": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\left(\\alpha_ {1} + \\alpha_ {2} + \\dots + \\alpha_ {n}\\right) = \\lim _ {n \\rightarrow \\infty} \\alpha_ {n} = 0, \\quad \\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\left(\\beta_ {1} + \\beta_ {2} + \\dots + \\beta_ {n}\\right) = \\lim _ {n \\rightarrow \\infty} \\beta_ {n} = 0."
+      },
+      {
+        "id": "s6",
+        "text": "再由 $\\{\\alpha_{n}\\}$ 有界， $\\exists M > 0$ ，使得 $\\forall n \\in \\mathbb{N}$ ，有 $|\\alpha_{n}| \\leqslant M$ ，于是"
+      },
+      {
+        "id": "s7",
+        "text": "0 \\leqslant \\frac {1}{n} \\left| \\alpha_ {1} \\beta_ {n} + \\alpha_ {2} \\beta_ {n - 1} + \\dots + \\alpha_ {n} \\beta_ {1} \\right| \\leqslant \\frac {M}{n} \\left| \\beta_ {1} + \\beta_ {2} + \\dots + \\beta_ {n} \\right|\\rightarrow 0 (n \\rightarrow \\infty),"
+      }
+    ],
+    "final_answer": "在①式中令 $n \\to \\infty$ ，即得 $\\lim_{n \\to \\infty} c_n = AB$ .",
+    "techniques_used": [
+      "施笃兹定理",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "施笃兹定理",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "极限计算",
+      "expected": "在①式中令 $n \\to \\infty$ ，即得 $\\lim_{n \\to \\infty} c_n = AB$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例18*",
+    "page": 23,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-44",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数列 $\\sin_1 x = \\sin x, \\sin_n x = \\sin (\\sin_{n-1} x), n = 2,3,\\cdots$ . 证明 $\\lim_{n \\to \\infty} \\sqrt{\\frac{n}{3}} \\sin_n x = 1$ .",
+  "answer": "$\\lim_{n\\to \\infty}\\sqrt{\\frac{n}{3}}\\sin_n x = 1.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明 $\\lim_{n\\to \\infty}n\\sin_n^2 x = 3$ ，显然 $\\sin_n^2 x$ 单调递减并趋于0，故可考虑对 $\\lim_{n\\to \\infty}\\frac{n}{1 / \\sin_n^2x}$ 用施笃兹定理."
+      },
+      {
+        "id": "s2",
+        "text": "对取定的 $x$ ，显然 $\\sin_n^2 x$ 单调递减并趋于 0，利用施笃兹定理，有"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} \\lim _ {n \\to \\infty} n \\sin_ {n} ^ {2} x & = \\lim _ {n \\to \\infty} \\frac {n}{\\frac {1}{\\sin_ {n} ^ {2} x}} = \\lim _ {n \\to \\infty} \\frac {(n + 1) - n}{\\frac {1}{\\sin_ {n + 1} ^ {2} x} - \\frac {1}{\\sin_ {n} ^ {2} x}} \\\\ & = \\lim _ {t \\to 0} \\frac {1}{\\frac {1}{\\sin^ {2} t} - \\frac {1}{t ^ {2}}} = \\lim _ {t \\to 0} \\frac {t ^ {2} \\sin^ {2} t}{t ^ {2} - \\sin^ {2} t} = \\lim _ {t \\to 0} \\frac {t ^ {4}}{t ^ {2} - \\sin^ {2} t} \\\\ & = \\lim _ {t \\to 0} \\frac {4 t ^ {3}}{2 t - \\sin 2 t} = \\lim _ {t \\to 0} \\frac {1 2 t ^ {2}}{2 - 2 \\cos 2 t} = 3. \\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\lim_{n\\to \\infty}\\sqrt{\\frac{n}{3}}\\sin_n x = 1.$"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\sqrt{\\frac{n}{3}}\\sin_n x = 1.$",
+    "techniques_used": [
+      "施笃兹定理",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "施笃兹定理",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n\\to \\infty}\\sqrt{\\frac{n}{3}}\\sin_n x = 1.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例44*",
+    "page": 38,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

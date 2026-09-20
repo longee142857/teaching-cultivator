@@ -1,0 +1,64 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-58",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $x_{1} = 1, x_{2} = 4, x_{n} = \\frac{x_{n - 1} + x_{n - 2}}{2} (n\\geqslant 3)$ ，求 $\\lim_{n\\to \\infty}x_n$",
+  "answer": "\\lim _ {n \\rightarrow \\infty} x _ {n} = \\sum_ {n = 2} ^ {\\infty} 3 \\left(- \\frac {1}{2}\\right) ^ {n - 2} + x _ {1} = \\frac {3}{1 + \\frac {1}{2}} + 1 = 3.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "递推数列",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该题采用递推公式两边同时取极限的方法无法算得极限. 从几何上看, 点 $x_{n}$ 是 $x_{n-1}$ 与 $x_{n-2}$ 的中点, 所以 $x_{n}$ 与 $x_{n-1}$ 的距离是 $x_{n-1}$ 与 $x_{n-2}$ 距离的一半, 这样就可得到数列 $\\{x_{n} - x_{n-1}\\}$ 的一阶递推式, 从而解出 $x_{n}$ .\n\n\\text {解} \\quad x _ {k} - x _ {k - 1} = - \\frac {1}{2} (x _ {k - 1} - x _ {k - 2}) = \\left(- \\frac {1}{2}\\right) ^ {2} (x _ {k - 2} - x _ {k - 3}) = \\dots = \\left(- \\frac {1}{2}\\right) ^ {k - 2} (x _ {2} - x _ {1}) = 3 \\left(- \\frac {1}{2}\\right) ^ {k - 2}.\n\n$k$ 从2到 $n$ 各式相加得\n\nx _ {n} - x _ {1} = \\sum_ {k = 2} ^ {n} (x _ {k} - x _ {k - 1}) = 3 \\left[ 1 - \\frac {1}{2} + \\frac {1}{2 ^ {2}} + \\dots + \\left(- \\frac {1}{2}\\right) ^ {n - 2} \\right],\n\n所以\n\n\\lim _ {n \\rightarrow \\infty} x _ {n} = \\sum_ {n = 2} ^ {\\infty} 3 \\left(- \\frac {1}{2}\\right) ^ {n - 2} + x _ {1} = \\frac {3}{1 + \\frac {1}{2}} + 1 = 3."
+      },
+      {
+        "id": "s2",
+        "text": "见题解推导。"
+      },
+      {
+        "id": "s3",
+        "text": "完成计算或证明。"
+      }
+    ],
+    "final_answer": "\\lim _ {n \\rightarrow \\infty} x _ {n} = \\sum_ {n = 2} ^ {\\infty} 3 \\left(- \\frac {1}{2}\\right) ^ {n - 2} + x _ {1} = \\frac {3}{1 + \\frac {1}{2}} + 1 = 3.",
+    "techniques_used": [
+      "递推数列",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "递推数列应先证收敛（单调有界/压缩）还是直接求极限方程？",
+      "technique": "递推数列",
+      "expected": "通常先证极限存在，再对递推式两端取极限求值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\lim _ {n \\rightarrow \\infty} x _ {n} = \\sum_ {n = 2} ^ {\\infty} 3 \\left(- \\frac {1}{2}\\right) ^ {n - 2} + x _ {1} = \\frac {3}{1 + \\frac {1}{2}} + 1 = 3."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例58",
+    "page": 47,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

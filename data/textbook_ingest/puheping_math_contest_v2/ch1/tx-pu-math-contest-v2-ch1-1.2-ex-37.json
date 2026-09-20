@@ -1,0 +1,64 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-37",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $\\lim_{x\\to +\\infty}\\sqrt{x}\\int_{x}^{x + 1}\\frac{\\mathrm{d}t}{\\sqrt{t + \\sin t + x}}.$",
+  "answer": "用积分中值定理去掉积分符号再求极限.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因积分不易求出，所以用积分中值定理去掉积分符号再求极限."
+      },
+      {
+        "id": "s2",
+        "text": "由积分中值定理得"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l}\\lim _ {x \\rightarrow + \\infty} \\sqrt {x} \\int_ {x} ^ {x + 1} \\frac {\\mathrm{d} t}{\\sqrt {t + \\sin t + x}}&= \\lim _ {x \\rightarrow + \\infty} \\frac {\\sqrt {x}}{\\sqrt {(x + \\theta) + \\sin (x + \\theta) + x}} (0 <   \\theta <   1)\\\\&= \\lim _ {x \\rightarrow + \\infty} \\frac {1}{\\sqrt {2 + \\frac {\\theta + \\sin (x + \\theta)}{x}}} = \\frac {1}{\\sqrt {2}}.\\end{array}"
+      }
+    ],
+    "final_answer": "用积分中值定理去掉积分符号再求极限.",
+    "techniques_used": [
+      "积分中值",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "积分中值",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\begin{array}{r l}\\lim _ {x \\rightarrow + \\infty} \\sqrt {x} \\int_ {x} ^ {x + 1} \\frac {\\mathrm{d} t}{\\sqrt {t + \\sin t + x}}&= \\lim _ {x \\rightarrow + \\infty} \\frac {\\sqrt {x}}{\\sqrt {(x + \\theta) + \\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例37",
+    "page": 33,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

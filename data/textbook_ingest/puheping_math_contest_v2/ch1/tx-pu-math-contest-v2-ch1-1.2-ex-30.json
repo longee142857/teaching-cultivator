@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-30",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明数列 $x_{n} = 1 + \\frac{1}{2} +\\frac{1}{3} +\\dots +\\frac{1}{n} -\\ln n$ 的极限存在.",
+  "answer": "$\\{x_{n}\\}$ 有下界0，故 $x_{n}$ 的极限存在.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "数列 $x_{n} = 1 + \\frac{1}{2} +\\frac{1}{3} +\\dots +\\frac{1}{n} -\\ln n$ 的极限存在."
+      },
+      {
+        "id": "s2",
+        "text": "分析 由不等式 $\\frac{1}{n + 1} < \\ln \\left(1 + \\frac{1}{n}\\right) < \\frac{1}{n}$ ，容易判断 $\\{x_{n}\\}$ 的单调性与有界性."
+      },
+      {
+        "id": "s3",
+        "text": "证明 由于"
+      },
+      {
+        "id": "s4",
+        "text": "x _ {n + 1} - x _ {n} = \\frac {1}{n + 1} - \\ln (n + 1) + \\ln n = \\frac {1}{n + 1} - \\ln \\left(1 + \\frac {1}{n}\\right) <   0,"
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\{x_{n}\\}$ 单调递减. 又"
+      },
+      {
+        "id": "s6",
+        "text": "\\begin{array}{r l} & x _ {n} > \\ln (1 + 1) + \\ln \\left(1 + \\frac {1}{2}\\right) + \\dots + \\ln \\left(1 + \\frac {1}{n}\\right) - \\ln n \\left(\\because \\frac {1}{k} > \\ln \\left(1 + \\frac {1}{k}\\right)\\right) \\\\ & = \\ln 2 + \\ln \\frac {3}{2} + \\dots + \\ln \\frac {n + 1}{n} - \\ln n = \\ln \\left(2 \\cdot \\frac {3}{2} \\cdot \\frac {4}{3} \\cdot \\dots \\cdot \\frac {n}{n - 1} \\cdot \\frac {n + 1}{n}\\right) - \\ln n \\\\ & = \\ln (n + 1) - \\ln n > 0. \\end{array}"
+      }
+    ],
+    "final_answer": "$\\{x_{n}\\}$ 有下界0，故 $x_{n}$ 的极限存在.",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "极限计算",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "极限计算",
+      "expected": "$\\{x_{n}\\}$ 有下界0，故 $x_{n}$ 的极限存在."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例30",
+    "page": 30,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

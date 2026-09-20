@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-47",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $\\lim_{x\\to 0}\\frac{\\frac{x^2}{2} + 1 - \\sqrt{1 + x^2}}{(\\cos x - \\mathrm{e}^{x^2})\\sin x^2}.$",
+  "answer": "$\\lim_{n\\to \\infty}\\sin \\left(\\frac{\\pi}{\\mathrm{e}^{1 / (2n)} - 1}\\right) = -\\sin \\frac{\\pi}{2} = -1.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒展开",
+    "等价无穷小",
+    "阶比较"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该题属于 $\\frac{0}{0}$ 型，用洛必达法则计算的工作量太大，这里用泰勒公式展开，再求极限."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\sqrt{1 + x^2} = 1 + \\frac{1}{2} x^2 +\\frac{1}{2!}\\cdot \\frac{1}{2}\\left(\\frac{1}{2} -1\\right)x^4 +o(x^4) = 1 + \\frac{1}{2} x^2 -\\frac{1}{8} x^4 +o(x^4),$"
+      },
+      {
+        "id": "s3",
+        "text": "\\mathrm{e} ^ {x ^ {2}} = 1 + x ^ {2} + o \\left(x ^ {2}\\right), \\quad \\cos x = 1 - \\frac {x ^ {2}}{2 !} + o \\left(x ^ {2}\\right)."
+      },
+      {
+        "id": "s4",
+        "text": "\\text {原式} = \\lim _ {x \\rightarrow 0} \\frac {\\frac {x ^ {2}}{2} + 1 - \\left[ 1 + \\frac {1}{2} x ^ {2} - \\frac {1}{8} x ^ {4} + o \\left(x ^ {4}\\right)\\right]}{\\left[\\left(1 - \\frac {x ^ {2}}{2 !} + o \\left(x ^ {2}\\right)\\right) - \\left(1 + x ^ {2} + o \\left(x ^ {2}\\right)\\right)\\right] x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\frac {1}{8} x ^ {4} + o \\left(x ^ {4}\\right)}{- \\frac {3}{2} x ^ {4} + o \\left(x ^ {4}\\right)} = - \\frac {1}{1 2}."
+      },
+      {
+        "id": "s5",
+        "text": "评注（1）用泰勒公式求极限时，函数展开的阶数应由极限式中分子（或分母）无穷小的阶数来确定。例如，想要看出本题分子无穷小的阶， $\\sqrt{1 + x^2}$ 展开的阶数就要大于 2，题中取的 4 阶（大于 2 的最小阶数）。分子的阶确定了，分母就应展开到相应的阶数。"
+      },
+      {
+        "id": "s6",
+        "text": "(2) 在运算中，凡高于 4 次的项都并入了 $o(x^4)$ 中。一般有： $o(x^n) + o(x^m) = o(x^n) (m \\geqslant n)$ 。"
+      },
+      {
+        "id": "s7",
+        "text": "(3) 等价无穷小替换是泰勒公式中取 $n = 0$ 或1时的情形（舍去了高阶无穷小的余项）.\n(1) $\\lim_{n\\to \\infty}\\sum_{k = 1}^{n}\\left(1 - \\frac{k}{n}\\right)\\ln \\left(1 + \\frac{k}{n^2}\\right);$ (2) $\\lim_{n\\to \\infty}\\sin \\left(\\frac{\\pi}{\\mathrm{e}^{1 / (2n)} - 1}\\right).$"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\sin \\left(\\frac{\\pi}{\\mathrm{e}^{1 / (2n)} - 1}\\right) = -\\sin \\frac{\\pi}{2} = -1.$",
+    "techniques_used": [
+      "泰勒展开",
+      "等价无穷小",
+      "阶比较"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分子分母中哪些因子可用等价无穷小替换，哪些必须保留更高阶展开？",
+      "technique": "等价无穷小",
+      "expected": "只对乘除因子做同阶等价替换；加减结构或需精确系数时改用泰勒/洛必达。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "等价无穷小",
+      "expected": "$\\lim_{n\\to \\infty}\\sin \\left(\\frac{\\pi}{\\mathrm{e}^{1 / (2n)} - 1}\\right) = -\\sin \\frac{\\pi}{2} = -1.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例47*",
+    "page": 40,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

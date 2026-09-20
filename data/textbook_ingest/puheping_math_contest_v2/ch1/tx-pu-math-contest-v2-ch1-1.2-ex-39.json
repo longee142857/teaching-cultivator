@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-39",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\lim_{x\\to \\infty}\\left(\\sin \\frac{2}{x^2} +\\cos \\frac{1}{x}\\right)^{\\frac{1}{\\sin^2\\left(\\frac{1}{x}\\right)}}.$",
+  "answer": "$\\lim_{x\\to \\infty}y = e^{\\frac{3}{2}}.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这属于 $1^{\\infty}$ 型，取对数转化为 $\\frac{0}{0}$ 型。为便于求导运算，可先作倒代换。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 记 $y = \\left( \\sin \\frac{2}{x^2} + \\cos \\frac{1}{x} \\right)^{\\frac{1}{\\sin^2 \\left( \\frac{1}{x} \\right)}}$ ，令 $t = \\frac{1}{x}$ ，则 $\\ln y = \\frac{1}{\\sin^2 t} \\ln (\\sin 2t^2 + \\cos t)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l}\\lim _ {x \\rightarrow \\infty} (\\ln y)&= \\lim _ {t \\rightarrow 0} \\frac {\\ln (\\sin 2 t ^ {2} + \\cos t)}{\\sin^ {2} t} = \\lim _ {t \\rightarrow 0} \\frac {\\ln (\\sin 2 t ^ {2} + \\cos t)}{t ^ {2}}\\\\&= \\lim _ {t \\rightarrow 0} \\frac {4 t \\cos 2 t ^ {2} - \\sin t}{2 t (\\sin 2 t ^ {2} + \\cos t)} = \\lim _ {t \\rightarrow 0} \\frac {4 t \\cos 2 t ^ {2} - \\sin t}{2 t} (\\because \\sin 2 t ^ {2} + \\cos t \\rightarrow 1)\\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "= \\lim _ {t \\rightarrow 0} \\left(2 \\cos 2 t ^ {2} - \\frac {\\sin t}{2 t}\\right) = \\frac {3}{2}."
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\lim_{x\\to \\infty}y = e^{\\frac{3}{2}}.$"
+      },
+      {
+        "id": "s6",
+        "text": "方法2 原式 $\\lim_{t\\to0}\\left[1+(\\sin 2t^{2}+\\cos t-1)\\right]^{\\frac{1}{\\sin^{2}t}}=e^{\\lim_{t\\to0}\\frac{\\sin 2t^{2}+\\cos t-1}{\\sin^{2}t}}$ .\n其中"
+      },
+      {
+        "id": "s7",
+        "text": "\\lim _ {t \\rightarrow 0} \\frac {\\sin 2 t ^ {2} + \\cos t - 1}{\\sin^ {2} t} = \\lim _ {t \\rightarrow 0} \\frac {\\sin 2 t ^ {2}}{\\sin^ {2} t} - \\lim _ {t \\rightarrow 0} \\frac {1 - \\cos t}{\\sin^ {2} t} = 2 - \\frac {1}{2} = \\frac {3}{2}."
+      }
+    ],
+    "final_answer": "$\\lim_{x\\to \\infty}y = e^{\\frac{3}{2}}.$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{x\\to \\infty}y = e^{\\frac{3}{2}}.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例39",
+    "page": 34,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

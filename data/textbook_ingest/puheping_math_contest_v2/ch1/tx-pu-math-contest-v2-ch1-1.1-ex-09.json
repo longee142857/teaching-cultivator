@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-09",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f$ 是 $\\mathbb{R}$ 上的下凸函数，即对任意 $x, y \\in \\mathbb{R}$ 及 $t \\in (0,1)$ 都有\n\nf (t x + (1 - t) y) \\leqslant t f (x) + (1 - t) f (y).\n\n求证： $g(x) = f(x) + f(-x)$ 在 $[0, +\\infty)$ 上单调递增.",
+  "answer": "只要 $g(0) \\leqslant g(x_{2})$ ，问题就解决了。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "凸性",
+    "Jensen"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 对任意 $0 < x_{1} < x_{2}$ ，需要证明 $g(x_{1}) \\leqslant g(x_{2})$ 。根据已知条件，我们容易得到 $g(x_{1}) \\leqslant \\frac{x_{1}}{x_{2}} g(x_{2}) + \\left(1 - \\frac{x_{1}}{x_{2}}\\right) g(0)$ ，所以只要 $g(0) \\leqslant g(x_{2})$ ，问题就解决了。"
+      },
+      {
+        "id": "s2",
+        "text": "首先， $\\forall x\\in (0, + \\infty)$ ，有"
+      },
+      {
+        "id": "s3",
+        "text": "g (0) = 2 f (0) \\leqslant 2 \\cdot \\frac {1}{2} [ f (x) + f (- x) ] = g (x).\\tag{①}"
+      },
+      {
+        "id": "s4",
+        "text": "$0 < x_{1} < x_{2}$ ，由于 $\\pm x_{1} = \\frac{x_{1}}{x_{2}}\\cdot (\\pm x_{2}) + \\left(1 - \\frac{x_1}{x_2}\\right)\\cdot 0$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "f \\left(x _ {1}\\right) \\leqslant \\frac {x _ {1}}{x _ {2}} f \\left(x _ {2}\\right) + \\left(1 - \\frac {x _ {1}}{x _ {2}}\\right) f (0), \\quad f (- x _ {1}) \\leqslant \\frac {x _ {1}}{x _ {2}} f (- x _ {2}) + \\left(1 - \\frac {x _ {1}}{x _ {2}}\\right) f (0)."
+      },
+      {
+        "id": "s6",
+        "text": "两式相加得"
+      },
+      {
+        "id": "s7",
+        "text": "f (x _ {1}) + f (- x _ {1}) \\leqslant \\frac {x _ {1}}{x _ {2}} [ f (x _ {2}) + f (- x _ {2}) ] + \\left(1 - \\frac {x _ {1}}{x _ {2}}\\right) 2 f (0),"
+      }
+    ],
+    "final_answer": "只要 $g(0) \\leqslant g(x_{2})$ ，问题就解决了。",
+    "techniques_used": [
+      "凸性",
+      "Jensen"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "凸性",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "Jensen",
+      "expected": "g \\left(x _ {1}\\right) \\leqslant \\frac {x _ {1}}{x _ {2}} g \\left(x _ {2}\\right) + \\left(1 - \\frac {x _ {1}}{x _ {2}}\\right) g \\left(x _ {2}\\right) = g \\left(x _ {2}\\right)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例9",
+    "page": 12,
+    "quality_basis": "source_textbook_worked_example",
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

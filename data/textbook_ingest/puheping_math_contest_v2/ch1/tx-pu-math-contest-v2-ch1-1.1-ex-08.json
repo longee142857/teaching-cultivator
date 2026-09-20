@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-08",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $y = f(x) (-\\infty < x < +\\infty)$ 的图形关于点 $A(a, y_1)$ 和点 $B(b, y_2) (a < b)$ 对称，试讨论函数 $f(x)$ 的周期性.",
+  "answer": "$2(b-a)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "周期延拓",
+    "奇偶延拓"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由函数图形的对称性可知 $f(a + x) + f(a - x) = 2y_{1}, f(b + x) + f(b - x) = 2y_{2}$ ，只需讨论是否存在常数 $T \\neq 0$ ，使得 $\\forall x \\in \\mathbb{R}$ ，有 $f(x) = f(x + T)$ ."
+      },
+      {
+        "id": "s2",
+        "text": "由于函数 $y = f(x)$ 的图形关于点 $A(a, y_1)$ 和点 $B(b, y_2)$ 对称，则"
+      },
+      {
+        "id": "s3",
+        "text": "f (a + x) + f (a - x) = 2 y _ {1}, \\quad f (b + x) + f (b - x) = 2 y _ {2},"
+      },
+      {
+        "id": "s4",
+        "text": "于是"
+      },
+      {
+        "id": "s5",
+        "text": "\\begin{array}{r l} f (x) & = f [ a + (x - a) ] = 2 y _ {1} - f [ a - (x - a) ] \\\\ & = 2 y _ {1} - f (2 a - x) = 2 y _ {1} - f [ b + (2 a - x - b) ] \\\\ & = 2 y _ {1} - 2 y _ {2} + f [ b - (2 a - x - b) ] \\\\ & = 2 (y _ {1} - y _ {2}) + f [ x + 2 (b - a) ]. \\end{array}\\tag{①}"
+      },
+      {
+        "id": "s6",
+        "text": "由此可知，当 $y_{1}=y_{2}$ 时， $f(x)$ 是周期函数，其周期为 $2(b-a)$ ."
+      },
+      {
+        "id": "s7",
+        "text": "当 $y_{1} \\neq y_{2}$ 时，记 $f(x) = px + q + \\varphi(x)$ ， $p$ 和 $q$ 为常数，由①式得"
+      }
+    ],
+    "final_answer": "$2(b-a)$",
+    "techniques_used": [
+      "周期延拓",
+      "奇偶延拓"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "周期延拓",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "奇偶延拓",
+      "expected": "$2(b-a)$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例8*",
+    "page": 12,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true,
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

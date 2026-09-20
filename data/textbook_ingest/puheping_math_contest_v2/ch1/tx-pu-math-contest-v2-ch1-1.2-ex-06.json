@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-06",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $x_{1}, x_{2}, \\cdots$ 为方程 $\\tan x = x$ 的全体正根按增序排成的数列，求 $\\lim_{n \\to \\infty} (x_{n} - x_{n-1})$ .",
+  "answer": "根 $x_{n}$ 唯一.因为 $\\lim_{n\\to \\infty}\\tan x_n = \\lim_{n\\to \\infty}x_n = +\\infty$ ，所以",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由函数 $\\tan x$ 的周期性，容易得到 $x_{n}$ 所在的范围；再考虑到 $\\tan x_{n} = x_{n} \\rightarrow +\\infty (n \\rightarrow \\infty)$ 时，只有 $(x_{n} - n\\pi) \\rightarrow \\frac{\\pi}{2}$ ，问题就解决了。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\tan x - x$ ，由于"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {x \\rightarrow (n \\pi - \\pi / 2) ^ {+}} f (x) = - \\infty , \\quad \\lim _ {x \\rightarrow (n \\pi + \\pi / 2) ^ {-}} f (x) = + \\infty ,"
+      },
+      {
+        "id": "s4",
+        "text": "故在区间 $\\left(n\\pi -\\frac{\\pi}{2},n\\pi +\\frac{\\pi}{2}\\right)$ 内方程 $f(x) = 0$ 有根."
+      },
+      {
+        "id": "s5",
+        "text": "又 $f^{\\prime}(x) = \\frac{1}{\\cos^{2}x} - 1 > 0$ ， $f(x)$ 在每个子区间 $\\left(n\\pi -\\frac{\\pi}{2},n\\pi +\\frac{\\pi}{2}\\right)$ 内均严格单调递增，故根 $x_{n}$ 唯一.因为 $\\lim_{n\\to \\infty}\\tan x_n = \\lim_{n\\to \\infty}x_n = +\\infty$ ，所以"
+      },
+      {
+        "id": "s6",
+        "text": "\\lim _ {n \\rightarrow \\infty} (x _ {n} - n \\pi) = \\frac {\\pi}{2}."
+      },
+      {
+        "id": "s7",
+        "text": "因此"
+      }
+    ],
+    "final_answer": "根 $x_{n}$ 唯一.因为 $\\lim_{n\\to \\infty}\\tan x_n = \\lim_{n\\to \\infty}x_n = +\\infty$ ，所以",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "递推数列应先证收敛（单调有界/压缩）还是直接求极限方程？",
+      "technique": "极限计算",
+      "expected": "通常先证极限存在，再对递推式两端取极限求值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\lim _ {n \\rightarrow \\infty} (x _ {n} - x _ {n - 1}) = \\lim _ {n \\rightarrow \\infty} (x _ {n} - n \\pi) - \\lim _ {n \\rightarrow \\infty} (x _ {n - 1} - (n - 1) \\pi) + \\pi = \\frac {\\pi}{2} - \\frac {\\pi}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例6",
+    "page": 17,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

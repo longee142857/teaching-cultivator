@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-02",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\lim_{x\\to 1}\\frac{(1 - x^{\\frac{1}{2}})(1 - x^{\\frac{1}{3}})\\cdots(1 - x^{\\frac{1}{n}})}{(1 - x)^{n - 1}}.$",
+  "answer": "\\lim _ {x \\rightarrow 1} \\frac {\\left(1 - x ^ {\\frac {1}{2}}\\right)\\left(1 - x ^ {\\frac {1}{3}}\\right) \\cdots \\left(1 - x ^ {\\frac {1}{n}}\\right)}{(1 - x) ^ {n - 1}} = \\lim _ {x \\rightarrow 1} \\left(\\frac {1 - x ^ {\\frac {1}{2}}}{1 - x} \\cdot \\frac {1 - x ^ {\\frac {1}{3}}}{1 - x} \\cdot \\dots \\cdot \\",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 极限式变形为 $\\lim_{x\\to1}\\left(\\frac{1-x^{\\frac{1}{2}}}{1-x}\\cdot\\frac{1-x^{\\frac{1}{3}}}{1-x}\\cdots\\frac{1-x^{\\frac{1}{n}}}{1-x}\\right)$ ，只需算出各因子 $\\frac{1-x^{i}}{1-x}(i=2,3,\\cdots,n)$ 的极限."
+      },
+      {
+        "id": "s2",
+        "text": "令 $x^{\\frac{1}{i}} = t$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {x \\rightarrow 1} \\frac {1 - x ^ {\\frac {1}{i}}}{1 - x} = \\lim _ {t \\rightarrow 1} \\frac {1 - t}{1 - t ^ {i}} = \\lim _ {t \\rightarrow 1} \\frac {1}{1 + t + \\cdots + t ^ {i - 1}} = \\frac {1}{i}."
+      },
+      {
+        "id": "s4",
+        "text": "所以"
+      },
+      {
+        "id": "s5",
+        "text": "\\lim _ {x \\rightarrow 1} \\frac {\\left(1 - x ^ {\\frac {1}{2}}\\right)\\left(1 - x ^ {\\frac {1}{3}}\\right) \\cdots \\left(1 - x ^ {\\frac {1}{n}}\\right)}{(1 - x) ^ {n - 1}} = \\lim _ {x \\rightarrow 1} \\left(\\frac {1 - x ^ {\\frac {1}{2}}}{1 - x} \\cdot \\frac {1 - x ^ {\\frac {1}{3}}}{1 - x} \\cdot \\dots \\cdot \\frac {1 - x ^ {\\frac {1}{n}}}{1 - x}\\right) = \\frac {1}{2} \\cdot \\frac {1}{3} \\cdot \\dots \\cdot \\frac {1}{n} = \\frac {1}{n !}."
+      }
+    ],
+    "final_answer": "\\lim _ {x \\rightarrow 1} \\frac {\\left(1 - x ^ {\\frac {1}{2}}\\right)\\left(1 - x ^ {\\frac {1}{3}}\\right) \\cdots \\left(1 - x ^ {\\frac {1}{n}}\\right)}{(1 - x) ^ {n - 1}} = \\lim _ {x \\rightarrow 1} \\left(\\frac {1 - x ^ {\\frac {1}{2}}}{1 - x} \\cdot \\frac {1 - x ^ {\\frac {1}{3}}}{1 - x} \\cdot \\dots \\cdot \\",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\lim _ {x \\rightarrow 1} \\frac {\\left(1 - x ^ {\\frac {1}{2}}\\right)\\left(1 - x ^ {\\frac {1}{3}}\\right) \\cdots \\left(1 - x ^ {\\frac {1}{n}}\\right)}{(1 - x) ^ {n - 1}} = \\lim _ {x \\rightarrow 1} \\left(\\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例2*",
+    "page": 0,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}
