@@ -27,7 +27,7 @@ Total: 85
 | tx-pu-math-contest-v2-ch1-1.2-ex-10 | 例10* | 1.2 | 19 | math.calc.limit.compute | * |
 | tx-pu-math-contest-v2-ch1-1.2-ex-11 | 例11 | 1.2 | 19 | math.calc.limit.compute |  |
 | tx-pu-math-contest-v2-ch1-1.2-ex-12 | 例12* | 1.2 | 20 | math.calc.limit.compute | * |
-| tx-pu-math-contest-v2/ch1-1.2-ex-13 | 例13 | 1.2 | 20 | math.calc.limit.compute |  |
+| tx-pu-math-contest-v2-ch1-1.2-ex-13 | 例13 | 1.2 | 20 | math.calc.limit.compute |  |
 | tx-pu-math-contest-v2-ch1-1.2-ex-14 | 例14* | 1.2 | 21 | math.calc.limit.compute | * |
 | tx-pu-math-contest-v2-ch1-1.2-ex-15 | 例15 | 1.2 | 21 | math.calc.limit.compute |  |
 | tx-pu-math-contest-v2-ch1-1.2-ex-16 | 例16 | 1.2 | 22 | math.calc.limit.compute |  |
