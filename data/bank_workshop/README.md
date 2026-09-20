@@ -44,7 +44,9 @@ python3 tool-scripts/tools/bank-workshop/import_incoming.py --apply
 - `kp` ← workshop **L2 名**；`l3_id` ← `l3_id`。`subject` 仅 math/comm；**拒绝 review**。
 - 通信题硬闸：`atom_id` 必须在周书库存在。
 - `validate_bank_payload` 不过则 failed、不入库、不 move。
-- insert 后走 `apply_judge_verdict(..., verdict='pass', reasons=['workshop_accept'])`。
+- insert 后走 `apply_judge_verdict(..., verdict='pass', reasons=['workshop_accept'])`。无 accept judge **不会**自动 pass。
+
+教材例题（蒲和平竞赛教程）目录 / 标签 / CK 命令：`tool-scripts/tools/textbook-ingest/README.md`。
 - 只动 items/item_kcs；不发钉钉、默认不重启。失败不半挪。
 
 ## Isolation

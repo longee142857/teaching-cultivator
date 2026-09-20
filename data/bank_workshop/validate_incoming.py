@@ -130,7 +130,14 @@ def payload_err(item: dict) -> str:
     return ""
 
 
-def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, judge: dict | None) -> list[str]:
+def check_item(
+    item: dict,
+    syll: dict[str, dict],
+    require_judge_accept: bool,
+    judge: dict | None,
+    *,
+    allowed_sources: set[str] | frozenset[str] | None = None,
+) -> list[str]:
     errs: list[str] = []
     subj = (item.get("subject") or "").strip().lower()
     if subj == "review":
@@ -185,10 +192,16 @@ def check_item(item: dict, syll: dict[str, dict], require_judge_accept: bool, ju
             errs.append(f"book_id must be zhou_comm when atom_id set, got {book_id!r}")
 
     meta = item.get("meta") or {}
+    sources = (
+        set(allowed_sources)
+        if allowed_sources is not None
+        else {"cloud_cursor_workshop"}
+    )
     if isinstance(meta, dict):
         src = meta.get("source")
-        if src and src != "cloud_cursor_workshop":
-            errs.append(f"meta.source expected cloud_cursor_workshop, got {src!r}")
+        if src and src not in sources:
+            want = "|".join(sorted(sources)) or "(none)"
+            errs.append(f"meta.source expected {want}, got {src!r}")
 
     for req in ("id", "subject", "l2", "l3_id", "question", "answer", "techniques", "solution"):
         if not item.get(req) and item.get(req) != 0:
