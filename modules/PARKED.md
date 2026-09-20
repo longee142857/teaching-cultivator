@@ -4,7 +4,7 @@
 
 | 项 | 原位置 | 处理 |
 |----|--------|------|
-| GitHub trending 资讯推送 | `deliver/github_trending/` | park；不进 cultivate / notify |
+| GitHub trending 资讯推送 | `deliver/github_trending/` | park；调度器不再每日 08:00 推送；CLI `scripts/push_github_trending.py` 仍可用 |
 | X digest | `deliver/x_digest.py` | park |
 | 企业微信全量交互 bot | `deliver/wecom_bot.py` | park；notify 可保留 webhook 文本通知 |
 | 钉钉内答题 / 讲解 / 卡片操作 | `deliver/dingtalk_bot.py` 交互面 | 降级为 **通知渠道**；答题与讲解迁前端 |

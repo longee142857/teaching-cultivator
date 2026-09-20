@@ -430,7 +430,7 @@ _WEEKDAY_MAP = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun
 # 周日 20:00 学习周报
 WEEKLY_REPORT_SLOT = ("20:00", "sun")
 
-# 隔周周日 08:00 双周检测卷（与每日 github 08:00 错开到同日批次：见 scheduler）
+# 隔周周日 08:00 双周检测卷（与 GitHub Trending 无关；trending 已停每日调度）
 BIWEEKLY_EXAM_SLOT = ("08:00", "sun")
 
 # 组卷不堵 wait/fire 线程：同时只跑一个工作线程
@@ -656,11 +656,9 @@ def _next_scheduled_event(
             target += datetime.timedelta(days=1)
         candidates.append((target, "bank_judge", None))
 
-    # GitHub 自动推送：每天 08:00
-    target_gh = now.replace(hour=8, minute=0, second=0, microsecond=0)
-    if target_gh <= now:
-        target_gh += datetime.timedelta(days=1)
-    candidates.append((target_gh, "github_push", None))
+    # GitHub Trending 已停每日调度（2026-09）：不再挂 08:00 github_push。
+    # 模块与 scripts/push_github_trending.py 仍可手动触发。勿再把 trending
+    # 挂回 08:00——隔周卷占用周日该槽。
 
     # 学习周报：每周日 20:00
     wh, wm = map(int, WEEKLY_REPORT_SLOT[0].split(":"))
@@ -685,7 +683,7 @@ def _next_scheduled_event(
 
 
 def _do_github_push(bot: TeachingBot | None = None):
-    """GitHub Trending 推送：每天早上 08:00 触发。"""
+    """GitHub Trending 推送（手动/CLI）。调度器不再自动触发。"""
     if bot is not None:
         bot.push_github_trending()
     else:
@@ -701,7 +699,7 @@ def _do_github_push(bot: TeachingBot | None = None):
 
 
 def scheduler_loop(bot: TeachingBot):
-    """后台线程：到点触发题目推送或 GitHub 自动推送。"""
+    """后台线程：到点触发日推 / 预生成 / 审判 / 周报 / 双周卷。"""
     consumed: set = set()
     while True:
         now = datetime.datetime.now()
@@ -714,7 +712,6 @@ def scheduler_loop(bot: TeachingBot):
             "cultivate": payload,
             "pregen": f"pregen:{payload}",
             "judge": f"judge:{payload}",
-            "github_push": "github-push",
             "weekly_report": "weekly-report",
             "biweekly_exam": "biweekly-exam",
         }
@@ -744,11 +741,6 @@ def scheduler_loop(bot: TeachingBot):
                     from cultivate_judge import run_judge_slot
                     result = run_judge_slot(slot=payload or "")
                     log(f"[OK] judge {payload} → {result}")
-                elif kind == "github_push":
-                    _do_github_push(bot)
-                    # 周日 08:00 同槽：组卷丢到工作线程，避免堵住当日 09:00 日推
-                    if datetime.datetime.now().weekday() == 6:
-                        _start_biweekly_worker(bot)
                 elif kind == "weekly_report":
                     bot.push_weekly_report()
                 elif kind == "biweekly_exam":
