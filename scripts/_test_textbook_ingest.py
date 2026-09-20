@@ -95,6 +95,39 @@ def _workshop_item(**kw) -> dict:
     return item
 
 
+def test_ex07_dry_run_not_mcq() -> None:
+    """Regression: pf(c) must not trip the MCQ gate."""
+    path = TEXTBOOK_DIR / "ch1" / "tx-pu-math-contest-v2-ch1-1.3-ex-07.json"
+    check(path.is_file(), f"ex-07 exists {path}")
+    item = json.loads(path.read_text(encoding="utf-8"))
+    q = str(item.get("question") or "")
+    check("pf(c)" in q or "f(c)" in q, "ex-07 keeps f(c) math")
+    with tempfile.TemporaryDirectory() as td:
+        dest = Path(td) / path.name
+        dest.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(WRAPPER),
+                "--incoming",
+                td,
+                "--syllabus-math",
+                str(SYLL_MATH),
+                "--syllabus-comm",
+                str(SYLL_COMM),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    out = (proc.stdout or "") + (proc.stderr or "")
+    check(proc.returncode == 0, f"ex-07 dry-run rc={proc.returncode} {out[-800:]}")
+    check("MCQ" not in out, f"ex-07 must not fail MCQ {out}")
+    check("FAIL" not in out, f"ex-07 dry-run no FAIL {out}")
+    check("DRY" in out and "tx-pu-math-contest-v2-ch1-1.3-ex-07" in out, f"ex-07 DRY {out}")
+
+
 def test_catalog_dir_dry_run_scans() -> None:
     check(TEXTBOOK_DIR.is_dir(), f"catalog dir exists {TEXTBOOK_DIR}")
     check((TEXTBOOK_DIR / "schema.example.json").is_file(), "schema.example.json present")
@@ -241,6 +274,7 @@ def test_cli_dry_run_and_temp_apply() -> None:
 
 
 def main() -> int:
+    test_ex07_dry_run_not_mcq()
     test_catalog_dir_dry_run_scans()
     test_mapping_tags_and_keeps_ref_source()
     test_workshop_without_judge_is_not_auto_pass()

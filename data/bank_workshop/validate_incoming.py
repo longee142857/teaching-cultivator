@@ -14,9 +14,35 @@ DEFAULT_COMM = "https://raw.githubusercontent.com/longee142857/teaching-cultivat
 DEFAULT_MATH = "https://raw.githubusercontent.com/longee142857/teaching-cultivator/master/data/syllabus_math.json"
 ALLOWED_FORMS = {"blank", "proof_outline"}
 ALLOWED_GOALS = {"compute", "construct"}
-MCQ_PAT = re.compile(
-    r"(?i)(选择题|单选|多选|\bA[\.．、\)]\s*.+\bB[\.．、\)]|\([A-D]\)\s|选项[ABCD]|recognize)",
-)
+# Keywords only. Do NOT casefold \(A-D\): math args like pf(c) / f(x) are not options.
+_MCQ_KEYWORD_RE = re.compile(r"(?i)(选择题|单选|多选|选项[ABCD]|recognize)")
+# Inline A. … B. (or A) … B)) pair — letters stay case-sensitive.
+_MCQ_AB_PAIR_RE = re.compile(r"\bA[\.．、\)]\s*.+\bB[\.．、\)]", re.DOTALL)
+# Option at line start: (A) / （A） / A. / A、
+_MCQ_OPTION_LINE_RE = re.compile(r"(?m)^\s*(?:\([A-D]\)|（[A-D]）|[A-D][\.．、])")
+# Standalone uppercase (A)–(D); not after an identifier so f(C) / pf(c) do not count.
+_MCQ_OPTION_TOKEN_RE = re.compile(r"(?<![A-Za-z\\])(?:\([A-D]\)|（[A-D]）)")
+
+
+def question_looks_like_mcq(question: str) -> bool:
+    """True only for real choice stems, not a lone math argument (c)/(x).
+
+    A single ``(A)`` / ``(c)`` is not enough. Need a keyword, an A…B pair,
+    ≥2 option-start lines, or ≥2 standalone uppercase ``(A)``–``(D)`` tokens.
+    """
+    q = str(question or "")
+    if not q.strip():
+        return False
+    if _MCQ_KEYWORD_RE.search(q):
+        return True
+    if _MCQ_AB_PAIR_RE.search(q):
+        return True
+    if len(_MCQ_OPTION_LINE_RE.findall(q)) >= 2:
+        return True
+    if len(_MCQ_OPTION_TOKEN_RE.findall(q)) >= 2:
+        return True
+    return False
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -163,7 +189,7 @@ def check_item(
     if goal not in ALLOWED_GOALS:
         errs.append(f"ability_goal must be compute|construct, got {goal!r}")
 
-    if MCQ_PAT.search(str(item.get("question") or "")):
+    if question_looks_like_mcq(str(item.get("question") or "")):
         errs.append("MCQ/recognize pattern detected in question")
     if str(item.get("item_form") or "").lower() in {"mcq", "recognize", "choice"}:
         errs.append("forbidden item_form (mcq/recognize)")
