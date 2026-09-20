@@ -1,0 +1,63 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-12",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\lim_{x\\to 0}\\frac{1}{x^2}\\Big(1 - \\cos x\\cdot \\sqrt{\\cos 2x}\\cdot \\sqrt[3]{\\cos 3x}\\Big).$",
+  "answer": "$3$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是 $\\frac{0}{0}$ 型，将括号中的乘积因子进行分拆，再求各项的极限。为此可在括号中插入 $(- \\cos x + \\cos x - \\cdots)$ 来达到分拆的目的。也可做恒等变形 $\\cos x \\cdot \\sqrt{\\cos 2x} \\cdot \\sqrt[3]{\\cos 3x} = e^{\\sum_{k=1}^{3} \\frac{1}{k} \\ln \\cos kx}$ ，用等价无穷小来计算。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 原式 $= \\lim_{x\\to 0}\\frac{1}{x^2}\\left[(1 - \\cos x) + \\cos x\\cdot (1 - \\sqrt{\\cos 2x}) + \\cos x\\cdot \\sqrt{\\cos 2x}\\cdot (1 - \\sqrt[3]{\\cos 3x})\\right]$ $= \\lim_{x\\to 0}\\frac{1}{x^2}(1 - \\cos x) + \\lim_{x\\to 0}\\frac{1}{x^2}(1 - \\sqrt{\\cos 2x}) + \\lim_{x\\to 0}\\frac{1}{x^2}(1 - \\sqrt[3]{\\cos 3x})$ $= \\frac{1}{2} +\\frac{1}{2}\\lim_{x\\to 0}\\frac{1}{x^2} (1 - \\cos 2x) + \\frac{1}{3}\\lim_{x\\to 0}\\frac{1}{x^2} (1 - \\cos 3x)$ （见上题评注） $= \\frac{1}{2} +1 + \\frac{3}{2} = 3.$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 原式 $= \\lim_{x\\to 0}\\frac{1 - \\mathrm{e}^{\\sum_{k = 1}^{3}\\frac{1}{k}\\ln\\cos kx}}{x^{2}} = -\\lim_{x\\to 0}\\frac{\\sum_{k = 1}^{3}\\frac{1}{k}\\ln\\cos kx}{x^{2}} = -\\sum_{k = 1}^{3}\\frac{1}{k}\\lim_{x\\to 0}\\frac{\\ln\\cos kx}{x^{2}}$ $= \\sum_{k = 1}^{3}\\lim_{x\\to 0}\\frac{\\tan kx}{2x} = \\frac{1}{2}\\sum_{k = 1}^{3}k = 3.$"
+      }
+    ],
+    "final_answer": "$3$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "拆成 $\\sum_{k=1}^{3}\\frac{k}{2}=3$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例12*",
+    "page": 20,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,2 +1,82 @@
 {
-  "id":"tx-pu-math-contest-v2-ch1-1.1-ex-10","subject":"math","l2":"函数极限与连续","l3_id":"math.calc.limit.compute","atom_id":"","book_id":"","ability_goal":"construct","item_form":"proof_outline","difficulty":"hit","question":"设连续函数满足 f(x+y)=f(x)f(y)，且f(1)=2，证明f(x)=2^x.","answer":"对任意实数x，f(x)=2^x.","ref_source":"textbook:puheping_math_contest_v2","techniques":["函数复合","函数方程"],"solution":{"steps":[{"id":"s1","text":"分析 先证有理数处结论，再用连续性延拓到实数."},{"id":"s2","text":"由f(x+1)=2f(x)得f(0)=1."},{"id":"s3","text":"由f(1)=f(1/n)^n得f(1/n)=2^{1/n}."},{"id":"s4","text":"从而对有理数m/n有f(m/n)=2^{m/n}."},{"id":"s5","text":"有理数稠密且f连续，故对任意实数x成立."}],"final_answer":"$f(x)=2^x$. ","techniques_used":["函数复合","函数方程"]},"cdps":[{"id":"c1","prompt":"外层/内层函数的定义域分段如何决定复合后的区间划分？","technique":"函数复合","expected":"先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"},{"id":"c2","prompt":"最终显式表达式（或所求对象）的关键结构是什么？","technique":"函数方程","expected":"$f(x)=2^x$."}],"meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"","book_author":"蒲和平","chapter":"","section":"1.1","example_id":"例10*","page":13,"quality_basis":"source_textbook_worked_example","starred":true}}
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-10",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "$ 设有一实值连续函数，对于所有的实数 x 和 y 满足函数方程 $f(x+y)=f(x)f(y)$ ，以及 $f(1)=2$ 。证明： $f(x)=2^{x}$ 。",
+  "answer": "对任意实数 $x$ 都有 $f(x) = 2^x$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "函数复合",
+    "函数方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $1 = \\underbrace{\\frac{1}{n} + \\frac{1}{n} + \\cdots + \\frac{1}{n}}_{n\\text{个}}$ ，根据题设条件易得 $f^n\\left(\\frac{1}{n}\\right) = 2$ ，结论对 $x = \\frac{1}{n}$ 是正确的；同样的道\n\n理，对 $x = \\frac{m}{n}$ 也是正确的；任一实数均是有理数的极限，所以问题就解决了."
+      },
+      {
+        "id": "s2",
+        "text": "对任何实数 $x$ 都有"
+      },
+      {
+        "id": "s3",
+        "text": "f (x + 1) = f (x) f (1) = 2 f (x) \\Rightarrow f (0) = 1."
+      },
+      {
+        "id": "s4",
+        "text": "由于"
+      },
+      {
+        "id": "s5",
+        "text": "f (1) = f \\left(\\underbrace {\\frac {1}{n} + \\frac {1}{n} + \\cdots + \\frac {1}{n}} _ {n \\text {个}}\\right) = f ^ {n} \\left(\\frac {1}{n}\\right) = 2 ,"
+      },
+      {
+        "id": "s6",
+        "text": "于是 $f\\left(\\frac{1}{n}\\right) = 2^{\\frac{1}{n}}$ ，对正有理数 $\\frac{m}{n} (n,m\\in \\mathbb{N}_+)$ ，有"
+      },
+      {
+        "id": "s7",
+        "text": "f \\left({\\frac {m}{n}}\\right) = f \\left(\\underbrace {{\\frac {1}{n}} + {\\frac {1}{n}} + \\cdots + {\\frac {1}{n}}} _ {m {\\text {个}}}\\right) = f ^ {m} \\left({\\frac {1}{n}}\\right) = 2 ^ {\\frac {m}{n}}."
+      }
+    ],
+    "final_answer": "对任意实数 $x$ 都有 $f(x) = 2^x$ .",
+    "techniques_used": [
+      "函数复合",
+      "函数方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "函数复合",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "函数方程",
+      "expected": "f (x) = \\lim _ {n \\rightarrow \\infty} f \\left(x _ {n}\\right) = \\lim _ {n \\rightarrow \\infty} 2 ^ {x _ {n}} = 2 ^ {x}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例10*",
+    "page": 13,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true,
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

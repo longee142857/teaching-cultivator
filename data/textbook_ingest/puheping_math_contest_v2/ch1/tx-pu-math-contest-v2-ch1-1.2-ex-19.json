@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-19",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $x_{n} = \\frac{1}{n}\\cdot \\left|1 - 2 + 3 - \\dots +(-1)^{n + 1}n\\right|$ ，求 $\\lim_{n\\to \\infty}x_n$",
+  "answer": "$\\lim_{n\\to \\infty}x_n = \\frac{1}{2}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是无穷和形式的极限，需要缩项. 缩项就需要讨论 $n$ 的奇、偶，故需要求子列 $\\{x_{2n}\\}$ 与 $\\{x_{2n+1}\\}$ 的极限."
+      },
+      {
+        "id": "s2",
+        "text": "\\begin{array}{r l} x _ {2 n} & = \\frac {1}{2 n} \\cdot | 1 - 2 + 3 - \\dots + (2 n - 1) - 2 n | \\\\ & = \\frac {1}{2 n} \\cdot | (1 + 3 + \\dots + (2 n - 1)) - (2 + 4 + \\dots + 2 n) | = \\frac {1}{2 n} \\cdot | n ^ {2} - (n ^ {2} + n) | = \\frac {1}{2}, \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} x _ {2 n + 1} & = \\frac {1}{2 n + 1} \\cdot \\left| 1 - 2 + 3 - \\dots - 2 n + (2 n + 1) \\right| \\\\ & = \\frac {1}{2 n + 1} \\cdot \\left| (1 + 3 + \\dots + (2 n + 1)) - (2 + 4 + \\dots + 2 n) \\right| \\\\ & = \\frac {1}{2 n + 1} \\cdot \\left| (n ^ {2} + 2 n + 1) - (n ^ {2} + n) \\right| = \\frac {n + 1}{2 n + 1}. \\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\lim_{n\\to \\infty}x_{2n} = \\frac{1}{2},\\lim_{n\\to \\infty}x_{2n + 1} = \\frac{1}{2}$ ，故 $\\lim_{n\\to \\infty}x_n = \\frac{1}{2}$"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}x_n = \\frac{1}{2}$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "递推数列应先证收敛（单调有界/压缩）还是直接求极限方程？",
+      "technique": "极限计算",
+      "expected": "通常先证极限存在，再对递推式两端取极限求值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n\\to \\infty}x_n = \\frac{1}{2}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例19",
+    "page": 23,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

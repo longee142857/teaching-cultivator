@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-07",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $x_{n} = \\sum_{k=1}^{n} \\frac{k^{3} + 6k^{2} + 11k + 5}{(k + 3)!}$ ，求 $\\lim_{n \\to \\infty} x_{n}$ .",
+  "answer": "\\begin{array}{r l}x _ {n}&= \\sum_ {k = 1} ^ {n} \\left(\\frac {1}{k !} - \\frac {1}{(k + 3) !}\\right)\\\\&= \\left(\\frac {1}{1 !} - \\frac {1}{4 !}\\right) + \\left(\\frac {1}{2 !} - \\frac {1}{5 !}\\right) + \\left(\\frac {1}{3 !} - \\frac {1}{6 !}\\right) + \\dots\\\\&\\quad + \\left(\\frac {1}{(n - 2) !} - \\frac {1}{(",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 随着 $n$ 的增加， $x_{n}$ 为无穷项的和。为求极限，需将 $x_{n}$ 进行初等运算或恒等变形化为有限项和的形式，再用极限的运算法则计算极限。"
+      },
+      {
+        "id": "s2",
+        "text": "由于 $k^3 + 6k^2 + 11k + 5 = (k + 1)(k + 2)(k + 3) - 1$ ，所以"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l}x _ {n}&= \\sum_ {k = 1} ^ {n} \\left(\\frac {1}{k !} - \\frac {1}{(k + 3) !}\\right)\\\\&= \\left(\\frac {1}{1 !} - \\frac {1}{4 !}\\right) + \\left(\\frac {1}{2 !} - \\frac {1}{5 !}\\right) + \\left(\\frac {1}{3 !} - \\frac {1}{6 !}\\right) + \\dots\\\\&\\quad + \\left(\\frac {1}{(n - 2) !} - \\frac {1}{(n + 1) !}\\right) + \\left(\\frac {1}{(n - 1) !} - \\frac {1}{(n + 2) !}\\right) + \\left(\\frac {1}{n !} - \\frac {1}{(n + 3) !}\\right)\\\\&= \\frac {1}{1 !} + \\frac {1}{2 !} + \\frac {1}{3 !} - \\frac {1}{(n + 1) !} - \\frac {1}{(n + 2) !} - \\frac {1}{(n + 3) !} \\rightarrow 1 + \\frac {1}{2} + \\frac {1}{6} = \\frac {5}{3} (n \\rightarrow \\infty).\\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "即 $\\lim_{n\\to \\infty}x_n = \\frac{5}{3}$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l}x _ {n}&= \\sum_ {k = 1} ^ {n} \\left(\\frac {1}{k !} - \\frac {1}{(k + 3) !}\\right)\\\\&= \\left(\\frac {1}{1 !} - \\frac {1}{4 !}\\right) + \\left(\\frac {1}{2 !} - \\frac {1}{5 !}\\right) + \\left(\\frac {1}{3 !} - \\frac {1}{6 !}\\right) + \\dots\\\\&\\quad + \\left(\\frac {1}{(n - 2) !} - \\frac {1}{(",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "递推数列应先证收敛（单调有界/压缩）还是直接求极限方程？",
+      "technique": "极限计算",
+      "expected": "通常先证极限存在，再对递推式两端取极限求值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "即 $\\lim_{n\\to \\infty}x_n = \\frac{5}{3}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例7*",
+    "page": 17,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

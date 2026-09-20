@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-36",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 内可导，且 $\\lim_{x\\to \\infty}f'(x) = e,\\lim_{x\\to \\infty}\\left(\\frac{x + c}{x - c}\\right)^x = \\lim_{x\\to \\infty}[f(x) - f(x - 1)]$ ，求 $c.$",
+  "answer": "$\\exists \\xi \\in (x - 1, x)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 右边极限式中是 $f(x)$ 在区间 $[x - 1, x]$ 上的增量，且函数可导，可考虑用拉格朗日中值定理."
+      },
+      {
+        "id": "s2",
+        "text": "由条件易知 $c \\neq 0$ ，而"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {x \\rightarrow \\infty} \\left(\\frac {x + c}{x - c}\\right) ^ {x} = \\lim _ {x \\rightarrow \\infty} \\frac {\\left(1 + \\frac {c}{x}\\right) ^ {x}}{\\left(1 - \\frac {c}{x}\\right) ^ {x}} = e ^ {2 c},\\tag{①}"
+      },
+      {
+        "id": "s4",
+        "text": "又 $f(x)$ 在 $(- \\infty, + \\infty)$ 内可导，由拉格朗日中值定理， $\\exists \\xi \\in (x - 1, x)$ ，使得"
+      },
+      {
+        "id": "s5",
+        "text": "f (x) - f (x - 1) = f ^ {\\prime} (\\xi)."
+      },
+      {
+        "id": "s6",
+        "text": "取极限得"
+      },
+      {
+        "id": "s7",
+        "text": "\\lim _ {x \\rightarrow \\infty} [ f (x) - f (x - 1) ] = \\lim _ {\\xi \\rightarrow \\infty} f ^ {\\prime} (\\xi) = e.\\tag{②}"
+      }
+    ],
+    "final_answer": "$\\exists \\xi \\in (x - 1, x)$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\exists \\xi \\in (x - 1, x)$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例36",
+    "page": 33,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

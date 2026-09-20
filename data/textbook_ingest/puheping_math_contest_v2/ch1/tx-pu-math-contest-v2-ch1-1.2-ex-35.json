@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-35",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $a$ 是非零常数，求 $\\lim_{n\\to \\infty}n^3\\left[\\ln \\left(n + \\arctan{\\frac{a}{n}}\\right) - \\ln \\left(n + \\arctan{\\frac{a}{n + 1}}\\right)\\right]$ .",
+  "answer": "\\begin{array}{l}\\lim _ {n \\rightarrow \\infty} n ^ {3} \\left[ \\ln \\left(n + \\arctan \\frac {a}{n}\\right) - \\ln \\left(n + \\arctan \\frac {a}{n + 1}\\right)\\right] = \\lim _ {n \\rightarrow \\infty} \\frac {n ^ {3}}{\\xi_ {n}} \\cdot \\frac {1}{1 + \\eta_ {n} ^ {2}} \\left(\\frac {a}{n} - \\frac {a}{n + 1}\\right)\\\\=",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 不妨设 $a > 0$ ，极限中的因式 $\\left[\\ln \\left(n + \\arctan \\frac{a}{n}\\right) - \\ln \\left(n + \\arctan \\frac{a}{n+1}\\right)\\right]$ 是函数 $\\ln x$ 在区间 $\\left[n + \\arctan \\frac{a}{n+1}, n + \\arctan \\frac{a}{n}\\right]$ 上的增量，可考虑用拉格朗日中值公式；进一步， $\\arctan \\frac{a}{n} - \\arctan \\frac{a}{n+1}$ 又是函数 $\\arctan x$ 在区间 $\\left[\\frac{a}{n+1}, \\frac{a}{n}\\right]$ 上的增量，可用相同方法处理."
+      },
+      {
+        "id": "s2",
+        "text": "不妨设 $a > 0$ ，对 $\\ln x$ 在区间 $\\left[n + \\arctan \\frac{a}{n + 1}, n + \\arctan \\frac{a}{n}\\right]$ 上用拉格朗日中值定理，则存在 $\\xi_{n} \\in \\left(n + \\arctan \\frac{a}{n + 1}, n + \\arctan \\frac{a}{n}\\right)$ ，使得"
+      },
+      {
+        "id": "s3",
+        "text": "\\ln \\left(n + \\arctan \\frac {a}{n}\\right) - \\ln \\left(n + \\arctan \\frac {a}{n + 1}\\right) = \\frac {1}{\\xi_ {n}} \\left(\\arctan \\frac {a}{n} - \\arctan \\frac {a}{n + 1}\\right)."
+      },
+      {
+        "id": "s4",
+        "text": "再对 $\\arctan x$ 在 $\\left[\\frac{a}{n + 1},\\frac{a}{n}\\right]$ 上用拉格朗日中值定理， $\\exists \\eta_{n}\\in \\left(\\frac{a}{n + 1},\\frac{a}{n}\\right)$ ，使得"
+      },
+      {
+        "id": "s5",
+        "text": "\\arctan \\frac {a}{n} - \\arctan \\frac {a}{n + 1} = \\frac {1}{1 + \\eta_ {n} ^ {2}} \\left(\\frac {a}{n} - \\frac {a}{n + 1}\\right)."
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "n ^ {3} \\left[ \\ln \\left(n + \\arctan \\frac {a}{n}\\right) - \\ln \\left(n + \\arctan \\frac {a}{n + 1}\\right) \\right] = \\frac {n ^ {3}}{\\xi_ {n}} \\cdot \\frac {1}{1 + \\eta_ {n} ^ {2}} \\left(\\frac {a}{n} - \\frac {a}{n + 1}\\right)."
+      }
+    ],
+    "final_answer": "\\begin{array}{l}\\lim _ {n \\rightarrow \\infty} n ^ {3} \\left[ \\ln \\left(n + \\arctan \\frac {a}{n}\\right) - \\ln \\left(n + \\arctan \\frac {a}{n + 1}\\right)\\right] = \\lim _ {n \\rightarrow \\infty} \\frac {n ^ {3}}{\\xi_ {n}} \\cdot \\frac {1}{1 + \\eta_ {n} ^ {2}} \\left(\\frac {a}{n} - \\frac {a}{n + 1}\\right)\\\\=",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\begin{array}{l}\\lim _ {n \\rightarrow \\infty} n ^ {3} \\left[ \\ln \\left(n + \\arctan \\frac {a}{n}\\right) - \\ln \\left(n + \\arctan \\frac {a}{n + 1}\\right)\\right] = \\lim _ {n \\rightarrow \\infty} \\frac {n ^"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例35*",
+    "page": 32,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

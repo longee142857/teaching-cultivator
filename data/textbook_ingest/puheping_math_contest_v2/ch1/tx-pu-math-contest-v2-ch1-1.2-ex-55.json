@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-55",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A_{n}=\\sum_{k=1}^{n}\\frac{n}{n^{2}+k^{2}}$ ，求 $\\lim_{n\\to\\infty}n\\left(\\frac{\\pi}{4}-A_{n}\\right)$ .",
+  "answer": "数列与级数的敛散性无法分割。对某些形式（特别是无穷和形式）的数列极限借助于级数的相关知识来解决会更为方便。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒展开",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易知 $\\lim_{n\\to \\infty}A_n = \\lim_{n\\to \\infty}\\sum_{k = 1}^{n}\\frac{1}{1 + (k / n)^2}\\frac{1}{n} = \\int_0^1\\frac{\\mathrm{d}x}{1 + x^2} = \\frac{\\pi}{4}$ ，所以会想到将所求极限转化为定积分来计算.要将极限化为一个和式，就需要将 $\\int_0^1\\frac{\\mathrm{d}x}{1 + x^2}$ 也写成 $n$ 项和，将点 $x_{k} = \\frac{k}{n}$ 插入积分区间即可实现"
+      },
+      {
+        "id": "s2",
+        "text": "方法1"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {n \\rightarrow \\infty} A _ {n} = \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 1} ^ {n} \\frac {1}{1 + \\left(\\frac {k}{n}\\right) ^ {2}} \\cdot \\frac {1}{n} = \\int_ {0} ^ {1} \\frac {\\mathrm{d} x}{1 + x ^ {2}} = \\arctan x | _ {0} ^ {1} = \\frac {\\pi}{4}."
+      },
+      {
+        "id": "s4",
+        "text": "记 $f(x)=\\frac{1}{1+x^{2}}$ ， $x_{k}=\\frac{k}{n}(k=0,1,\\cdots,n)$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "A _ {n} = \\sum_ {k = 1} ^ {n} f (x _ {k}) (x _ {k} - x _ {k - 1}) = \\sum_ {k = 1} ^ {n} \\int_ {x _ {k - 1}} ^ {x _ {k}} f (x _ {k}) d x."
+      },
+      {
+        "id": "s6",
+        "text": "再由 $\\frac{\\pi}{4} = \\int_0^1 f(x)\\mathrm{d}x = \\sum_{k = 1}^{n}\\int_{x_{k - 1}}^{x_k}f(x)\\mathrm{d}x$ ，得"
+      },
+      {
+        "id": "s7",
+        "text": "\\begin{array}{r l} & {\\underset {n \\to \\infty} {\\lim} n \\bigg (\\frac {\\pi}{4} - A _ {n} \\bigg) = \\underset {n \\to \\infty} {\\lim} n \\sum_ {k = 1} ^ {n} \\int_ {x _ {k - 1}} ^ {x _ {k}} [ f (x) - f (x _ {k}) ] \\mathrm{d} x} \\\\ & {= \\underset {n \\to \\infty} {\\lim} n \\sum_ {k = 1} ^ {n} \\int_ {x _ {k - 1}} ^ {x _ {k}} f ^ {\\prime} (\\xi_ {k}) (x - x _ {k}) \\mathrm{d} x \\quad (\\text {微分中值定理},   \\xi_ {k} \\in (x _ {k - 1}, x _ {k})).} \\end{array}"
+      }
+    ],
+    "final_answer": "数列与级数的敛散性无法分割。对某些形式（特别是无穷和形式）的数列极限借助于级数的相关知识来解决会更为方便。",
+    "techniques_used": [
+      "泰勒展开",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "泰勒展开应取到几阶才能匹配分母（或所需精度）的阶？",
+      "technique": "泰勒展开",
+      "expected": "展开阶数不低于目标表达式中保留的最低阶无穷小阶数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "数列与级数的敛散性无法分割。对某些形式（特别是无穷和形式）的数列极限借助于级数的相关知识来解决会更为方便。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例55*",
+    "page": 45,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

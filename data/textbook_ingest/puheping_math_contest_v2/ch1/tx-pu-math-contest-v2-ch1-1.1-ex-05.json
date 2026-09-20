@@ -1,2 +1,82 @@
 {
-  "id":"tx-pu-math-contest-v2-ch1-1.1-ex-05","subject":"math","l2":"函数极限与连续","l3_id":"math.calc.limit.compute","atom_id":"","book_id":"","ability_goal":"construct","item_form":"blank","difficulty":"hit","question":"求 $y=\\sqrt{x^2-x+1}-\\sqrt{x^2+x+1}$ 的反函数及定义域.","answer":"定义域为 $|y|<1$.","ref_source":"textbook:puheping_math_contest_v2","techniques":["反函数","配方变形"],"solution":{"steps":[{"id":"s1","text":"分析 由 $y=f(x)$ 解关于 $x$ 的方程，再交换变量."},{"id":"s2","text":"当 $x>0$ 时 $y<0$；当 $x<0$ 时 $y>0$."},{"id":"s3","text":"两边平方."},{"id":"s4","text":"$y^2=2(x^2+1)-2\\sqrt{x^4+x^2+1}$."},{"id":"s5","text":"移项并再平方."},{"id":"s6","text":"化简得到 $x$ 关于 $y$ 的表达式."},{"id":"s7","text":"交换变量得反函数."}],"final_answer":"$y=-\\frac{x}{2}\\sqrt{\\frac{4-x^2}{1-x^2}},\\ |x|<1$.","techniques_used":["反函数","配方变形"]},"cdps":[{"id":"c1","prompt":"外层/内层函数的定义域分段如何决定复合后的区间划分？","technique":"反函数","expected":"先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"},{"id":"c2","prompt":"最终显式表达式（或所求对象）的关键结构是什么？","technique":"配方变形","expected":"$y=-\\frac{x}{2}\\sqrt{\\frac{4-x^2}{1-x^2}},\\ |x|<1$."}],"meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"","book_author":"蒲和平","chapter":"","section":"1.1","example_id":"例5*","page":10,"quality_basis":"source_textbook_worked_example","starred":true}}
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-05",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求函数 $y = f(x) = \\sqrt{x^2 - x + 1} - \\sqrt{x^2 + x + 1}$ 的反函数 $y = f^{-1}(x)$ 及其定义域.",
+  "answer": "其定义域为 $\\{y \\| y| < 1\\}$ 。改写记号，得所求反函数为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "反函数",
+    "配方变形"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需由 $y = f(x)$ 解关于 $x$ 的方程，得到 $x = f^{-1}(y)$ ，再交换变量 $x, y$ 即可."
+      },
+      {
+        "id": "s2",
+        "text": "由 $y = \\sqrt{x^2 - x + 1} - \\sqrt{x^2 + x + 1}$ ，易见，当 $x > 0$ 时， $y < 0$ ；当 $x < 0$ 时， $y > 0$ ."
+      },
+      {
+        "id": "s3",
+        "text": "为了解出 $x$ ，两边平方，得"
+      },
+      {
+        "id": "s4",
+        "text": "y ^ {2} = x ^ {2} - x + 1 + x ^ {2} + x + 1 - 2 \\sqrt {(x ^ {2} + 1) ^ {2} - x ^ {2}} = 2 (x ^ {2} + 1) - 2 \\sqrt {x ^ {4} + x ^ {2} + 1},"
+      },
+      {
+        "id": "s5",
+        "text": "移项"
+      },
+      {
+        "id": "s6",
+        "text": "2 \\sqrt {x ^ {4} + x ^ {2} + 1} = 2 (x ^ {2} + 1) - y ^ {2}."
+      },
+      {
+        "id": "s7",
+        "text": "两边再平方，化简得"
+      }
+    ],
+    "final_answer": "其定义域为 $\\{y \\| y| < 1\\}$ 。改写记号，得所求反函数为",
+    "techniques_used": [
+      "反函数",
+      "配方变形"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "反函数",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "配方变形",
+      "expected": "y = - \\frac {x}{2} \\sqrt {\\frac {4 - x ^ {2}}{1 - x ^ {2}}}, \\text { 定义域为 } \\{x \\| x | < 1 \\}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例5*",
+    "page": 10,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true,
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

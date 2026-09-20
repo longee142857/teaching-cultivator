@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-54",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{n\\to \\infty}\\sqrt{n}\\left(1 - \\sum_{k = 1}^{n}\\frac{1}{n + \\sqrt{k}}\\right).$",
+  "answer": "$a_{n} = \\sqrt{n}\\left(1 - \\sum_{k=1}^{n}\\frac{1}{n + \\sqrt{k}}\\right)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼准则",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 各项分母均介于 $n$ 到 $n + \\sqrt{n}$ 之间，为统一分母，将它们做适当的放缩（取为 $n$ 或 $n + \\sqrt{n}$ ），极限式就可表示为定积分，利用夹逼原理就可求得极限."
+      },
+      {
+        "id": "s2",
+        "text": "记 $a_{n} = \\sqrt{n}\\left(1 - \\sum_{k=1}^{n}\\frac{1}{n + \\sqrt{k}}\\right)$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "a _ {n} = \\sqrt {n} \\sum_ {k = 1} ^ {n} \\left(\\frac {1}{n} - \\frac {1}{n + \\sqrt {k}}\\right) = \\frac {1}{\\sqrt {n}} \\sum_ {k = 1} ^ {n} \\frac {\\sqrt {k}}{n + \\sqrt {k}}."
+      },
+      {
+        "id": "s4",
+        "text": "显然"
+      },
+      {
+        "id": "s5",
+        "text": "\\frac {1}{n + \\sqrt {n}} \\sum_ {k = 1} ^ {n} \\sqrt {\\frac {k}{n}} <   \\frac {1}{\\sqrt {n}} \\sum_ {k = 1} ^ {n} \\frac {\\sqrt {k}}{n + \\sqrt {k}} <   \\frac {1}{n} \\sum_ {k = 1} ^ {n} \\sqrt {\\frac {k}{n}}."
+      },
+      {
+        "id": "s6",
+        "text": "而"
+      },
+      {
+        "id": "s7",
+        "text": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sum_ {k = 1} ^ {n} \\sqrt {\\frac {k}{n}} = \\int_ {0} ^ {1} \\sqrt {x} d x = \\frac {2}{3}, \\quad \\lim _ {n \\rightarrow \\infty} \\frac {1}{n + \\sqrt {n}} \\sum_ {k = 1} ^ {n} \\sqrt {\\frac {k}{n}} = \\lim _ {n \\rightarrow \\infty} \\frac {n}{n + \\sqrt {n}} \\cdot \\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sum_ {k = 1} ^ {n} \\sqrt {\\frac {k}{n}} = \\frac {2}{3}."
+      }
+    ],
+    "final_answer": "$a_{n} = \\sqrt{n}\\left(1 - \\sum_{k=1}^{n}\\frac{1}{n + \\sqrt{k}}\\right)$",
+    "techniques_used": [
+      "夹逼准则",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "夹逼准则",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$a_{n} = \\sqrt{n}\\left(1 - \\sum_{k=1}^{n}\\frac{1}{n + \\sqrt{k}}\\right)$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例54",
+    "page": 44,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

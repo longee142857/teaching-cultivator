@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-23",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{n\\to \\infty}\\frac{1}{\\ln n}\\sum_{k = 1}^{n}\\frac{1}{k}.$",
+  "answer": "$\\lim_{n\\to \\infty}\\frac{1}{\\ln n}\\sum_{k = 1}^{n}\\frac{1}{k} = 1.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 分母是 $\\ln n$ ，分子最好能用对应的函数形式来估计。由于 $(\\ln x)'|_{x=k} = \\frac{1}{k}$ ，所以想到用定积分的不等式性质来对分子做放大与缩小。"
+      },
+      {
+        "id": "s2",
+        "text": "由于 $y = \\frac{1}{x}$ 在 $x > 0$ 时单调递减，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\int_ {k} ^ {k + 1} \\frac {1}{x} \\mathrm{d} x \\leqslant \\frac {1}{k} \\leqslant \\int_ {k - 1} ^ {k} \\frac {1}{x} \\mathrm{d} x,"
+      },
+      {
+        "id": "s4",
+        "text": "\\int_ {1} ^ {n + 1} \\frac {1}{x} d x = \\sum_ {k = 1} ^ {n} \\int_ {k} ^ {k + 1} \\frac {1}{x} d x \\leqslant \\sum_ {k = 1} ^ {n} \\frac {1}{k} \\leqslant \\sum_ {k = 2} ^ {n} \\int_ {k - 1} ^ {k} \\frac {1}{x} d x + 1 = \\int_ {1} ^ {n} \\frac {1}{x} d x + 1."
+      },
+      {
+        "id": "s5",
+        "text": "即"
+      },
+      {
+        "id": "s6",
+        "text": "\\ln (n + 1) \\leqslant \\sum_ {k = 1} ^ {n} \\frac {1}{k} \\leqslant \\ln n + 1 \\Rightarrow \\frac {\\ln (n + 1)}{\\ln n} \\leqslant \\frac {1}{\\ln n} \\sum_ {k = 1} ^ {n} \\frac {1}{k} \\leqslant \\frac {\\ln n + 1}{\\ln n}."
+      },
+      {
+        "id": "s7",
+        "text": "由于 $\\lim_{n\\to \\infty}\\frac{\\ln(n + 1)}{\\ln n} = 1 = \\lim_{n\\to \\infty}\\frac{\\ln n + 1}{\\ln n}$ ，所以 $\\lim_{n\\to \\infty}\\frac{1}{\\ln n}\\sum_{k = 1}^{n}\\frac{1}{k} = 1.$"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\frac{1}{\\ln n}\\sum_{k = 1}^{n}\\frac{1}{k} = 1.$",
+    "techniques_used": [
+      "施笃兹定理",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "施笃兹定理",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n\\to \\infty}\\frac{1}{\\ln n}\\sum_{k = 1}^{n}\\frac{1}{k} = 1.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例23",
+    "page": 25,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

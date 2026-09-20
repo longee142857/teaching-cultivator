@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-20",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "$ 对数列 $\\{a_{n}\\}$ ，若存在正整数 p 使得 $\\lim_{n\\to\\infty}(a_{n+p}-a_{n})=\\lambda$ ，证明 $\\lim_{n\\to\\infty}\\frac{a_{n}}{n}=\\frac{\\lambda}{p}$ .",
+  "answer": "} \\lim _ {n \\to \\infty} {\\frac {a _ {n}}{n}} = {\\frac {\\lambda}{p}}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "ε-N定义",
+    "极限定义"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $n = kp + i, i \\in \\{0,1,\\dots,p - 1\\}$ ，则 $\\lim_{n \\to \\infty} (a_{n+p} - a_n) = \\lambda \\Leftrightarrow \\lim_{k \\to \\infty} (a_{(k+1)p+i} - a_{kp+i}) = \\lambda$ ，从而只需证明 $\\lim_{k \\to \\infty} \\frac{a_{(k+1)p+i}}{(k+1)p+i} = \\frac{\\lambda}{p}$ ."
+      },
+      {
+        "id": "s2",
+        "text": "因为对任意自然数 $n \\geqslant p$ ，有 $n = kp + i$ ，其中 $k \\in \\mathbb{N}$ ， $i \\in \\{0,1,\\cdots,p-1\\}$ 。因此由题设条件可得"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {k \\rightarrow \\infty} (a _ {(k + 1) p + i} - a _ {k p + i}) = \\lambda (i = 0, 1, \\dots , p - 1)."
+      },
+      {
+        "id": "s4",
+        "text": "方法1 记 $A_{k}^{(i)} = a_{(k + 1)p + i} - a_{kp + i}$ $(i = 0,1,\\dots ,p - 1)$ ，由于 $\\lim_{k\\to \\infty}A_k^{(i)} = \\lambda$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "\\lim _ {k \\rightarrow \\infty} \\frac {A _ {1} ^ {(i)} + A _ {2} ^ {(i)} + \\cdots + A _ {k} ^ {(i)}}{k} = \\lambda ."
+      },
+      {
+        "id": "s6",
+        "text": "而 $A_{1}^{(i)} + A_{2}^{(i)} + \\dots +A_{k}^{(i)} = a_{(k + 1)p + i} - a_{p + i},\\lim_{k\\to \\infty}\\frac{a_{p + i}}{k} = 0$ ，所以"
+      },
+      {
+        "id": "s7",
+        "text": "\\lambda = \\lim _ {k \\rightarrow \\infty} \\frac {a _ {(k + 1) p + i}}{k} = \\lim _ {k \\rightarrow \\infty} \\left[ \\frac {a _ {(k + 1) p + i}}{(k + 1) p + i} \\cdot \\frac {(k + 1) p + i}{k} \\right] = p \\lim _ {k \\rightarrow \\infty} \\frac {a _ {(k + 1) p + i}}{(k + 1) p + i},"
+      }
+    ],
+    "final_answer": "} \\lim _ {n \\to \\infty} {\\frac {a _ {n}}{n}} = {\\frac {\\lambda}{p}}.",
+    "techniques_used": [
+      "施笃兹定理",
+      "ε-N定义",
+      "极限定义"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "施笃兹定理",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "ε-N定义",
+      "expected": "} \\lim _ {n \\to \\infty} {\\frac {a _ {n}}{n}} = {\\frac {\\lambda}{p}}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例20*",
+    "page": 24,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

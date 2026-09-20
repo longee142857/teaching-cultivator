@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-46",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "$ 求下列极限:\n\n(1) $\\lim_{n\\to \\infty}\\frac{\\sqrt[n]{n!}}{n}$ ; (2) $\\lim_{n\\to \\infty}\\left(\\sqrt[n + 1]{(n + 1)!} -\\sqrt[n]{n!}\\right)$ .\n\n分析（1）属于 $\\frac{\\infty}{\\infty}$ 型，但用施笃兹定理计算时分子难以化简，若取对数，则问题就解决了.\n\n(2) 对 (1) 直接用施笃兹定理就可看出 (2) 的结果.",
+  "answer": "$\\lim_{n\\to \\infty}\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}} = 0,\\quad \\mathrm{e}^{\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}} - 1\\sim \\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}.$ 从而",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "（1）方法1 记 $a_{n} = \\frac{\\sqrt[n]{n!}}{n}$ ，则"
+      },
+      {
+        "id": "s2",
+        "text": "\\ln a _ {n} = \\frac {1}{n} \\ln n! - \\ln n = \\frac {\\ln n ! - n \\ln n}{n}."
+      },
+      {
+        "id": "s3",
+        "text": "取极限并用施笃兹定理，得"
+      },
+      {
+        "id": "s4",
+        "text": "\\begin{array}{r l} \\lim _ {n \\to \\infty} \\ln a _ {n} & = \\lim _ {n \\to \\infty} \\frac {(\\ln n ! - n \\ln n) - [ \\ln (n - 1) ! - (n - 1) \\ln (n - 1) ]}{n - (n - 1)} \\\\ & = \\lim _ {n \\to \\infty} (1 - n) \\ln \\left(1 + \\frac {1}{n - 1}\\right) = - 1. \\end{array}"
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\lim_{n\\to \\infty}\\frac{\\sqrt[n]{n!}}{n} = e^{-1}$"
+      },
+      {
+        "id": "s6",
+        "text": "方法2 记 $x_{n} = \\left(1 + \\frac{1}{n}\\right)^{-n}$ ，则 $\\lim_{n\\to \\infty}x_n = \\lim_{n\\to \\infty}\\left(1 + \\frac{1}{n}\\right)^{-n} = e^{-1}$ 。又"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}} = 0,\\quad \\mathrm{e}^{\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}} - 1\\sim \\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}.$ 从而",
+    "techniques_used": [
+      "施笃兹定理",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "施笃兹定理",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n\\to \\infty}\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}} = 0,\\quad \\mathrm{e}^{\\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}} - 1\\sim \\frac{1}{n + 1}\\ln \\frac{n + 1}{\\sqrt[n]{n!}}.$ 从而"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例46*",
+    "page": 39,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-40",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.lhopital",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\lim_{n\\to \\infty}\\left[\\left(n^3 - n^2 +\\frac{n}{2}\\right)\\mathrm{e}^{\\frac{1}{n}} - \\sqrt{1 + n^6}\\right].$",
+  "answer": "$\\lim_{n \\to \\infty} f(x_n) = c$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "洛必达法则",
+    "未定式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这属于 $\\infty -\\infty$ 型，通分化为 $\\frac{0}{0}$ 或 $\\frac{\\infty}{\\infty}$ 型，为便于通分可先作倒代换."
+      },
+      {
+        "id": "s2",
+        "text": "考虑函数极限 $\\lim_{x\\to +\\infty}\\left[\\left(x^3 -x^2 +\\frac{x}{2}\\right)\\mathrm{e}^{\\frac{1}{x}} - \\sqrt{1 + x^6}\\right].$"
+      },
+      {
+        "id": "s3",
+        "text": "设 $t = \\frac{1}{x}$ ，当 $x\\to +\\infty$ 时， $t\\to 0^{+}$ ，有"
+      },
+      {
+        "id": "s4",
+        "text": "\\begin{array}{l}\\lim _ {x \\rightarrow + \\infty} \\left[\\left(x ^ {3} - x ^ {2} + \\frac {x}{2}\\right) e ^ {\\frac {1}{x}} - \\sqrt {1 + x ^ {6}} \\right] = \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {(1 - t + \\frac {1}{2} t ^ {2}) e ^ {t} - \\sqrt {1 + t ^ {6}}}{t ^ {3}}\\\\= \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {(- 1 + t) e ^ {t} + \\left(1 - t + \\frac {t ^ {2}}{2}\\right) e ^ {t} - \\frac {6 t ^ {5}}{2 \\sqrt {1 + t ^ {6}}}}{3 t ^ {2}} = \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {\\frac {1}{2} e ^ {t} - \\frac {3 t ^ {3}}{\\sqrt {1 + t ^ {6}}}}{3} = \\frac {1}{6}.\\end{array}"
+      },
+      {
+        "id": "s5",
+        "text": "由海涅（Heine）定理知，原极限为 $\\frac{1}{6}$"
+      },
+      {
+        "id": "s6",
+        "text": "评注（1）数列极限不能直接使用洛必达法则，但可考虑对应的函数极限，从而使用洛必达法则。这样做的理论依据是如下的Heine定理。"
+      },
+      {
+        "id": "s7",
+        "text": "Heine 定理: $\\lim_{x \\to a} f(x) = c \\Leftrightarrow \\forall x_n \\to a (n \\to \\infty)$ , 都有 $\\lim_{n \\to \\infty} f(x_n) = c$ ."
+      }
+    ],
+    "final_answer": "$\\lim_{n \\to \\infty} f(x_n) = c$",
+    "techniques_used": [
+      "施笃兹定理",
+      "洛必达法则",
+      "未定式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该未定式是否满足洛必达条件，求导后是否更简？",
+      "technique": "洛必达法则",
+      "expected": "确认为0/0或∞/∞且导数极限存在后再用；若求导更繁则改等价/泰勒。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "洛必达法则",
+      "expected": "$\\lim_{n \\to \\infty} f(x_n) = c$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例40*",
+    "page": 35,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-08",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上连续， $f(0) = f(1)$ ，证明对于任意正整数 $n$ ，必存在 $x_{n} \\in (0,1)$ 使 $f(x_{n}) = f\\left(x_{n} + \\frac{1}{n}\\right)$ .",
+  "answer": "必存在 $x_{n} \\in (0,1)$ 使 $f(x_{n}) = f\\left(x_{n} + \\frac{1}{n}\\right)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "闭区间连续"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $\\varphi(x) = f(x) - f\\left(x + \\frac{1}{n}\\right)$ ，由上题知 $\\varphi(x)$ 在 (0,1) 内一定可取到 $\\frac{1}{n} \\sum_{i=0}^{n-1} \\varphi\\left(\\frac{i}{n}\\right)$ ，由已知条件易得到 $\\frac{1}{n} \\sum_{i=0}^{n-1} \\varphi\\left(\\frac{i}{n}\\right) = 0$ ；也可用反证法证明。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $\\varphi(x) = f(x) - f\\left(x + \\frac{1}{n}\\right)$ , 由 $f(x) \\in C[0,1]$ , 知 $\\varphi(x) \\in C\\left[0,1 - \\frac{1}{n}\\right]$ , 所以 $\\varphi(x)$ 存在最大值（设为 $M$ ）与最小值（设为 $m$ ）。则有"
+      },
+      {
+        "id": "s3",
+        "text": "m \\leqslant \\varphi \\left(\\frac {i}{n}\\right) \\leqslant M (i = 0, 1, \\dots , n - 1)."
+      },
+      {
+        "id": "s4",
+        "text": "所以 $m \\leqslant \\frac{1}{n} \\sum_{i=0}^{n-1} \\varphi\\left(\\frac{i}{n}\\right) \\leqslant M$ ，则存在 $x_n \\in \\left[0, 1 - \\frac{1}{n}\\right]$ ，使"
+      },
+      {
+        "id": "s5",
+        "text": "\\begin{array}{r l} & {\\varphi (x _ {n}) = \\frac {1}{n} \\sum_ {i = 0} ^ {n - 1} \\varphi \\left(\\frac {i}{n}\\right) = \\varphi (0) + \\varphi \\left(\\frac {1}{n}\\right) + \\dots + \\varphi \\left(\\frac {n - 1}{n}\\right)} \\\\ & {\\qquad = f (0) - f \\left(\\frac {1}{n}\\right) + f \\left(\\frac {1}{n}\\right) - f \\left(\\frac {2}{n}\\right) + \\dots + f \\left(\\frac {n - 1}{n}\\right) - f (1)} \\\\ & {\\qquad = f (0) - f (1) = 0.} \\end{array}"
+      },
+      {
+        "id": "s6",
+        "text": "即"
+      },
+      {
+        "id": "s7",
+        "text": "f (x _ {n}) = f \\left(x _ {n} + \\frac {1}{n}\\right)."
+      }
+    ],
+    "final_answer": "必存在 $x_{n} \\in (0,1)$ 使 $f(x_{n}) = f\\left(x_{n} + \\frac{1}{n}\\right)$ .",
+    "techniques_used": [
+      "介值定理",
+      "闭区间连续"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "应调用闭区间连续的哪条性质（介值/最值/零点）？",
+      "technique": "介值定理",
+      "expected": "根据结论形态选择介值、零点或有界性等闭区间连续性质。"
+    },
+    {
+      "id": "c2",
+      "prompt": "如何构造辅助函数把题设化为该性质的条件？",
+      "technique": "闭区间连续",
+      "expected": "f (0) > f \\left(\\frac {1}{n}\\right) > f \\left(\\frac {2}{n}\\right) > \\dots > f (1),"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例8",
+    "page": 55,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}
