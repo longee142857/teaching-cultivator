@@ -6,6 +6,8 @@
 
 只扫描 `data/bank_workshop/incoming/**/*.json`（排除 `*.judge.json` 与 `rejected/`）。同 stem 必须有 `*.judge.json` 且 `decision==accept`，否则跳过。`subject` / `bank_subject` 仅 `math` | `comm`（不为复习槽服务）。
 
+**不要**把 `cloud_cursor_workshop` 自动当 pass：无 accept judge 一律 SKIP。教材例题是另一条路径，见 `tool-scripts/tools/textbook-ingest/README.md`（`--incoming data/textbook_ingest/puheping_math_contest_v2`，`meta.source=textbook_example`）。
+
 ## 字段
 
 | DB | workshop |
@@ -61,7 +63,7 @@ python3 tool-scripts/tools/bank-workshop/import_incoming.py --apply \
 | 参数 | 说明 |
 |------|------|
 | `--db PATH` | 库路径；默认 `$TEACHING_DB` 或 `data/teaching.db` |
-| `--incoming DIR` | 扫描根，默认 `data/bank_workshop/incoming` |
+| `--incoming DIR` | 扫描根，默认 `data/bank_workshop/incoming`；教材目录见 textbook-ingest README |
 | `--imported DIR` | move 目标根，默认 `data/bank_workshop/imported` |
 | `--dry-run` | 默认开启；只校验+打印 |
 | `--apply` | 真正写库；覆盖 dry-run |
