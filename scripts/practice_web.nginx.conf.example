@@ -2,6 +2,11 @@
 # App: deliver/practice_web.py on 127.0.0.1:8768
 # Public: https://practice.longee.icu  (Cloudflare DNS A → this VPS)
 #
+# Set PRACTICE_API_TOKEN on the app. This vhost always sends Host +
+# X-Forwarded-For / X-Real-IP; empty token is fail-closed for that
+# traffic (peer 127.0.0.1 is not treated as a local user).
+# Static /practice and /health stay unauthenticated in the app.
+#
 # Optional tutor: set TUTOR_BACKEND_URL=http://127.0.0.1:61900 on the app,
 # or uncomment the direct proxy block below to DSH mentor-team.
 
