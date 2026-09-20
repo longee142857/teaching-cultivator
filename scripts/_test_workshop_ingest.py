@@ -66,6 +66,31 @@ def _math_item(**kw) -> dict:
     return item
 
 
+def test_mcq_gate_ignores_math_args() -> None:
+    val = _load("validate_incoming", WS / "validate_incoming.py")
+    looks = val.question_looks_like_mcq
+    check(not looks("设 f(x) 连续，证明 pf(c) + qf(d) = (p+q)f(ξ)。"), "pf(c) not MCQ")
+    check(not looks("求 f(x) 在 x=0 的极限。"), "f(x) not MCQ")
+    check(not looks("点 (c) 处可导。"), "single (c) not MCQ")
+    check(not looks("正确选项接近 (A) 但本题为证明。"), "single (A) not MCQ")
+    check(looks("选择题：下列正确的是\n(A) 1\n(B) 2"), "keyword+options is MCQ")
+    check(looks("下列正确的是\n(A) 连续\n(B) 可导\n(C) 可积\n(D) 有界"), "option lines is MCQ")
+    check(looks("选 (A) 连续 (B) 可导"), "two (A)(B) tokens is MCQ")
+    check(looks("A. 1\nB. 2\nC. 3"), "A./B. lines is MCQ")
+    check(looks("下列正确的是 A. 连续 B. 可导"), "inline A. B. is MCQ")
+    check(looks("recognize the equivalent infinitesimal"), "recognize keyword is MCQ")
+
+    ex07 = (
+        "设函数 $f(x)$ 在 $[a, b]$ 上连续，且 $a < c < d < b$ ，"
+        "证明在 $(a, b)$ 内至少存在一个 $\\xi$ ，使得 $pf(c) + qf(d) = (p + q)f(\\xi)$ ."
+        " 其中 $p, q$ 为任意正常数."
+    )
+    check(not looks(ex07), "ex-07 stem not MCQ")
+    item = _math_item(question=ex07, item_form="proof_outline", ability_goal="construct")
+    errs = val.check_item(item, _syll(), False, None)
+    check(not any("MCQ" in e for e in errs), f"check_item skips math (c) {errs}")
+
+
 def test_validate_rejects_review_and_comm_without_atom() -> None:
     val = _load("validate_incoming", WS / "validate_incoming.py")
     syll = _syll()
@@ -138,6 +163,7 @@ def test_ingest_main_rejects_review_file() -> None:
 
 
 def main() -> int:
+    test_mcq_gate_ignores_math_args()
     test_validate_rejects_review_and_comm_without_atom()
     test_ingest_dry_run_and_apply_pass()
     test_ingest_main_rejects_review_file()
