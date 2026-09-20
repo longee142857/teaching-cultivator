@@ -47,10 +47,25 @@ def _future_biweekly(now):
     return now.replace(hour=8, minute=0, second=0, microsecond=0) + datetime.timedelta(days=14)
 
 
+def _biweekly_at(slot_dt):
+    """固定某个周日 08:00；过点后滚 +14 天，避免模拟循环同槽连发。"""
+    def _fn(now):
+        target = slot_dt
+        if target < now:
+            return target + datetime.timedelta(days=14)
+        return target
+    return _fn
+
+
 @contextmanager
-def _sched_patches(*, due=False, last_run=""):
-    """默认非双周到期，避免空 last_run 让 biweekly_is_due 恒真、误跳日推。"""
-    with patch("learner.biweekly_exam.next_biweekly_slot", side_effect=_future_biweekly), \
+def _sched_patches(*, due=False, last_run="", biweekly_slot=None):
+    """默认非双周到期，避免空 last_run 让 biweekly_is_due 恒真、误跳日推。
+
+    biweekly_slot: 覆盖 next_biweekly_slot；默认钉到 +14 天，避免周日 08:00
+    组卷槽干扰日推排序。测隔周卷本身时传入「当天 08:00」。
+    """
+    slot_fn = biweekly_slot if biweekly_slot is not None else _future_biweekly
+    with patch("learner.biweekly_exam.next_biweekly_slot", side_effect=slot_fn), \
          patch("learner.biweekly_exam.biweekly_is_due", return_value=due), \
          patch(
              "learner.biweekly_exam.load_state",
@@ -64,10 +79,11 @@ def _simulate_until(
     end,
     *,
     job_seconds,
-    job_kinds=("github_push", "biweekly_exam"),
+    job_kinds=("biweekly_exam",),
     today_pushes=None,
     due=False,
     last_run="",
+    biweekly_slot=None,
 ):
     """模拟 scheduler wait/fire 循环（含 30s 尾间隔）。job_seconds=长任务占用。"""
     now = start
@@ -75,7 +91,7 @@ def _simulate_until(
     fired: list[tuple[datetime.datetime, str, str | None]] = []
     skipped: list[tuple[datetime.datetime, str, str | None]] = []
     steps = 0
-    with _sched_patches(due=due, last_run=last_run):
+    with _sched_patches(due=due, last_run=last_run, biweekly_slot=biweekly_slot):
         while now < end and steps < 400:
             steps += 1
             target, kind, payload = _next_scheduled_event(
@@ -132,13 +148,20 @@ def main():
           f"consumed Sunday math must not refire today (got {k2}/{p2} {t2})")
 
     # ── 3. 长任务从 08:00 压过 09:00：当日 math 仍会 fire ──
+    # 08:00 长任务现为隔周卷（github trending 已停每日调度）
+    sun_0800 = sun.replace(hour=8, minute=0, second=0, microsecond=0)
     fired, _skipped = _simulate_until(
         sun.replace(hour=7, minute=50),
         sun.replace(hour=12, minute=0),
         job_seconds=2 * 3600,
+        biweekly_slot=_biweekly_at(sun_0800),
     )
     kinds = [(t, k, p) for t, k, p in fired]
     math_fires = [t for t, k, p in fired if k == "cultivate" and p == "math"]
+    check(not any(k == "github_push" for _, k, _ in fired),
+          "github_push is not scheduled (trending daily push is off)")
+    check(any(k == "biweekly_exam" for _, k, _ in fired),
+          f"Sunday 08:00 still fires biweekly_exam (events={kinds})")
     check(len(math_fires) == 1, f"math cultivate fires once (got {len(math_fires)}; events={kinds})")
     if math_fires:
         check(math_fires[0].date() == sun.date(),
@@ -167,7 +190,7 @@ def main():
     check((k_r, p_r) == ("cultivate", "review") and t_r.date() == sun.date(),
           f"then Sunday 19:00 review (got {k_r}/{p_r} {t_r})")
 
-    # ── 5. 其它槽位仍按原规则滚动（github / judge / weekly 不被这次改坏）──
+    # ── 5. 其它槽位仍按原规则滚动（judge / weekly；github_push 已停）──
     with _sched_patches():
         # 已消费当日三槽后，10:00 应走向次日 00:30 pregen（白天无补货）
         all_done = set()
@@ -201,9 +224,11 @@ def main():
 
     mon_morning = datetime.datetime(2026, 8, 31, 7, 0, 0)
     with _sched_patches():
-        t_gh, k_gh, _ = _next_scheduled_event(mon_morning)
-    check(k_gh == "github_push" and t_gh == mon_morning.replace(hour=8, minute=0),
-          f"Monday 07:00 still schedules github 08:00 (got {k_gh} {t_gh})")
+        t_am, k_am, p_am = _next_scheduled_event(mon_morning)
+    check(k_am != "github_push",
+          f"Monday 07:00 must not schedule github_push (got {k_am} {t_am})")
+    check(k_am == "judge" and t_am.hour == 8 and t_am.minute == 30 and t_am.date() == mon_morning.date(),
+          f"Monday 07:00 next is 08:30 judge (got {k_am}/{p_am} {t_am})")
 
     sun_1930 = sun.replace(hour=19, minute=30)
     consumed_eve = set()
@@ -269,8 +294,10 @@ def main():
     math_dup = [t for t, k, p in fired_dup if k == "cultivate" and p == "math"]
     check(len(math_dup) == 0,
           f"manual catch-up + scheduler recover must not both send (fired math={math_dup})")
-    check(any(k == "github_push" for _, k, _ in fired_dup),
-          "github 08:00 still fires when math is already pushed")
+    check(not any(k == "github_push" for _, k, _ in fired_dup),
+          "github_push must not fire when math is already pushed")
+    check(any(k == "judge" for _, k, _ in fired_dup),
+          "08:30 judge still fires when math is already pushed")
 
     # 真 SQLite list_today_pushes：周日 10:12 已有 math → 10:16 不补发
     import tempfile
@@ -328,12 +355,16 @@ def main():
     check(k_due != "cultivate",
           f"due Sunday next is not any cultivate slot (got {k_due}/{p_due})")
 
-    with _sched_patches(due=True):
-        t_gh_due, k_gh_due, _ = _next_scheduled_event(
+    due_sun_0800 = due_sun.replace(hour=8, minute=0, second=0, microsecond=0)
+    with _sched_patches(due=True, last_run="2026-08-30T10:10:00",
+                       biweekly_slot=_biweekly_at(due_sun_0800)):
+        t_bw_due, k_bw_due, _ = _next_scheduled_event(
             due_sun.replace(hour=7, minute=0), consumed=set(),
         )
-    check(k_gh_due == "github_push" and t_gh_due.hour == 8 and t_gh_due.date() == due_sun.date(),
-          f"due Sunday still schedules github 08:00 (got {k_gh_due} {t_gh_due})")
+    check(k_bw_due != "github_push",
+          f"due Sunday 07:00 must not schedule github_push (got {k_bw_due} {t_bw_due})")
+    check(k_bw_due == "biweekly_exam" and t_bw_due == due_sun_0800,
+          f"due Sunday still schedules biweekly 08:00 (got {k_bw_due} {t_bw_due})")
 
     fired_due, _ = _simulate_until(
         due_sun.replace(hour=7, minute=50),
@@ -341,12 +372,15 @@ def main():
         job_seconds=5,
         due=True,
         last_run="2026-08-30T10:10:00",
+        biweekly_slot=_biweekly_at(due_sun_0800),
     )
     cult_due = [(t, p) for t, k, p in fired_due if k == "cultivate"]
     check(len(cult_due) == 0,
           f"due Sunday fires no math/comm/review even if overdue (got {cult_due})")
-    check(any(k == "github_push" for _, k, _ in fired_due),
-          "due Sunday github 08:00 still fires")
+    check(not any(k == "github_push" for _, k, _ in fired_due),
+          "due Sunday must not fire github_push")
+    check(any(k == "biweekly_exam" for _, k, _ in fired_due),
+          "due Sunday biweekly 08:00 still fires")
 
     # 发卷成功后 is_due 变 False，但 last_run 当天仍跳过（重启/同日补发）
     with _sched_patches(due=False, last_run="2026-09-13T10:10:00"):
@@ -373,6 +407,20 @@ def main():
     with _sched_patches(due=True, last_run="2026-08-30T10:10:00"):
         check(not _biweekly_day_skips_cultivate(due_mon),
               "Monday is not a biweekly-Sunday skip day")
+
+    # ── 9. 调度器不再排出 github_push（任意抽样时刻）──
+    sample_times = [
+        datetime.datetime(2026, 8, 31, 7, 59, 0),
+        datetime.datetime(2026, 8, 31, 8, 0, 0),
+        datetime.datetime(2026, 8, 31, 8, 1, 0),
+        datetime.datetime(2026, 9, 13, 7, 59, 0),
+        datetime.datetime(2026, 9, 13, 8, 0, 0),
+    ]
+    with _sched_patches():
+        for sample in sample_times:
+            _, k_off, _ = _next_scheduled_event(sample, consumed=set())
+            check(k_off != "github_push",
+                  f"{sample.isoformat()} must not next-schedule github_push (got {k_off})")
 
     print("\n" + "=" * 60)
     if fails:
