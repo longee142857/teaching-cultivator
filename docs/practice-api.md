@@ -10,7 +10,7 @@
 | 默认基址 | `http://127.0.0.1:8768` |
 | 页面 | `GET /practice` → `web/static/teaching-shell.html` |
 | 开关 | `PRACTICE_WEB_HTTP=1`（默认开） |
-| 鉴权 | `PRACTICE_API_TOKEN`（空则仅建议本机） |
+| 鉴权 | `PRACTICE_API_TOKEN`：非空则必须 `Authorization: Bearer` / `X-Practice-Token` / `?token=`（缺/错 → 401）。空则仅直连 loopback（无 `X-Forwarded-For` / 公网 Host）；nginx 反代公网一律 401，勿把 peer=127.0.0.1 当本机。 |
 | 批改模式 | `PRACTICE_GRADE_MODE=llm\|ref`（llm 失败自动 `ref_fallback`） |
 | 演示种子 | `PRACTICE_ALLOW_DEMO_SEED=1` 时今日无推送可写入三槽演示题 |
 | 讲师代理 | `TUTOR_BACKEND_URL`（如 `http://127.0.0.1:61900`） |
@@ -104,10 +104,15 @@ Header：`X-Learner-Id`（可替代 query/body `learner`）；`Authorization: Be
 PRACTICE_ALLOW_DEMO_SEED=1 PRACTICE_GRADE_MODE=ref \
   python -m deliver.practice_web
 
+# 直连 127.0.0.1 且 token 为空：仍可本机联调
 curl -sS 'http://127.0.0.1:8768/api/v1/practice/bootstrap?learner=demo1'
 curl -sS -X POST -H 'Content-Type: application/json' \
   -d '{"learner":"demo1","item":"i1","push":"1","answer":"0"}' \
   http://127.0.0.1:8768/api/v1/practice/submit
+
+# 生产 / 公网：必须带 PRACTICE_API_TOKEN
+# curl -sS -H "Authorization: Bearer $PRACTICE_API_TOKEN" \
+#   'https://practice.example/api/v1/practice/bootstrap?learner=demo1'
 ```
 
 浏览器打开 `http://127.0.0.1:8768/practice?learner=demo1`。

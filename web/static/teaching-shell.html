@@ -964,13 +964,25 @@
       var CAPABILITY = null;
       var PLACEHOLDER_LEARNER = "stu_1024";
 
+      function practiceToken() {
+        try {
+          return new URL(location.href).searchParams.get("token") || "";
+        } catch (e) {
+          return "";
+        }
+      }
       function apiUrl(path) {
-        return (API_BASE || "") + path;
+        var url = (API_BASE || "") + path;
+        var t = practiceToken();
+        if (!t) return url;
+        return url + (url.indexOf("?") >= 0 ? "&" : "?") + "token=" + encodeURIComponent(t);
       }
       function apiHeaders(extra) {
         var h = { "Accept": "application/json" };
         if (extra) Object.keys(extra).forEach(function (k) { h[k] = extra[k]; });
         if (typeof state !== "undefined" && state && state.learner) h["X-Learner-Id"] = state.learner;
+        var t = practiceToken();
+        if (t) h["X-Practice-Token"] = t;
         return h;
       }
       function applyBootstrap(data) {
