@@ -151,7 +151,8 @@ def test_catalog_dir_dry_run_scans() -> None:
     check(proc.returncode == 0, f"catalog dry-run rc={proc.returncode} {out[-800:]}")
     check("mode=dry-run" in out, f"dry-run banner {out[:400]}")
     check(str(TEXTBOOK_DIR) in out, f"incoming path printed {out[:400]}")
-    check("imported=0" in out, f"example json not imported {out[-400:]}")
+    check("failed=0" in out, f"catalog dry-run no fail {out[-400:]}")
+    check("imported=85" in out, f"85 textbook items dry-ok {out[-200:]}")
     check("catalog example" in out, f"notes skipped example {out}")
 
 
