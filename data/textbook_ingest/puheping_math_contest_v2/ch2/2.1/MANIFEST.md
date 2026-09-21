@@ -10,7 +10,7 @@ Pages: OCR 65–81 (cut at 习题2.1)
 | tx-pu-math-contest-v2-ch2-2.1-ex-02 | 例2 | 导数的概念 | 65 | math.calc.diff.def |  |
 | tx-pu-math-contest-v2-ch2-2.1-ex-03 | 例3 | 导数的概念 | 66 | math.calc.diff.def |  |
 | tx-pu-math-contest-v2-ch2-2.1-ex-04 | 例4 | 导数的概念 | 66 | math.calc.diff.def |  |
-| tx-pu-math-contest-v2-2.1-ex-05 | 例5 | 导数的概念 | 67 | math.calc.diff.def |  |
+| tx-pu-math-contest-v2-ch2-2.1-ex-05 | 例5 | 导数的概念 | 67 | math.calc.diff.def |  |
 | tx-pu-math-contest-v2-ch2-2.1-ex-06 | 例6 | 导数的概念 | 67 | math.calc.diff.def |  |
 | tx-pu-math-contest-v2-ch2-2.1-ex-07 | 例7 | 导数的概念 | 67 | math.calc.diff.def |  |
 | tx-pu-math-contest-v2-ch2-2.1-ex-08 | 例8* | 导数的概念 | 69 | math.calc.diff.def | * |
