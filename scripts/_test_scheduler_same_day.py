@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""同日补触发：08:00 长任务压过 09:00 时，当日 math 日推不得滚到明天。
+"""调度器：工作日同日补触发；周六/周日跳过 09/15/19 日推；双周卷节奏不变。
 
 纯 datetime / scheduler，无钉钉、无 live 推送。
 """
@@ -21,10 +21,12 @@ from contextlib import contextmanager
 
 from main import (  # noqa: E402
     PUSH_SLOTS,
+    _apply_biweekly_cultivate_skip,
     _biweekly_day_skips_cultivate,
     _cultivate_consumed_key,
     _daily_slot_target,
     _day_for_slot,
+    _is_cultivate_skip_day,
     _merge_today_pushes_into_consumed,
     _next_scheduled_event,
     _note_event_fired,
@@ -99,12 +101,14 @@ def _simulate_until(
             )
             wait = (target - now).total_seconds()
             if wait >= 120:
-                now += datetime.timedelta(seconds=30)
+                # 快进到即将到点，避免周末全日模拟被 30s 步数上限截断
+                now += datetime.timedelta(seconds=wait - 90)
                 continue
             if wait > 0:
                 now += datetime.timedelta(seconds=wait)
             if kind == "cultivate" and payload:
                 _merge_today_pushes_into_consumed(consumed, now, today_pushes)
+                _apply_biweekly_cultivate_skip(consumed, now)
                 if _cultivate_consumed_key(payload, _day_for_slot(now)) in consumed:
                     skipped.append((now, kind, payload))
                     now += datetime.timedelta(seconds=30)
@@ -116,25 +120,40 @@ def _simulate_until(
     return fired, skipped
 
 
+def _no_weekend_cultivate(target, kind, payload, msg):
+    """日推不得落在周六/周日。"""
+    if kind != "cultivate":
+        check(True, msg)
+        return
+    check(
+        not _is_cultivate_skip_day(target.date()),
+        f"{msg} (got {kind}/{payload} {target.isoformat()} weekday={target.weekday()})",
+    )
+
+
 def main():
+    sat = datetime.datetime(2026, 8, 29, 0, 0, 0)  # Saturday
     sun = datetime.datetime(2026, 8, 30, 0, 0, 0)  # Sunday
+    mon = datetime.datetime(2026, 8, 31, 0, 0, 0)  # Monday
+    check(sat.weekday() == 5, "2026-08-29 is Saturday")
     check(sun.weekday() == 6, "2026-08-30 is Sunday")
+    check(mon.weekday() == 0, "2026-08-31 is Monday")
     from cultivate_bank import PREGEN_SLOTS
     check("11:00" not in [t for t, _ in PREGEN_SLOTS], "PREGEN_SLOTS has no 11:00")
     check(all(t < "09:00" for t, _ in PREGEN_SLOTS), "all pregen before 09:00")
 
-    # ── 1. 过点同日：09:00 保持当天，不 +1 天 ──
-    now = sun.replace(hour=10, minute=0)
+    # ── 1. 工作日过点同日：09:00 保持当天，不 +1 天 ──
+    now = mon.replace(hour=10, minute=0)
     with _sched_patches():
         target, kind, payload = _next_scheduled_event(now)
     check(kind == "cultivate" and payload == "math",
-          f"10:00 Sunday next is cultivate/math (got {kind}/{payload})")
+          f"10:00 Monday next is cultivate/math (got {kind}/{payload})")
     check(target.date() == now.date() and target.hour == 9,
-          f"overdue math stays Sunday 09:00, not +1 day (got {target.isoformat()})")
+          f"overdue math stays Monday 09:00, not +1 day (got {target.isoformat()})")
 
     old_roll = now.replace(hour=9, minute=0) + datetime.timedelta(days=1)
     check(target.date() != old_roll.date(),
-          "must not silently roll 09:00 math to Monday")
+          "must not silently roll 09:00 math to Tuesday")
 
     # ── 2. 已消费则滚到明天，避免同槽连发 ──
     consumed = set()
@@ -145,63 +164,50 @@ def main():
         k2 == "cultivate" and p2 == "math" and t2.date() == now.date()
     )
     check(not math_again_today,
-          f"consumed Sunday math must not refire today (got {k2}/{p2} {t2})")
+          f"consumed Monday math must not refire today (got {k2}/{p2} {t2})")
 
-    # ── 3. 长任务从 08:00 压过 09:00：当日 math 仍会 fire ──
-    # 08:00 长任务现为隔周卷（github trending 已停每日调度）
-    sun_0800 = sun.replace(hour=8, minute=0, second=0, microsecond=0)
+    # ── 3. 长任务从 08:30 压过 09:00：当日 math 仍会 fire ──
     fired, _skipped = _simulate_until(
-        sun.replace(hour=7, minute=50),
-        sun.replace(hour=12, minute=0),
+        mon.replace(hour=7, minute=50),
+        mon.replace(hour=12, minute=0),
         job_seconds=2 * 3600,
-        biweekly_slot=_biweekly_at(sun_0800),
+        job_kinds=("judge",),
     )
     kinds = [(t, k, p) for t, k, p in fired]
     math_fires = [t for t, k, p in fired if k == "cultivate" and p == "math"]
     check(not any(k == "github_push" for _, k, _ in fired),
           "github_push is not scheduled (trending daily push is off)")
-    check(any(k == "biweekly_exam" for _, k, _ in fired),
-          f"Sunday 08:00 still fires biweekly_exam (events={kinds})")
+    check(any(k == "judge" for _, k, _ in fired),
+          f"Monday 08:30 still fires judge (events={kinds})")
     check(len(math_fires) == 1, f"math cultivate fires once (got {len(math_fires)}; events={kinds})")
     if math_fires:
-        check(math_fires[0].date() == sun.date(),
-              f"math runs Sunday after 2h 08:00 job, not +1 day (got {math_fires[0].isoformat()})")
-        check(math_fires[0] >= sun.replace(hour=10),
+        check(math_fires[0].date() == mon.date(),
+              f"math runs Monday after 2h 08:30 job, not +1 day (got {math_fires[0].isoformat()})")
+        check(math_fires[0] >= mon.replace(hour=10),
               f"math catch-up is after the long job (got {math_fires[0].isoformat()})")
 
-    monday_math = [t for t in math_fires if t.date() == (sun + datetime.timedelta(days=1)).date()]
-    check(not monday_math, "math must not be deferred to Monday")
+    tuesday_math = [t for t in math_fires if t.date() == (mon + datetime.timedelta(days=1)).date()]
+    check(not tuesday_math, "math must not be deferred to Tuesday")
 
     # ── 4. 15:00 / 19:00 同样同日补，不丢到明天 ──
-    late = sun.replace(hour=20, minute=10)
+    late = mon.replace(hour=20, minute=10)
     consumed_late = set()
     with _sched_patches():
         t_m, k_m, p_m = _next_scheduled_event(late, consumed=consumed_late)
-    check((k_m, p_m) == ("cultivate", "math") and t_m.date() == sun.date(),
-          f"20:10 still owes Sunday math first (got {k_m}/{p_m} {t_m})")
+    check((k_m, p_m) == ("cultivate", "math") and t_m.date() == mon.date(),
+          f"20:10 still owes Monday math first (got {k_m}/{p_m} {t_m})")
     _note_event_fired(consumed_late, "cultivate", "math", late)
     with _sched_patches():
         t_c, k_c, p_c = _next_scheduled_event(late, consumed=consumed_late)
-    check((k_c, p_c) == ("cultivate", "comm") and t_c.date() == sun.date(),
-          f"then Sunday 15:00 comm (got {k_c}/{p_c} {t_c})")
+    check((k_c, p_c) == ("cultivate", "comm") and t_c.date() == mon.date(),
+          f"then Monday 15:00 comm (got {k_c}/{p_c} {t_c})")
     _note_event_fired(consumed_late, "cultivate", "comm", late)
     with _sched_patches():
         t_r, k_r, p_r = _next_scheduled_event(late, consumed=consumed_late)
-    check((k_r, p_r) == ("cultivate", "review") and t_r.date() == sun.date(),
-          f"then Sunday 19:00 review (got {k_r}/{p_r} {t_r})")
+    check((k_r, p_r) == ("cultivate", "review") and t_r.date() == mon.date(),
+          f"then Monday 19:00 review (got {k_r}/{p_r} {t_r})")
 
     # ── 5. 其它槽位仍按原规则滚动（judge / weekly；github_push 已停）──
-    with _sched_patches():
-        # 已消费当日三槽后，10:00 应走向次日 00:30 pregen（白天无补货）
-        all_done = set()
-        for _, subj in PUSH_SLOTS:
-            _note_event_fired(all_done, "cultivate", subj, now)
-        t_n, k_n, p_n = _next_scheduled_event(now, consumed=all_done)
-    check(
-        k_n == "weekly_report" and t_n.date() == sun.date() and t_n.hour == 20,
-        f"after daily pushes, next is Sunday 20:00 weekly (got {k_n}/{p_n} {t_n})",
-    )
-
     mon_1030 = datetime.datetime(2026, 8, 31, 10, 30, 0)
     with _sched_patches():
         all_mon = set()
@@ -231,11 +237,8 @@ def main():
           f"Monday 07:00 next is 08:30 judge (got {k_am}/{p_am} {t_am})")
 
     sun_1930 = sun.replace(hour=19, minute=30)
-    consumed_eve = set()
-    for _, subj in PUSH_SLOTS:
-        _note_event_fired(consumed_eve, "cultivate", subj, sun_1930)
     with _sched_patches():
-        t_w, k_w, _ = _next_scheduled_event(sun_1930, consumed=consumed_eve)
+        t_w, k_w, _ = _next_scheduled_event(sun_1930, consumed=set())
     check(k_w == "weekly_report" and t_w == sun.replace(hour=20, minute=0),
           f"Sunday 19:30 still schedules weekly 20:00 (got {k_w} {t_w})")
 
@@ -258,22 +261,36 @@ def main():
         time.sleep(0.02)
     check(bool(started) and bool(finished), "biweekly worker still runs the job")
 
-    # _daily_slot_target 直接断言旧 +1 天 vs 同日补
+    # _daily_slot_target：工作日同日补；周末不补，滚到周一
     slot = _daily_slot_target(
         now, "09:00", kind="cultivate", payload="math",
         consumed=set(), catch_up_same_day=True,
     )
     check(slot == now.replace(hour=9, minute=0, second=0, microsecond=0),
-          f"_daily_slot_target catch-up keeps Sunday 09:00 (got {slot})")
+          f"_daily_slot_target catch-up keeps Monday 09:00 (got {slot})")
     slot_old = _daily_slot_target(
         now, "09:00", kind="cultivate", payload="math",
         consumed=set(), catch_up_same_day=False,
     )
-    check(slot_old.date() == (sun + datetime.timedelta(days=1)).date(),
+    check(slot_old.date() == (mon + datetime.timedelta(days=1)).date(),
           f"without catch-up, slot still +1 day (got {slot_old.date()})")
 
+    sat_1016 = sat.replace(hour=10, minute=16)
+    slot_sat = _daily_slot_target(
+        sat_1016, "09:00", kind="cultivate", payload="math",
+        consumed=set(), catch_up_same_day=True,
+    )
+    check(slot_sat.date() == mon.date() and slot_sat.hour == 9,
+          f"Saturday catch-up must not keep Sat 09:00, roll to Monday (got {slot_sat})")
+    slot_sun = _daily_slot_target(
+        sun.replace(hour=10, minute=0), "09:00", kind="cultivate", payload="math",
+        consumed=set(), catch_up_same_day=True,
+    )
+    check(slot_sun.date() == mon.date() and slot_sun.hour == 9,
+          f"Sunday catch-up must not keep Sun 09:00, roll to Monday (got {slot_sun})")
+
     # ── 7. 人工补发已落库 → 过点 09:00 不得再发（#5 consumed 洞）──
-    now_1016 = sun.replace(hour=10, minute=16)
+    now_1016 = mon.replace(hour=10, minute=16)
     manual_math = [{"subject": "math", "slot": "math", "item_id": 127}]
     with _sched_patches():
         t_dup, k_dup, p_dup = _next_scheduled_event(
@@ -283,12 +300,13 @@ def main():
         k_dup == "cultivate" and p_dup == "math" and t_dup.date() == now_1016.date()
     )
     check(not math_again,
-          f"existing Sunday math push suppresses overdue 09:00 (got {k_dup}/{p_dup} {t_dup})")
+          f"existing Monday math push suppresses overdue 09:00 (got {k_dup}/{p_dup} {t_dup})")
 
     fired_dup, skipped_dup = _simulate_until(
-        sun.replace(hour=7, minute=50),
-        sun.replace(hour=12, minute=0),
+        mon.replace(hour=7, minute=50),
+        mon.replace(hour=12, minute=0),
         job_seconds=2 * 3600,
+        job_kinds=("judge",),
         today_pushes=manual_math,
     )
     math_dup = [t for t, k, p in fired_dup if k == "cultivate" and p == "math"]
@@ -299,10 +317,9 @@ def main():
     check(any(k == "judge" for _, k, _ in fired_dup),
           "08:30 judge still fires when math is already pushed")
 
-    # 真 SQLite list_today_pushes：周日 10:12 已有 math → 10:16 不补发
+    # 真 SQLite list_today_pushes：周一 10:12 已有 math → 10:16 不补发
     import tempfile
     import config as config_mod
-    from learner import db as db_mod
     from learner.db import get_store, reset_store, utc_from_shanghai
 
     with tempfile.TemporaryDirectory() as td:
@@ -322,11 +339,11 @@ def main():
                     item_id=iid,
                     learner_id=None,
                     slot="math",
-                    pushed_at=utc_from_shanghai("2026-08-30", "10:12"),
+                    pushed_at=utc_from_shanghai("2026-08-31", "10:12"),
                 )
-                rows = store.list_today_pushes(None, "2026-08-30")
+                rows = store.list_today_pushes(None, "2026-08-31")
                 check(any((r.get("subject") or "").lower() == "math" for r in rows),
-                      f"list_today_pushes has Sunday math (n={len(rows)})")
+                      f"list_today_pushes has Monday math (n={len(rows)})")
                 with _sched_patches():
                     t_db, k_db, p_db = _next_scheduled_event(
                         now_1016, consumed=set(), today_pushes=rows,
@@ -336,11 +353,78 @@ def main():
                     and t_db.date() == now_1016.date()
                 )
                 check(not db_math,
-                      f"SQLite Sunday math push blocks 09:00 catch-up (got {k_db}/{p_db} {t_db})")
+                      f"SQLite Monday math push blocks 09:00 catch-up (got {k_db}/{p_db} {t_db})")
             finally:
                 reset_store()
 
-    # ── 8. 隔周到期周日：三槽日推整日跳过（无 push 行也不补发）──
+    # ── 8. 每个周末（含非双周周日）三槽日推整日跳过，不按过期工作日回填 ──
+    for label, day_dt in (("Saturday", sat), ("Sunday", sun)):
+        check(_is_cultivate_skip_day(day_dt.date()), f"{label} is a cultivate skip day")
+        with _sched_patches(due=False, last_run="2026-08-16T08:00:00"):
+            check(_biweekly_day_skips_cultivate(day_dt.replace(hour=10, minute=0)),
+                  f"{label} skips cultivate even when biweekly is not due")
+            t_we, k_we, p_we = _next_scheduled_event(
+                day_dt.replace(hour=10, minute=0), consumed=set(),
+            )
+        weekend_math = (
+            k_we == "cultivate" and p_we == "math" and t_we.date() == day_dt.date()
+        )
+        check(not weekend_math,
+              f"{label} 10:00 does not catch-up math (got {k_we}/{p_we} {t_we})")
+        check(k_we != "cultivate" or t_we.date() != day_dt.date(),
+              f"{label} next is not any same-day cultivate slot (got {k_we}/{p_we} {t_we})")
+        _no_weekend_cultivate(t_we, k_we, p_we, f"{label} 10:00 cultivate target is weekday")
+
+        # 尚未到点的未来槽（08:45 看 09/15/19）也不排周末
+        with _sched_patches(due=False, last_run="2026-08-16T08:00:00"):
+            t_early, k_early, p_early = _next_scheduled_event(
+                day_dt.replace(hour=8, minute=45), consumed=set(),
+            )
+        check(not (k_early == "cultivate" and t_early.date() == day_dt.date()),
+              f"{label} 08:45 does not schedule today's 09:00 math (got {k_early}/{p_early} {t_early})")
+
+        fired_we, _ = _simulate_until(
+            day_dt.replace(hour=7, minute=50),
+            day_dt.replace(hour=20, minute=30),
+            job_seconds=5,
+            due=False,
+            last_run="2026-08-16T08:00:00",
+        )
+        cult_we = [(t, p) for t, k, p in fired_we if k == "cultivate"]
+        check(len(cult_we) == 0,
+              f"{label} fires no math/comm/review even if overdue (got {cult_we})")
+        fired_mid, _ = _simulate_until(
+            day_dt.replace(hour=14, minute=50),
+            day_dt.replace(hour=19, minute=20),
+            job_seconds=5,
+            due=False,
+            last_run="2026-08-16T08:00:00",
+        )
+        cult_mid = [(t, p) for t, k, p in fired_mid if k == "cultivate"]
+        check(len(cult_mid) == 0,
+              f"{label} 15:00/19:00 slots are not catch-up-filled (got {cult_mid})")
+
+    # 周五已消费三槽 → 下一档日推是周一，不是周六补洞
+    fri = datetime.datetime(2026, 8, 28, 20, 10, 0)
+    check(fri.weekday() == 4, "2026-08-28 is Friday")
+    consumed_fri = set()
+    for _, subj in PUSH_SLOTS:
+        _note_event_fired(consumed_fri, "cultivate", subj, fri)
+    with _sched_patches():
+        t_fri, k_fri, p_fri = _next_scheduled_event(fri, consumed=consumed_fri)
+    if k_fri == "cultivate":
+        check(t_fri.date() == mon.date(),
+              f"Friday after slots next cultivate is Monday not weekend (got {k_fri}/{p_fri} {t_fri})")
+    else:
+        # 可能先撞上周末 pregen/judge/weekly；再问周一早上应排 math
+        with _sched_patches():
+            t_mon9, k_mon9, p_mon9 = _next_scheduled_event(
+                mon.replace(hour=8, minute=45), consumed=set(),
+            )
+        check(k_mon9 == "cultivate" and p_mon9 == "math" and t_mon9.date() == mon.date(),
+              f"Monday 08:45 still schedules 09:00 math (got {k_mon9}/{p_mon9} {t_mon9})")
+
+    # ── 9. 隔周到期周日：日推仍跳过，组卷 08:00 仍发（节奏不变）──
     due_sun = datetime.datetime(2026, 9, 13, 10, 0, 0)  # Sunday, next cycle
     check(due_sun.weekday() == 6, "2026-09-13 is Sunday")
     with _sched_patches(due=True, last_run="2026-08-30T10:10:00"):
@@ -382,33 +466,36 @@ def main():
     check(any(k == "biweekly_exam" for _, k, _ in fired_due),
           "due Sunday biweekly 08:00 still fires")
 
-    # 发卷成功后 is_due 变 False，但 last_run 当天仍跳过（重启/同日补发）
+    # 发卷成功后 is_due 变 False，周末仍跳过（重启/同日补发）
     with _sched_patches(due=False, last_run="2026-09-13T10:10:00"):
         check(_biweekly_day_skips_cultivate(due_sun.replace(hour=15, minute=0)),
-              "last_run today still skips after is_due flips")
+              "Sunday still skips after is_due flips")
         t_after, k_after, p_after = _next_scheduled_event(
             due_sun.replace(hour=15, minute=0), consumed=set(),
         )
     check(not (k_after == "cultivate" and p_after == "comm" and t_after.date() == due_sun.date()),
           f"after papers, 15:00 comm still skipped (got {k_after}/{p_after} {t_after})")
 
-    # 非到期周日：日推照常（含过点补发）
+    # 非到期周日：日推同样跳过（不再只跳双周组卷日）
     off_sun = datetime.datetime(2026, 8, 16, 10, 0, 0)  # Sunday, 7 days after 8/9
     check(off_sun.weekday() == 6, "2026-08-16 is Sunday")
     with _sched_patches(due=False, last_run="2026-08-09T08:00:00"):
-        check(not _biweekly_day_skips_cultivate(off_sun),
-              "off-week Sunday does not skip cultivate")
+        check(_biweekly_day_skips_cultivate(off_sun),
+              "off-week Sunday also skips cultivate")
         t_off, k_off, p_off = _next_scheduled_event(off_sun, consumed=set())
-    check(k_off == "cultivate" and p_off == "math" and t_off.date() == off_sun.date(),
-          f"non-biweekly Sunday still catch-up math (got {k_off}/{p_off} {t_off})")
+    check(not (k_off == "cultivate" and p_off == "math" and t_off.date() == off_sun.date()),
+          f"non-biweekly Sunday must not catch-up math (got {k_off}/{p_off} {t_off})")
 
-    # 到期周一不跳（不是隔周周日）
+    # 到期周一不跳（周末才跳日推；双周 due 标志不把工作日关掉）
     due_mon = datetime.datetime(2026, 9, 14, 10, 0, 0)
     with _sched_patches(due=True, last_run="2026-08-30T10:10:00"):
         check(not _biweekly_day_skips_cultivate(due_mon),
-              "Monday is not a biweekly-Sunday skip day")
+              "Monday is not a weekend skip day")
+        t_dm, k_dm, p_dm = _next_scheduled_event(due_mon, consumed=set())
+    check(k_dm == "cultivate" and p_dm == "math" and t_dm.date() == due_mon.date(),
+          f"Monday still catch-up math even if biweekly_is_due (got {k_dm}/{p_dm} {t_dm})")
 
-    # ── 9. 调度器不再排出 github_push（任意抽样时刻）──
+    # ── 10. 调度器不再排出 github_push（任意抽样时刻）──
     sample_times = [
         datetime.datetime(2026, 8, 31, 7, 59, 0),
         datetime.datetime(2026, 8, 31, 8, 0, 0),
