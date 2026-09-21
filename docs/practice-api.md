@@ -15,7 +15,7 @@
 | 演示种子 | `PRACTICE_ALLOW_DEMO_SEED=1` 时今日无推送可写入三槽演示题 |
 | 讲师代理 | `TUTOR_BACKEND_URL`（如 `http://127.0.0.1:61900`） |
 
-深链（钉钉通知）：`/practice?learner={id}&item=i{n}&push={pushId}`
+深链（钉钉通知）：`/practice?learner={id}&item=i{n}&push={pushId}`；`PRACTICE_API_TOKEN` 非空时 `build_deep_link` 再附 `token=`（旧链无 token 会 401，需重推或手工补）。
 
 ## HTTP 路由
 

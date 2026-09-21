@@ -246,6 +246,8 @@ def test_bootstrap_submit(tmp_db: str):
         check("throwOnError: false" in html, "preview KaTeX fails soft")
         check("提交仍用上方原文" in html, "submit uses edited source not HTML")
         check("practiceToken" in html and "X-Practice-Token" in html, "shell forwards ?token=")
+        check('p.set("token", t)' in html, "writeUrl preserves existing ?token=")
+        check("&token=" in html and "practicePath" in html, "practicePath keeps URL token")
 
         nid = math_item.get("itemId")
         conn.request("GET", "/api/v1/practice/item?learner=demo_learner&item=" + str(nid))
