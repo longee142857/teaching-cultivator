@@ -1,0 +1,91 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-17",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $u = f(2x + y^2)$ ，其中 $x, y$ 满足方程 $y + e^y = x$ ，且 $f$ 二阶可导，求 $\\left.\\frac{d^2 u}{dx^2}\\right|_{x=1}$ .",
+  "answer": "\\left. \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} x ^ {2}} \\right| _ {x = 1} = 4 f ^ {\\prime \\prime} (2) + \\frac {1}{2} f ^ {\\prime} (2).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "隐函数求导",
+    "复合求导",
+    "高阶导数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是复合函数求导问题，由链式法则计算. 中间变量 $y$ 对 $x$ 的导数由隐函数方程两边求导确定."
+      },
+      {
+        "id": "s2",
+        "text": "由 $y + \\mathrm{e}^{y} = x$ 知，当 $x = 1$ 时， $y = 0$ . 且有"
+      },
+      {
+        "id": "s3",
+        "text": "\\frac {\\mathrm{d} y}{\\mathrm{d} x} + \\mathrm{e} ^ {y} \\frac {\\mathrm{d} y}{\\mathrm{d} x} = 1 \\Rightarrow \\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {1}{1 + \\mathrm{e} ^ {y}}, \\frac {\\mathrm{d} ^ {2} y}{\\mathrm{d} x ^ {2}} = - \\frac {\\mathrm{e} ^ {y}}{(1 + \\mathrm{e} ^ {y}) ^ {3}},"
+      },
+      {
+        "id": "s4",
+        "text": "得到"
+      },
+      {
+        "id": "s5",
+        "text": "\\left. \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\right| _ {x = 1} = \\frac {1}{2}, \\quad \\left. \\frac {\\mathrm{d} ^ {2} y}{\\mathrm{d} x ^ {2}} \\right| _ {x = 1} = - \\frac {1}{8}.\\tag{①}"
+      },
+      {
+        "id": "s6",
+        "text": "又"
+      },
+      {
+        "id": "s7",
+        "text": "\\begin{array}{c} \\frac {\\mathrm{d} u}{\\mathrm{d} x} = 2 f ^ {\\prime} (2 x + y ^ {2}) \\Bigg (1 + y \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\Bigg), \\\\ \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} x ^ {2}} = 4 f ^ {\\prime \\prime} (2 x + y ^ {2}) \\Bigg (1 + y \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\Bigg) ^ {2} + 2 f ^ {\\prime} (2 x + y ^ {2}) \\Bigg (\\left(\\frac {\\mathrm{d} y}{\\mathrm{d} x}\\right) ^ {2} + y \\frac {\\mathrm{d} ^ {2} y}{\\mathrm{d} x ^ {2}} \\Bigg). \\end{array}"
+      },
+      {
+        "id": "s8",
+        "text": "将①式代入得"
+      },
+      {
+        "id": "s9",
+        "text": "\\left. \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} x ^ {2}} \\right| _ {x = 1} = 4 f ^ {\\prime \\prime} (2) + \\frac {1}{2} f ^ {\\prime} (2)."
+      }
+    ],
+    "final_answer": "\\left. \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} x ^ {2}} \\right| _ {x = 1} = 4 f ^ {\\prime \\prime} (2) + \\frac {1}{2} f ^ {\\prime} (2).",
+    "techniques_used": [
+      "隐函数求导",
+      "复合求导",
+      "高阶导数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "求导前是否需要先化简（取对数、去根式、分段讨论）？优先用哪条运算法则？",
+      "technique": "隐函数求导",
+      "expected": "先化简结构，再套用四则/复合/反函数等法则，避免对复杂式直接盲目求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终导数值或导数表达式所依据的关键结果。",
+      "technique": "复合求导",
+      "expected": "\\left. \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} x ^ {2}} \\right| _ {x = 1} = 4 f ^ {\\prime \\prime} (2) + \\frac {1}{2} f ^ {\\prime} (2)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.1",
+    "subsection": "导数的计算",
+    "example_id": "例17",
+    "page": 75,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

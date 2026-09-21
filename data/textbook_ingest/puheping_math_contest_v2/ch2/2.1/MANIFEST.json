@@ -1,0 +1,281 @@
+{
+  "section": "2.1",
+  "chapter": "第2章 一元函数微分学",
+  "title": "导数与微分",
+  "page_range": [
+    65,
+    81
+  ],
+  "page_note": "OCR pages 65–81; content cut at 习题2.1",
+  "count": 24,
+  "starred_count": 4,
+  "ids": [
+    "tx-pu-math-contest-v2-ch2-2.1-ex-01",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-02",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-03",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-04",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-05",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-06",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-07",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-08",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-09",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-10",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-11",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-12",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-13",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-14",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-15",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-16",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-17",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-18",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-19",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-20",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-21",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-22",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-23",
+    "tx-pu-math-contest-v2-ch2-2.1-ex-24"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-01",
+      "example_id": "例1",
+      "page": 65,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-02",
+      "example_id": "例2",
+      "page": 65,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-03",
+      "example_id": "例3",
+      "page": 66,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-04",
+      "example_id": "例4",
+      "page": 66,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-05",
+      "example_id": "例5",
+      "page": 67,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-06",
+      "example_id": "例6",
+      "page": 67,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-07",
+      "example_id": "例7",
+      "page": 67,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-08",
+      "example_id": "例8*",
+      "page": 69,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "contest",
+      "starred": true,
+      "subsection": "导数的概念",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-09",
+      "example_id": "例9",
+      "page": 70,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-10",
+      "example_id": "例10",
+      "page": 70,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-11",
+      "example_id": "例11",
+      "page": 71,
+      "l3_id": "math.calc.diff.def",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的概念",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-12",
+      "example_id": "例12",
+      "page": 72,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-13",
+      "example_id": "例13",
+      "page": 72,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-14",
+      "example_id": "例14",
+      "page": 73,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-15",
+      "example_id": "例15*",
+      "page": 73,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "contest",
+      "starred": true,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-16",
+      "example_id": "例16",
+      "page": 74,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-17",
+      "example_id": "例17",
+      "page": 75,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-18",
+      "example_id": "例18",
+      "page": 75,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-19",
+      "example_id": "例19",
+      "page": 76,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-20",
+      "example_id": "例20",
+      "page": 76,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-21",
+      "example_id": "例21",
+      "page": 77,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-22",
+      "example_id": "例22",
+      "page": 77,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "hit",
+      "starred": false,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-23",
+      "example_id": "例23*",
+      "page": 78,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "contest",
+      "starred": true,
+      "subsection": "导数的计算",
+      "item_form": "proof_outline"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.1-ex-24",
+      "example_id": "例24*",
+      "page": 80,
+      "l3_id": "math.calc.diff.rules",
+      "difficulty": "contest",
+      "starred": true,
+      "subsection": "导数的计算",
+      "item_form": "blank"
+    }
+  ],
+  "skipped": []
+}

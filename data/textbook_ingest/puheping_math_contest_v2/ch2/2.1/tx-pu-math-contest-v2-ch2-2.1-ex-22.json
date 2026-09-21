@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-22",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $y = \\frac{1}{\\sqrt{1 - x^2}} \\arcsin x$ ，求 $y^{(n)}(0)$ .",
+  "answer": "y ^ {(n)} (0) = \\left\\{ \\begin{array}{l l} {\\left[ (n - 1)!! \\right] ^ {2}, n \\text {为奇数},} \\\\ {0, \\qquad \\qquad \\qquad n \\text {为偶数}.} \\end{array} \\right.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques":["高阶导数","求导法则","复合求导"],
+  "solution":{"steps":[{"id":"s1","text":"分析 逐次求导很难找到规律，函数式变形为 $y\\sqrt{1 - x^2} = \\arcsin x$ ，两边求导化简后就可看出适合用高阶导数的莱布尼兹公式."},{"id":"s2","text":"原等式变形为"},{"id":"s3","text":"y \\sqrt {1 - x ^ {2}} = \\arcsin x."},{"id":"s4","text":"两边对 $x$ 求导，得"},{"id":"s5","text":"y ^ {\\prime} \\sqrt {1 - x ^ {2}} + \\frac {- x}{\\sqrt {1 - x ^ {2}}} y = \\frac {1}{\\sqrt {1 - x ^ {2}}} \\Rightarrow (1 - x ^ {2}) y ^ {\\prime} - x y - 1 = 0.\\tag{①}"},{"id":"s6","text":"取 $x = 0$ ，得 $y'(0) = 1$ 。显然 $y''(0) = y(0) = 0$ ， $y(x)$ 与 $y''(x)$ 均为奇函数。"},{"id":"s7","text":"用莱布尼兹公式在①式两边对 $x$ 求 $n - 1$ 阶导数 $(n\\geqslant 2)$ ，得"},{"id":"s8","text":"(1 - x ^ {2}) y ^ {(n)} + C _ {n - 1} ^ {1} (- 2 x) y ^ {(n - 1)} + C _ {n - 1} ^ {2} (- 2) y ^ {(n - 2)} - x y ^ {(n - 1)} - C _ {n - 1} ^ {1} y ^ {(n - 2)} = 0."},{"id":"s9","text":"取 $x = 0$ ，得"}],"final_answer":"y ^ {(n)} (0) = \\left\\{ \\begin{array}{l l} {\\left[ (n - 1)!! \\right] ^ {2}, n \\text {为奇数},} \\\\ {0, \\qquad \\qquad \\qquad n \\text {为偶数}.} \\end{array} \\right.","techniques_used":["高阶导数","求导法则","复合求导"]},
+  "cdps":[{"id":"c1","prompt":"求高阶导数时选用归纳、复指数/三角表示，还是先化简再逐阶求导？","technique":"高阶导数","expected":"优先将函数写成便于求 n 阶导的标准形，再归纳或配方系数。"},{"id":"c2","prompt":"n 阶导数（或在指定点的值）的最终表达式是什么？","technique":"求导法则","expected":"y ^ {(n)} (0) = \\left\\{ \\begin{array}{l l} {\\left[ (n - 1)!! \\right] ^ {2}, n \\text {为奇数},} \\\\ {0, \\qquad \\qquad \\qquad n \\text {为偶数}.} \\end{array} \\right."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的计算","example_id":"例22","page":77,"quality_basis":"source_textbook_worked_example"}
+}
