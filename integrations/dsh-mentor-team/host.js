@@ -26,9 +26,11 @@ return {
     async function getCfg() {
       if (cfgCache) return cfgCache
       let token = ''
+      let practiceToken = ''
       let llmKey = ''
       if (IS_NODE) {
         token = env('SYSTEM_API_TOKEN', '')
+        practiceToken = env('PRACTICE_API_TOKEN', '')
         llmKey = env('DEEPSEEK_API_KEY', '') || env('LLM_API_KEY', '')
       } else if (fs && workspaceRoot) {
         try {
@@ -38,13 +40,32 @@ return {
             const p = JSON.parse(await fs.readText(t))
             if (p && typeof p === 'object') {
               if (p.SYSTEM_API_TOKEN) token = String(p.SYSTEM_API_TOKEN)
+              if (p.PRACTICE_API_TOKEN) practiceToken = String(p.PRACTICE_API_TOKEN)
               if (p.DEEPSEEK_API_KEY || p.LLM_API_KEY) llmKey = String(p.DEEPSEEK_API_KEY || p.LLM_API_KEY)
             }
           }
         } catch (e) {}
       }
-      cfgCache = { token: token, llmKey: llmKey }
+      cfgCache = { token: token, practiceToken: practiceToken, llmKey: llmKey }
       return cfgCache
+    }
+
+    async function practiceHeaders(lid) {
+      const c = await getCfg()
+      const h = { 'X-Learner-Id': lid || 'demo1' }
+      if (c.practiceToken) h['X-Practice-Token'] = c.practiceToken
+      return h
+    }
+
+    // Demo fixtures must never collide with live items.i{n} / pushes ids.
+    function isDemoRef(itemId, pushId) {
+      const ids = [itemId, pushId]
+      for (let i = 0; i < ids.length; i++) {
+        const s = String(ids[i] == null ? '' : ids[i]).trim().toLowerCase()
+        if (!s) continue
+        if (s === 'demo' || s.indexOf('demo-') === 0) return true
+      }
+      return false
     }
 
     // ── HTTP 助手（通用：Node=web.fetch 全功能；DSH=subprocess curl） ──
@@ -254,11 +275,13 @@ return {
     }
 
     async function practiceFallback(name, args, lid) {
+      if (isDemoRef(args.item, args.push)) return null
+      const headers = await practiceHeaders(lid)
       const q = [ 'learner=' + encodeURIComponent(lid || 'demo1') ]
       if (args.item) q.push('item=' + encodeURIComponent(String(args.item)))
       if (args.push) q.push('push=' + encodeURIComponent(String(args.push)))
       if (name === 'show_solution') {
-        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { headers: headers })
         if (r.data && r.data.ok && r.data.item) {
           const it = r.data.item
           const steps = it.solutionSteps || (it.explain ? [String(it.explain)] : [])
@@ -275,7 +298,7 @@ return {
       }
       const path = map[name]
       if (path) {
-        const r = await httpJson(PRACTICE_BASE + path + '?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        const r = await httpJson(PRACTICE_BASE + path + '?' + q.join('&'), { headers: headers })
         if (r.data && r.data.ok) {
           const res = r.data.item || r.data.result || r.data.params || r.data
           return { ok: true, source: 'practice_web:' + name, text: JSON.stringify(res) }
@@ -283,7 +306,7 @@ return {
         return null
       }
       if (name === 'get_capability_evidence') {
-        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/params?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/params?' + q.join('&'), { headers: headers })
         if (r.data && r.data.ok) {
           const full = r.data.params || r.data
           const ev = {
@@ -307,6 +330,10 @@ return {
       if (name === 'show_solution') {
         const it = findItem()
         return { ok: true, source: 'demo:show_solution', text: DEMO_TAG + (it ? it.title + '\n' + (it.solutionSteps || []).join('\n') : '无题') }
+      }
+      if (name === 'practice_get_item') {
+        const it = findItem()
+        return { ok: true, source: 'demo:practice_get_item', text: DEMO_TAG + JSON.stringify(it || {}) }
       }
       if (name === 'kb_query') {
         const kp = args.kp || args.query || ''
@@ -357,6 +384,11 @@ return {
       if (name === 'list_today_questions') {
         const raw = args.include_backlog
         if (raw === undefined || raw === null || String(raw) === '') args.include_backlog = true
+      }
+      if (isDemoRef(args.item, args.push)) {
+        const dm = demoFallback(name, args)
+        if (dm) return dm
+        return { ok: false, source: 'demo:' + name, text: '演示题号不能查询真实题库' }
       }
       const headers = await sysHeaders(lid)
       // 1) system_api :8770 — 写工具必须 POST（与 system_api 白名单一致）
@@ -412,9 +444,9 @@ return {
       ],
     }
     const DEMO_ITEMS = [
-      { id: 'i1', pushId: 1, title: '极限 · 夹逼定理', kp: '极限 · 夹逼定理', subject: '高等数学', stem: '已知 1/n ≤ a_n ≤ (n+1)/n²，求 lim a_n。', answer: '0', finalAnswer: '0', solutionSteps: ['由 1/n ≤ a_n ≤ (n+1)/n²', '两端 n→∞ 均趋于 0，故 a_n → 0'] },
-      { id: 'i2', pushId: 2, title: '信号与系统 · 卷积', kp: '卷积', subject: '通信', stem: '求输出 y(t)=x(t)*h(t) 的表达式要点。', answer: 'y=x*h', finalAnswer: 'y(t)=x*h', solutionSteps: ['输出为输入与冲激响应的卷积', '先画支撑再定积分限'] },
-      { id: 'i3', pushId: 3, title: '导数 · 隐函数求导', kp: '导数 · 隐函数求导', subject: '高等数学', stem: 'x²+xy+y²=3，求 (1,1) 处 dy/dx。', answer: '-1', finalAnswer: '-1', solutionSteps: ['两边对 x 求导得 y′=−(2x+y)/(x+2y)', '点 (1,1) 处为 −1'] },
+      { id: 'demo-i1', pushId: 'demo-p1', title: '极限 · 夹逼定理', kp: '极限 · 夹逼定理', subject: '高等数学', stem: '已知 1/n ≤ a_n ≤ (n+1)/n²，求 lim a_n。', answer: '0', finalAnswer: '0', solutionSteps: ['由 1/n ≤ a_n ≤ (n+1)/n²', '两端 n→∞ 均趋于 0，故 a_n → 0'] },
+      { id: 'demo-i2', pushId: 'demo-p2', title: '信号与系统 · 卷积', kp: '卷积', subject: '通信', stem: '求输出 y(t)=x(t)*h(t) 的表达式要点。', answer: 'y=x*h', finalAnswer: 'y(t)=x*h', solutionSteps: ['输出为输入与冲激响应的卷积', '先画支撑再定积分限'] },
+      { id: 'demo-i3', pushId: 'demo-p3', title: '导数 · 隐函数求导', kp: '导数 · 隐函数求导', subject: '高等数学', stem: 'x²+xy+y²=3，求 (1,1) 处 dy/dx。', answer: '-1', finalAnswer: '-1', solutionSteps: ['两边对 x 求导得 y′=−(2x+y)/(x+2y)', '点 (1,1) 处为 −1'] },
     ]
     const DEMO_KB = {
       '极限 · 夹逼定理': { def: '若 g(n) ≤ a_n ≤ h(n) 且 g、h 同趋于 L，则 a_n → L。关键：两端必须收敛到同一个值。', source: 'syllabus_math.json · 极限' },
@@ -574,25 +606,38 @@ return {
         solutionSteps: it.solutionSteps || (it.explain ? [String(it.explain)] : []),
       }
     }
+    let lastPracticeError = ''
     async function enrichItem(learnerId, itemId, pushId) {
       if (!itemId && !pushId) return null
+      if (isDemoRef(itemId, pushId)) return null
       const q = []
       if (learnerId) q.push('learner=' + encodeURIComponent(learnerId))
       if (itemId) q.push('item=' + encodeURIComponent(itemId))
       if (pushId) q.push('push=' + encodeURIComponent(pushId))
-      const data = await fetchJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { 'X-Learner-Id': learnerId })
+      const headers = await practiceHeaders(learnerId)
+      const data = await fetchJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), headers)
       if (data && data.ok && data.item) return mapItem(data.item)
       return null
     }
     async function tryLive(learnerId) {
       const lid = learnerId || 'demo1'
-      const boot = await fetchJson(PRACTICE_BASE + '/api/v1/practice/bootstrap?learner=' + encodeURIComponent(lid), { 'X-Learner-Id': lid })
-      if (!(boot && boot.ok)) return null
+      const headers = await practiceHeaders(lid)
+      const bootR = await httpJson(PRACTICE_BASE + '/api/v1/practice/bootstrap?learner=' + encodeURIComponent(lid), { headers: headers })
+      if (bootR.status === 401) {
+        lastPracticeError = 'unauthorized'
+        return null
+      }
+      const boot = bootR.data
+      if (!(boot && boot.ok)) {
+        lastPracticeError = bootR.status ? ('http_' + bootR.status) : 'unreachable'
+        return null
+      }
+      lastPracticeError = ''
       const items = (boot.items || []).map(mapItem).filter(Boolean)
       let mastery = mapMastery((boot.capability && boot.capability.masteryWeak) || [])
       let eta = mapEta((boot.capability && boot.capability.eta) || {})
       let assumptions = []
-      const params = await fetchJson(PRACTICE_BASE + '/api/v1/practice/params?learner=' + encodeURIComponent(lid), { 'X-Learner-Id': lid })
+      const params = await fetchJson(PRACTICE_BASE + '/api/v1/practice/params?learner=' + encodeURIComponent(lid), headers)
       if (params && params.ok) {
         const full = params.params || params
         const m2 = mapMastery(full.mastery || full.masteryWeak || (params.capability && params.capability.masteryWeak))
@@ -622,6 +667,9 @@ return {
     async function ground(learnerId) {
       const live = await tryLive(learnerId)
       if (live) return live
+      const why = lastPracticeError === 'unauthorized'
+        ? 'practice_web 401（未配置或无效 PRACTICE_API_TOKEN；演示题不是真实库存）'
+        : '本地演示数据（教学系统未连接）'
       return {
         kind: 'demo',
         detached: true,
@@ -629,7 +677,7 @@ return {
         items: DEMO_ITEMS,
         kb: DEMO_KB,
         weakHint: '近期易错：极限 · 夹逼定理',
-        sources: [{ source: '本地演示数据（教学系统未连接）', ref: 'demo' }],
+        sources: [{ source: why, ref: 'demo' }],
       }
     }
 
@@ -918,7 +966,8 @@ return {
       return out
     }
     async function listCapabilityEvents() {
-      const data = await fetchJson(PRACTICE_BASE + '/api/v1/capability/events', {})
+      const headers = await practiceHeaders('demo1')
+      const data = await fetchJson(PRACTICE_BASE + '/api/v1/capability/events', headers)
       if (data && data.ok && Array.isArray(data.events)) return data.events
       return []
     }
@@ -926,9 +975,10 @@ return {
       if (IS_NODE && !web) return { ok: false, error: 'web_unavailable' }
       try {
         const body = Object.assign({}, payload || {}, { mentor: mentorId || 'assistant' })
+        const headers = Object.assign({ 'Content-Type': 'application/json' }, await practiceHeaders('demo1'))
         const r = await httpRequest(PRACTICE_BASE + '/api/v1/capability/events', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: JSON.stringify(body),
         })
         if (r.data) return r.data
@@ -1101,7 +1151,18 @@ return {
     disposers.push(harness.handle('mentor.status', async function (args) {
       const lid = (args && args.learner) || 'demo1'
       const live = await tryLive(lid)
-      return { connected: !!live, workspaceRoot: workspaceRoot, mentorCount: ROSTER.length, threads: Object.keys(mem.threads).length, practiceBase: PRACTICE_BASE, systemApiBase: SYSTEM_API_BASE, tools: Object.keys(TOOLS) }
+      const c = await getCfg()
+      return {
+        connected: !!live,
+        workspaceRoot: workspaceRoot,
+        mentorCount: ROSTER.length,
+        threads: Object.keys(mem.threads).length,
+        practiceBase: PRACTICE_BASE,
+        systemApiBase: SYSTEM_API_BASE,
+        tools: Object.keys(TOOLS),
+        practiceTokenConfigured: !!c.practiceToken,
+        practiceError: lastPracticeError || '',
+      }
     }))
 
     disposers.push(harness.handle('mentor.card', async function (args) {

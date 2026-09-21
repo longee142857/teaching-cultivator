@@ -28,6 +28,7 @@ TUTOR_BACKEND_URL=http://127.0.0.1:61900
 PRACTICE_API_BASE=http://127.0.0.1:8768
 SYSTEM_API_BASE=http://127.0.0.1:8770
 SYSTEM_API_TOKEN=<与 system_api 同 key，勿入库>
+PRACTICE_API_TOKEN=<与 practice_web 同 key，勿入库；live bootstrap/item 走 X-Practice-Token>
 DEEPSEEK_API_KEY=...          # 或 LLM_API_KEY
 LLM_BASE_URL=https://api.deepseek.com/v1
 TUTOR_MODEL=deepseek-flash
@@ -50,11 +51,12 @@ ssh -i ~/.ssh/ccc.pem -N -L 8768:127.0.0.1:8768 -L 8770:127.0.0.1:8770 ubuntu@15
 // {workspace}/.mentor-team/config.json（勿提交仓库）
 {
   "SYSTEM_API_TOKEN": "……",
+  "PRACTICE_API_TOKEN": "……",
   "DEEPSEEK_API_KEY": "……"
 }
 ```
 
-未配置/不可达时：工具回落演示数据（带「【演示数据】」标注），LLM 不可用回落规则应答，均显式声明，不冒充真实学情。
+未配置/不可达时：工具回落演示数据（带「【演示数据】」标注，题号为 `demo-i*`，不可当真实 `items` 行），LLM 不可用回落规则应答，均显式声明，不冒充真实学情。mentor host 调 live practice API 必须带 `X-Practice-Token`（env `PRACTICE_API_TOKEN`）；缺 token 且远端 401 时保持 `detached`，不要把 DEMO 当 live 库存去 enrich。
 
 ---
 

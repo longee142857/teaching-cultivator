@@ -31,6 +31,7 @@ def test_dto():
         extract_options,
         extract_stem,
         parse_item_id,
+        parse_push_id,
         public_item_id,
         push_to_shell_item,
     )
@@ -39,6 +40,9 @@ def test_dto():
     check(public_item_id(12) == "i12", "public id")
     check(parse_item_id("i12") == 12, "parse i12")
     check(parse_item_id("12") == 12, "parse 12")
+    check(parse_item_id("demo-i2") is None, "demo-i2 does not parse as item 2")
+    check(parse_item_id("demo-i1") is None, "demo-i1 does not parse as live id")
+    check(parse_push_id("demo-p2") is None, "demo-p2 does not parse as push 2")
     katex = extract_katex(r"stem $$\lim x$$ tail")
     check("lim" in katex, "extract katex")
     surface = "已知曲面 $$z=x^{2}+y^{2}.$$ 求过点的切平面。"
