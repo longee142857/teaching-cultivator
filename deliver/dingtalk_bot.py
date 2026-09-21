@@ -811,10 +811,10 @@ class DingTalkBot:
                     buttons=practice_open_buttons(link),
                 )
                 logger.info(
-                    "question ActionCard notify-only: %s subject=%s link=%s",
+                    "question ActionCard notify-only: %s subject=%s has_link=%s",
                     ok,
                     subject,
-                    link[:80],
+                    bool(link),
                 )
                 return ok
             logger.warning("question notify without deep_link, markdown fallback")

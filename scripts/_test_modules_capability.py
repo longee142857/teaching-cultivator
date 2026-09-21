@@ -132,34 +132,73 @@ def test_learner_params_from_store():
 def test_notify_deep_link():
     from modules.notify import build_deep_link, notify_new_item, Notification
 
-    link = build_deep_link(
-        "https://app.example",
-        learner_id="04022300",
-        item_id=12,
-        push_id=3,
-    )
-    assert link.startswith("https://app.example/practice?")
-    assert "learner=04022300" in link
-    assert "item=12" in link
+    prev = os.environ.get("PRACTICE_API_TOKEN")
+    try:
+        os.environ["PRACTICE_API_TOKEN"] = ""
+        link = build_deep_link(
+            "https://app.example",
+            learner_id="04022300",
+            item_id=12,
+            push_id=3,
+        )
+        assert link.startswith("https://app.example/practice?")
+        assert "learner=04022300" in link
+        assert "item=i12" in link
+        assert "token=" not in link
 
-    sent = []
+        sent = []
 
-    class Cap:
-        def send_notification(self, note: Notification) -> bool:
-            sent.append(note)
-            return True
+        class Cap:
+            def send_notification(self, note: Notification) -> bool:
+                sent.append(note)
+                return True
 
-    ok = notify_new_item(
-        Cap(),
-        learner_id="u1",
-        subject="math",
-        item_id=1,
-        frontend_base="https://app.example",
-        kp="极限",
-    )
-    assert ok and sent[0].kind == "new_item"
-    assert "前端" in sent[0].body
-    print("ok notify_deep_link", link)
+        ok = notify_new_item(
+            Cap(),
+            learner_id="u1",
+            subject="math",
+            item_id=1,
+            frontend_base="https://app.example",
+            kp="极限",
+        )
+        assert ok and sent[0].kind == "new_item"
+        assert "前端" in sent[0].body
+        assert "token=" not in sent[0].deep_link
+        print("ok notify_deep_link", link)
+    finally:
+        if prev is None:
+            os.environ.pop("PRACTICE_API_TOKEN", None)
+        else:
+            os.environ["PRACTICE_API_TOKEN"] = prev
+
+
+def test_notify_deep_link_appends_token_from_env():
+    from urllib.parse import parse_qs, urlparse
+
+    from modules.notify import build_deep_link
+
+    prev = os.environ.get("PRACTICE_API_TOKEN")
+    secret = "unit-test-practice-token"
+    try:
+        os.environ["PRACTICE_API_TOKEN"] = secret
+        link = build_deep_link(
+            "https://app.example",
+            learner_id="04022300",
+            item_id=12,
+            push_id=3,
+        )
+        q = parse_qs(urlparse(link).query)
+        assert q.get("learner") == ["04022300"]
+        assert q.get("item") == ["i12"]
+        assert q.get("push") == ["3"]
+        assert q.get("token") == [secret]
+        assert "token=" in link
+        print("ok notify_deep_link_token")
+    finally:
+        if prev is None:
+            os.environ.pop("PRACTICE_API_TOKEN", None)
+        else:
+            os.environ["PRACTICE_API_TOKEN"] = prev
 
 
 def test_bridge_whitelist():
@@ -192,6 +231,7 @@ if __name__ == "__main__":
     test_attempts_to_bundle_and_eta()
     test_learner_params_from_store()
     test_notify_deep_link()
+    test_notify_deep_link_appends_token_from_env()
     test_bridge_whitelist()
     test_bkt_not_confused_with_eta()
     print("ALL PASS")

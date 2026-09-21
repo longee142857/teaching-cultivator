@@ -1199,7 +1199,10 @@
         return { key: "overdue", label: "过窗覆盖中" };
       }
       function practicePath(item, push) {
-        return "/practice?learner=" + (state.learner || "") + (item ? "&item=" + item : "") + (push ? "&push=" + push : "");
+        var path = "/practice?learner=" + (state.learner || "") + (item ? "&item=" + item : "") + (push ? "&push=" + push : "");
+        var t = practiceToken();
+        if (t) path += "&token=" + encodeURIComponent(t);
+        return path;
       }
 
       function writeUrl() {
@@ -1211,6 +1214,8 @@
         if ((state.view === "desk" || state.view === "result") && item) p.set("item", item.id);
         if (state.mode === "tutor" && state.contextItemId) p.set("item", state.contextItemId);
         if (state.push) p.set("push", state.push);
+        var t = practiceToken();
+        if (t) p.set("token", t);
         var q = p.toString();
         history.replaceState(null, "", location.pathname + (q ? "?" + q : ""));
       }

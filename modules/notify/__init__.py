@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import os
 from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, Protocol
 from urllib.parse import urlencode
@@ -43,6 +44,18 @@ class StdoutNotify:
         return True
 
 
+def _practice_api_token() -> str:
+    """Call-time token. Env wins when the key is present (including empty)."""
+    if "PRACTICE_API_TOKEN" in os.environ:
+        return (os.environ.get("PRACTICE_API_TOKEN") or "").strip()
+    try:
+        from config import PRACTICE_API_TOKEN
+
+        return (PRACTICE_API_TOKEN or "").strip()
+    except Exception:
+        return ""
+
+
 def build_deep_link(
     base_url: str,
     *,
@@ -51,7 +64,11 @@ def build_deep_link(
     item_id: Optional[int] = None,
     push_id: Optional[int] = None,
 ) -> str:
-    """前端深链；base_url 由 env FRONTEND_BASE_URL 提供。"""
+    """前端深链；base_url 由 env FRONTEND_BASE_URL 提供。
+
+    When PRACTICE_API_TOKEN is non-empty, append token= so DingTalk / bookmark
+    links can pass the #32 practice API gate. Do not log the token value.
+    """
     base = (base_url or "").strip().rstrip("/")
     if not base:
         return ""
@@ -66,6 +83,9 @@ def build_deep_link(
             q["item"] = s
     if push_id is not None:
         q["push"] = str(push_id)
+    token = _practice_api_token()
+    if token:
+        q["token"] = token
     suffix = f"?{urlencode(q)}" if q else ""
     return f"{base}{path}{suffix}"
 
