@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-08",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "contest",
+  "question": "设 $a_{1},a_{2},\\cdots,a_{n}$ 为常数，且\n\n\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\sin k x \\right| \\leqslant | \\sin x |, \\quad \\left| \\sum_ {j = 1} ^ {n} a _ {n - j + 1} \\sin j x \\right| \\leqslant | \\sin x |.\n\n证明 $\\left|\\sum_{k=1}^{n} a_k\\right| \\leqslant \\frac{2}{n+1}$ .",
+  "answer": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": ["导数定义","可导性"],
+  "solution":{"steps":[{"id":"s1","text":"分析 设 $f(x)=\\sum_{k=1}^{n}a_k\\sin kx$，$g(x)=\\sum_{j=1}^{n}a_{n-j+1}\\sin jx$，易知 $f'(0)+g'(0)=(n+1)\\sum a_k$，只需证明 $|f'(0)|,|g'(0)|\\le1$."},{"id":"s2","text":"求导得 $f'(0)+g'(0)=(n+1)(a_1+\\cdots+a_n)$."},{"id":"s3","text":"由题设 $|f(x)|\\le|\\sin x|$，故 $|f'(0)|=|\\lim_{x\\to0}f(x)/x|\\le1$，同理 $|g'(0)|\\le1$."},{"id":"s4","text":"因此 $\\left|\\sum_{k=1}^{n}a_k\\right|\\le\\frac{|f'(0)|+|g'(0)|}{n+1}\\le\\frac2{n+1}$."}],"final_answer":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.","techniques_used":["导数定义","可导性"]},
+  "cdps":[{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"导数定义","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"可导性","expected":"\\left| \\sum _ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例8*","page":69,"quality_basis":"source_textbook_worked_example","starred":true}
+}

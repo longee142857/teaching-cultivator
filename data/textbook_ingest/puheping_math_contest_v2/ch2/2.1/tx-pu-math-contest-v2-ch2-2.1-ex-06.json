@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-06",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 与 $g(x)$ 在 $x = 0$ 的某邻域内有定义， $g(x)$ 在 $x = 0$ 处连续，且 $g(x) \\neq 0$ 。若 $f(x)g(x)$ 与 $f(x) / g(x)$ 在 $x = 0$ 处可导，问 $f(x)$ 在 $x = 0$ 处是否可导？",
+  "answer": "$\\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = \\frac{F'(0)}{2g(0)} + \\frac{1}{2} G'(0)g(0)$ ， $f(x)$ 在 $x = 0$ 处可导.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": ["可导性","导数定义","左右导数"],
+  "solution":{"steps":[{"id":"s1","text":"分析 只需确定 $\\lim_{x\\to 0}\\frac{f(x) - f(0)}{x}$ 是否存在."},{"id":"s2","text":"记 $F(x) = f(x)g(x)$ ， $G(x) = f(x) / g(x)$ ，由题设 $F'(0)$ 和 $G'(0)$ 均存在，即有"},{"id":"s3","text":"①"},{"id":"s4","text":"\\begin{array}{r l} F ^ {\\prime} (0) & = \\lim _ {x \\to 0} \\frac {f (x) g (x) - f (0) g (0)}{x}, \\\\ G ^ {\\prime} (0) & = \\lim _ {x \\to 0} \\frac {f (x) / g (x) - f (0) / g (0)}{x} \\\\ & = \\lim _ {x \\to 0} \\frac {f (x) g (0) - g (x) f (0)}{x [ g (0) ] ^ {2}}. \\end{array}\\tag{②}"},{"id":"s5","text":"①+②式 $\\times [g(0)]^2$ 得"},{"id":"s6","text":"F ^ {\\prime} (0) + G ^ {\\prime} (0) [ g (0) ] ^ {2} = \\lim _ {x \\rightarrow 0} \\left\\{\\left[ g (x) + g (0) \\right] \\cdot \\frac {f (x) - f (0)}{x} \\right\\} = 2 g (0) \\lim _ {x \\rightarrow 0} \\frac {f (x) - f (0)}{x},"},{"id":"s7","text":"因为 $g(0) \\neq 0$ ，所以 $\\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = \\frac{F'(0)}{2g(0)} + \\frac{1}{2} G'(0)g(0)$ ， $f(x)$ 在 $x = 0$ 处可导."}],"final_answer":"$\\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = \\frac{F'(0)}{2g(0)} + \\frac{1}{2} G'(0)g(0)$ ， $f(x)$ 在 $x = 0$ 处可导.","techniques_used":["可导性","导数定义","左右导数"]},
+  "cdps":[{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"可导性","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"导数定义","expected":"$\\lim_{x \\to 0} \\frac{f(x) - f(0)}{x} = \\frac{F'(0)}{2g(0)} + \\frac{1}{2} G'(0)g(0)$ ， $f(x)$ 在 $x = 0$ 处可导."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例6","page":67,"quality_basis":"source_textbook_worked_example"}
+}

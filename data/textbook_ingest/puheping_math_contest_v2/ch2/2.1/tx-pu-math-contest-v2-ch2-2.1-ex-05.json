@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-05",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\delta, \\delta)$ 上有定义，对任何 $x, y \\in (-\\delta, \\delta)$ ，恒有 $f(x + y) = \\frac{f(x) + f(y)}{1 - f(x)f(y)}$ 。又 $f(x)$ 在点 $x = 0$ 处可导，且 $f'(0) = 1$ ，证明 $f(x)$ 在 $(- \\delta, \\delta)$ 内处处可导，并求函数的表达式。",
+  "answer": "$f(x)$ 在 $(- \\delta, \\delta)$ 内处处可导. 解上面微分方程并注意到 $f(0) = 0$ ，可得 $f(x) = \\tan x$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": ["可导性","导数定义","左右导数"],
+  "solution":{"steps":[{"id":"s1","text":"分析 能找到函数在任一点的导数与 $f'(0)$ 的关系，问题就解决了。找出这种关系只能通过所给条件及导数的定义来完成。找到了导数的关系式，也就建立了微分方程，解方程就可得到函数表达式。"},{"id":"s2","text":"在关系式 $f(x + y) = \\frac{f(x) + f(y)}{1 - f(x)f(y)}$ 中，令 $x = y = 0$ ，可以得到 $f(0) = 0$ ."},{"id":"s3","text":"又"},{"id":"s4","text":"\\frac {f (x + y) - f (x)}{y} = \\frac {f (y)}{y} \\cdot \\frac {1 + f ^ {2} (x)}{1 - f (x) f (y)}, \\forall x, y \\in (- \\delta , \\delta)."},{"id":"s5","text":"令 $y \\to 0$ ，并注意到 $\\lim_{y \\to 0} \\frac{f(y)}{y} = f'(0) = 1$ ，可得到"},{"id":"s6","text":"f ^ {\\prime} (x) = 1 + f ^ {2} (x)."},{"id":"s7","text":"所以 $f(x)$ 在 $(- \\delta, \\delta)$ 内处处可导. 解上面微分方程并注意到 $f(0) = 0$ ，可得 $f(x) = \\tan x$ ."}],"final_answer":"$f(x)$ 在 $(- \\delta, \\delta)$ 内处处可导. 解上面微分方程并注意到 $f(0) = 0$ ，可得 $f(x) = \\tan x$ .","techniques_used":["可导性","导数定义","左右导数"]},
+  "cdps":[{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"可导性","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"导数定义","expected":"$f(x)$ 在 $(- \\delta, \\delta)$ 内处处可导. 解上面微分方程并注意到 $f(0) = 0$ ，可得 $f(x) = \\tan x$ ."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例5","page":67,"quality_basis":"source_textbook_worked_example"}
+}
