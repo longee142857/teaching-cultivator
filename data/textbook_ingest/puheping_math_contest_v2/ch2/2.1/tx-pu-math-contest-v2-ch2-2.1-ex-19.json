@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-19",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $x = 0$ 处存在二阶导数，且 $\\lim_{x\\to 0}\\frac{xf(x) - \\ln(1 + x)}{x^3} = \\frac{1}{3}$ ，求 $f(0), f'(0), f''(0)$ .",
+  "answer": "f (0) = 1, f ^ {\\prime} (0) = - \\frac {1}{2}, f ^ {\\prime \\prime} (0) = \\frac {4}{3}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques":["泰勒展开","求导法则","复合求导"],
+  "solution":{"steps":[{"id":"s1","text":"分析 将 $f(x)$ 用皮亚诺余项的麦克劳林公式展开，由所给条件即可求出 $f(0), f'(0), f''(0)$ 。也可由所给极限式得到 $f(x)$ 的局部表达式，并将该表达式用多项式的形式写出，再由泰勒展开式的唯一性可得到所求各阶导数。"},{"id":"s2","text":"方法1 利用麦克劳林公式.\n\n\\begin{array}{c} {f (x) = f (0) + f ^ {\\prime} (0) x + \\frac {1}{2} f ^ {\\prime \\prime} (0) x ^ {2} + o (x ^ {2}),} \\\\ {\\ln (1 + x) = x - \\frac {1}{2} x ^ {2} + \\frac {1}{3} x ^ {3} + o (x ^ {3}),} \\end{array}\n\n代入所给的极限式，并整理，得\n\n\\lim _ {x \\rightarrow 0} \\frac {(f (0) - 1) x + \\left(f ^ {\\prime} (0) + \\frac {1}{2}\\right) x ^ {2} + \\left(\\frac {1}{2} f ^ {\\prime \\prime} (0) - \\frac {1}{3}\\right) x ^ {3} + o \\left(x ^ {3}\\right)}{x ^ {3}} = \\frac {1}{3},\n\n由上述极限式立即可得\n\nf (0) = 1, f ^ {\\prime} (0) = - \\frac {1}{2}, f ^ {\\prime \\prime} (0) = \\frac {4}{3}."},{"id":"s3","text":"方法2 因为 $\\lim_{x\\to 0}\\frac{xf(x) - \\ln(1 + x)}{x^3} = \\frac{1}{3}$ ，则\n\n\\frac {x f (x) - \\ln (1 + x)}{x ^ {3}} = \\frac {1}{3} + o (1) \\Rightarrow f (x) = \\frac {1}{x} \\ln (1 + x) + \\frac {1}{3} x ^ {2} + o \\left(x ^ {2}\\right),\\tag{①}\n\n由泰勒公式\n\n\\ln (1 + x) = x - \\frac {1}{2} x ^ {2} + \\frac {1}{3} x ^ {3} + o \\left(x ^ {3}\\right),\n\n代入①式得\n\nf (x) = 1 - \\frac {1}{2} x + \\frac {2}{3} x ^ {2} + o (x ^ {2}),\n\n所以\n\nf (0) = 1, f ^ {\\prime} (0) = - \\frac {1}{2}, f ^ {\\prime \\prime} (0) = \\frac {4}{3}."}],"final_answer":"f (0) = 1, f ^ {\\prime} (0) = - \\frac {1}{2}, f ^ {\\prime \\prime} (0) = \\frac {4}{3}.","techniques_used":["泰勒展开","求导法则","复合求导"]},
+  "cdps":[{"id":"c1","prompt":"求导前是否需要先化简（取对数、去根式、分段讨论）？优先用哪条运算法则？","technique":"泰勒展开","expected":"先化简结构，再套用四则/复合/反函数等法则，避免对复杂式直接盲目求导。"},{"id":"c2","prompt":"写出最终导数值或导数表达式所依据的关键结果。","technique":"求导法则","expected":"f (0) = 1, f ^ {\\prime} (0) = - \\frac {1}{2}, f ^ {\\prime \\prime} (0) = \\frac {4}{3}."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的计算","example_id":"例19","page":76,"quality_basis":"source_textbook_worked_example"}
+}

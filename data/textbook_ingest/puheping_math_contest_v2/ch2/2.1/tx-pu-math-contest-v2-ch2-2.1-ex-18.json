@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-18",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $y = x \\ln (1 - x^2) + \\sin x \\ln \\frac{1 - x}{1 + x}$ ，求 $y^{(2023)}\\bigg|_{x=0}$ .",
+  "answer": "y ^ {(2 0 2 3)} \\Big | _ {x = 0} = u ^ {(2 0 2 3)} \\Big | _ {x = 0} + v ^ {(2 0 2 3)} \\Big | _ {x = 0} = - 2 \\times 2 0 2 3 \\times 2 0 2 1!.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques":["高阶导数","求导法则","复合求导"],
+  "solution":{"steps":[{"id":"s1","text":"分析 第一项的高阶导数容易计算，但第二项的高阶导数却难以计算。观察发现第二项是偶函数，其奇数阶导数是奇函数，在0点的值是0。"},{"id":"s2","text":"记 $u = x\\ln (1 - x^2)$ , $\\nu = \\sin x\\ln \\frac{1 - x}{1 + x}$ .\n\n因为 $\\nu$ 是偶函数，则 $\\nu^{(2023)}$ 是奇函数，所以 $\\nu^{(2023)}\\bigg|_{x = 0} = 0.$\n\n又 $u = x\\ln (1 - x^2) = x[\\ln (1 - x) + \\ln (1 + x)]$ ，则\n\n\\begin{array}{c} {u ^ {\\prime} = \\ln (1 - x) + \\ln (1 + x) + x \\left(\\frac {1}{x - 1} + \\frac {1}{x + 1}\\right) = \\ln (1 - x) + \\ln (1 + x) + \\left(2 + \\frac {1}{x - 1} - \\frac {1}{x + 1}\\right),} \\\\ {u ^ {(2 0 2 3)} = \\left(\\frac {1}{x - 1} + \\frac {1}{x + 1}\\right) ^ {(2 0 2 1)} + \\left(2 + \\frac {1}{x - 1} - \\frac {1}{x + 1}\\right) ^ {(2 0 2 2)}} \\end{array}\n\n\\begin{array}{r l} & = (- 1) ^ {2 0 2 1} 2 0 2 1! \\left(\\frac {1}{(x - 1) ^ {2 0 2 2}} + \\frac {1}{(x + 1) ^ {2 0 2 2}}\\right) + (- 1) ^ {2 0 2 2} 2 0 2 2! \\left(\\frac {1}{(x - 1) ^ {2 0 2 3}} - \\frac {1}{(x + 1) ^ {2 0 2 3}}\\right), \\\\ & u ^ {(2 0 2 3)} \\Big | _ {x = 0} = - 2 \\times 2 0 2 1! - 2 \\times 2 0 2 2! = - 2 \\times 2 0 2 3 \\times 2 0 2 1!. \\end{array}\n\n所以\n\ny ^ {(2 0 2 3)} \\Big | _ {x = 0} = u ^ {(2 0 2 3)} \\Big | _ {x = 0} + v ^ {(2 0 2 3)} \\Big | _ {x = 0} = - 2 \\times 2 0 2 3 \\times 2 0 2 1!.\n\n评注（1）奇函数的导数是偶函数，偶函数的导数是奇函数。当在 $x = 0$ 处的高阶导数不易计算时，要注意函数的奇偶性。"},{"id":"s3","text":"(2) 常用 $n$ 阶导数公式: $\\left(\\frac{1}{x - a}\\right)^{(n)} = \\frac{(-1)^n n!}{(x - a)^{n + 1}}$ ."}],"final_answer":"y ^ {(2 0 2 3)} \\Big | _ {x = 0} = u ^ {(2 0 2 3)} \\Big | _ {x = 0} + v ^ {(2 0 2 3)} \\Big | _ {x = 0} = - 2 \\times 2 0 2 3 \\times 2 0 2 1!.","techniques_used":["高阶导数","求导法则","复合求导"]},
+  "cdps":[{"id":"c1","prompt":"求高阶导数时选用归纳、复指数/三角表示，还是先化简再逐阶求导？","technique":"高阶导数","expected":"优先将函数写成便于求 n 阶导的标准形，再归纳或配方系数。"},{"id":"c2","prompt":"n 阶导数（或在指定点的值）的最终表达式是什么？","technique":"求导法则","expected":"y ^ {(2 0 2 3)} \\Big | _ {x = 0} = u ^ {(2 0 2 3)} \\Big | _ {x = 0} + v ^ {(2 0 2 3)} \\Big | _ {x = 0} = - 2 \\times 2 0 2 3 \\times 2 0 2 1!."}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的计算","example_id":"例18","page":75,"quality_basis":"source_textbook_worked_example"}
+}
