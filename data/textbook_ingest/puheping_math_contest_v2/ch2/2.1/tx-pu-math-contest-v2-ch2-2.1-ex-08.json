@@ -1,1 +1,90 @@
-{"id":"tx-pu-math-contest-v2-ch2-2.1-ex-08","subject":"math","l2":"一元微分学（求导与作图）","l3_id":"math.calc.diff.def","atom_id":"","book_id":"","ability_goal":"construct","item_form":"proof_outline","difficulty":"contest","question":"设 $a_{1},a_{2},\\cdots,a_{n}$ 为常数，且\n\n\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\sin k x \\right| \\leqslant | \\sin x |, \\quad \\left| \\sum_ {j = 1} ^ {n} a _ {n - j + 1} \\sin j x \\right| \\leqslant | \\sin x |.\n\n证明 $\\left|\\sum_{k=1}^{n} a_k\\right| \\leqslant \\frac{2}{n+1}$ .","answer":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.","ref_source":"textbook:puheping_math_contest_v2","techniques":["导数定义","可导性"],"solution":{"steps":[{"id":"s1","text":"分析 设 $f(x) = \\sum_{k=1}^{n} a_k \\sin kx$ , $g(x) = \\sum_{j=1}^{n} a_{n-j+1} \\sin jx$ ，易知 $f'(0) + g'(0) = (n+1) \\sum_{k=1}^{n} a_k$ ，从而只需证明 $|f'(0)| \\leqslant 1, |g'(0)| \\leqslant 1$ ."},{"id":"s2","text":"设 $f(x) = \\sum_{k=1}^{n} a_k \\sin kx, g(x) = \\sum_{j=1}^{n} a_{n-j+1} \\sin jx$ ，则"},{"id":"s3","text":"\\begin{array}{c} f ^ {\\prime} (x) = a _ {1} \\cos x + 2 a _ {2} \\cos 2 x + \\dots + n a _ {n} \\cos n x, \\\\ g ^ {\\prime} (x) = a _ {n} \\cos x + 2 a _ {n - 1} \\cos 2 x + \\dots + n a _ {1} \\cos n x, \\\\ f ^ {\\prime} (0) + g ^ {\\prime} (0) = (n + 1) (a _ {1} + a _ {2} + \\dots + a _ {n}). \\end{array}"},{"id":"s4","text":"故"},{"id":"s5","text":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| = \\frac {\\left| f ^ {\\prime} (0) + g ^ {\\prime} (0) \\right|}{n + 1} \\leqslant \\frac {\\left| f ^ {\\prime} (0) \\right| + \\left| g ^ {\\prime} (0) \\right|}{n + 1}."},{"id":"s6","text":"又"},{"id":"s7","text":"\\left| f ^ {\\prime} (0) \\right| = \\left| \\lim _ {x \\rightarrow 0} \\frac {f (x) - f (0)}{x} \\right| = \\left| \\lim _ {x \\rightarrow 0} \\frac {f (x)}{x} \\right| = \\lim _ {x \\rightarrow 0} \\left| \\frac {f (x)}{x} \\right| \\leqslant \\lim _ {x \\rightarrow 0} \\left| \\frac {\\sin x}{x} \\right| = 1.\\tag{①}"},{"id":"s8","text":"同理 $\\left|g'(0)\\right|\\leqslant1$ ．所以"},{"id":"s9","text":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}."}],"final_answer":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.","techniques_used":["导数定义","可导性"]},"cdps":[{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"导数定义","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"可导性","expected":"\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}."}],"meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例8*","page":69,"quality_basis":"source_textbook_worked_example","starred":true}}
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-08",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a_{1},a_{2},\\cdots,a_{n}$ 为常数，且\n\n\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\sin k x \\right| \\leqslant | \\sin x |, \\quad \\left| \\sum_ {j = 1} ^ {n} a _ {n - j + 1} \\sin j x \\right| \\leqslant | \\sin x |.\n\n证明 $\\left|\\sum_{k=1}^{n} a_k\\right| \\leqslant \\frac{2}{n+1}$ .",
+  "answer": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "导数定义",
+    "可导性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 设 $f(x) = \\sum_{k=1}^{n} a_k \\sin kx$ , $g(x) = \\sum_{j=1}^{n} a_{n-j+1} \\sin jx$ ，易知 $f'(0) + g'(0) = (n+1) \\sum_{k=1}^{n} a_k$ ，从而只需证明 $|f'(0)| \\leqslant 1, |g'(0)| \\leqslant 1$ ."
+      },
+      {
+        "id": "s2",
+        "text": "设 $f(x) = \\sum_{k=1}^{n} a_k \\sin kx, g(x) = \\sum_{j=1}^{n} a_{n-j+1} \\sin jx$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{c} f ^ {\\prime} (x) = a _ {1} \\cos x + 2 a _ {2} \\cos 2 x + \\dots + n a _ {n} \\cos n x, \\\\ g ^ {\\prime} (x) = a _ {n} \\cos x + 2 a _ {n - 1} \\cos 2 x + \\dots + n a _ {1} \\cos n x, \\\\ f ^ {\\prime} (0) + g ^ {\\prime} (0) = (n + 1) (a _ {1} + a _ {2} + \\dots + a _ {n}). \\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "故"
+      },
+      {
+        "id": "s5",
+        "text": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| = \\frac {\\left| f ^ {\\prime} (0) + g ^ {\\prime} (0) \\right|}{n + 1} \\leqslant \\frac {\\left| f ^ {\\prime} (0) \\right| + \\left| g ^ {\\prime} (0) \\right|}{n + 1}."
+      },
+      {
+        "id": "s6",
+        "text": "又"
+      },
+      {
+        "id": "s7",
+        "text": "\\left| f ^ {\\prime} (0) \\right| = \\left| \\lim _ {x \\rightarrow 0} \\frac {f (x) - f (0)}{x} \\right| = \\left| \\lim _ {x \\rightarrow 0} \\frac {f (x)}{x} \\right| = \\lim _ {x \\rightarrow 0} \\left| \\frac {f (x)}{x} \\right| \\leqslant \\lim _ {x \\rightarrow 0} \\left| \\frac {\\sin x}{x} \\right| = 1.\\tag{①}"
+      },
+      {
+        "id": "s8",
+        "text": "同理 $\\left|g'(0)\\right|\\leqslant1$ ．所以"
+      },
+      {
+        "id": "s9",
+        "text": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}."
+      }
+    ],
+    "final_answer": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}.",
+    "techniques_used": [
+      "导数定义",
+      "可导性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？",
+      "technique": "导数定义",
+      "expected": "分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于可导性或导数值的结论依据哪一关键极限？",
+      "technique": "可导性",
+      "expected": "\\left| \\sum_ {k = 1} ^ {n} a _ {k} \\right| \\leqslant \\frac {2}{n + 1}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.1",
+    "subsection": "导数的概念",
+    "example_id": "例8*",
+    "page": 69,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

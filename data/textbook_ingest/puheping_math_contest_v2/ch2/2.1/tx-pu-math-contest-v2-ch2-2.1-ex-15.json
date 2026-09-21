@@ -1,1 +1,90 @@
-{"id":"tx-pu-math-contest-v2-ch2-2.1-ex-15","subject":"math","l2":"一元微分学（求导与作图）","l3_id":"math.calc.diff.rules","atom_id":"","book_id":"","ability_goal":"compute","item_form":"blank","difficulty":"contest","question":"设 $f(x) = \\frac{x}{\\sqrt{1 + x^2}}$ , $f_n(x) = \\underbrace{f(f(\\cdots f(x)))}$ , 求 $\\frac{\\mathrm{d}f_n(x)}{\\mathrm{d}x}$ .","answer":"\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.","ref_source":"textbook:puheping_math_contest_v2","techniques":["复合求导","求导法则"],"solution":{"steps":[{"id":"s1","text":"分析 由于 $f_{n}(x) = f(f_{n - 1}(x))$ ，因此按复合函数求导可得到 $f_{n}^{\\prime}(x)$ 与 $f_{n - 1}^{\\prime}(x)$ 关系式，递推化简即可.\n\n\\begin{array}{r l} & {\\text {内} f _ {n} (x) = f (f _ {n - 1} (x)) = \\frac {f _ {n - 1} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}, \\text {则} \\frac {f _ {n} (x)}{f _ {n - 1} (x)} = \\frac {1}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}. \\text {且有}} \\\\ & {\\qquad \\qquad f _ {n - 1} ^ {\\prime} (x) = \\frac {f _ {n - 1} ^ {\\prime} (x) \\sqrt {1 + f _ {n - 1} ^ {2} (x)} - f _ {n - 1} (x) \\cdot \\frac {f _ {n - 1} (x) f _ {n - 1} ^ {\\prime} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}}{1 + f _ {n - 1} ^ {2} (x)}} \\\\ & {\\qquad \\qquad = \\frac {1}{\\left[ 1 + f _ {n - 1} ^ {2} (x) \\right] ^ {3 / 2}} f _ {n - 1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} f _ {n - 1} ^ {\\prime} (x)} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} f _ {n - 2} ^ {\\prime} (x) = \\dots} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} \\dots \\left[ \\frac {f _ {2} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x).} \\end{array}\n\n由于\n\nf _ {1} (x) = f (x) = \\frac {x}{\\sqrt {1 + x ^ {2}}}, \\quad f ^ {\\prime} (x) = \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}},\n\n所以\n\n\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} "},{"id":"s2","text":"66"},{"id":"s3","text":"大学生数学竞赛教程（第2版）"},{"id":"s4","text":"<<<PAGE:74>>>\n分析 由于 $f_{n}(x) = f(f_{n - 1}(x))$ ，因此按复合函数求导可得到 $f_{n}^{\\prime}(x)$ 与 $f_{n - 1}^{\\prime}(x)$ 关系式，递推化简即可."},{"id":"s5","text":"$$\n$$\n\\begin{array}{r l} & {\\text {内} f _ {n} (x) = f (f _ {n - 1} (x)) = \\frac {f _ {n - 1} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}, \\text {则} \\frac {f _ {n} (x)}{f _ {n - 1} (x)} = \\frac {1}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}. \\text {且有}} \\\\ & {\\qquad \\qquad f _ {n - 1} ^ {\\prime} (x) = \\frac {f _ {n - 1} ^ {\\prime} (x) \\sqrt {1 + f _ {n - 1} ^ {2} (x)} - f _ {n - 1} (x) \\cdot \\frac {f _ {n - 1} (x) f _ {n - 1} ^ {\\prime} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}}{1 + f _ {n - 1} ^ {2} (x)}} \\\\ & {\\qquad \\qquad = \\frac {1}{\\left[ 1 + f _ {n - 1} ^ {2} (x) \\right] ^ {3 / 2}} f _ {n - 1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} f _ {n - 1} ^ {\\prime} (x)} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} f _ {n - 2} ^ {\\prime} (x) = \\dots} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} \\dots \\left[ \\frac {f _ {2} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x).} \\end{array}\n$$\n$$"},{"id":"s6","text":"由于"},{"id":"s7","text":"$$\n$$\nf _ {1} (x) = f (x) = \\frac {x}{\\sqrt {1 + x ^ {2}}}, \\quad f ^ {\\prime} (x) = \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}},\n$$\n$$"},{"id":"s8","text":"所以"},{"id":"s9","text":"$$\n$$\n\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.\n$$\n$$"}],"final_answer":"\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.","techniques_used":["复合求导","求导法则"]},"cdps":[{"id":"c1","prompt":"求导前是否需要先化简（取对数、去根式、分段讨论）？优先用哪条运算法则？","technique":"复合求导","expected":"先化简结构，再套用四则/复合/反函数等法则，避免对复杂式直接盲目求导。"},{"id":"c2","prompt":"写出最终导数值或导数表达式所依据的关键结果。","technique":"求导法则","expected":"$$ $$ \\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}. $$ $$"}],"meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的计算","example_id":"例15*","page":73,"quality_basis":"source_textbook_worked_example","starred":true}}
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-15",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x) = \\frac{x}{\\sqrt{1 + x^2}}$ , $f_n(x) = \\underbrace{f(f(\\cdots f(x)))}$ , 求 $\\frac{\\mathrm{d}f_n(x)}{\\mathrm{d}x}$ .",
+  "answer": "\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "复合求导",
+    "求导法则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f_{n}(x) = f(f_{n - 1}(x))$ ，因此按复合函数求导可得到 $f_{n}^{\\prime}(x)$ 与 $f_{n - 1}^{\\prime}(x)$ 关系式，递推化简即可.\n\n\\begin{array}{r l} & {\\text {内} f _ {n} (x) = f (f _ {n - 1} (x)) = \\frac {f _ {n - 1} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}, \\text {则} \\frac {f _ {n} (x)}{f _ {n - 1} (x)} = \\frac {1}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}. \\text {且有}} \\\\ & {\\qquad \\qquad f _ {n - 1} ^ {\\prime} (x) = \\frac {f _ {n - 1} ^ {\\prime} (x) \\sqrt {1 + f _ {n - 1} ^ {2} (x)} - f _ {n - 1} (x) \\cdot \\frac {f _ {n - 1} (x) f _ {n - 1} ^ {\\prime} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}}{1 + f _ {n - 1} ^ {2} (x)}} \\\\ & {\\qquad \\qquad = \\frac {1}{\\left[ 1 + f _ {n - 1} ^ {2} (x) \\right] ^ {3 / 2}} f _ {n - 1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} f _ {n - 1} ^ {\\prime} (x)} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} f _ {n - 2} ^ {\\prime} (x) = \\dots} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} \\dots \\left[ \\frac {f _ {2} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x).} \\end{array}\n\n由于\n\nf _ {1} (x) = f (x) = \\frac {x}{\\sqrt {1 + x ^ {2}}}, \\quad f ^ {\\prime} (x) = \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}},\n\n所以\n\n\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} "
+      },
+      {
+        "id": "s2",
+        "text": "66"
+      },
+      {
+        "id": "s3",
+        "text": "大学生数学竞赛教程（第2版）"
+      },
+      {
+        "id": "s4",
+        "text": "<<<PAGE:74>>>\n分析 由于 $f_{n}(x) = f(f_{n - 1}(x))$ ，因此按复合函数求导可得到 $f_{n}^{\\prime}(x)$ 与 $f_{n - 1}^{\\prime}(x)$ 关系式，递推化简即可."
+      },
+      {
+        "id": "s5",
+        "text": "$$\n$$\n\\begin{array}{r l} & {\\text {内} f _ {n} (x) = f (f _ {n - 1} (x)) = \\frac {f _ {n - 1} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}, \\text {则} \\frac {f _ {n} (x)}{f _ {n - 1} (x)} = \\frac {1}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}. \\text {且有}} \\\\ & {\\qquad \\qquad f _ {n - 1} ^ {\\prime} (x) = \\frac {f _ {n - 1} ^ {\\prime} (x) \\sqrt {1 + f _ {n - 1} ^ {2} (x)} - f _ {n - 1} (x) \\cdot \\frac {f _ {n - 1} (x) f _ {n - 1} ^ {\\prime} (x)}{\\sqrt {1 + f _ {n - 1} ^ {2} (x)}}}{1 + f _ {n - 1} ^ {2} (x)}} \\\\ & {\\qquad \\qquad = \\frac {1}{\\left[ 1 + f _ {n - 1} ^ {2} (x) \\right] ^ {3 / 2}} f _ {n - 1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} f _ {n - 1} ^ {\\prime} (x)} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} f _ {n - 2} ^ {\\prime} (x) = \\dots} \\\\ & {\\qquad \\qquad = \\left[ \\frac {f _ {n} (x)}{f _ {n - 1} (x)} \\right] ^ {3} \\left[ \\frac {f _ {n - 1} (x)}{f _ {n - 2} (x)} \\right] ^ {3} \\dots \\left[ \\frac {f _ {2} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x) = \\left[ \\frac {f _ {n} (x)}{f _ {1} (x)} \\right] ^ {3} f _ {1} ^ {\\prime} (x).} \\end{array}\n$$\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "由于"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n$$\nf _ {1} (x) = f (x) = \\frac {x}{\\sqrt {1 + x ^ {2}}}, \\quad f ^ {\\prime} (x) = \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}},\n$$\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "所以"
+      },
+      {
+        "id": "s9",
+        "text": "$$\n$$\n\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.\n$$\n$$"
+      }
+    ],
+    "final_answer": "\\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}.",
+    "techniques_used": [
+      "复合求导",
+      "求导法则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "求导前是否需要先化简（取对数、去根式、分段讨论）？优先用哪条运算法则？",
+      "technique": "复合求导",
+      "expected": "先化简结构，再套用四则/复合/反函数等法则，避免对复杂式直接盲目求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终导数值或导数表达式所依据的关键结果。",
+      "technique": "求导法则",
+      "expected": "$$ $$ \\frac {\\mathrm{d} f _ {n} (x)}{\\mathrm{d} x} = \\left[ \\frac {f _ {n} (x)}{f (x)} \\right] ^ {3} \\frac {1}{(1 + x ^ {2}) ^ {3 / 2}} = \\left[ \\frac {f _ {n} (x)}{x} \\right] ^ {3}. $$ $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.1",
+    "subsection": "导数的计算",
+    "example_id": "例15*",
+    "page": 73,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}
