@@ -1,18 +1,1 @@
-{
-  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-02",
-  "subject": "math",
-  "l2": "一元微分学（求导与作图）",
-  "l3_id": "math.calc.diff.def",
-  "atom_id": "",
-  "book_id": "",
-  "ability_goal": "compute",
-  "item_form": "blank",
-  "difficulty": "hit",
-  "question": "设 $f(x)$ 是连续可导函数，且 $f(x) = x + x\\int_{0}^{1}f(t)\\mathrm{d}t + x^{2}\\lim_{x\\to 0}\\frac{f(x)}{x}$ ，求 $f(x)$ .",
-  "answer": "$f(x)=6x+6x^{2}$ .",
-  "ref_source": "textbook:puheping_math_contest_v2",
-  "techniques": ["导数定义","可导性"],
-  "solution": {"steps": [{"id":"s1","text":"分析 函数的定积分与极限值都是常数，该题的本质就是要确定这两个常数."},{"id":"s2","text":"易知 $f(0) = 0$ ，则 $\\lim_{x\\to 0}\\frac{f(x)}{x} = \\lim_{x\\to 0}\\frac{f(x) - f(0)}{x} = f'(0).$"},{"id":"s3","text":"设 $A = \\int_{0}^{1}f(t)\\mathrm{d}t$ ，则"},{"id":"s4","text":"f (x) = x + x A + x ^ {\\2} f ^ {\\prime} (0),\\tag{①}"},{"id":"s5","text":"对①式两边积分得"},{"id":"s6","text":"A = \\int_ {0} ^ {1} [ t + t A + t ^ {2} f ^ {\\prime} (0) ] \\mathrm{d} t = \\frac {1}{2} + \\frac {1}{2} A + \\frac {1}{3} f ^ {\\prime} (0), \\text {即} A = 1 + \\frac {2}{3} f ^ {\\prime} (0).\\tag{②}"},{"id":"s7","text":"在①式中两边求导，令 $x = 0$ ，得"},{"id":"s8","text":"f ^ {\\prime} (0) = 1 + A.\\tag{③}"},{"id":"s9","text":"由②，③式得 $f'(0)=6$ ，A=5，故 $f(x)=6x+6x^{2}$ ."}],"final_answer":"$f(x)=6x+6x^{2}$ .","techniques_used":["导数定义","可导性"]},
-  "cdps": [{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"导数定义","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"可导性","expected":"$f(x)=6x+6x^{2}$ ."}],
-  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例2","page":65,"quality_basis":"source_textbook_worked_example"}
-}
+{"id":"tx-pu-math-contest-v2-ch2-2.1-ex-02","subject":"math","l2":"一元微分学（求导与作图）","l3_id":"math.calc.diff.def","atom_id":"","book_id":"","ability_goal":"compute","item_form":"blank","difficulty":"hit","question":"设 $f(x)$ 是连续可导函数，且 $f(x) = x + x\\int_{0}^{1}f(t)\\mathrm{d}t + x^{2}\\lim_{x\\to 0}\\frac{f(x)}{x}$ ，求 $f(x)$ .","answer":"$f(x)=6x+6x^{2}$ .","ref_source":"textbook:puheping_math_contest_v2","techniques":["导数定义","可导性"],"solution":{"steps":[{"id":"s1","text":"分析 函数的定积分与极限值都是常数，该题的本质就是要确定这两个常数."},{"id":"s2","text":"易知 $f(0) = 0$ ，则 $\\lim_{x\\to 0}\\frac{f(x)}{x} = \\lim_{x\\to 0}\\frac{f(x) - f(0)}{x} = f'(0).$"},{"id":"s3","text":"设 $A = \\int_{0}^{1}f(t)\\mathrm{d}t$ ，则"},{"id":"s4","text":"f (x) = x + x A + x ^ {2} f ^ {\\prime} (0),\\tag{①}"},{"id":"s5","text":"对①式两边积分得"},{"id":"s6","text":"A = \\int_ {0} ^ {1} [ t + t A + t ^ {2} f ^ {\\prime} (0) ] \\mathrm{d} t = \\frac {1}{2} + \\frac {1}{2} A + \\frac {1}{3} f ^ {\\prime} (0), \\text {即} A = 1 + \\frac {2}{3} f ^ {\\prime} (0).\\tag{②}"},{"id":"s7","text":"在①式中两边求导，令 $x = 0$ ，得"},{"id":"s8","text":"f ^ {\\prime} (0) = 1 + A.\\tag{③}"},{"id":"s9","text":"由②，③式得 $f'(0)=6$ ，A=5，故 $f(x)=6x+6x^{2}$ ."}],"final_answer":"$f(x)=6x+6x^{2}$ .","techniques_used":["导数定义","可导性"]},"cdps":[{"id":"c1","prompt":"在该点应分别计算左、右导数还是直接用定义极限？间断/分段点如何处理？","technique":"导数定义","expected":"分段点用左右导数定义；需同时验证左右极限相等且有限才可导。"},{"id":"c2","prompt":"最终关于可导性或导数值的结论依据哪一关键极限？","technique":"可导性","expected":"$f(x)=6x+6x^{2}$ ."}],"meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的概念","example_id":"例2","page":65,"quality_basis":"source_textbook_worked_example"}}
