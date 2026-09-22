@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-24",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.proof",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 内二阶可导，并且 $\\left|f(x)\\right| < k_0$ ， $\\left|f''(x)\\right| < k_1$ （ $k_0, k_1$ 为常数）。证明：\n\n(1) $\\forall h > 0$ ，有 $\\left|f'(x)\\right| < \\frac{k_0}{h} + \\frac{h}{2} k_1$ ;\n\n(2) $f^{\\prime}(x)$ 是有界函数，且 $\\left|f^{\\prime}(x)\\right| < \\sqrt{2k_0k_1}$ .",
+  "answer": "$h_0$ 为 $\\varphi(h)$ 的最小值点。且",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "辅助函数",
+    "罗尔定理",
+    "不等式估计"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要用函数值的限以及二阶导数值的限来估计一阶导数值，只需对函数在任一点做一阶泰勒展开，变形后再做估计."
+      },
+      {
+        "id": "s2",
+        "text": "(1)\n\n$$\nf (x + h) = f (x) + f ^ {\\prime} (x) h + \\frac {f ^ {\\prime \\prime} (x + \\theta_ {1} h)}{2 !} h ^ {2} (0 <   \\theta_ {1} <   1),\n\nf (x - h) = f (x) - f ^ {\\prime} (x) h + \\frac {f ^ {\\prime \\prime} (x + \\theta_ {2} h)}{2 !} h ^ {2} \\quad (0 <   \\theta_ {2} <   1).\n$$\n\n则\n\n$$\nf (x + h) - f (x - h) = 2 f ^ {\\prime} (x) h + \\frac {1}{2} \\left[ f ^ {\\prime \\prime} \\left(x _ {1} + \\theta_ {1} h\\right) - f ^ {\\prime \\prime} \\left(x + \\theta_ {2} h\\right) \\right] h ^ {2},\n\nf ^ {\\prime} (x) = \\frac {f (x + h) - f (x - h)}{2 h} + \\frac {1}{4} \\left[ f ^ {\\prime \\prime} \\left(x + \\theta_ {2} h\\right) - f ^ {\\prime \\prime} \\left(x + \\theta_ {1} h\\right) \\right] h,\n\n\\left| f ^ {\\prime} (x) \\right| \\leqslant \\frac {\\left| f (x + h) \\right| + \\left| f (x - h) \\right|}{2 h} + \\frac {1}{4} \\left[ \\left| f ^ {\\prime \\prime} (x + \\theta_ {2} h) \\right| + \\left| f ^ {\\prime \\prime} (x + \\theta_ {1} h) \\right| \\right] h.\n$$\n\n由于 $\\left|f(x)\\right|<k_{0},\\left|f''(x)\\right|<k_{1}$ ，所以 $\\left|f'(x)\\right|<\\frac{k_{0}}{h}+\\frac{h}{2}k_{1}$ ."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 令 $\\varphi(h) = \\frac{k_0}{h} + \\frac{h}{2} k_1, h \\in (0, +\\infty)$ . 因为 $\\varphi'(h) = -\\frac{k_0}{h^2} + \\frac{k_1}{2}$ , 令 $\\varphi'(h) = 0$ , 得 $h_0 = \\sqrt{\\frac{2k_0}{k_1}}$ .\n\n又 $\\varphi''(h) = \\frac{2k_0}{h^3}$ ， $\\varphi''(h_0) > 0$ ，故 $h_0$ 为 $\\varphi(h)$ 的最小值点。且\n\n$$\n\\min \\varphi (h) = \\varphi (h _ {0}) = \\sqrt {2 k _ {0} k _ {1}}.\n$$\n\n由（1）知 $\\left|f'(x)\\right|<\\frac{k_{0}}{h}+\\frac{h}{2}k_{1}$ .\n\n评注（2）中的不等式也可由（1）中的不等式变形为 $\\frac{k_1}{2} h^2 - |f'(x)|h + k_0 > 0$ ，再用二次方程无实数根的判别式 $\\Delta = |f'(x)|^2 - 2k_0k_1 < 0$ 来得到。"
+      }
+    ],
+    "final_answer": "$h_0$ 为 $\\varphi(h)$ 的最小值点。且",
+    "techniques_used": [
+      "辅助函数",
+      "罗尔定理",
+      "不等式估计"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔、拉格朗日、柯西还是泰勒公式？是否需要构造辅助函数或反证？",
+      "technique": "不等式估计",
+      "expected": "根据结论形态选择中值定理或泰勒展开；多中值问题常多次应用或构造辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "辅助函数",
+      "expected": "$h_0$ 为 $\\varphi(h)$ 的最小值点。且"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例24",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 96
+  }
+}

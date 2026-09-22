@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-23",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明不等式： $\\left|\\frac{\\sin x - \\sin y}{x - y} -\\cos y\\right|\\leqslant \\frac{1}{2}|x - y|,x,y\\in (-\\infty , + \\infty)$",
+  "answer": "\\begin{array}{r l} \\left| \\frac {\\sin x - \\sin y}{x - y} - \\cos y \\right| & = \\left| \\frac {\\left[ \\sin y + \\cos y \\cdot (x - y) - \\frac {1}{2} \\sin \\xi \\cdot (x - y) ^ {2} \\right] - \\sin y}{x - y} - \\cos y \\right| \\\\ & = \\left| - \\frac {1}{2} \\sin \\xi \\cdot (x - y) \\right| \\leqslant \\frac {1}{2} | x - y |. \\end{array}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "辅助函数",
+    "不等式估计"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 不等式的形式很容易使人想到微分中值定理，由拉格朗日微分中值定理，得\n\n$$\n\\left| \\frac {\\sin x - \\sin y}{x - y} - \\cos y \\right| = | \\cos \\xi - \\cos y | = 2 \\left| \\sin \\left(\\frac {\\xi - y}{2}\\right) \\sin \\left(\\frac {\\xi + y}{2}\\right) \\right| \\leqslant | \\xi - y |,\n$$\n\n上面不等式没有精确到所要求证明的程度. 因此要想有更精确的估计, 需用泰勒公式."
+      },
+      {
+        "id": "s2",
+        "text": "将 $\\sin x$ 在点 $y$ 处展开成一阶泰勒公式，得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\sin x = \\sin y + \\cos y \\cdot (x - y) - \\frac {1}{2} \\sin \\xi \\cdot (x - y) ^ {2} (\\xi \\text {介于} x \\text {与} y \\text {之间})\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\left| \\frac {\\sin x - \\sin y}{x - y} - \\cos y \\right| & = \\left| \\frac {\\left[ \\sin y + \\cos y \\cdot (x - y) - \\frac {1}{2} \\sin \\xi \\cdot (x - y) ^ {2} \\right] - \\sin y}{x - y} - \\cos y \\right| \\\\ & = \\left| - \\frac {1}{2} \\sin \\xi \\cdot (x - y) \\right| \\leqslant \\frac {1}{2} | x - y |. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} \\left| \\frac {\\sin x - \\sin y}{x - y} - \\cos y \\right| & = \\left| \\frac {\\left[ \\sin y + \\cos y \\cdot (x - y) - \\frac {1}{2} \\sin \\xi \\cdot (x - y) ^ {2} \\right] - \\sin y}{x - y} - \\cos y \\right| \\\\ & = \\left| - \\frac {1}{2} \\sin \\xi \\cdot (x - y) \\right| \\leqslant \\frac {1}{2} | x - y |. \\end{array}",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "辅助函数",
+      "不等式估计"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪个函数、哪个区间用拉格朗日中值定理？是否需要先验证连续可导条件？",
+      "technique": "拉格朗日中值定理",
+      "expected": "确认 C[a,b]∩D(a,b) 后对目标函数应用拉氏中值，或对适当变形后的函数应用。"
+    },
+    {
+      "id": "c2",
+      "prompt": "中值等式如何导出最终的 ξ、不等式或存在性结论？",
+      "technique": "不等式估计",
+      "expected": "\\begin{array}{r l} \\left| \\frac {\\sin x - \\sin y}{x - y} - \\cos y \\right| & = \\left| \\frac {\\left[ \\sin y + \\cos y \\cdot (x - y) - \\frac {1}{2} \\sin \\xi \\cdot (x - y) ^ {2} \\right] - \\sin y}{x - y} - "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例23",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 96,
+    "syllabus_note": "不等式用拉氏/泰勒估计",
+    "commentary": "评注 拉格朗日中值公式是0阶泰勒公式，泰勒公式的阶数越高，其多项式逼近函数的程度就越好，要根据情况选择适当的阶数使问题得以解决."
+  }
+}

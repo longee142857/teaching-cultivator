@@ -1,0 +1,335 @@
+{
+  "section": "2.2",
+  "chapter": "第2章 一元函数微分学",
+  "title": "微分中值定理",
+  "page_range": [
+    84,
+    99
+  ],
+  "page_note": "merged MD ~4083–5129; OCR 084–099; book TOC ~76–91; cut at 习题2.2",
+  "count": 28,
+  "starred_count": 2,
+  "starred": [
+    "例5*",
+    "例15*"
+  ],
+  "l3_counts": {
+    "math.calc.mvt.lagrange": 7,
+    "math.calc.mvt.rolle": 4,
+    "math.calc.taylor.proof": 13,
+    "math.calc.mvt.cauchy": 1,
+    "math.calc.taylor.formula": 3
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch2-2.2-ex-01",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-02",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-03",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-04",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-05",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-06",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-07",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-08",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-09",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-10",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-11",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-12",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-13",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-14",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-15",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-16",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-17",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-18",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-19",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-20",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-21",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-22",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-23",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-24",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-25",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-26",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-27",
+    "tx-pu-math-contest-v2-ch2-2.2-ex-28"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-01",
+      "example_id": "例1",
+      "page": 84,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-02",
+      "example_id": "例2",
+      "page": 84,
+      "l3_id": "math.calc.mvt.rolle",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-03",
+      "example_id": "例3",
+      "page": 85,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-04",
+      "example_id": "例4",
+      "page": 86,
+      "l3_id": "math.calc.mvt.rolle",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-05",
+      "example_id": "例5*",
+      "page": 86,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-06",
+      "example_id": "例6",
+      "page": 87,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-07",
+      "example_id": "例7",
+      "page": 87,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-08",
+      "example_id": "例8",
+      "page": 88,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-09",
+      "example_id": "例9",
+      "page": 89,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-10",
+      "example_id": "例10",
+      "page": 89,
+      "l3_id": "math.calc.mvt.cauchy",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-11",
+      "example_id": "例11",
+      "page": 90,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-12",
+      "example_id": "例12",
+      "page": 91,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-13",
+      "example_id": "例13",
+      "page": 92,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-14",
+      "example_id": "例14",
+      "page": 92,
+      "l3_id": "math.calc.mvt.rolle",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-15",
+      "example_id": "例15*",
+      "page": 92,
+      "l3_id": "math.calc.mvt.rolle",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-16",
+      "example_id": "例16",
+      "page": 93,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-17",
+      "example_id": "例17",
+      "page": 93,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-18",
+      "example_id": "例18",
+      "page": 94,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-19",
+      "example_id": "例19",
+      "page": 94,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-20",
+      "example_id": "例20",
+      "page": 94,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-21",
+      "example_id": "例21",
+      "page": 95,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-22",
+      "example_id": "例22",
+      "page": 95,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-23",
+      "example_id": "例23",
+      "page": 96,
+      "l3_id": "math.calc.mvt.lagrange",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-24",
+      "example_id": "例24",
+      "page": 96,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-25",
+      "example_id": "例25",
+      "page": 97,
+      "l3_id": "math.calc.taylor.formula",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-26",
+      "example_id": "例26",
+      "page": 97,
+      "l3_id": "math.calc.taylor.formula",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-27",
+      "example_id": "例27",
+      "page": 98,
+      "l3_id": "math.calc.taylor.proof",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch2-2.2-ex-28",
+      "example_id": "例28",
+      "page": 98,
+      "l3_id": "math.calc.taylor.formula",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ]
+}

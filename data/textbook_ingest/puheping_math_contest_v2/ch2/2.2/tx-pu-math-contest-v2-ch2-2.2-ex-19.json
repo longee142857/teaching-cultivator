@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-19",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a > \\mathbf{e}$ 且 $0 < x < y < \\frac{\\pi}{2}$ ，证明 $a^y - a^x > (\\cos x - \\cos y)a^x \\ln a$ 。",
+  "answer": "$$ a ^ {y} - a ^ {x} > (\\cos x - \\cos y) a ^ {x} \\ln a. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "辅助函数",
+    "柯西中值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 所证不等式变形为 $\\frac{a^y - a^x}{\\cos x - \\cos y} > a^x \\ln a$ ，所以选函数 $f(t) = a^t$ ， $g(t) = \\cos t$ 在区间 $[x, y]$ 上用柯西中值定理."
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(t) = a^t$ ， $g(t) = \\cos t$ ，显然 $f(t)$ 与 $g(t)$ 在区间 $[x, y] \\subset \\left(0, \\frac{\\pi}{2}\\right)$ 上满足柯西中值定理的条件，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {a ^ {y} - a ^ {x}}{\\cos y - \\cos x} = \\frac {a ^ {\\xi} \\ln a}{- \\sin \\xi} \\left(0 <   x <   \\xi <   y <   \\frac {\\pi}{2}\\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "即"
+      },
+      {
+        "id": "s5",
+        "text": "$$\na ^ {y} - a ^ {x} = (\\cos x - \\cos y) \\frac {a ^ {\\xi} \\ln a}{\\sin \\xi}.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "因为 $\\frac{1}{\\sin\\xi} > 1, a^{\\xi} > a^{x}$ ，所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\na ^ {y} - a ^ {x} > (\\cos x - \\cos y) a ^ {x} \\ln a.\n$$"
+      }
+    ],
+    "final_answer": "$$ a ^ {y} - a ^ {x} > (\\cos x - \\cos y) a ^ {x} \\ln a. $$",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "辅助函数",
+      "柯西中值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪个函数、哪个区间用拉格朗日中值定理？是否需要先验证连续可导条件？",
+      "technique": "柯西中值定理",
+      "expected": "确认 C[a,b]∩D(a,b) 后对目标函数应用拉氏中值，或对适当变形后的函数应用。"
+    },
+    {
+      "id": "c2",
+      "prompt": "中值等式如何导出最终的 ξ、不等式或存在性结论？",
+      "technique": "辅助函数",
+      "expected": "$$ a ^ {y} - a ^ {x} > (\\cos x - \\cos y) a ^ {x} \\ln a. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 94
+  }
+}

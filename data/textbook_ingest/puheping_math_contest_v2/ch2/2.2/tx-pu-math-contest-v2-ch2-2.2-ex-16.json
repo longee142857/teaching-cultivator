@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-16",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在区间 $(a, b)$ 内可导， $b - a > \\pi$ 。证明存在 $\\xi \\in (a, b)$ ，使得 $f'(\\xi) < 1 + f^2(\\xi)$ 。",
+  "answer": "$$ \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} \\pi \\leqslant \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} (x _ {2} - x _ {1}) \\leqslant \\pi , $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 即证存在 $\\xi \\in (a, b)$ , 使 $\\frac{f'(\\xi)}{1 + f^2(\\xi)} < 1$ . 由于 $[\\arctan f(x)]' = \\frac{f'(x)}{1 + f^2(x)}$ , 即证存在 $\\xi \\in (a, b)$ , 使 $[\\arctan f(x)]'|_{x=\\xi} < 1$ . 对函数 $\\arctan f(x)$ 在某区间 $(x_1, x_2) \\subset (a, b)$ 上用拉格朗日中值定理."
+      },
+      {
+        "id": "s2",
+        "text": "因为 $b - a > \\pi$ ，可取 $x_{1}, x_{2} \\in (a, b)$ ，使 $x_{2} - x_{1} > \\pi$ 。因为 $f(x)$ 在区间 $(a, b)$ 内可导，由拉格朗日中值定理，知存在 $\\xi \\in (x_{1}, x_{2}) \\subset (a, b)$ ，使\n\n$$\n\\frac {\\arctan f \\left(x _ {2}\\right) - \\arctan f \\left(x _ {1}\\right)}{x _ {2} - x _ {1}} = \\left[ \\arctan f (x) \\right] ^ {\\prime} \\big | _ {x = \\xi},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即\n\n$$\n\\arctan f \\left(x _ {2}\\right) - \\arctan f \\left(x _ {1}\\right) = \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} \\left(x _ {2} - x _ {1}\\right).\n$$\n\n由于\n\n$$\n\\left| \\arctan f (x _ {2}) - \\arctan f (x _ {1}) \\right| \\leqslant \\left| \\arctan f (x _ {2}) \\right| + \\left| \\arctan f (x _ {1}) \\right| \\leqslant \\frac {\\pi}{2} + \\frac {\\pi}{2} = \\pi ,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以\n\n$$\n\\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} \\pi \\leqslant \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} (x _ {2} - x _ {1}) \\leqslant \\pi ,\n$$\n\n即\n\n$$\n\\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} <   1 \\Rightarrow f ^ {\\prime} (\\xi) <   1 + f ^ {2} (\\xi).\n$$"
+      }
+    ],
+    "final_answer": "$$ \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} \\pi \\leqslant \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} (x _ {2} - x _ {1}) \\leqslant \\pi , $$",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪个函数、哪个区间用拉格朗日中值定理？是否需要先验证连续可导条件？",
+      "technique": "拉格朗日中值定理",
+      "expected": "确认 C[a,b]∩D(a,b) 后对目标函数应用拉氏中值，或对适当变形后的函数应用。"
+    },
+    {
+      "id": "c2",
+      "prompt": "中值等式如何导出最终的 ξ、不等式或存在性结论？",
+      "technique": "辅助函数",
+      "expected": "$$ \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} \\pi \\leqslant \\frac {f ^ {\\prime} (\\xi)}{1 + f ^ {2} (\\xi)} (x _ {2} - x _ {1}) \\leqslant \\pi , $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 93
+  }
+}

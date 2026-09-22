@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-15",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.rolle",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设实系数一元 $n$ 次方程\n\n$$\nP (x) = a _ {0} x ^ {n} + a _ {1} x ^ {n - 1} + \\dots + a _ {n - 1} x + a _ {n} = 0 \\quad \\left(a _ {0} \\neq 0, n \\geqslant 2\\right)\n$$\n\n的根全为实数，证明方程 $P'(x)=0$ 的根也全为实数.",
+  "answer": "方程 $P'(x) = 0$ 恰有 $n - 1$ 个实根，即 $P'(x) = 0$ 的根全为实数.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "罗尔定理",
+    "辅助函数",
+    "多项式根与导数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 罗尔定理给出了方程根与导函数方程根的关系，关键要对重根情况做出讨论.\n\n设方程 $P(x)=0$ 的 n 个实根为 $c_{1},c_{2},\\cdots,c_{r},d_{1},d_{2},\\cdots,d_{l}$ 。其中 $c_{1},c_{2},\\cdots,c_{r}$ 为单根； $d_{1},d_{2},\\cdots,d_{l}$ 为重根，其重数依次为 $k_{1},k_{2},\\cdots,k_{l}\\quad(k_{j}\\geqslant2,j=1,2,\\cdots,l)$ 。则"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nr + k _ {1} + k _ {2} + \\dots + k _ {l} = n.\n$$\n\n对于重根 $d_{j}(j=1,2,\\cdots,l)$ ，多项式 $P(x)$ 可写为\n\n$$\nP (x) = \\left(x - d _ {j}\\right) ^ {k _ {j}} Q (x), \\quad Q \\left(d _ {j}\\right) \\neq 0.\n$$\n\n则\n\n$$\nP ^ {\\prime} (x) = k _ {j} \\left(x - d _ {j}\\right) ^ {k _ {j} - 1} Q (x) + \\left(x - d _ {j}\\right) ^ {k _ {j}} Q ^ {\\prime} (x) = \\left(x - d _ {j}\\right) ^ {k _ {j} - 1} \\left[ k _ {j} Q (x) + \\left(x - d _ {j}\\right) Q ^ {\\prime} (x) \\right].\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $k_{j}Q(x) + (x - d_{j})Q^{\\prime}(x)\\Big|_{x = d_{j}} = k_{j}Q(d_{j})\\neq 0$ ，所以 $x = d_{j}$ 是方程 $P^{\\prime}(x) = 0$ 的 $(k_j - 1)$ 重实根.由此\n\n可得方程 $P'(x)=0$ 有实根 $d_{1},d_{2},\\cdots,d_{l}$ ，它们的重数依次为 $k_{1}-1,k_{2}-1,\\cdots,k_{l}-1$ ，这些实根的总个数为"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\left(k _ {1} - 1\\right) + \\left(k _ {2} - 1\\right) + \\dots + \\left(k _ {l} - 1\\right) = n - r - l.\n$$\n\n另一方面，由罗尔定理，知在 $P(x) = 0$ 的每两个相邻实根之间必有 $P'(x) = 0$ 的一个实根。由此可得 $P'(x) = 0$ 至少还有 $r + l - 1$ 个实根。\n\n由上述两种情况获得的方程 $P'(x) = 0$ 的实根，至少有 $(n - r - l) + (r + l - 1) = n - 1$ 个．而 $P'(x) = 0$ 为实系数一元 $n - 1$ 次方程，它至多有 $n - 1$ 个实根．因此方程 $P'(x) = 0$ 恰有 $n - 1$ 个实根，即 $P'(x) = 0$ 的根全为实数."
+      }
+    ],
+    "final_answer": "方程 $P'(x) = 0$ 恰有 $n - 1$ 个实根，即 $P'(x) = 0$ 的根全为实数.",
+    "techniques_used": [
+      "罗尔定理",
+      "辅助函数",
+      "多项式根与导数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何构造辅助函数使端点函数值相等，从而能用罗尔定理？",
+      "technique": "罗尔定理",
+      "expected": "将欲证等式改写为某 F′(ξ)=0，再构造满足 F(a)=F(b) 的辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "罗尔定理给出的中值条件如何回到原结论？",
+      "technique": "多项式根与导数",
+      "expected": "方程 $P'(x) = 0$ 恰有 $n - 1$ 个实根，即 $P'(x) = 0$ 的根全为实数."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例15*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 92,
+    "starred": true,
+    "syllabus_note": "多项式实根与罗尔",
+    "commentary": "评注 题解中给出了多项式函数的重根与其导函数根的关系. 即若 $x_0$ 是多项式函数 $P(x)$ 的 $k$ 重根, 则它必是 $P'(x)$ 的 $k - 1$ 重根."
+  }
+}
