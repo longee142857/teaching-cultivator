@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-17",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在区间[0,1]上连续，在(0,1)内可导，且 $f(0) = 0$ ， $f(1) = 2$ 。证明存在两两互异的点 $\\xi_1, \\xi_2, \\xi_3 \\in (0,1)$ ，使得 $f'(\\xi_1)f'(\\xi_2)\\sqrt{1 - \\xi_3} \\geqslant 2$ 。",
+  "answer": "得证",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "辅助函数",
+    "介值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 类似于例 7（1），只需将[0,1]分成两个区间，使 $f(x)$ 在两个区间各用一次拉格朗日中值定理。设分点为 $\\xi_3 \\in (0,1)$ ，由 $f'(\\xi_1) = \\frac{f(\\xi_3) - f(0)}{\\xi_3 - 0} = \\frac{f(\\xi_3)}{\\xi_3}$ ， $f'(\\xi_2) = \\frac{f(1) - f(\\xi_3)}{1 - \\xi_3} = \\frac{2 - f(\\xi_3)}{1 - \\xi_3}$ ，则 $f'(\\xi_1)f'(\\xi_2) = \\frac{f(\\xi_3)}{\\xi_3} \\cdot \\frac{2 - f(\\xi_3)}{1 - \\xi_3}$ ，若 $2 - f(\\xi_3) = \\xi_3$ ，则 $f'(\\xi_1)f'(\\xi_2) = \\frac{2 - \\xi_3}{1 - \\xi_3} = 1 + \\frac{1}{1 - \\xi_3}$ ，问题就解决了。证明 令 $F(x) = f(x) - 2 + x$ ，则 $F(x)$ 在区间[0,1]上连续，且 $F(0) = -2$ ， $F(1) = 1$ 。由连续函数的介值定理， $\\exists \\xi_3 \\in (0,1)$ 使得 $F(\\xi_3) = 0$ ，即 $f(\\xi_3) = 2 - \\xi_3$ 。\n\n在区间 $[0, \\xi_3]$ , $[\\xi_3, 1]$ 上分别利用拉格朗日中值定理, $\\exists \\xi_1 \\in (0, \\xi_3)$ , $\\exists \\xi_2 \\in (\\xi_3, 1)$ , 使得\n\n$$\nf \\left(\\xi_ {3}\\right) - f (0) = f ^ {\\prime} \\left(\\xi_ {1}\\right) \\left(\\xi_ {3} - 0\\right), \\quad f (1) - f \\left(\\xi_ {3}\\right) = f ^ {\\prime} \\left(\\xi_ {2}\\right) \\left(1 - \\xi_ {3}\\right),\n$$\n\n即 $f^{\\prime}(\\xi_{1}) = \\frac{2 - \\xi_{3}}{\\xi_{3}}$ ， $f^{\\prime}(\\xi_{2}) = \\frac{\\xi_{3}}{1 - \\xi_{3}}$ .所以\n\n$$\nf ^ {\\prime} \\left(\\xi_ {1}\\right) f ^ {\\prime} \\left(\\xi_ {2}\\right) = \\frac {2 - \\xi_ {3}}{\\xi_ {3}} \\cdot \\frac {\\xi_ {3}}{1 - \\xi_ {3}} = \\frac {2 - \\xi_ {3}}{1 - \\xi_ {3}} = 1 + \\frac {1}{1 - \\xi_ {3}} \\geqslant \\frac {2}{\\sqrt {1 - \\xi_ {3}}}.\n$$\n\n因此，存在两两互异的点 $\\xi_1, \\xi_2, \\xi_3 \\in (0,1)$ ，使得 $f'(\\xi_1)f'(\\xi_2)\\sqrt{1 - \\xi_3} \\geqslant 2$ ."
+      },
+      {
+        "id": "s2",
+        "text": "分析 类似于例 7（1），只需将[0,1]分成两个区间，使 $f(x)$ 在两个区间各用一次拉格朗日中值定理。设分点为 $\\xi_3 \\in (0,1)$ ，由 $f'(\\xi_1) = \\frac{f(\\xi_3) - f(0)}{\\xi_3 - 0} = \\frac{f(\\xi_3)}{\\xi_3}$ ， $f'(\\xi_2) = \\frac{f(1) - f(\\xi_3)}{1 - \\xi_3} = \\frac{2 - f(\\xi_3)}{1 - \\xi_3}$ ，则 $f'(\\xi_1)f'(\\xi_2) = \\frac{f(\\xi_3)}{\\xi_3} \\cdot \\frac{2 - f(\\xi_3)}{1 - \\xi_3}$ ，若 $2 - f(\\xi_3) = \\xi_3$ ，则 $f'(\\xi_1)f'(\\xi_2) = \\frac{2 - \\xi_3}{1 - \\xi_3} = 1 + \\frac{1}{1 - \\xi_3}$ ，问题就解决了。证明 令 $F(x) = f(x) - 2 + x$ ，则 $F(x)$ 在区间[0,1]上连续，且 $F(0) = -2$ ， $F(1) = 1$ 。由连续函数的介值定理， $\\exists \\xi_3 \\in (0,1)$ 使得 $F(\\xi_3) = 0$ ，即 $f(\\xi_3) = 2 - \\xi_3$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "在区间 $[0, \\xi_3]$ , $[\\xi_3, 1]$ 上分别利用拉格朗日中值定理, $\\exists \\xi_1 \\in (0, \\xi_3)$ , $\\exists \\xi_2 \\in (\\xi_3, 1)$ , 使得"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nf \\left(\\xi_ {3}\\right) - f (0) = f ^ {\\prime} \\left(\\xi_ {1}\\right) \\left(\\xi_ {3} - 0\\right), \\quad f (1) - f \\left(\\xi_ {3}\\right) = f ^ {\\prime} \\left(\\xi_ {2}\\right) \\left(1 - \\xi_ {3}\\right),\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即 $f^{\\prime}(\\xi_{1}) = \\frac{2 - \\xi_{3}}{\\xi_{3}}$ ， $f^{\\prime}(\\xi_{2}) = \\frac{\\xi_{3}}{1 - \\xi_{3}}$ .所以"
+      },
+      {
+        "id": "s6",
+        "text": "$$\nf ^ {\\prime} \\left(\\xi_ {1}\\right) f ^ {\\prime} \\left(\\xi_ {2}\\right) = \\frac {2 - \\xi_ {3}}{\\xi_ {3}} \\cdot \\frac {\\xi_ {3}}{1 - \\xi_ {3}} = \\frac {2 - \\xi_ {3}}{1 - \\xi_ {3}} = 1 + \\frac {1}{1 - \\xi_ {3}} \\geqslant \\frac {2}{\\sqrt {1 - \\xi_ {3}}}.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "因此，存在两两互异的点 $\\xi_1, \\xi_2, \\xi_3 \\in (0,1)$ ，使得 $f'(\\xi_1)f'(\\xi_2)\\sqrt{1 - \\xi_3} \\geqslant 2$ ."
+      }
+    ],
+    "final_answer": "得证",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "辅助函数",
+      "介值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪个函数、哪个区间用拉格朗日中值定理？是否需要先验证连续可导条件？",
+      "technique": "拉格朗日中值定理",
+      "expected": "确认 C[a,b]∩D(a,b) 后对目标函数应用拉氏中值，或对适当变形后的函数应用。"
+    },
+    {
+      "id": "c2",
+      "prompt": "中值等式如何导出最终的 ξ、不等式或存在性结论？",
+      "technique": "介值定理",
+      "expected": "得证"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例17",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 93
+  }
+}
