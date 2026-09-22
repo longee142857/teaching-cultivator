@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-02",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.rolle",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x) \\in C[a, b] \\cap D(a, b)$ ，其中 $a > 0$ ，且 $f(a) = 0$ 。证明 $\\exists \\xi \\in (a, b)$ ，使得\n\n$$\nf (\\xi) = \\frac {b - \\xi}{a} f ^ {\\prime} (\\xi).\n$$",
+  "answer": "(b - \\xi) ^ {a} f ^ {\\prime} (\\xi) - a (b - \\xi) ^ {a - 1} f (\\xi) = 0, f (\\xi) = \\frac {b - \\xi}{a} f ^ {\\prime} (\\xi).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "罗尔定理",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 做恒等变形，利用凑微分（积分）法构造辅助函数（原函数）。其具体过程如下：\n\n将等式 $f(\\xi) = \\frac{b - \\xi}{a} f'(\\xi)$ 中的 $\\xi$ 换为 $x$ ，并变形得 $\\frac{f'(x)}{f(x)} - \\frac{a}{b - x} = 0$ ，积分得 $\\ln f(x) - \\ln (b - x)^{-a} = \\ln C$ ，化简为 $(b - x)^a f(x) = C$ ，得辅助函数 $F(x) = (b - x)^a f(x)$ ."
+      },
+      {
+        "id": "s2",
+        "text": "设 $F(x) = (b - x)^a f(x)$ ， $x \\in (a, b)$ 。由题意知 $F(x) \\in C[a, b] \\cap D(a, b)$ ，又 $F(b) = 0 = F(a)$ ，由罗尔定理知 $\\exists \\xi \\in (a, b)$ ，使得 $F'(\\xi) = 0$ ，即"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n(b - \\xi) ^ {a} f ^ {\\prime} (\\xi) - a (b - \\xi) ^ {a - 1} f (\\xi) = 0, f (\\xi) = \\frac {b - \\xi}{a} f ^ {\\prime} (\\xi).\n$$"
+      }
+    ],
+    "final_answer": "(b - \\xi) ^ {a} f ^ {\\prime} (\\xi) - a (b - \\xi) ^ {a - 1} f (\\xi) = 0, f (\\xi) = \\frac {b - \\xi}{a} f ^ {\\prime} (\\xi).",
+    "techniques_used": [
+      "罗尔定理",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何构造辅助函数使端点函数值相等，从而能用罗尔定理？",
+      "technique": "罗尔定理",
+      "expected": "将欲证等式改写为某 F′(ξ)=0，再构造满足 F(a)=F(b) 的辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "罗尔定理给出的中值条件如何回到原结论？",
+      "technique": "辅助函数",
+      "expected": "(b - \\xi) ^ {a} f ^ {\\prime} (\\xi) - a (b - \\xi) ^ {a - 1} f (\\xi) = 0, f (\\xi) = \\frac {b - \\xi}{a} f ^ {\\prime} (\\xi)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 84,
+    "commentary": "评注 用罗尔定理证明等式的常用方法如下.\n\n将欲证等式写成等号一端只有零，再构造辅助函数。其步骤如下：\n\n(1) 将 $f(\\xi)=0$ 改写为 $f(x)=0$ ;\n\n(2) 依据 $f(x)$ 构造辅助函数 $F(x)$ . 常用方法是:\n\n① 直接观察，利用导数的运算法则凑微分，例如：\n\n$f(x) = P'(x)Q(x) + P(x)Q'(x)$ ，则 $F(x) = P(x)Q(x)$ ；\n\n$f(x) = P'(x) + P(x)Q'(x)$ ，则 $F(x) = P(x)e^{Q(x)}$ ；\n\n$f(x)=P'(x)Q(x)-P(x)Q'(x)$ ，则 $F(x)=\\frac{P(x)}{Q(x)}$ ;\n\n② 利用定积分 $F(x) = \\int_{0}^{x} f(x) \\mathrm{d}x$ 得到辅助函数 $F(x)$ ;\n\n③ 解微分方程得到辅助函数 $F(x)$ .\n\n(3) 验证辅助函 $F(x)$ 在给定的区间上满足罗尔定理的条件，便可推出待证结论."
+  }
+}
