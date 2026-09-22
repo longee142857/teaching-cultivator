@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-25",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "试确定 $A, B, C$ 的值，使 $\\mathrm{e}^x (1 + Bx + Cx^2) = 1 + Ax + o(x^3)$ ，其中 $o(x^3)$ 是当 $x \\to 0$ 时比 $x^3$ 高阶的无穷小.",
+  "answer": "$A=\\frac{1}{3},\\ B=-\\frac{2}{3},\\ C=\\frac{1}{6}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒公式",
+    "麦克劳林公式",
+    "无穷小展开",
+    "拉格朗日中值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 等式两边除 $\\mathbf{e}^x$ 以外都是多项式的形式，所以只需将 $\\mathbf{e}^x$ 做泰勒展开，再比较等式两边多项式的系数就能解出待定系数的值。由于等式右边无穷小的最高阶项为 $o(x^3)$ ，所以只需将 $\\mathbf{e}^x$ 展开到相同的阶数。"
+      },
+      {
+        "id": "s2",
+        "text": "由泰勒公式 $e^{x} = 1 + x + \\frac{x^{2}}{2} + \\frac{x^{3}}{6} + o(x^{3})$ 代入已知等式，得\n\n$$\n\\left[ 1 + x + \\frac {x ^ {2}}{2} + \\frac {x ^ {3}}{6} + o (x ^ {3}) \\right] [ 1 + B x + C x ^ {2} ] = 1 + A x + o (x ^ {3}),\n$$\n\n整理得\n\n$$\n1 + (B + 1) x + \\left(C + B + \\frac {1}{2}\\right) x ^ {2} + \\left(\\frac {B}{2} + C + \\frac {1}{6}\\right) x ^ {3} + o \\left(x ^ {3}\\right) = 1 + A x + o \\left(x ^ {3}\\right).\n$$\n\n比较两边同次幂系数，得\n\n$$\nB + 1 = A, \\quad C + B + \\frac {1}{2} = 0, \\quad \\frac {B}{2} + C + \\frac {1}{6} = 0.\n$$\n\n解得： $A = \\frac{1}{3}, B = -\\frac{2}{3}, C = \\frac{1}{6}$\n\n评注（1）由于已知等式是一个局部表达式，所以 $\\mathbf{e}^x$ 的泰勒公式用了Peano余项."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 该题也可将题设中的等式变形为 $\\lim_{x \\to 0} \\frac{e^x (1 + Bx + Cx^2) - (1 + Ax)}{x^3} = 0$ ，再按 1.2 中例 42 的方法（洛必达法则）求待定常数。"
+      }
+    ],
+    "final_answer": "$A=\\frac{1}{3},\\ B=-\\frac{2}{3},\\ C=\\frac{1}{6}$",
+    "techniques_used": [
+      "泰勒公式",
+      "麦克劳林公式",
+      "无穷小展开",
+      "拉格朗日中值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题应展开到几阶？选用 Peano 余项还是 Lagrange 余项？展开点取哪里？",
+      "technique": "泰勒公式",
+      "expected": "按题设精度选阶数与余项类型，在指定点（常为 0）展开并比较系数或取极限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终系数、极限或中值极限的结论是什么？",
+      "technique": "无穷小展开",
+      "expected": "$A=\\frac{1}{3},\\ B=-\\frac{2}{3},\\ C=\\frac{1}{6}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例25",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 97
+  }
+}
