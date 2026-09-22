@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-10",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.cauchy",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ ， $g(x)$ 在 $[a, b]$ 上有二阶连续导数，且 $g''(x) \\neq 0$ ，证明 $\\exists \\eta \\in (a, b)$ ，使\n\n$$\n\\frac {\\int_ {a} ^ {b} f (x) \\mathrm{d} x - \\frac {b - a}{2} (f (a) + f (b))}{\\int_ {a} ^ {b} g (x) \\mathrm{d} x - \\frac {b - a}{2} (g (a) + g (b))} = \\frac {f ^ {\\prime \\prime} (\\eta)}{g ^ {\\prime \\prime} (\\eta)}.\n$$",
+  "answer": "所证等式成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "柯西中值定理",
+    "辅助函数",
+    "罗尔定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 等式左边的常数关于 a, b 对称，可用 “常数 k 值法” 构造辅助函数，再用罗尔定理.\n\n令 $\\frac{\\int_{a}^{b}f(x)\\mathrm{d}x - \\frac{b - a}{2} (f(a) + f(b))}{\\int_{a}^{b}g(x)\\mathrm{d}x - \\frac{b - a}{2} (g(a) + g(b))} = k$ ，即"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\int_ {a} ^ {b} f (x) \\mathrm{d} x - \\frac {b - a}{2} (f (a) + f (b)) - k \\left[ \\int_ {a} ^ {b} g (x) \\mathrm{d} x - \\frac {b - a}{2} (g (a) + g (b)) \\right] = 0.\n$$\n\n做辅助函数\n\n$$\nF (x) = \\int_ {a} ^ {x} f (t) \\mathrm{d} t - \\frac {x - a}{2} (f (a) + f (x)) - k \\left[ \\int_ {a} ^ {x} g (t) \\mathrm{d} t - \\frac {x - a}{2} (g (a) + g (x)) \\right].\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "显然 $F(x)$ 在 $[a, b]$ 上有二阶连续导数，且 $F(a) = F(b) = 0$ 。对 $F(x)$ 在 $[a, b]$ 上运用罗尔定理，知存在 $\\xi \\in (a, b)$ ，使 $F'(\\xi) = 0$ 。\n\n由于\n\n$$\nF ^ {\\prime} (x) = \\frac {1}{2} [ f (x) - f (a) - (x - a) f ^ {\\prime} (x) ] - \\frac {k}{2} [ g (x) - g (a) - (x - a) g ^ {\\prime} (x) ],\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "易见 $F^{\\prime}(a) = 0$ ，对 $F^{\\prime}(x)$ 在 $[a,\\xi ]$ 上应用罗尔定理，知存在 $\\eta \\in (a,\\xi)\\subset (a,b)$ ，使 $F^{\\prime \\prime}(\\eta) = 0$ ，即\n\n$$\n(\\eta - a) [ f ^ {\\prime \\prime} (\\eta) - k g ^ {\\prime \\prime} (\\eta) ] = 0 \\Rightarrow k = \\frac {f ^ {\\prime \\prime} (\\eta)}{g ^ {\\prime \\prime} (\\eta)}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "故所证等式成立."
+      }
+    ],
+    "final_answer": "所证等式成立.",
+    "techniques_used": [
+      "柯西中值定理",
+      "辅助函数",
+      "罗尔定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪两个函数、在哪个区间应用柯西中值定理？端点取值如何选取？",
+      "technique": "罗尔定理",
+      "expected": "选取满足柯西条件的 f,g 与区间，使结论比式恰好对应欲证等式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出由柯西中值得到的关键等式。",
+      "technique": "辅助函数",
+      "expected": "所证等式成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 89,
+    "commentary": "评注 当所证等式中含有轮换对称的参数 $a, b, c, \\cdots$ （ $a, b, c, \\cdots$ 轮换等式不变）时，其辅助函数可按以下方法构造：\n\n(1) 分离常数: 将含有参数的常数项全部移至等号的一端, 并令整个常数为 $k$ .\n\n(2) 恒等变形: 对 (1) 中的等式做变形, 使等式的一端为 0 , 非零端最好没有分式.\n\n(3) 换参数为变量得辅助函数: 将非零端的一个参数换为变量 (如将 $a$ 改写成 $x$ ), 即得辅助函数 (该辅助函数在 $a, b, c, \\cdots$ 等点的值一定相等).\n\n以上构造辅助函数的方法又称为“常数 $k$ 值法”."
+  }
+}
