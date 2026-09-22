@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-09",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.proof",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在区间 $[0,1]$ 上连续，且 $\\int_0^1 f(x)\\mathrm{d}x\\neq 0$ 。证明在区间 $(0,1)$ 上存在两个不同的点 $x_{1}, x_{2}$ ，使得\n\n$$\n\\frac {\\pi}{4} \\int_ {0} ^ {1} f (x) \\mathrm{d} x = \\left(\\frac {1}{\\sqrt {1 - x _ {2} ^ {2}}} \\int_ {0} ^ {x _ {2}} f (t) \\mathrm{d} t + f (x _ {2}) \\arcsin x _ {2}\\right) (1 - x _ {1}).\n$$",
+  "answer": "$$ \\frac {\\pi}{4} \\int_ {0} ^ {1} f (x) \\mathrm{d} x = \\left(\\frac {1}{\\sqrt {1 - x _ {2} ^ {2}}} \\int_ {0} ^ {x _ {2}} f (t) \\mathrm{d} t + f (x _ {2}) \\arcsin x _ {2}\\right) (1 - x _ {1}). $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "辅助函数",
+    "罗尔定理",
+    "拉格朗日中值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易见，需做辅助函数 $F(x) = \\arcsin x\\int_0^x f(t)\\mathrm{d}t$ ，如果存在 $x_{1}\\in (0,1)$ ，使得 $F(x_{1}) = \\frac{\\pi}{4}\\int_{0}^{1}f(t)\\mathrm{d}t$ 问题就解决了．由连续函数的介值定理，这是容易做到的."
+      },
+      {
+        "id": "s2",
+        "text": "令 $F(x) = \\arcsin x\\int_{0}^{x}f(t)\\mathrm{d}t, x\\in [0,1]$ ，则 $F(0) = 0$ ， $F(1) = \\frac{\\pi}{2}\\int_{0}^{1}f(t)\\mathrm{d}t$ ，由于 $F(x)$ 在[0,1]上连续，所以必存在 $x_{1}\\in (0,1)$ ，使得 $F(x_{1}) = \\frac{1}{2}\\big(F(0) + F(1)\\big) = \\frac{\\pi}{4}\\int_{0}^{1}f(t)\\mathrm{d}t$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "在 $[x_1, 1]$ 上对 $F(x)$ 用拉格朗日中值定理， $\\exists x_2 \\in (x_1, 1)$ ，使得"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nF (1) - F \\left(x _ {1}\\right) = F ^ {\\prime} \\left(x _ {2}\\right) \\left(1 - x _ {1}\\right),\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\frac {\\pi}{4} \\int_ {0} ^ {1} f (t) \\mathrm{d} t = F ^ {\\prime} \\left(x _ {2}\\right) \\left(1 - x _ {1}\\right).\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "由于 $F^{\\prime}(x) = \\frac{1}{\\sqrt{1 - x^{2}}}\\int_{0}^{x}f(t)\\mathrm{d}t + f(x)\\arcsin x$ ，代入上式即得"
+      },
+      {
+        "id": "s8",
+        "text": "$$\n\\frac {\\pi}{4} \\int_ {0} ^ {1} f (x) \\mathrm{d} x = \\left(\\frac {1}{\\sqrt {1 - x _ {2} ^ {2}}} \\int_ {0} ^ {x _ {2}} f (t) \\mathrm{d} t + f (x _ {2}) \\arcsin x _ {2}\\right) (1 - x _ {1}).\n$$"
+      }
+    ],
+    "final_answer": "$$ \\frac {\\pi}{4} \\int_ {0} ^ {1} f (x) \\mathrm{d} x = \\left(\\frac {1}{\\sqrt {1 - x _ {2} ^ {2}}} \\int_ {0} ^ {x _ {2}} f (t) \\mathrm{d} t + f (x _ {2}) \\arcsin x _ {2}\\right) (1 - x _ {1}). $$",
+    "techniques_used": [
+      "辅助函数",
+      "罗尔定理",
+      "拉格朗日中值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔、拉格朗日、柯西还是泰勒公式？是否需要构造辅助函数或反证？",
+      "technique": "拉格朗日中值定理",
+      "expected": "根据结论形态选择中值定理或泰勒展开；多中值问题常多次应用或构造辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "辅助函数",
+      "expected": "$$ \\frac {\\pi}{4} \\int_ {0} ^ {1} f (x) \\mathrm{d} x = \\left(\\frac {1}{\\sqrt {1 - x _ {2} ^ {2}}} \\int_ {0} ^ {x _ {2}} f (t) \\mathrm{d} t + f (x _ {2}) \\arcsin x _ {2}\\right) (1 - x _ {1}). $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 89,
+    "commentary": "评注 证明中值等式时，连续函数的介值定理也是常用的工具."
+  }
+}
