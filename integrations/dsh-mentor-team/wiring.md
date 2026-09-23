@@ -63,7 +63,7 @@ ssh -i ~/.ssh/ccc.pem -N -L 8768:127.0.0.1:8768 -L 8770:127.0.0.1:8770 ubuntu@15
 ## 记忆（T0/T1/T2）
 
 - T0 工作状态：`phase`（idle/awaiting_answer/reviewing/planning）+ `todos` + `activeItemId`，随工具调用更新，注入 LLM 上下文。
-- T1 情节：线程（内存，≤40 条/线程）。
+- T1 情节：线程（内存，≤40 条/线程）。`buildMessages` 把同一 `learner|threadId` 的最近 12 条注入 LLM；`mentor.export` 仍导出该线程（至多 40）。讨论从题目进入时沿用原 `item` / `threadId`，不另开 `general-*`。
 - T2 语义：`card.json`（weak/notes/milestones），`mentor.export`/`mentor.clearCard` 导出与清空。
 
 ## 边界

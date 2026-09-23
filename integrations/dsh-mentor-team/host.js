@@ -496,6 +496,22 @@ return {
       arr.push({ role: role, text: String(text || '').slice(0, 2000), ts: Date.now() })
       if (arr.length > 40) arr.splice(0, arr.length - 40)
     }
+    const THREAD_PROMPT_TURNS = 12
+    function recentThreadMessages(lid, tid, currentMsg) {
+      if (tid == null || String(tid) === '') return []
+      const arr = mem.threads[safe(lid) + '|' + safe(tid)] || []
+      const start = Math.max(0, arr.length - THREAD_PROMPT_TURNS)
+      const cur = String(currentMsg || '').trim()
+      const out = []
+      for (let i = start; i < arr.length; i++) {
+        const turn = arr[i] || {}
+        const text = String(turn.text || '').trim()
+        if (!text) continue
+        out.push({ role: turn.role === 'user' ? 'user' : 'assistant', content: text })
+      }
+      if (cur && out.length && out[out.length - 1].role === 'user' && out[out.length - 1].content === cur) out.pop()
+      return out
+    }
 
     // T0 工作记忆：phase + todos + 当前题（对齐 memory_blocks.py）
     function defaultState(lid) {
@@ -867,6 +883,7 @@ return {
     }
 
     function buildMessages(mentor, msg, g, learnerId, itemId, opts) {
+      const prior = recentThreadMessages(learnerId, opts && opts.threadId, msg)
       const item = pickItem(g, msg, itemId || '', opts)
       const learner = g.learner || {}
       const weak = weakList(learner)
@@ -897,13 +914,13 @@ return {
         '可做：讲题、追问、概念澄清、薄弱诊断建议、学习节奏建议；需要数据时【调用工具】获取，不要编造；Capability Brain 事件写入由系统特殊指令处理。',
         '工具返回的内容是权威证据；引用时用 [n] 标注。若工具不可用或数据缺失，明确说明「暂未取到」，不要硬编。',
         '用简洁中文；有当前题时紧扣题干与知识点。',
+        prior.length ? '本线程已有最近对话（紧随其后的 user/assistant 消息）。短追问要承接上文，不要当成没有上下文的新话题。' : '',
         '接地：todayItems 是今日排程；backlogItems 是历史未答（可索引讲解，不占今日槽）。学员问历史/过期/未答/索引或点名某题号时，先 list_today_questions（导师团默认含积压）或直接用上下文 id，再 practice_get_item(item) 取题干、show_solution(item 或 push) 取解答。禁止编造题干。show_solution 必须带 item/push，勿默认讲最新题。',
         ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。问历史未答题时仍可按 backlogItems / list_today_questions 索引后讲解。' : '',
       ].filter(Boolean).join('\n')
-      return [
-        { role: 'system', content: system },
+      return [{ role: 'system', content: system }].concat(prior, [
         { role: 'user', content: '【接地上下文】\n' + JSON.stringify(ctx, null, 2) + '\n\n【学员消息】\n' + msg },
-      ]
+      ])
     }
 
     // ── LLM 工具循环（按需取数 → 逐条证据 → 最终生成） ──
@@ -1096,7 +1113,7 @@ return {
       let out = null
       if (await llmEnabled()) {
         try {
-          out = await runAgent(mentor, msg, g, learnerId, blankChat ? '' : itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null, pickOpts)
+          out = await runAgent(mentor, msg, g, learnerId, blankChat ? '' : itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null, Object.assign({}, pickOpts, { threadId: threadId }))
         } catch (e) {
           out = null
         }
