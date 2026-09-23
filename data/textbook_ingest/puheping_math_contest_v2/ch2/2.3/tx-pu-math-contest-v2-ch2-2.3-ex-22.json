@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-22",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求函数 $f(x) = |x|\\mathrm{e}^{-|x - 1|}$ 的极值与最值.",
+  "answer": "点较多时，采用列表的方式来讨论较为简洁.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值",
+    "最值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 （1）去掉绝对值，将函数用分段函数表示. 求出函数的驻点与不可导点，再确定其极值.\n\n(2) 函数的定义域为 $(-∞,+∞)$ ，是否存在最值与 $\\lim f(x)$ 有关."
+      },
+      {
+        "id": "s2",
+        "text": "$$\nf (x) = | x | \\mathrm{e} ^ {- | x - 1 |} = \\left\\{ \\begin{array}{l l} - x \\mathrm{e} ^ {x - 1}, & x \\leqslant 0, \\\\ x \\mathrm{e} ^ {x - 1}, & 0 <   x \\leqslant 1, \\\\ x \\mathrm{e} ^ {1 - x}, & x > 1. \\end{array} \\right.\n$$\n\n显然 $f(x)$ 在 $x = 0,1$ 处不可导.且有\n\n$$\nf ^ {\\prime} (x) = \\left\\{ \\begin{array}{l l} \\mathrm{e} ^ {x - 1} (- 1 - x), & x <   0, \\\\ \\mathrm{e} ^ {x - 1} (1 + x), & 0 <   x <   1, \\\\ \\mathrm{e} ^ {1 - x} (1 - x), & x > 1. \\end{array} \\right.\n$$\n\n令 $f'(x) = 0$ ，得唯一驻点 $x = -1$ 。情况讨论如下：\n\n<table><tr><td>x</td><td>(-∞,-1)</td><td>-1</td><td>(-1,0)</td><td>0</td><td>(0,1)</td><td>1</td><td>(1,+∞)</td></tr><tr><td>f&#x27;(x)</td><td>+</td><td></td><td>-</td><td></td><td>+</td><td></td><td>-</td></tr><tr><td>f(x)</td><td>↗</td><td>极大</td><td>↘</td><td>极小</td><td>↗</td><td>极大</td><td>↘</td></tr></table>\n\n由此可知 $f(-1) = \\mathbf{e}^{-2}$ 是函数的极大值； $f(0) = 0$ 是函数的极小值； $f(1) = 1$ 是函数的极大值。显然 $f(x)$ 非负，且 $\\lim_{x\\to \\infty}f(x) = 0$ ，所以函数的最小值为 $f(0) = 0$ ，最大值为 $f(1) = 1$ 。\n\n评注（1）求函数的极值，要注意对不可导点的讨论；"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当可能的极值点较多时，采用列表的方式来讨论较为简洁."
+      }
+    ],
+    "final_answer": "点较多时，采用列表的方式来讨论较为简洁.",
+    "techniques_used": [
+      "极值",
+      "最值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "极值",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "最值",
+      "expected": "点较多时，采用列表的方式来讨论较为简洁."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例22",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 116,
+    "syllabus_note": "极值与最值"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-02",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明 $\\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2} \\equiv \\frac{\\pi}{4} (x \\geqslant 1)$ .",
+  "answer": "当 $x \\geqslant 1$ 时， $\\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2} \\equiv \\frac{\\pi}{4}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明左边函数是一个常函数，验证其导数为零即可，再说明该常数就是 $\\frac{\\pi}{4}$"
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2}$ ，则当 $x > 1$ 时，"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} f ^ {\\prime} (x) & = \\frac {1}{1 + x ^ {2}} - \\frac {1}{2} \\left(- \\frac {1}{\\sqrt {1 - \\left(\\frac {2 x}{1 + x ^ {2}}\\right) ^ {2}}}\\right) \\frac {2 (1 + x ^ {2}) - 4 x ^ {2}}{(1 + x ^ {2}) ^ {2}} \\\\ & = \\frac {1}{1 + x ^ {2}} + \\frac {1}{\\sqrt {(1 - x ^ {2}) ^ {2}}} \\cdot \\frac {1 - x ^ {2}}{1 + x ^ {2}} = 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "而 $f(1) = \\arctan 1 - \\frac{1}{2}\\arccos 1 = \\frac{\\pi}{4}$ ，所以当 $x \\geqslant 1$ 时， $\\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2} \\equiv \\frac{\\pi}{4}$ ."
+      }
+    ],
+    "final_answer": "当 $x \\geqslant 1$ 时， $\\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2} \\equiv \\frac{\\pi}{4}$ .",
+    "techniques_used": [
+      "单调性",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "辅助函数",
+      "expected": "当 $x \\geqslant 1$ 时， $\\arctan x - \\frac{1}{2}\\arccos \\frac{2x}{1 + x^2} \\equiv \\frac{\\pi}{4}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 103,
+    "syllabus_note": "恒等式：导数为零证常函数",
+    "commentary": "评注 证明函数表达式恒为某个常数 $a$ 的常用方法：\n\n(1) 说明其导数恒为零，再说明该函数在某个指定点的函数值为 a;\n\n(2) 说明在指定范围内其最大值和最小值都为 $a$ ;\n\n(3) 用反证法."
+  }
+}

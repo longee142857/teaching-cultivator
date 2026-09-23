@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-25",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求所有实数 $\\alpha$ 的集合，使得对于任意正数 $x, y$ ，有不等式 $x \\leqslant \\frac{\\alpha - 1}{\\alpha} y + \\frac{1}{\\alpha} \\frac{x^{\\alpha}}{y^{\\alpha - 1}}$ .",
+  "answer": "使所给不等式成立的 $\\alpha$ 的范围是 $[1, +\\infty)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值",
+    "最值",
+    "不等式估计"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $f(y) = \\frac{\\alpha - 1}{\\alpha} y + \\frac{1}{\\alpha} \\cdot \\frac{x^{\\alpha}}{y^{\\alpha - 1}}$ ，只需讨论 $\\alpha$ 的范围，使 $f(y)$ 在 $(0, +\\infty)$ 内的最小值大于或等于 $x$ 即可."
+      },
+      {
+        "id": "s2",
+        "text": "记 $f(y) = \\frac{\\alpha - 1}{\\alpha} y + \\frac{1}{\\alpha} \\cdot \\frac{x^{\\alpha}}{y^{\\alpha - 1}} (y > 0)$ ，则 $f'(y) = \\frac{\\alpha - 1}{\\alpha} \\left[ 1 - \\left( \\frac{x}{y} \\right)^{\\alpha} \\right]$ ，当 $\\alpha \\neq 1$ 时，令 $f'(y) = 0$ 得唯一的驻点 $y = x$ 。\n\n（1）当 $\\alpha < 1$ 时，若 $y < x$ ，则 $f'(y) > 0$ ；若 $y > x$ ，则 $f'(y) < 0$ ；所以 $y = x$ 是 $f(y)$ 的极大值点，也是最大值点.其最大值为 $f(x) = x$ .此时不等式不可能成立"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 $\\alpha > 1$ 时, 若 $y < x$ , 则 $f'(y) < 0$ ; 若 $y > x$ , 则 $f'(y) > 0$ ; 所以 $y = x$ 是 $f(y)$ 的极小值点, 也是最小值点. 其最小值为 $f(x) = x$ . 此时有 $f(y) \\geqslant x$ ."
+      },
+      {
+        "id": "s4",
+        "text": "(3) 当 $\\alpha=1$ 时，有 $f(y)\\equiv x$ .\n\n故使所给不等式成立的 $\\alpha$ 的范围是 $[1, +\\infty)$ ."
+      }
+    ],
+    "final_answer": "使所给不等式成立的 $\\alpha$ 的范围是 $[1, +\\infty)$ .",
+    "techniques_used": [
+      "极值",
+      "最值",
+      "不等式估计"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "极值",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "最值",
+      "expected": "使所给不等式成立的 $\\alpha$ 的范围是 $[1, +\\infty)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例25",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 118
+  }
+}

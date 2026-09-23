@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-04",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "当 $x \\geqslant 0$ 时，证明 $\\sqrt{x + 1} - \\sqrt{x} = \\frac{1}{2\\sqrt{x + \\theta(x)}}$ ，且有 $\\frac{1}{4} \\leqslant \\theta(x) < \\frac{1}{2}$ .",
+  "answer": "$\\frac{1}{4} \\leqslant \\theta(x) < \\frac{1}{2}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "单调性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 等式左边是一函数的增量，容易想到拉格朗日中值公式。为证明对应的不等式，只需解出 $\\theta(x)$ 的表达式，再求其值域范围（最值或确界）。\n\n设 $f(t) = \\sqrt{t}$ ，当 $x \\geqslant 0$ 时，在区间 $[x, x + 1]$ 上函数满足拉格朗日中值定理的条件，因此有\n\n$$\nf (x + 1) - f (x) = f ^ {\\prime} [ x + (x + 1 - x) \\theta (x) ] (x + 1 - x),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "即\n\n$$\n\\sqrt {x + 1} - \\sqrt {x} = \\frac {1}{2 \\sqrt {x + \\theta (x)}} (0 <   \\theta (x) <   1),\n$$\n\n解得\n\n$$\n\\theta (x) = \\frac {1}{4} + \\frac {1}{2} \\left[ \\sqrt {x (x + 1)} - x \\right] (x \\geqslant 0).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "因为\n\n$$\n\\theta^ {\\prime} (x) = \\frac {1}{2} \\left[ \\frac {2 x + 1}{2 \\sqrt {x (x + 1)}} - 1 \\right] = \\frac {1}{2} \\left[ \\frac {x + \\frac {1}{2}}{\\sqrt {\\left(x + \\frac {1}{2}\\right) ^ {2} - \\frac {1}{4}}} - 1 \\right] > 0,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\theta(x)$ 在 $[0, +\\infty)$ 内严格单调递增. 由于 $\\theta(0) = \\frac{1}{4}$ , 而\n\n$$\n\\lim _ {x \\rightarrow + \\infty} \\theta (x) = \\lim _ {x \\rightarrow + \\infty} \\left[ \\frac {1}{4} + \\frac {1}{2} (\\sqrt {x (x + 1)} - x) \\right] = \\lim _ {x \\rightarrow + \\infty} \\left[ \\frac {1}{4} + \\frac {1}{2} \\left(\\frac {x}{\\sqrt {x (x + 1)} + x}\\right)\\right] = \\frac {1}{2},\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "故 $\\frac{1}{4} \\leqslant \\theta(x) < \\frac{1}{2}$ ."
+      }
+    ],
+    "final_answer": "$\\frac{1}{4} \\leqslant \\theta(x) < \\frac{1}{2}$ .",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "单调性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔/拉格朗日/柯西中值还是泰勒公式？是否需要构造辅助函数？",
+      "technique": "拉格朗日中值定理",
+      "expected": "按结论形态选中值定理或泰勒展开；达布型问题常用费马+辅助函数或介值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "单调性",
+      "expected": "$\\frac{1}{4} \\leqslant \\theta(x) < \\frac{1}{2}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 105,
+    "syllabus_note": "中值θ(x)范围估计"
+  }
+}

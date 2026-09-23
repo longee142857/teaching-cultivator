@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-09",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明当 $x > 0$ 时， $\\frac{\\ln(x + 1)}{x} >\\frac{x}{e^x - 1}$",
+  "answer": "$f(x) > f(\\mathbf{e}^x - 1)$ ，即 $\\frac{\\ln(x + 1)}{x} > \\frac{x}{\\mathbf{e}^x - 1}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $f(x) = \\frac{\\ln (x + 1)}{x}$ ，所证不等式为 $f(x) > f(\\mathbf{e}^x - 1)$ 。易知 $\\mathbf{e}^x - 1 > x$ ，只需判定 $f(x)$ 单调递减。"
+      },
+      {
+        "id": "s2",
+        "text": "设 $f(x) = \\frac{\\ln(x + 1)}{x} (x > 0)$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nf ^ {\\prime} (x) = \\frac {\\frac {x}{1 + x} - \\ln (x + 1)}{x ^ {2}} <   0 \\quad \\left(\\because \\frac {x}{1 + x} <   \\ln (x + 1)\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $f(x)$ 严格单调递减."
+      },
+      {
+        "id": "s5",
+        "text": "又因为 $\\mathbf{e}^x - 1 > x$ ，所以 $f(x) > f(\\mathbf{e}^x - 1)$ ，即 $\\frac{\\ln(x + 1)}{x} > \\frac{x}{\\mathbf{e}^x - 1}$ ."
+      }
+    ],
+    "final_answer": "$f(x) > f(\\mathbf{e}^x - 1)$ ，即 $\\frac{\\ln(x + 1)}{x} > \\frac{x}{\\mathbf{e}^x - 1}$ .",
+    "techniques_used": [
+      "单调性",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "辅助函数",
+      "expected": "$f(x) > f(\\mathbf{e}^x - 1)$ ，即 $\\frac{\\ln(x + 1)}{x} > \\frac{x}{\\mathbf{e}^x - 1}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 108,
+    "commentary": "评注 不等式也可变形为 $(\\mathrm{e}^x - 1)\\ln (x + 1) - x^2 > 0$ ，再用单调性来证明，但要困难些."
+  }
+}

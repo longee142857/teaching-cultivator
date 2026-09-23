@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-23",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $g(x)$ 为连续函数，当 $x \\neq 0$ 时， $\\frac{g(x)}{x} > 0$ ，且 $\\lim_{x \\to 0} \\frac{g(x)}{x} = 1$ 。又设 $f(x)$ 在包含 $x = 0$ 在内的某区间 $(a, b)$ 内存在二阶导数且满足式子：\n\n$$\nx ^ {2} f ^ {\\prime \\prime} (x) - \\left(f ^ {\\prime} (x)\\right) ^ {2} = \\frac {1}{4} x g (x).\n$$",
+  "answer": "$x = 0$ 是 $f(x)$ 在区间 $(a, b)$ 内的唯一驻点。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "罗尔定理",
+    "反证法",
+    "极值",
+    "凹凸性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "（1） $x = 0$ 是 $f(x)$ 在区间 $(a,b)$ 内的唯一驻点，且是极小值点；"
+      },
+      {
+        "id": "s2",
+        "text": "(2) 曲线 $y = f(x)$ 在区间 $(a, b)$ 内是凹（下凸）的.\n\n分析（1）显然 $f'(0) = 0$ ，要确定 $x = 0$ 是 $f(x)$ 的极小值点，只需确定 $f''(0) > 0$ 。若驻点不唯一，则 $f''(x)$ 在两驻点之间会有零点，这会出现矛盾。"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 容易看出，当 $x \\neq 0$ 时，总有 $f''(x) > 0$ ，所以曲线 $y = f(x)$ 是凹的.\n\n证明 （1）将 x=0 代入所给等式，得 $f'(0)=0$ 。所以 x=0 是 $f(x)$ 的一个驻点。由 $f''(0)$ 的定义：\n\n$$\n\\begin{array}{r l} & {f ^ {\\prime \\prime} (0) = \\underset {x \\to 0} {\\lim} \\frac {f ^ {\\prime} (x) - f ^ {\\prime} (0)}{x - 0} = \\underset {x \\to 0} {\\lim} f ^ {\\prime \\prime} (x) \\quad (\\text {洛必达法则})} \\\\ & {\\qquad = \\underset {x \\to 0} {\\lim} \\Bigg [ \\bigg (\\frac {f ^ {\\prime} (x)}{x} \\bigg) ^ {2} + \\frac {1}{4} \\cdot \\frac {g (x)}{x} \\Bigg ] = \\underset {x \\to 0} {\\lim} \\bigg (\\frac {f ^ {\\prime} (x) - f ^ {\\prime} (0)}{x - 0} \\bigg) ^ {2} + \\frac {1}{4} \\underset {x \\to 0} {\\lim} \\frac {g (x)}{x}} \\\\ & {\\qquad = \\big (f ^ {\\prime \\prime} (0) \\big) ^ {2} + \\frac {1}{4},} \\end{array}\n$$\n\n得\n\n$$\n\\left(f ^ {\\prime \\prime} (0)\\right) ^ {2} - f ^ {\\prime \\prime} (0) + \\frac {1}{4} = 0 \\Rightarrow f ^ {\\prime \\prime} (0) = \\frac {1}{2} > 0.\n$$\n\n所以 x=0 是 $f(x)$ 的极小值点."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 当 $x \\neq 0$ 时, $f''(x) = \\left(\\frac{f'(x)}{x}\\right)^2 + \\frac{1}{4} \\cdot \\frac{g(x)}{x} > 0$ , 且 $f''(0) = \\frac{1}{2} > 0$ , 所以 $f''(x) > 0$ (当 $x \\in (a, b)$ ). 显然 $f(x)$ 连续, 从而曲线 $y = f(x)$ 在区间 $(a, b)$ 内是凹的.\n\n若函数 $f(x)$ 在 $(a, b)$ 内还有驻点 $x_0 \\neq 0$ ，即 $f'(x_0) = 0$ ，根据罗尔定理，在 0 与 $x_0$ 之间必存在 $f''(x)$ 的一个零点，这显然不可能。所以 $x = 0$ 是 $f(x)$ 在区间 $(a, b)$ 内的唯一驻点。"
+      }
+    ],
+    "final_answer": "$x = 0$ 是 $f(x)$ 在区间 $(a, b)$ 内的唯一驻点。",
+    "techniques_used": [
+      "罗尔定理",
+      "反证法",
+      "极值",
+      "凹凸性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "极值",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "反证法",
+      "expected": "$x = 0$ 是 $f(x)$ 在区间 $(a, b)$ 内的唯一驻点。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例23",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 117
+  }
+}

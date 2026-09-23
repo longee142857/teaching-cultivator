@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-21",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 满足方程 $\\frac{1}{x} f''(x) + 3x(f'(x))^2 = \\left(1 + \\frac{1}{x}\\right)\\ln^2 (1 + x) - x$ ，若 $x_0 > 0$ 是 $f(x)$ 的一个驻点，能否确定 $x_0$ 是 $f(x)$ 的极值点？若是，说明是极大值点还是极小值点。",
+  "answer": "$\\varphi'(x)$ 单调递减．又 $\\varphi'(0) = 0$ ，得 $\\varphi'(x) < 0$ ，故 $\\varphi(x)$ 在 $x > 0$ 处单调递减，又 $\\varphi(0) = 0$ ，所以 $\\varphi(x) < 0$ ：",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "极值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f'(x_0) = 0$ ，若 $f''(x_0) \\neq 0$ ，则 $x_0$ 就是 $f(x)$ 的极值点，是极大值点还是极小值点取决于 $f''(x_0)$ 的符号."
+      },
+      {
+        "id": "s2",
+        "text": "将 $f'(x_0) = 0$ 代入所给方程，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nf ^ {\\prime \\prime} (x _ {0}) = (1 + x _ {0}) \\ln^ {2} (1 + x _ {0}) - x _ {0} ^ {2}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "下证 $f''(x_0) < 0$ :"
+      },
+      {
+        "id": "s5",
+        "text": "记 $\\varphi(x) = (1 + x)\\ln^2(1 + x) - x^2$ ，因为"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\varphi^ {\\prime} (x) = \\ln^ {2} (1 + x) + 2 \\ln (1 + x) - 2 x, \\quad \\varphi^ {\\prime \\prime} (x) = \\frac {2}{1 + x} (\\ln (1 + x) - x).\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "当 $x > 0$ 时，由 $\\ln (1 + x) < x$ ，知 $\\varphi''(x) < 0$ ，所以 $\\varphi'(x)$ 单调递减．又 $\\varphi'(0) = 0$ ，得 $\\varphi'(x) < 0$ ，故 $\\varphi(x)$ 在 $x > 0$ 处单调递减，又 $\\varphi(0) = 0$ ，所以 $\\varphi(x) < 0$ ："
+      },
+      {
+        "id": "s8",
+        "text": "根据上面的判断，知 $f(x)$ 在 $x_{0}$ 点处取得极大值."
+      }
+    ],
+    "final_answer": "$\\varphi'(x)$ 单调递减．又 $\\varphi'(0) = 0$ ，得 $\\varphi'(x) < 0$ ，故 $\\varphi(x)$ 在 $x > 0$ 处单调递减，又 $\\varphi(0) = 0$ ，所以 $\\varphi(x) < 0$ ：",
+    "techniques_used": [
+      "单调性",
+      "极值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "极值",
+      "expected": "$\\varphi'(x)$ 单调递减．又 $\\varphi'(0) = 0$ ，得 $\\varphi'(x) < 0$ ，故 $\\varphi(x)$ 在 $x > 0$ 处单调递减，又 $\\varphi(0) = 0$ ，所以 $\\varphi(x) < 0$ ："
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例21",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 116,
+    "syllabus_note": "驻点与极值判定"
+  }
+}

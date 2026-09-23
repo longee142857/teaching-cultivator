@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-27",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求最大的数 $\\alpha$ 和最小的数 $\\beta$ ，使得对所有的自然数 $n$ ，有 $\\left(1 + \\frac{1}{n}\\right)^{n + \\alpha} \\leqslant e \\leqslant \\left(1 + \\frac{1}{n}\\right)^{n + \\beta}$ .",
+  "answer": "$\\frac{1}{\\ln 2} - 1 \\leqslant f(n) < \\frac{1}{2}$ . 即 $\\alpha = \\frac{1}{\\ln 2} - 1, \\beta = \\frac{1}{2}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "最值",
+    "极值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需求出满足条件 $\\left(1 + \\frac{1}{n}\\right)^{n + f(n)} = e$ 的函数 $f(n)$ 的最小值与最大值.\n\n设 $\\left(1 + \\frac{1}{n}\\right)^{n + f(n)} = e$ ，得 $f(n) = \\frac{1}{\\ln\\left(1 + \\frac{1}{n}\\right)} - n$ ，问题转化为求最大的数 $\\alpha$ 和最小的数 $\\beta$ ，使得"
+      },
+      {
+        "id": "s2",
+        "text": "$\\alpha \\leqslant f(n) \\leqslant \\beta$ ，即 $\\alpha$ 与 $\\beta$ 分别为函数 $f(n)$ 的最小值与最大值（或下确界与上确界）.\n\n记 $g(x) = f\\left(\\frac{1}{x}\\right) = \\frac{1}{\\ln(1 + x)} -\\frac{1}{x}, x\\in (0,1]$ ，则\n\n$$\ng ^ {\\prime} (x) = \\frac {(1 + x) \\ln^ {2} (1 + x) - x ^ {2}}{x ^ {2} (1 + x) \\ln^ {2} (1 + x)}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "在例21中已证明， $g^{\\prime}(x)$ 的分子 $\\varphi (x) = (1 + x)\\ln^{2}(1 + x) - x^{2} < 0$ ，所以当 $x\\in (0,1)$ 时， $g^{\\prime}(x) < 0$ ， $g(x)$ 在(0,1)内单调递减，从而 $f(n)$ 单调递增.有\n\n$$\nf (1) \\leqslant f (n) <   \\lim _ {n \\rightarrow \\infty} f (n).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于\n\n$$\n\\begin{array}{r l}\\lim _ {n \\rightarrow \\infty} f (n)&= \\lim _ {x \\rightarrow 0 ^ {+}} \\left(\\frac {1}{\\ln (1 + x)} - \\frac {1}{x}\\right) = \\lim _ {x \\rightarrow 0 ^ {+}} \\frac {x - \\ln (1 + x)}{x \\ln (1 + x)}\\\\&= \\lim _ {x \\rightarrow 0 ^ {+}} \\frac {x - \\ln (1 + x)}{x ^ {2}} = \\lim _ {x \\rightarrow 0 ^ {+}} \\frac {x}{2 x (1 + x)} = \\frac {1}{2},\\\\f (1)&= \\frac {1}{\\ln 2} - 1.\\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以\n\n$\\frac{1}{\\ln 2} - 1 \\leqslant f(n) < \\frac{1}{2}$ . 即 $\\alpha = \\frac{1}{\\ln 2} - 1, \\beta = \\frac{1}{2}$ ."
+      }
+    ],
+    "final_answer": "$\\frac{1}{\\ln 2} - 1 \\leqslant f(n) < \\frac{1}{2}$ . 即 $\\alpha = \\frac{1}{\\ln 2} - 1, \\beta = \\frac{1}{2}$ .",
+    "techniques_used": [
+      "单调性",
+      "最值",
+      "极值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "最值",
+      "expected": "$\\frac{1}{\\ln 2} - 1 \\leqslant f(n) < \\frac{1}{2}$ . 即 $\\alpha = \\frac{1}{\\ln 2} - 1, \\beta = \\frac{1}{2}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例27*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 119,
+    "starred": true,
+    "commentary": "评注 题解将不等式问题转换成了求函数的最大与最小值问题，这种转换使我们很快就找到了解决问题的方法。它启示我们：对陌生问题要尽可能地改写或变形它的描述，使之成为我们熟悉的问题。"
+  }
+}

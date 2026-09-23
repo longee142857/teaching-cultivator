@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-30",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.opt",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在 $[a, b]$ 上连续，在 $(a, b)$ 内二阶可导，且对 $x \\in (a, b)$ ， $|f''(x)| \\geqslant 1$ 。证明在曲线 $y = f(x) (a \\leqslant x \\leqslant b)$ 上，存在 3 个点 $A$ 、 $B$ 、 $C$ ，使 $\\triangle ABC$ 的面积 $S_{\\triangle ABC} \\geqslant \\frac{(b - a)^3}{16}$ 。",
+  "answer": "$\\left|F''(x)\\right|\\geqslant\\frac{b-a}{2}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "达布定理",
+    "泰勒公式",
+    "单调性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 根据所证不等式右边的形式，需将点 $(a, f(a)), (b, f(b))$ 选为三角形的两个顶点，另一点可在曲线上任选一点待定。三角形的面积用向量的叉积来计算较为简便。由于题设条件给出了函数 $f(x)$ 二阶导数的估计，因此证明不等式可考虑利用泰勒公式。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 以 $A(a, f(a)), B(b, f(b)), C(x_0, f(x_0))$ 为顶点的三角形面积为\n\n$$\n\\begin{array}{r l} S (x _ {0}) & = \\frac {1}{2} \\| \\overrightarrow {C A} \\times \\overrightarrow {C B} \\| = \\frac {1}{2} \\left\\| \\left| \\begin{array}{c c c} i & j & k \\\\ a - x _ {0} & f (a) - f (x _ {0}) & 0 \\\\ b - x _ {0} & f (b) - f (x _ {0}) & 0 \\end{array} \\right| \\right\\| \\\\ & = \\frac {1}{2} \\big | [ f (b) - f (x _ {0}) ] (a - x _ {0}) - [ f (a) - f (x _ {0}) ] (b - x _ {0}) \\big | \\end{array}\n$$\n\n由泰勒公式\n\n$$\n\\begin{array}{r l} f (a) - f (x _ {0}) & = \\dot {f ^ {\\prime}} (x _ {0}) (a - x _ {0}) + \\frac {1}{2} f ^ {\\prime \\prime} (\\xi_ {1}) (a - x _ {0}) ^ {2}, \\\\ f (b) - f (x _ {0}) & = f ^ {\\prime} (x _ {0}) (b - x _ {0}) + \\frac {1}{2} f ^ {\\prime \\prime} (\\xi_ {2}) (b - x _ {0}) ^ {2}, \\\\ & \\left(a <   \\xi_ {1} <   x _ {0} <   \\xi_ {2} <   b\\right). \\end{array}\n$$\n\n取 $x_0 = \\frac{a + b}{2}$ ，并将上面两式代入 $S(x_0)$ ，得\n\n$$\nS \\left(\\frac {a + b}{2}\\right) = \\frac {1}{4} \\left(\\frac {b - a}{2}\\right) ^ {3} \\left| f ^ {\\prime \\prime} \\left(\\xi_ {1}\\right) + f ^ {\\prime \\prime} \\left(\\xi_ {2}\\right) \\right|.\\tag{①}\n$$\n\n由题设条件 $\\forall x\\in (a,b),|f''(x)|\\geqslant 1$ ，由导数的达布定理（2.3节例1)，知要么 $f''(x)\\geqslant 1$ ，要么 $f''(x)\\leqslant -1$ .根据上面①式可得\n\n$$\nS \\left(\\frac {a + b}{2}\\right) \\geqslant \\frac {(b - a) ^ {3}}{1 6}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 以曲线 $y = f(x)$ 上3点 $A(a, f(a)), B(b, f(b)), C(x, f(x))$ ( $a \\leqslant x \\leqslant b$ ) 为顶点的三角形的面积为\n\n$$\nF (x) = \\frac {1}{2} \\left| \\begin{array}{c c c} {1} & {1} & {1} \\\\ {a} & {b} & {x} \\\\ {f (a)} & {f (b)} & {f (x)} \\end{array} \\right| \\text {的绝对值.}\n$$\n\n由于\n\n$$\nF ^ {\\prime \\prime} (x) = \\frac {1}{2} \\left| \\begin{array}{c c c} 1 & 1 & 0 \\\\ a & b & 0 \\\\ f (a) & f (b) & f ^ {\\prime \\prime} (x) \\end{array} \\right| = \\frac {1}{2} (b - a) f ^ {\\prime \\prime} (x),\n$$\n\n且已知 $\\left|f''(x)\\right|\\geqslant1$ ，故 $\\left|F''(x)\\right|\\geqslant\\frac{b-a}{2}$ .\n\n又 $F(a) = F(b) = 0$ ，由2.2节例22的结论，知存在 $x_0\\in (a,b)$ ，使\n\n$$\n\\left| F \\left(x _ {0}\\right) \\right| = \\max _ {a \\leqslant x \\leqslant b} \\left| F (x) \\right| \\geqslant \\frac {b - a}{2} \\cdot \\frac {(b - a) ^ {2}}{8} = \\frac {(b - a) ^ {3}}{1 6}.\n$$"
+      }
+    ],
+    "final_answer": "$\\left|F''(x)\\right|\\geqslant\\frac{b-a}{2}$ .",
+    "techniques_used": [
+      "达布定理",
+      "泰勒公式",
+      "单调性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "目标量如何表示为单变量函数？约束/参数如何消元？",
+      "technique": "达布定理",
+      "expected": "建立目标函数，求驻点并用一阶/二阶或端点比较得最值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最值点与最值分别是什么？如何验证是最大/最小？",
+      "technique": "泰勒公式",
+      "expected": "$\\left|F''(x)\\right|\\geqslant\\frac{b-a}{2}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例30*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 121,
+    "starred": true
+  }
+}
