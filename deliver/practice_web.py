@@ -526,6 +526,25 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(200, _exam_papers())
             return
 
+        if path == "/api/v1/notes":
+            from deliver.hand_notes import list_notes
+
+            self._json(200, list_notes(self._learner(qs)))
+            return
+
+        if path == "/api/v1/notes/item":
+            from deliver.hand_notes import read_note
+
+            self._json(
+                200,
+                read_note(
+                    self._learner(qs),
+                    (qs.get("id") or [""])[0],
+                    with_image=True,
+                ),
+            )
+            return
+
         self._json(404, {"ok": False, "error": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
@@ -538,9 +557,29 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(401, {"ok": False, "error": "unauthorized"})
             return
 
-        body = self._read_json(4_000_000 if path.endswith("/ocr") else 2_000_000)
+        body = self._read_json(
+            6_000_000 if path.endswith("/ocr") or path == "/api/v1/notes" else 2_000_000
+        )
         qs = parse_qs(parsed.query)
         from modules.bridge import practice_service as ps
+
+        if path == "/api/v1/notes":
+            from deliver.hand_notes import save_note
+
+            out = save_note(
+                self._learner(qs, body),
+                str(body.get("image") or body.get("data_url") or ""),
+                str(body.get("name") or ""),
+            )
+            err = str(out.get("error") or "")
+            if out.get("ok"):
+                code = 200
+            elif err in ("learner_required", "empty_image", "bad_image", "image_too_large"):
+                code = 400
+            else:
+                code = 500
+            self._json(code, out)
+            return
 
         if path == "/api/v1/practice/ocr":
             out = ps.practice_ocr(

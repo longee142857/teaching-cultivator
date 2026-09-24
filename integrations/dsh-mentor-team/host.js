@@ -20,6 +20,9 @@ return {
     const SYSTEM_API_BASE = env('SYSTEM_API_BASE', 'http://127.0.0.1:8770').replace(/\/$/, '')
     const LLM_BASE = (env('LLM_BASE_URL', '') || env('DEEPSEEK_API_BASE', '') || 'https://api.deepseek.com/v1').replace(/\/$/, '')
     const TUTOR_MODEL = env('TUTOR_MODEL', 'deepseek-flash')
+    // dsv4.1f：现行 API 名 deepseek-flash（V4.1 Flash，原生视觉）。与文本讲师同一 base / 同一把 DeepSeek key。
+    const VISION_BASE = (env('TUTOR_VISION_BASE', '') || LLM_BASE).replace(/\/$/, '')
+    const VISION_MODEL = env('TUTOR_VISION_MODEL', '') || TUTOR_MODEL
     const MAX_TOOL_ROUNDS = 4
 
     let cfgCache = null
@@ -28,10 +31,12 @@ return {
       let token = ''
       let practiceToken = ''
       let llmKey = ''
+      let visionKey = ''
       if (IS_NODE) {
         token = env('SYSTEM_API_TOKEN', '')
         practiceToken = env('PRACTICE_API_TOKEN', '')
-        llmKey = env('DEEPSEEK_API_KEY', '') || env('LLM_API_KEY', '')
+        llmKey = env('TUTOR_LLM_API_KEY', '') || env('DEEPSEEK_API_KEY', '') || env('LLM_API_KEY', '')
+        visionKey = env('TUTOR_VISION_API_KEY', '') || llmKey
       } else if (fs && workspaceRoot) {
         try {
           const t = await fs.resolve(workspaceRoot + '/.mentor-team/config.json')
@@ -41,12 +46,13 @@ return {
             if (p && typeof p === 'object') {
               if (p.SYSTEM_API_TOKEN) token = String(p.SYSTEM_API_TOKEN)
               if (p.PRACTICE_API_TOKEN) practiceToken = String(p.PRACTICE_API_TOKEN)
-              if (p.DEEPSEEK_API_KEY || p.LLM_API_KEY) llmKey = String(p.DEEPSEEK_API_KEY || p.LLM_API_KEY)
+              if (p.TUTOR_LLM_API_KEY || p.DEEPSEEK_API_KEY || p.LLM_API_KEY) llmKey = String(p.TUTOR_LLM_API_KEY || p.DEEPSEEK_API_KEY || p.LLM_API_KEY)
+              visionKey = String(p.TUTOR_VISION_API_KEY || llmKey || '')
             }
           }
         } catch (e) {}
       }
-      cfgCache = { token: token, practiceToken: practiceToken, llmKey: llmKey }
+      cfgCache = { token: token, practiceToken: practiceToken, llmKey: llmKey, visionKey: visionKey }
       return cfgCache
     }
 
@@ -129,8 +135,8 @@ return {
     // ── 角色（工具 = 只读白名单 + 助教可写 adjust_difficulty） ──
     const ROSTER = [
       { id: 'auto', name: '团长', role: '自动分派', emoji: '🧭', tools: [] },
-      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points', 'list_today_questions'] },
-      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty'] },
+      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points', 'list_today_questions', 'list_hand_notes', 'read_hand_note'] },
+      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty', 'list_hand_notes', 'read_hand_note'] },
     ]
 
     // ── LLM ──
@@ -215,6 +221,16 @@ return {
         desc: '列出教学大纲知识点目录（只读）',
         params: { subject: { type: 'string', description: 'math 或 comm' }, query: { type: 'string' } },
         required: [],
+      },
+      list_hand_notes: {
+        desc: '列出当前学员放在资料库里的手写笔记（只要元数据，不含图片）',
+        params: {},
+        required: [],
+      },
+      read_hand_note: {
+        desc: '用视觉模型阅读一张手写笔记并转写。id 来自 list_hand_notes。不要把文本模型当视觉模型。',
+        params: { id: { type: 'string', description: '笔记 id' } },
+        required: ['id'],
       },
       get_learner_params: {
         desc: '读取学员能力参数 LearnerParams（BKT mastery + 域 η + assumptions，只读）',
@@ -376,9 +392,53 @@ return {
 
     const WRITE_TOOLS = { adjust_difficulty: true }
 
+    async function visionRead(dataUrl, name) {
+      const cfg = await getCfg()
+      if (!cfg.visionKey) return { ok: false, text: '视觉模型未配置（需要 DEEPSEEK_API_KEY，模型 ' + VISION_MODEL + '）' }
+      const body = {
+        model: VISION_MODEL,
+        thinking: { type: 'disabled' },
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: '这是学员的手写笔记（' + (name || '未命名') + '）。请转写可见文字，公式用 LaTeX。看不清的地方标明，不要编造。' },
+            { type: 'image_url', image_url: { url: dataUrl } },
+          ],
+        }],
+      }
+      const r = await httpRequest(VISION_BASE + '/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + cfg.visionKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const msg = r.data && r.data.choices && r.data.choices[0] && r.data.choices[0].message
+      let text = msg && msg.content
+      if (Array.isArray(text)) text = text.map(function (p) { return (p && p.text) || '' }).join('')
+      if (!(r.status >= 200 && r.status < 300) || !text) {
+        const err = (r.data && r.data.error && (r.data.error.message || r.data.error)) || ('vision_http_' + (r.status || '?'))
+        return { ok: false, text: '视觉模型读取失败：' + String(err).slice(0, 300) }
+      }
+      return { ok: true, text: String(text) }
+    }
+
     async function execTool(name, args, lid, allowed) {
       if (Array.isArray(allowed) && allowed.indexOf(name) < 0) {
         return { ok: false, source: name, text: '当前角色无权调用 ' + name }
+      }
+      if (name === 'list_hand_notes' || name === 'read_hand_note') {
+        const headers = await practiceHeaders(lid)
+        if (name === 'list_hand_notes') {
+          const r = await httpJson(PRACTICE_BASE + '/api/v1/notes?learner=' + encodeURIComponent(lid || ''), { headers: headers })
+          const notes = (r.data && r.data.notes) || []
+          return { ok: !!(r.data && r.data.ok), source: 'practice_web:list_hand_notes', text: JSON.stringify(notes) }
+        }
+        const id = args && args.id ? String(args.id) : ''
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/notes/item?learner=' + encodeURIComponent(lid || '') + '&id=' + encodeURIComponent(id), { headers: headers })
+        if (!r.data || !r.data.ok || !r.data.data_url) {
+          return { ok: false, source: 'practice_web:read_hand_note', text: '没有这张笔记' }
+        }
+        const seen = await visionRead(r.data.data_url, (r.data.note && r.data.note.name) || id)
+        return { ok: seen.ok, source: 'vision:' + VISION_MODEL, text: seen.text }
       }
       args = Object.assign({}, args || {})
       if (name === 'list_today_questions') {
@@ -917,6 +977,7 @@ return {
         prior.length ? '本线程已有最近对话（紧随其后的 user/assistant 消息）。短追问要承接上文，不要当成没有上下文的新话题。' : '',
         '接地：todayItems 是今日排程；backlogItems 是历史未答（可索引讲解，不占今日槽）。学员问历史/过期/未答/索引或点名某题号时，先 list_today_questions（导师团默认含积压）或直接用上下文 id，再 practice_get_item(item) 取题干、show_solution(item 或 push) 取解答。禁止编造题干。show_solution 必须带 item/push，勿默认讲最新题。',
         ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。问历史未答题时仍可按 backlogItems / list_today_questions 索引后讲解。' : '',
+        '学员问手写笔记、资料库、自己拍的笔记时：先 list_hand_notes，再对具体 id 调用 read_hand_note。read_hand_note 已用视觉模型 ' + VISION_MODEL + ' 看过图，按转写回答，不要声称自己直接看见了原图。',
       ].filter(Boolean).join('\n')
       return [{ role: 'system', content: system }].concat(prior, [
         { role: 'user', content: '【接地上下文】\n' + JSON.stringify(ctx, null, 2) + '\n\n【学员消息】\n' + msg },
