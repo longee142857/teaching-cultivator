@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-34",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知 $f(0) = 0$ ， $f'(0) = 1$ ，求 $\\lim_{n\\to \\infty}\\left[f\\left(\\frac{1}{n^2}\\right) + f\\left(\\frac{2}{n^2}\\right) + \\dots +f\\left(\\frac{n}{n^2}\\right)\\right]$ .",
+  "answer": "$f(x) = f(0) + f'(0)x + o(x)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 可利用 $f'(0)$ 的定义得到 $f(x)$ 在 x=0 附近的局部表达式，再代入所求极限式做计算."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $f'(0) = \\lim_{x \\to 0} \\frac{f(x) - f(0)}{x}$ ，则 $f(x) = f(0) + f'(0)x + o(x)$ ，从而"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l}f \\left(\\frac {1}{n ^ {2}}\\right) + f \\left(\\frac {2}{n ^ {2}}\\right) + \\dots + f \\left(\\frac {n}{n ^ {2}}\\right)&= \\frac {1}{n ^ {2}} + \\frac {2}{n ^ {2}} + \\dots + \\frac {n}{n ^ {2}} + n \\cdot o \\left(\\frac {1}{n}\\right)\\\\&= \\frac {n (n + 1)}{2 n ^ {2}} + o (1) \\rightarrow \\frac {1}{2}\\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "即"
+      },
+      {
+        "id": "s5",
+        "text": "\\lim _ {n \\rightarrow \\infty} \\left[ f \\left(\\frac {1}{n ^ {2}}\\right) + f \\left(\\frac {2}{n ^ {2}}\\right) + \\dots + f \\left(\\frac {n}{n ^ {2}}\\right)\\right] = \\frac {1}{2}."
+      }
+    ],
+    "final_answer": "$f(x) = f(0) + f'(0)x + o(x)$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$f(x) = f(0) + f'(0)x + o(x)$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例34",
+    "page": 31,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

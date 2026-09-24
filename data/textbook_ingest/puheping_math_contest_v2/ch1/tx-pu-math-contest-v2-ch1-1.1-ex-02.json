@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-02",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x) = \\lim_{n\\to \\infty}\\sqrt[n]{1 + x^n + \\left(\\frac{x^2}{2}\\right)^n} (x > 0)$ ，求 $f(x)$ 的显式表达式.",
+  "answer": "$\\lim_{n\\to \\infty}\\sqrt[n]{m} = 1$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼准则",
+    "函数复合",
+    "函数方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需算出极限即可. 由于 $\\lim_{n\\to \\infty}\\sqrt[n]{c} = 1 (c > 0)$ , 所以容易想到极限的夹逼原理."
+      },
+      {
+        "id": "s2",
+        "text": "首先证明对于任意有限个正数 $a_{i}(i = 1,2,\\dots ,m)$ ，有"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {n \\to \\infty} \\sqrt [ n ]{a _ {1} ^ {n} + a _ {2} ^ {n} + \\cdots + a _ {m} ^ {n}} = \\max _ {1 \\leq i \\leq m} \\left\\{a _ {i} \\right\\}.\\tag{①}"
+      },
+      {
+        "id": "s4",
+        "text": "记 $\\max_{1\\leqslant i\\leqslant m}\\{a_i\\} = a$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "a = \\sqrt [ n ]{a ^ {n}} \\leqslant \\sqrt [ n ]{a _ {1} ^ {n} + a _ {2} ^ {n} + \\dots + a _ {m} ^ {n}} \\leqslant \\sqrt [ n ]{m a ^ {n}} = a \\sqrt [ n ]{m}."
+      },
+      {
+        "id": "s6",
+        "text": "由于 $\\lim_{n\\to \\infty}\\sqrt[n]{m} = 1$ ，利用极限的夹逼原理便可得到①式.利用①式，有"
+      },
+      {
+        "id": "s7",
+        "text": "f (x) = \\max _ {x \\in (0, + \\infty)} \\left\\{1, x, \\frac {x ^ {2}}{2} \\right\\} = \\left\\{ \\begin{array}{l l} 1, & 0 <   x \\leqslant 1, \\\\ x, & 1 <   x \\leqslant 2, \\\\ \\frac {x ^ {2}}{2}, & x > 2. \\end{array} \\right."
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\sqrt[n]{m} = 1$",
+    "techniques_used": [
+      "夹逼准则",
+      "函数复合",
+      "函数方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "夹逼准则",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "函数复合",
+      "expected": "$\\lim_{n\\to \\infty}\\sqrt[n]{m} = 1$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例2",
+    "page": 9,
+    "quality_basis": "source_textbook_worked_example",
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

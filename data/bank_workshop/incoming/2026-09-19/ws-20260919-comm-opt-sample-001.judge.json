@@ -1,8 +1,8 @@
 {
-  "item_id": "ws-20260917-comm-nbfm-001",
+  "item_id": "ws-20260919-comm-opt-sample-001",
   "decision": "accept",
   "reasons": [
-    "窄带近似一阶"
+    "考点对齐、形式合规，解析与答案一致且可核验"
   ],
   "checks": {
     "l3_in_syllabus": true,

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-eq-linear-001",
+  "subject": "comm",
+  "l2": "眼图均衡与部分响应",
+  "l3_id": "comm.baseband.eq.linear",
+  "atom_id": "zhou.ch5.eq.linear.zf",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "零 forcing (ZF) 线性均衡目标：频域上如何处理信道 H(f)？",
+  "answer": "设计均衡器 W(f) 使 W(f)H(f)≈1（或常数）在通带内，以消除 ISI（可能放大噪声）。",
+  "techniques": [
+    "ZF 均衡",
+    "频域逆滤波",
+    "ISI 消除"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "ZF 令合成响应平坦：W=1/H。"
+      },
+      {
+        "id": "s2",
+        "text": "通带内零 ISI，但深衰落处噪声放大。"
+      }
+    ],
+    "final_answer": "设计均衡器 W(f) 使 W(f)H(f)≈1（或常数）在通带内，以消除 ISI（可能放大噪声）。",
+    "techniques_used": [
+      "ZF 均衡",
+      "频域逆滤波",
+      "ISI 消除"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出 ZF 的目标关系。",
+      "expected": "W·H≈1。",
+      "technique": "ZF 均衡",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "说明代价。",
+      "expected": "可能噪声增强。",
+      "technique": "ISI 消除",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

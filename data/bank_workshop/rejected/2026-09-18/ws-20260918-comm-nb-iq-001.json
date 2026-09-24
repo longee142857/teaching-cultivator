@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-nb-iq-001",
+  "subject": "comm",
+  "l2": "高斯过程与窄带噪声",
+  "l3_id": "comm.sig_rand.nb.iq",
+  "atom_id": "zhou.ch3.nb.iq.props",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "窄带信号 A(t)cos(ω_c t+φ(t)) 的同相/正交分量 X(t),Y(t) 由希尔伯特或低通提取。若 A(t) 缓变，写出 I/Q 与复包络 z(t)=X+jY 的关系。",
+  "answer": "z(t)=[X(t)+jY(t)]e^{-jω_c t} 或 s(t)=Re{z(t)e^{jω_c t}}；I/Q 为基带等效。",
+  "techniques": [
+    "I/Q 分量",
+    "复包络",
+    "窄带表示"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "解析信号或正交解调得 X,Y。"
+      },
+      {
+        "id": "s2",
+        "text": "复包络 z 携带幅度相位，乘以 e^{jω_c t} 还原带通。"
+      }
+    ],
+    "final_answer": "z(t)=[X(t)+jY(t)]e^{-jω_c t} 或 s(t)=Re{z(t)e^{jω_c t}}；I/Q 为基带等效。",
+    "techniques_used": [
+      "I/Q 分量",
+      "复包络",
+      "窄带表示"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「I/Q 分量」写出第 1 步关键推导或结论。",
+      "expected": "解析信号或正交解调得 X,Y。",
+      "technique": "I/Q 分量",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「复包络」得到与题意一致的最终结论。",
+      "expected": "复包络 z 携带幅度相位，乘以 e^{jω_c t} 还原带通。",
+      "technique": "复包络",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

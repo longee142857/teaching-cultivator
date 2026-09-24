@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-31",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $x_{1}, x_{2}, \\cdots$ 是非负数列，满足 $x_{n+1} \\leqslant x_{n} + \\frac{1}{n^{2}} (n = 1, 2, \\cdots)$ . 证明 $\\lim_{n \\to \\infty} x_{n}$ 存在.",
+  "answer": "$\\lim_{n\\to \\infty}x_n$ 存在.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "递推数列",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 从题设条件容易得到 $\\{x_{n}\\}$ 的有界性，但很难判定其单调性。如果改写 $\\frac{1}{n^2} = \\sum_{k=1}^{n} \\frac{1}{k^2} - \\sum_{k=1}^{n-1} \\frac{1}{k^2} \\triangleq y_{n+1} - y_n$ ，则条件变为 $x_{n+1} - y_{n+1} \\leqslant x_n - y_n$ ，数列 $\\{x_n - y_n\\}$ 的单调性与有界性都容易判定了。"
+      },
+      {
+        "id": "s2",
+        "text": "记 $y_{n} = \\sum_{k=1}^{n-1} \\frac{1}{k^{2}} (n = 2,3,\\cdots)$ ，由于 $\\lim_{n \\to \\infty} y_{n} = \\sum_{k=1}^{\\infty} \\frac{1}{k^{2}}$ 收敛，所以 $\\{y_{n}\\}$ 有界，即存在 $M > 0$ 使 $0 < y_{n} \\leqslant M (n = 2,3,\\cdots)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "由 $0 \\leqslant x_{n+1} \\leqslant x_n + \\frac{1}{n^2}$ 及 $\\frac{1}{n^2} = y_{n+1} - y_n$ ，可得"
+      },
+      {
+        "id": "s4",
+        "text": "- M \\leqslant x _ {n + 1} - y _ {n + 1} \\leqslant x _ {n} - y _ {n}."
+      },
+      {
+        "id": "s5",
+        "text": "这说明数列 $\\{x_{n} - y_{n}\\}$ 单调递减有下界，从而收敛. 进而得到"
+      },
+      {
+        "id": "s6",
+        "text": "\\lim _ {n \\rightarrow \\infty} x _ {n} = \\lim _ {n \\rightarrow \\infty} (x _ {n} - y _ {n}) + \\lim _ {n \\rightarrow \\infty} y _ {n},"
+      },
+      {
+        "id": "s7",
+        "text": "所以 $\\lim_{n\\to \\infty}x_n$ 存在."
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}x_n$ 存在.",
+    "techniques_used": [
+      "递推数列",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "递推数列",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n\\to \\infty}x_n$ 存在."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例31",
+    "page": 30,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

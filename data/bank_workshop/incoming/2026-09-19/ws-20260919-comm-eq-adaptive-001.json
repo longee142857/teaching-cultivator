@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-eq-adaptive-001",
+  "subject": "comm",
+  "l2": "眼图均衡与部分响应",
+  "l3_id": "comm.baseband.eq.adaptive",
+  "atom_id": "zhou.ch5.eq.adaptive",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "自适应均衡器为何需要训练序列？简述 LMS 类算法调整什么量。",
+  "answer": "训练序列提供已知符号以估计信道/误差；LMS 调整抽头系数使误差 e 的均方最小。",
+  "techniques": [
+    "自适应均衡",
+    "训练序列",
+    "LMS 抽头"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "起始抽头未知，需已知符号计算误差。"
+      },
+      {
+        "id": "s2",
+        "text": "LMS 沿 −∇J 更新滤波器系数 w。"
+      }
+    ],
+    "final_answer": "训练序列提供已知符号以估计信道/误差；LMS 调整抽头系数使误差 e 的均方最小。",
+    "techniques_used": [
+      "自适应均衡",
+      "训练序列",
+      "LMS 抽头"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明为何需要训练。",
+      "expected": "已知符号估误差。",
+      "technique": "训练序列",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "LMS 调整的对象。",
+      "expected": "均衡器抽头系数。",
+      "technique": "LMS 抽头",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-11",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\varphi \\in C(-\\infty, +\\infty)$ ，并且 $\\lim_{x \\to \\infty} \\frac{\\varphi(x)}{x^n} = 0$ ，证明：\n\n（1）若 $n$ 为奇数，则 $\\exists \\xi \\in (-\\infty, +\\infty)$ ，使 $\\xi^n + \\varphi(\\xi) = 0$ ；\n\n(2) 若 $n$ 为偶数，则 $\\exists \\eta \\in (-\\infty, +\\infty)$ ，使 $\\forall x \\in (-\\infty, +\\infty)$ 有 $\\eta^n + \\varphi(\\eta) \\leqslant x^n + \\varphi(x)$ .",
+  "answer": "对 $\\forall x \\in (-\\infty, +\\infty)$ , 有 $f(\\eta) \\leqslant f(x)$ , 即 $\\eta^n + \\varphi(\\eta) \\leqslant x^n + \\varphi(x)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "闭区间连续"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 做函数 $f(x) = x^n + \\varphi(x)$ ，对于问题（1）只需说明 $f(x)$ 在区间 $(- \\infty, +\\infty)$ 内会出现异号；对于问题（2）需证明 $f(x)$ 能取到最小值."
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = x^n + \\varphi(x)$ ，则 $f(x) \\in C(-\\infty, +\\infty)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "（1）当 $n$ 为奇数时，由已知条件，有"
+      },
+      {
+        "id": "s4",
+        "text": "\\lim _ {x \\rightarrow + \\infty} f (x) = \\lim _ {x \\rightarrow + \\infty} x ^ {n} \\left(1 + \\frac {\\varphi (x)}{x ^ {n}}\\right) = + \\infty , \\quad \\lim _ {x \\rightarrow - \\infty} f (x) = \\lim _ {x \\rightarrow - \\infty} x ^ {n} \\left(1 + \\frac {\\varphi (x)}{x ^ {n}}\\right) = - \\infty ."
+      },
+      {
+        "id": "s5",
+        "text": "则 $\\exists \\xi \\in (-\\infty, +\\infty)$ ，使 $f(\\xi) = 0$ ，即 $\\xi^n + \\varphi(\\xi) = 0$ 。"
+      },
+      {
+        "id": "s6",
+        "text": "(2) 当n为偶数时，由已知条件，有"
+      },
+      {
+        "id": "s7",
+        "text": "\\lim _ {x \\rightarrow \\infty} f (x) = \\lim _ {x \\rightarrow \\infty} x ^ {n} \\left(1 + \\frac {\\varphi (x)}{x ^ {n}}\\right) = + \\infty ,"
+      }
+    ],
+    "final_answer": "对 $\\forall x \\in (-\\infty, +\\infty)$ , 有 $f(\\eta) \\leqslant f(x)$ , 即 $\\eta^n + \\varphi(\\eta) \\leqslant x^n + \\varphi(x)$ .",
+    "techniques_used": [
+      "介值定理",
+      "闭区间连续"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "应调用闭区间连续的哪条性质（介值/最值/零点）？",
+      "technique": "介值定理",
+      "expected": "根据结论形态选择介值、零点或有界性等闭区间连续性质。"
+    },
+    {
+      "id": "c2",
+      "prompt": "如何构造辅助函数把题设化为该性质的条件？",
+      "technique": "闭区间连续",
+      "expected": "\\lim _ {x \\rightarrow \\infty} f (x) = \\lim _ {x \\rightarrow \\infty} x ^ {n} \\left(1 + \\frac {\\varphi (x)}{x ^ {n}}\\right) = + \\infty ,"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例11",
+    "page": 57,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

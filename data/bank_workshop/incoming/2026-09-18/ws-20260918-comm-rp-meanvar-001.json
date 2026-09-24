@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-rp-meanvar-001",
+  "subject": "comm",
+  "l2": "随机过程统计特性",
+  "l3_id": "comm.sig_rand.rp.mean_var",
+  "atom_id": "zhou.ch3.rp.autocorr",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "零均值平稳 X(t)，R_X(τ)=σ² e^{-|τ|/T_c}。求方差 σ_X² 及 τ=0 与 τ=T_c 时的自相关值。",
+  "answer": "σ_X²=R_X(0)=σ²；R_X(T_c)=σ²/e。",
+  "techniques": [
+    "自相关函数",
+    "方差读 R(0)",
+    "指数相关"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "平稳零均值 ⇒ 方差等于 R(0)。"
+      },
+      {
+        "id": "s2",
+        "text": "代入 τ=T_c 得 R(T_c)=σ² e^{-1}。"
+      }
+    ],
+    "final_answer": "σ_X²=R_X(0)=σ²；R_X(T_c)=σ²/e。",
+    "techniques_used": [
+      "自相关函数",
+      "方差读 R(0)",
+      "指数相关"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「自相关函数」写出第 1 步关键推导或结论。",
+      "expected": "平稳零均值 ⇒ 方差等于 R(0)。",
+      "technique": "自相关函数",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「方差读 R(0)」得到与题意一致的最终结论。",
+      "expected": "代入 τ=T_c 得 R(T_c)=σ² e^{-1}。",
+      "technique": "方差读 R(0)",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

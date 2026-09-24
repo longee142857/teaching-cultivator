@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-line-select-001",
+  "subject": "comm",
+  "l2": "数字基带波形与线路码型",
+  "l3_id": "comm.baseband.line.select",
+  "atom_id": "zhou.ch5.line.select",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "基带线路码型选择需权衡带宽、直流、时钟与误码传播。列举两条实用准则。",
+  "answer": "例：① 尽量抑制直流与低频便于耦合；② 便于时钟恢复或采用足够定时信息；③ 限制误码传播（如 HDB3）。",
+  "techniques": [
+    "码型选择",
+    "直流与带宽",
+    "时钟与误码传播"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "带宽/频谱与信道匹配，避免过多低频与直流。"
+      },
+      {
+        "id": "s2",
+        "text": "需定时信息或外同步；限制单比特错误影响范围。"
+      }
+    ],
+    "final_answer": "例：① 尽量抑制直流与低频便于耦合；② 便于时钟恢复或采用足够定时信息；③ 限制误码传播（如 HDB3）。",
+    "techniques_used": [
+      "码型选择",
+      "直流与带宽",
+      "时钟与误码传播"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "给出一条与频谱/直流相关的准则。",
+      "expected": "抑制直流、控制主瓣带宽。",
+      "technique": "直流与带宽",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "给出时钟或误码传播相关准则。",
+      "expected": "易时钟恢复；限制误码传播。",
+      "technique": "时钟与误码传播",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

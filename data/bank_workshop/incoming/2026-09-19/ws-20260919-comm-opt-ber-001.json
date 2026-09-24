@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-opt-ber-001",
+  "subject": "comm",
+  "l2": "基带最佳接收",
+  "l3_id": "comm.baseband.opt.ber",
+  "atom_id": "zhou.ch5.opt.ber.bipolar",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "双极性 NRZ 在 AWGN 下，判决门限取 0、等概时，误码率 P_e 与 Q 函数及 E_b/N_0 的关系（标准形式）。",
+  "answer": "P_e=Q(√(2E_b/N_0))（常见教材形式，系数依定义可能差因子 2，写清所用 E_b 定义即可）。",
+  "techniques": [
+    "双极 NRZ",
+    "Q 函数",
+    "E_b/N_0"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "最佳门限 0，噪声方差 σ²=N_0/2 归一化下距离 d∝√E_b。"
+      },
+      {
+        "id": "s2",
+        "text": "P_e=Q(d/σ)=Q(√(2E_b/N_0))。"
+      }
+    ],
+    "final_answer": "P_e=Q(√(2E_b/N_0))（常见教材形式，系数依定义可能差因子 2，写清所用 E_b 定义即可）。",
+    "techniques_used": [
+      "双极 NRZ",
+      "Q 函数",
+      "E_b/N_0"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明等概双极 NRZ 的最佳门限。",
+      "expected": "门限 0。",
+      "technique": "双极 NRZ",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "写出 P_e 与 E_b/N_0 关系。",
+      "expected": "P_e=Q(√(2E_b/N_0))。",
+      "technique": "Q 函数",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

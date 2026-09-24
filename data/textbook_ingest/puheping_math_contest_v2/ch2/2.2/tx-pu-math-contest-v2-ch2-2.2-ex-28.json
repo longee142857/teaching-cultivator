@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-28",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明当 $0 < |t| < \\frac{\\pi}{2}$ 时，存在唯一的 $\\theta(t) \\in (0,1)$ ，使得 $\\sin t = t - \\frac{1}{6} t^3 \\cos(t\\theta(t))$ ，并求 $\\lim_{t \\to 0} \\theta(t)$ 。",
+  "answer": "存在唯一 $\\theta(t)\\in(0,1)$，且 $\\lim_{t\\to 0}\\theta(t)=\\frac{1}{\\sqrt{10}}$。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒公式",
+    "麦克劳林公式",
+    "无穷小展开",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于余弦函数在区间 $\\left(0, \\frac{\\pi}{2}\\right)$ 内是单调的，所以 $\\theta(t)$ 的唯一性是显然的；\n\n为求 $\\lim_{t\\to 0}\\theta (t)$ ，可对 $\\cos (t\\theta (t))$ 再用泰勒公式，或对题设中的 $\\sin t$ 的泰勒公式多写出一项，就容易解出 $\\theta (t)$ ，并求得极限."
+      },
+      {
+        "id": "s2",
+        "text": "由泰勒公式，知对任意实数 $t$ ，必存在 $\\theta (t)\\in (0,1)$ ，使得\n\n$$\n\\sin t = t - \\frac {1}{6} t ^ {3} \\cos (t \\theta (t)).\n$$\n\n若还存在 $\\eta(t) \\in (0,1)$ ，使得\n\n$$\n\\sin t = t - \\frac {1}{6} t ^ {3} \\cos (t \\eta (t)),\n$$\n\n则\n\n$$\nt - \\frac {1}{6} t ^ {3} \\cos (t \\theta (t)) = t - \\frac {1}{6} t ^ {3} \\cos (t \\eta (t)) \\Rightarrow \\cos (t \\theta (t)) = \\cos (t \\eta (t)).\n$$\n\n由于 $0 < |t\\theta(t)|$ ， $|t\\eta(t)| < \\frac{\\pi}{2}$ ，所以 $\\theta(t) = \\eta(t)$ .\n\n下面求极限."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 利用 $\\cos x$ 的二阶泰勒公式，有\n\n$$\n\\cos (t \\theta (t)) = 1 - \\frac {1}{2} (t \\theta (t)) ^ {2} + o (t ^ {2}).\n$$\n\n代入所给等式，有\n\n$$\n1 - \\frac {1}{2} (t \\theta (t)) ^ {2} + o (t ^ {2}) = \\frac {6 (t - \\sin t)}{t ^ {3}}.\n$$\n\n解得\n\n$$\n\\theta^ {2} (t) = 2 \\cdot \\frac {t ^ {3} - 6 (t - \\sin t)}{t ^ {5}} + o (1),\n\n\\lim _ {t \\rightarrow 0} \\theta^ {2} (t) = 2 \\lim _ {t \\rightarrow 0} \\frac {t ^ {3} - 6 (t - \\sin t)}{t ^ {5}} = 2 \\lim _ {t \\rightarrow 0} \\frac {t ^ {3} - 6 \\left(\\frac {1}{6} t ^ {3} - \\frac {1}{1 2 0} t ^ {5} + o \\left(t ^ {5}\\right)\\right)}{t ^ {5}} = \\frac {1}{1 0}.\n$$\n\n故 $\\lim_{t\\to 0}\\theta (t) = \\frac{1}{\\sqrt{10}}.$"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 利用 $\\sin x$ 的泰勒公式，有\n\n$$\n\\sin t = t - \\frac {1}{3 !} t ^ {3} + \\frac {1}{5 !} t ^ {5} + o (t ^ {5}).\n$$\n\n由已知 $\\sin t = t - \\frac{1}{6} t^3\\cos (t\\theta (t))$ ，两式相减得到\n\n$$\n\\frac {1}{3 !} t ^ {3} (1 - \\cos (t \\theta (t))) = \\frac {1}{5 !} t ^ {5} + o (t ^ {5}).\n$$\n\n当 $t \\to 0$ 时， $1 - \\cos (t\\theta(t)) \\sim \\frac{1}{2} (t\\theta(t))^2$ 代入上式，并化简得\n\n$$\n\\theta^ {2} (t) = \\frac {1}{1 0} + o (1).\n$$\n\n上式取 $t\\to0$ 即得结论."
+      }
+    ],
+    "final_answer": "存在唯一 $\\theta(t)\\in(0,1)$，且 $\\lim_{t\\to 0}\\theta(t)=\\frac{1}{\\sqrt{10}}$。",
+    "techniques_used": [
+      "泰勒公式",
+      "麦克劳林公式",
+      "无穷小展开",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题应展开到几阶？选用 Peano 余项还是 Lagrange 余项？展开点取哪里？",
+      "technique": "泰勒公式",
+      "expected": "按题设精度选阶数与余项类型，在指定点（常为 0）展开并比较系数或取极限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终系数、极限或中值极限的结论是什么？",
+      "technique": "无穷小展开",
+      "expected": "存在唯一 $\\theta(t)\\in(0,1)$，且 $\\lim_{t\\to 0}\\theta(t)=\\frac{1}{\\sqrt{10}}$。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例28",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 98,
+    "syllabus_note": "拉格朗日余项中值极限",
+    "commentary": "评注 这是求泰勒公式中拉格朗日型余项的“中值极限”问题，常用的方法：将已有的泰勒公式多展开一项，再利用导数的定义或其他方法求得中值的极限（见习题2.2第37题，综合题 $2^{*}$ 第27题）."
+  }
+}

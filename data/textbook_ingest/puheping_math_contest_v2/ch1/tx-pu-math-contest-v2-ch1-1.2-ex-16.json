@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-16",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\lim_{x\\to 0}\\frac{\\sin 2x + xf(x)}{\\tan x - \\sin x} = 0.$ 求 $a,b$ ，使 $x\\to 0$ 时， $f(x) + 2$ 与 $ax^b$ 为等价无穷小.",
+  "answer": "\\sin 2 x + x f (x) = o \\left(x ^ {3}\\right) \\Rightarrow f (x) = \\frac {- \\sin 2 x + o \\left(x ^ {3}\\right)}{x}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒展开",
+    "等价无穷小",
+    "阶比较"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由所给极限式可得到 $f(x)$ 在 $x = 0$ 附近的局部表达式，再做相关运算."
+      },
+      {
+        "id": "s2",
+        "text": "因为当 $x \\to 0$ 时， $\\tan x - \\sin x = \\tan x (1 - \\cos x) \\sim \\frac{1}{2} x^3$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {x \\rightarrow 0} \\frac {\\sin 2 x + x f (x)}{\\tan x - \\sin x} = 0 \\Rightarrow \\lim _ {x \\rightarrow 0} \\frac {\\sin 2 x + x f (x)}{x ^ {3}} = 0,"
+      },
+      {
+        "id": "s4",
+        "text": "所以"
+      },
+      {
+        "id": "s5",
+        "text": "\\sin 2 x + x f (x) = o \\left(x ^ {3}\\right) \\Rightarrow f (x) = \\frac {- \\sin 2 x + o \\left(x ^ {3}\\right)}{x}."
+      },
+      {
+        "id": "s6",
+        "text": "利用泰勒公式 $\\sin 2x = 2x - \\frac{(2x)^3}{3!} + o(x^3)$ ，代入上式得"
+      },
+      {
+        "id": "s7",
+        "text": "f (x) = - 2 + \\frac {4}{3} x ^ {2} + o (x ^ {2}) \\Rightarrow f (x) + 2 \\sim \\frac {4}{3} x ^ {2} (x \\rightarrow 0)."
+      }
+    ],
+    "final_answer": "\\sin 2 x + x f (x) = o \\left(x ^ {3}\\right) \\Rightarrow f (x) = \\frac {- \\sin 2 x + o \\left(x ^ {3}\\right)}{x}.",
+    "techniques_used": [
+      "泰勒展开",
+      "等价无穷小",
+      "阶比较"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分子分母中哪些因子可用等价无穷小替换，哪些必须保留更高阶展开？",
+      "technique": "等价无穷小",
+      "expected": "只对乘除因子做同阶等价替换；加减结构或需精确系数时改用泰勒/洛必达。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "等价无穷小",
+      "expected": "$a = \\frac{4}{3}, b = 2.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例16",
+    "page": 22,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

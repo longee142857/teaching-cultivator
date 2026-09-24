@@ -1,0 +1,18 @@
+{
+  "item_id": "ws-20260918-math-diff-rules-001",
+  "decision": "reject",
+  "reasons": [
+    "参数求导中间式 (−sin t)/(−sin t) 错误，无法推出答案 −cot t"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  },
+  "issues": [
+    "solution_correctness"
+  ]
+}

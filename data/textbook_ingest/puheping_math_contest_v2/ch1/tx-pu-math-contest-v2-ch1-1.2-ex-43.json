@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-43",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "$ 设 $x_{1}\\in(0,1)$ , $x_{n+1}=x_{n}(1-x_{n})$ , $n=1,2,\\cdots$ . 证明 $\\lim_{n\\to\\infty}nx_{n}=1$ .",
+  "answer": "$\\lim_{n\\to \\infty}nx_n = 1.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "递推数列",
+    "施笃兹定理",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明 $\\lim_{n\\to \\infty}\\frac{n}{1 / x_n} = 1$ ，要利用施笃兹定理还得验证 $x_{n}$ 单调递减并趋于0."
+      },
+      {
+        "id": "s2",
+        "text": "由 $x_{1} \\in (0,1)$ , $x_{2} = x_{1}(1 - x_{1})$ , 知 $x_{2} \\in (0,1)$ . 由归纳法, 易证: $x_{n} \\in (0,1)$ . 于是"
+      },
+      {
+        "id": "s3",
+        "text": "0 <   \\frac {x _ {n + 1}}{x _ {n}} = (1 - x _ {n}) <   1 (n = 1, 2, \\dots)."
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\{x_{n}\\}$ 单调递减有下界，从而 $\\lim_{n\\to \\infty}x_n = A$ 存在。在 $x_{n + 1} = x_n(1 - x_n)$ 中取 $n\\to \\infty$ ，有 $A = A(1 - A)\\Rightarrow A = 0$ ，即 $\\lim_{n\\to \\infty}x_n = 0.$"
+      },
+      {
+        "id": "s5",
+        "text": "设 $y_{n} = \\frac{1}{x_{n}}$ ，则 $\\lim_{n\\to \\infty}y_n = \\infty$ ，且 $y_{n} <   y_{n + 1}$ ，利用施笃兹定理，有"
+      },
+      {
+        "id": "s6",
+        "text": "\\lim _ {n \\rightarrow \\infty} n x _ {n} = \\lim _ {n \\rightarrow \\infty} \\frac {n}{y _ {n}} = \\lim _ {n \\rightarrow \\infty} \\frac {(n + 1) - n}{y _ {n + 1} - y _ {n}} = \\lim _ {n \\rightarrow \\infty} \\frac {1}{y _ {n + 1} - y _ {n}}."
+      },
+      {
+        "id": "s7",
+        "text": "由于"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}nx_n = 1.$",
+    "techniques_used": [
+      "递推数列",
+      "施笃兹定理",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "递推数列",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "施笃兹定理",
+      "expected": "$\\lim_{n\\to \\infty}nx_n = 1.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例43*",
+    "page": 37,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

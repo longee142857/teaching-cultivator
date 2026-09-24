@@ -57,6 +57,7 @@ def main() -> int:
     lect = _roster_tools(js, "lecturer")
     check("adjust_difficulty" in asst, "assistant roster includes adjust_difficulty")
     check("adjust_difficulty" not in lect, "lecturer roster excludes adjust_difficulty")
+    check("list_today_questions" in lect, "lecturer roster includes list_today_questions")
     check("WRITE_TOOLS" in js and "adjust_difficulty: true" in js, "write-tool map")
     check("method: 'POST'" in js and "/v1/tools/" in js, "exec POSTs /v1/tools/{name}")
     check("allowed.indexOf(name) < 0" in js, "role gate on execTool")

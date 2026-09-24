@@ -1,0 +1,73 @@
+{
+  "id": "ws-20260918-comm-nbfm-001",
+  "subject": "comm",
+  "l2": "模拟角度调制",
+  "l3_id": "comm.analog_mod.nbfm",
+  "atom_id": "zhou.ch4.fm.mod.index",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "单音调频 s(t)=A_c cos[2π f_c t + β_f sin(2π f_m t)]，调频指数 β_f=Δf_max/f_m=K_f max|m(t)|/W（W 为基带带宽，单音时 W=f_m）。当 β_f≪1（窄带调频）时，写出保留至 β_f 一阶的时域近似，并说明有效带宽相对 AM 的量级。",
+  "answer": "s(t)≈A_c cos(2π f_c t) − A_c β_f sin(2π f_m t) sin(2π f_c t)；有效带宽约 2W（与 AM 同量级）。",
+  "techniques": [
+    "调频指数定义",
+    "窄带 FM 一阶近似",
+    "带宽对比"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "由定义 β_f=Δf_max/W=K_f max|m(t)|/W；窄带即 β_f≪1，故 cos(β_f sin 2π f_m t)≈1，sin(β_f sin 2π f_m t)≈β_f sin 2π f_m t。"
+      },
+      {
+        "id": "s2",
+        "text": "展开 s=A_c[cos(2π f_c t)cos(β_f sin·)−sin(2π f_c t)sin(β_f sin·)]，一阶得正交边带：A_c cos(2π f_c t)−A_c β_f sin(2π f_m t) sin(2π f_c t)。"
+      },
+      {
+        "id": "s3",
+        "text": "卡松 B_c=2(β_f+1)W 在 β_f≪1 时≈2W，与 AM 同量级。"
+      }
+    ],
+    "final_answer": "s(t)≈A_c cos(2π f_c t) − A_c β_f sin(2π f_m t) sin(2π f_c t)；有效带宽约 2W（与 AM 同量级）。",
+    "techniques_used": [
+      "调频指数定义",
+      "窄带 FM 一阶近似",
+      "带宽对比"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「调频指数定义」写出第一步关键变形或定义。",
+      "expected": "由定义 β_f=Δf_max/W=K_f max|m(t)|/W；窄带即 β_f≪1，故 cos(β_f sin 2π f_m t)≈1，sin(β_f sin 2π f_m t)≈β_f sin 2π f_m t。",
+      "technique": "调频指数定义",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "在已有中间结果上，用「窄带 FM 一阶近似」完成第 2 步可核验计算或判定。",
+      "expected": "展开 s=A_c[cos(2π f_c t)cos(β_f sin·)−sin(2π f_c t)sin(β_f sin·)]，一阶得正交边带：A_c cos(2π f_c t)−A_c β_f sin(2π f_m t) sin(2π f_c t)。",
+      "technique": "窄带 FM 一阶近似",
+      "depends_on": [
+        "cdp1"
+      ]
+    },
+    {
+      "id": "cdp3",
+      "prompt": "综合前面中间结果，用「带宽对比」得到与题意一致的最终结论。",
+      "expected": "卡松 B_c=2(β_f+1)W 在 β_f≪1 时≈2W，与 AM 同量级。",
+      "technique": "带宽对比",
+      "depends_on": [
+        "cdp2"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18",
+    "atom_pin": "nearest"
+  }
+}

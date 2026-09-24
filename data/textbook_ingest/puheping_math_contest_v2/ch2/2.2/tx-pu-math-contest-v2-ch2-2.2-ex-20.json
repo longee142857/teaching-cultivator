@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-20",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.proof",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在闭区间 $[-1,1]$ 上具有连续三阶导数，且 $f(-1)=0,\\quad f(1)=1,\\quad f'(0)=0$ 。证明在开区间 $(-1,1)$ 内至少存在一点 $x_{0}$ ，使得 $f''(x_{0})=3$ 。",
+  "answer": "$f^m (x)$ 在 $[\\eta_1,\\eta_2]$ 上必有最大值与最小值，记 $M = \\max_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ， $m = \\min_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ，则",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "辅助函数",
+    "罗尔定理",
+    "麦克劳林公式",
+    "介值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里涉及三阶导数，用泰勒公式较好.\n\n对 $x \\in [-1, 1]$ ，由麦克劳林公式，得\n\n$$\nf (x) = f (0) + \\frac {1}{2} f ^ {\\prime \\prime} (0) x ^ {2} + \\frac {1}{6} f ^ {\\prime \\prime \\prime} (\\eta) x ^ {3} \\quad (\\eta \\text {介于} 0 \\text {与} x \\text {之间}).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分别取 $x = -1$ 与1，得\n\n$$\n\\begin{array}{r l} 0 & = f (0) + \\frac {1}{2} f ^ {\\prime \\prime} (0) - \\frac {1}{6} f ^ {\\prime \\prime \\prime} (\\eta_ {1}) (- 1 <   \\eta_ {1} <   0), \\\\ 1 & = f (0) + \\frac {1}{2} f ^ {\\prime \\prime} (0) + \\frac {1}{6} f ^ {\\prime \\prime \\prime} (\\eta_ {2}) (0 <   \\eta_ {2} <   1). \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "将上面两式相减，可得\n\n$$\nf ^ {m} (\\eta_ {1}) + f ^ {m} (\\eta_ {2}) = 6.\n$$\n\n由于 $f^m (x)$ 在[-1,1]上连续，所以 $f^m (x)$ 在 $[\\eta_1,\\eta_2]$ 上必有最大值与最小值，记 $M = \\max_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ， $m = \\min_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ，则"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nm \\leqslant \\frac {1}{2} (f ^ {m} (\\eta_ {1}) + f ^ {m} (\\eta_ {2})) \\leqslant M.\n$$\n\n由连续函数的介值定理，知至少存在一点 $x_0 \\in [\\eta_1, \\eta_2] \\subset (-1, 1)$ ，使得\n\n$$\nf ^ {m} (x _ {0}) = \\frac {1}{2} (f ^ {m} (\\eta_ {1}) + f ^ {m} (\\eta_ {2})) = 3.\n$$"
+      }
+    ],
+    "final_answer": "$f^m (x)$ 在 $[\\eta_1,\\eta_2]$ 上必有最大值与最小值，记 $M = \\max_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ， $m = \\min_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ，则",
+    "techniques_used": [
+      "辅助函数",
+      "罗尔定理",
+      "麦克劳林公式",
+      "介值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔、拉格朗日、柯西还是泰勒公式？是否需要构造辅助函数或反证？",
+      "technique": "麦克劳林公式",
+      "expected": "根据结论形态选择中值定理或泰勒展开；多中值问题常多次应用或构造辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "介值定理",
+      "expected": "$f^m (x)$ 在 $[\\eta_1,\\eta_2]$ 上必有最大值与最小值，记 $M = \\max_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ， $m = \\min_{x\\in [\\eta_1,\\eta_2]}f^m (x)$ ，则"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例20",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 94,
+    "commentary": "评注 泰勒公式给出了函数值与其各阶导数值之间的关系，当一个命题与函数二阶以及二阶以上的导数有关时，应考虑用泰勒公式."
+  }
+}

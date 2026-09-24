@@ -1,0 +1,63 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-10",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{x\\to 0}\\frac{1}{x^3}\\left[\\left(\\frac{2 + \\cos x}{3}\\right)^x -1\\right].$",
+  "answer": "frac {\\ln \\left(1 + \\frac {\\cos x - 1}{3}\\right)}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\cos x - 1}{3 x ^ {2}} = - \\frac {1}{6}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将分子中的幂指函数转化为指数函数，再用等价无穷小替换."
+      },
+      {
+        "id": "s2",
+        "text": "= \\lim _ {x \\rightarrow 0} \\frac {\\mathrm{e} ^ {x \\ln \\left(\\frac {2 + \\cos x}{3}\\right)} - 1}{x ^ {3}} = \\lim _ {x \\rightarrow 0} \\"
+      },
+      {
+        "id": "s3",
+        "text": "frac {\\ln \\left(1 + \\frac {\\cos x - 1}{3}\\right)}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\cos x - 1}{3 x ^ {2}} = - \\frac {1}{6}"
+      }
+    ],
+    "final_answer": "frac {\\ln \\left(1 + \\frac {\\cos x - 1}{3}\\right)}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\cos x - 1}{3 x ^ {2}} = - \\frac {1}{6}",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "frac {\\ln \\left(1 + \\frac {\\cos x - 1}{3}\\right)}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\cos x - 1}{3 x ^ {2}} = - \\frac {1}{6}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例10*",
+    "page": 19,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-nb-noise-001",
+  "subject": "comm",
+  "l2": "高斯过程与窄带噪声",
+  "l3_id": "comm.sig_rand.nb.noise",
+  "atom_id": "zhou.ch3.nb.noise.power",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "窄带平稳高斯噪声 n(t) 带宽 B 中心 f_c，双边谱 N0/2。说明总噪声功率与 B、N0 的关系，并写 n(t) 同相/正交分量功率。",
+  "answer": "总功率 N0 B；n_c,n_s 各 N0 B/2（理想带通分解）。",
+  "techniques": [
+    "窄带噪声功率",
+    "双边谱积分",
+    "I/Q 功率平分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "∫_{带内} N0/2 df = N0 B。"
+      },
+      {
+        "id": "s2",
+        "text": "正交分解不增功率，两分量各半（零均值独立）。"
+      }
+    ],
+    "final_answer": "总功率 N0 B；n_c,n_s 各 N0 B/2（理想带通分解）。",
+    "techniques_used": [
+      "窄带噪声功率",
+      "双边谱积分",
+      "I/Q 功率平分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「窄带噪声功率」写出第 1 步关键推导或结论。",
+      "expected": "∫_{带内} N0/2 df = N0 B。",
+      "technique": "窄带噪声功率",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「双边谱积分」得到与题意一致的最终结论。",
+      "expected": "正交分解不增功率，两分量各半（零均值独立）。",
+      "technique": "双边谱积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

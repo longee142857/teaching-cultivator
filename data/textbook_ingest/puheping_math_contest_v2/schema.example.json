@@ -1,0 +1,44 @@
+{
+  "id": "tx-pu-limit-compute-001",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 lim_{x→0} (1 − cos x) / x²。",
+  "answer": "1/2",
+  "techniques": ["等价无穷小", "泰勒展开"],
+  "solution": {
+    "steps": [
+      {"id": "s1", "text": "1−cos x ~ x²/2（x→0），或泰勒：cos x = 1 − x²/2 + o(x²)。"},
+      {"id": "s2", "text": "代入得 (x²/2)/x² = 1/2。"}
+    ],
+    "final_answer": "1/2",
+    "techniques_used": ["等价无穷小", "泰勒展开"]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对 1−cos x，选用「等价无穷小」写出 x→0 时的主部。",
+      "expected": "1−cos x ~ x²/2。",
+      "technique": "等价无穷小",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "用「泰勒展开」或等价代入，得到极限值。",
+      "expected": "(x²/2)/x² = 1/2。",
+      "technique": "泰勒展开",
+      "depends_on": ["cdp1"]
+    }
+  ],
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "quality_basis": "textbook_original"
+  }
+}

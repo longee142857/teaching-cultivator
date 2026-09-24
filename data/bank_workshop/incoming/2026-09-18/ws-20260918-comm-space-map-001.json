@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-space-map-001",
+  "subject": "comm",
+  "l2": "信号空间与统计判决",
+  "l3_id": "comm.passband.space.map",
+  "atom_id": "zhou.ch6.space.map",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "二元假设 H0/H1 先验 P(H0)=p0、P(H1)=p1，似然 f(y|Hi)。写出 MAP 判决规则，并化为似然比检验形式（含门限）。",
+  "answer": "MAP：选使 p_i f(y|Hi) 更大者；等价于 Λ(y)=f(y|H1)/f(y|H0) ≷ p0/p1。",
+  "techniques": [
+    "MAP 准则",
+    "似然比",
+    "先验门限"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "MAP 最大化后验 ⇒ 比较 p0 f(y|H0) 与 p1 f(y|H1)。"
+      },
+      {
+        "id": "s2",
+        "text": "同除以 p0 f(y|H0) 得似然比 Λ(y) 与门限 p0/p1 比较。"
+      }
+    ],
+    "final_answer": "MAP：选使 p_i f(y|Hi) 更大者；等价于 Λ(y)=f(y|H1)/f(y|H0) ≷ p0/p1。",
+    "techniques_used": [
+      "MAP 准则",
+      "似然比",
+      "先验门限"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「MAP 准则」写出第 1 步关键推导或结论。",
+      "expected": "MAP 最大化后验 ⇒ 比较 p0 f(y|H0) 与 p1 f(y|H1)。",
+      "technique": "MAP 准则",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「似然比」得到与题意一致的最终结论。",
+      "expected": "同除以 p0 f(y|H0) 得似然比 Λ(y) 与门限 p0/p1 比较。",
+      "technique": "似然比",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

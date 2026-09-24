@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.3-ex-12",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.closed",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明若 $a_{n} > \\left|a_{n-1}\\right| + \\left|a_{n-2}\\right| + \\cdots + \\left|a_{1}\\right| + \\left|a_{0}\\right|$ ，则方程\n\na _ {n} \\cos n x + a _ {n - 1} \\cos (n - 1) x + \\dots + a _ {1} \\cos x + a _ {0} = 0\n\n在 $(0,2\\pi)$ 内至少有 $2n$ 个根.",
+  "answer": "$f(x)$ 在 $\\left(\\frac{2k\\pi}{n}, \\frac{2k\\pi}{n} + \\frac{\\pi}{n}\\right)$ 与 $\\left(\\frac{2k\\pi}{n} + \\frac{\\pi}{n}, \\frac{2k + 2}{n}\\pi\\right)$ 内都至少各有一个根，即在 $(0,2\\pi)$ 内至少有 $2n$ 个根.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "闭区间连续"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "若 $a_{n} > \\left|a_{n-1}\\right| + \\left|a_{n-2}\\right| + \\cdots + \\left|a_{1}\\right| + \\left|a_{0}\\right|$ ，则方程"
+      },
+      {
+        "id": "s2",
+        "text": "a _ {n} \\cos n x + a _ {n - 1} \\cos (n - 1) x + \\dots + a _ {1} \\cos x + a _ {0} = 0"
+      },
+      {
+        "id": "s3",
+        "text": "在 $(0,2\\pi)$ 内至少有 $2n$ 个根."
+      },
+      {
+        "id": "s4",
+        "text": "分析 由所给条件, 知当 $\\cos nx = -1$ 时, 方程左边的函数值为负 (当 $\\cos nx = 1$ 时, 为正), 而 $\\cos nx$ 是以 $\\frac{2\\pi}{n}$ 为周期的函数, 区间 $(0,2\\pi)$ 包含 $\\cos nx$ 的 $n$ 个周期区间, 故结论成立."
+      },
+      {
+        "id": "s5",
+        "text": "证明 记 $f(x)=a_{n}\\cos nx+a_{n-1}^{\\cdot}\\cos(n-1)x+\\cdots+a_{1}\\cos x+a_{0}$"
+      },
+      {
+        "id": "s6",
+        "text": "当 $x = \\frac{2k\\pi}{n} (k\\in \\mathbb{N})$ 时，"
+      }
+    ],
+    "final_answer": "$f(x)$ 在 $\\left(\\frac{2k\\pi}{n}, \\frac{2k\\pi}{n} + \\frac{\\pi}{n}\\right)$ 与 $\\left(\\frac{2k\\pi}{n} + \\frac{\\pi}{n}, \\frac{2k + 2}{n}\\pi\\right)$ 内都至少各有一个根，即在 $(0,2\\pi)$ 内至少有 $2n$ 个根.",
+    "techniques_used": [
+      "介值定理",
+      "闭区间连续"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "应调用闭区间连续的哪条性质（介值/最值/零点）？",
+      "technique": "介值定理",
+      "expected": "根据结论形态选择介值、零点或有界性等闭区间连续性质。"
+    },
+    {
+      "id": "c2",
+      "prompt": "如何构造辅助函数把题设化为该性质的条件？",
+      "technique": "闭区间连续",
+      "expected": "\\begin{array}{r l} f \\left(\\frac {2 k \\pi}{n} + \\frac {\\pi}{n}\\right) & = - a _ {n} + a _ {n - 1} \\cos \\frac {(2 k + 1) (n - 1) \\pi}{n} + \\dots + a _ {1} \\cos \\frac {(2 k + 1) \\pi}{n} + a _ {0} \\\\ & <"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.3",
+    "example_id": "例12",
+    "page": 57,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

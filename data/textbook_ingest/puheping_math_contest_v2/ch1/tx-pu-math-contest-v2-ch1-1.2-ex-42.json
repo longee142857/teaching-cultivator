@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-42",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.lhopital",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在 x=0 的某邻域内有二阶连续导数，且 $f(0), f'(0), f''(0)$ 均不为零。证明存在唯一一组实数 $k_{1}, k_{2}, k_{3}$ ，使得\n\n\\lim _ {h \\rightarrow 0} \\frac {k _ {1} f (h) + k _ {2} f (2 h) + k _ {3} f (3 h) - f (0)}{h ^ {2}} = 0.",
+  "answer": "k _ {1} + 4 k _ {2} + 9 k _ {3} = 0.\\tag{④}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "施笃兹定理",
+    "洛必达法则",
+    "未定式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这属于 $\\frac{0}{0}$ 型，分母为 $h^2$ ，可用两次洛必达法则，由分子极限为零可得 $k_{1}, k_{2}, k_{3}$ 的线性方程组，解方程组可求得 $k_{1}, k_{2}, k_{3}$ 的值."
+      },
+      {
+        "id": "s2",
+        "text": "如果结论成立，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\lim _ {h \\rightarrow 0} \\left(k _ {1} f (h) + k _ {2} f (2 h) + k _ {3} f (3 h) - f (0)\\right) = \\left(k _ {1} + k _ {2} + k _ {3} - 1\\right) f (0) = 0,"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $f(0) \\neq 0$ ，所以"
+      },
+      {
+        "id": "s5",
+        "text": "k _ {1} + k _ {2} + k _ {3} - 1 = 0.\\tag{①}"
+      },
+      {
+        "id": "s6",
+        "text": "由洛必达法则得"
+      },
+      {
+        "id": "s7",
+        "text": "\\begin{array}{r l} 0 & = \\lim _ {h \\to 0} \\frac {k _ {1} f (h) + k _ {2} f (2 h) + k _ {3} f (3 h) - f (0)}{h ^ {2}} \\\\ & = \\lim _ {h \\to 0} \\frac {k _ {1} f ^ {\\prime} (h) + 2 k _ {2} f ^ {\\prime} (2 h) + 3 k _ {3} f ^ {\\prime} (3 h)}{2 h}. \\end{array}\\tag{②}"
+      }
+    ],
+    "final_answer": "k _ {1} + 4 k _ {2} + 9 k _ {3} = 0.\\tag{④}",
+    "techniques_used": [
+      "施笃兹定理",
+      "洛必达法则",
+      "未定式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "施笃兹定理",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "洛必达法则",
+      "expected": "k _ {1} + 4 k _ {2} + 9 k _ {3} = 0.\\tag{④}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例42",
+    "page": 36,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

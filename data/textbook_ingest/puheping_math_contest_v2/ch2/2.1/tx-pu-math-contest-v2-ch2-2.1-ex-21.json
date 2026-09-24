@@ -1,0 +1,18 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.1-ex-21",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.rules",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $P(x) = \\frac{\\mathrm{d}^n}{\\mathrm{d}x^n} (1 - x^m)^n$ ，其中 $m, n$ 为正整数，求 $P(1)$ 的值.",
+  "answer": "\\begin{array}{r l} P (1) & = u (1) v ^ {(n)} (1) + n u ^ {\\prime} (1) v ^ {(n - 1)} (1) + \\dots + u ^ {(n)} (1) v (1) \\\\ & = 0 + 0 + \\dots + 0 + (- 1) ^ {n} n! m ^ {n} = (- 1) ^ {n} n! m ^ {n}. \\end{array}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques":["高阶导数","求导法则","复合求导"],
+  "solution":{"steps":[{"id":"s1","text":"分析 若逐阶求导，则很难找到 $n$ 阶导数的一般规律。若将函数 $(1 - x^{m})^{n}$ 中的因子 $(1 - x)$ 分离出来，用莱布尼兹公式求 $n$ 阶导数，则问题就容易得到解决。"},{"id":"s2","text":"因为 $(1-x^{m})^{n}=(1-x)^{n}\\cdot(1+x+x^{2}+\\cdots+x^{m-1})^{n}$ ，令 $u(x)=(1-x)^{n}$ ， $v(x)=(1+x+\\cdots+x^{m-1})^{n}$ ，应用莱布尼兹公式"},{"id":"s3","text":"(u v) ^ {(n)} \\Big | _ {x = 1} = \\sum_ {k = 0} ^ {n} C _ {n} ^ {k} u ^ {(k)} v ^ {(n - k)} \\Big | _ {x = 1}."},{"id":"s4","text":"因为 $u(1) = u'(1) = \\dots = u^{(n - 1)}(1) = 0, u^{(n)}(1) = (-1)^{n}n!$ ，所以"},{"id":"s5","text":"\\begin{array}{r l} P (1) & = u (1) v ^ {(n)} (1) + n u ^ {\\prime} (1) v ^ {(n - 1)} (1) + \\dots + u ^ {(n)} (1) v (1) \\\\ & = 0 + 0 + \\dots + 0 + (- 1) ^ {n} n! m ^ {n} = (- 1) ^ {n} n! m ^ {n}. \\end{array}"}],"final_answer":"\\begin{array}{r l} P (1) & = u (1) v ^ {(n)} (1) + n u ^ {\\prime} (1) v ^ {(n - 1)} (1) + \\dots + u ^ {(n)} (1) v (1) \\\\ & = 0 + 0 + \\dots + 0 + (- 1) ^ {n} n! m ^ {n} = (- 1) ^ {n} n! m ^ {n}. \\end{array}","techniques_used":["高阶导数","求导法则","复合求导"]},
+  "cdps":[{"id":"c1","prompt":"求高阶导数时选用归纳、复指数/三角表示，还是先化简再逐阶求导？","technique":"高阶导数","expected":"优先将函数写成便于求 n 阶导的标准形，再归纳或配方系数。"},{"id":"c2","prompt":"n 阶导数（或在指定点的值）的最终表达式是什么？","technique":"求导法则","expected":"\\begin{array}{r l} P (1) & = u (1) v ^ {(n)} (1) + n u ^ {\\prime} (1) v ^ {(n - 1)} (1) + \\dots + u ^ {(n)} (1) v (1) \\\\ & = 0 + 0 + \\dots + 0 + (- 1) ^ {n} n! m ^ {n} = (- 1) ^ {n} n! m ^ {n}. \\end{array}"}],
+  "meta":{"source":"textbook_example","book_id":"puheping_math_contest_v2","book_title":"大学生数学竞赛教程（第2版）","book_author":"蒲和平","chapter":"第2章 一元函数微分学","section":"2.1","subsection":"导数的计算","example_id":"例21","page":77,"quality_basis":"source_textbook_worked_example"}
+}

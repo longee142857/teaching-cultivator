@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-psd-random-001",
+  "subject": "comm",
+  "l2": "基带信号功率谱密度",
+  "l3_id": "comm.baseband.psd.random",
+  "atom_id": "zhou.ch5.psd.formula",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "平稳符号 {a_n}，E[a_n]=0，E[a_n a_m]=σ_a² δ_{nm}，成形 g(t) 谱 G(f)。写出 PAM s(t)=Σ a_n g(t−nT) 的功率谱 S_s(f) 表达式。",
+  "answer": "S_s(f)=(σ_a²/T)|G(f)|²（常用归一形式）。",
+  "techniques": [
+    "随机 PAM 谱公式",
+    "符号白噪声",
+    "成形滤波"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "符号不相关 ⇒ 谱与 |G(f)|² 成正比。"
+      },
+      {
+        "id": "s2",
+        "text": "代入方差与符号间隔 T 得标准式。"
+      }
+    ],
+    "final_answer": "S_s(f)=(σ_a²/T)|G(f)|²（常用归一形式）。",
+    "techniques_used": [
+      "随机 PAM 谱公式",
+      "符号白噪声",
+      "成形滤波"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「随机 PAM 谱公式」写出第 1 步关键推导或结论。",
+      "expected": "符号不相关 ⇒ 谱与 |G(f)|² 成正比。",
+      "technique": "随机 PAM 谱公式",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「符号白噪声」得到与题意一致的最终结论。",
+      "expected": "代入方差与符号间隔 T 得标准式。",
+      "technique": "符号白噪声",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

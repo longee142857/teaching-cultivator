@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-math-int-indef-001",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.indef",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求不定积分 ∫(3x²−2/x+ e^x) dx。",
+  "answer": "x³−2 ln|x|+ e^x + C。",
+  "techniques": [
+    "幂函数积分",
+    "对数积分",
+    "指数积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "逐项积分 3x²→x³，−2/x→−2ln|x|。"
+      },
+      {
+        "id": "s2",
+        "text": "e^x 积分为 e^x，加常数 C。"
+      }
+    ],
+    "final_answer": "x³−2 ln|x|+ e^x + C。",
+    "techniques_used": [
+      "幂函数积分",
+      "对数积分",
+      "指数积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「幂函数积分」写出第 1 步关键推导或结论。",
+      "expected": "逐项积分 3x²→x³，−2/x→−2ln|x|。",
+      "technique": "幂函数积分",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「对数积分」得到与题意一致的最终结论。",
+      "expected": "e^x 积分为 e^x，加常数 C。",
+      "technique": "对数积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

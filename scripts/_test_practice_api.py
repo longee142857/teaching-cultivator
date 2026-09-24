@@ -31,6 +31,7 @@ def test_dto():
         extract_options,
         extract_stem,
         parse_item_id,
+        parse_push_id,
         public_item_id,
         push_to_shell_item,
     )
@@ -39,6 +40,9 @@ def test_dto():
     check(public_item_id(12) == "i12", "public id")
     check(parse_item_id("i12") == 12, "parse i12")
     check(parse_item_id("12") == 12, "parse 12")
+    check(parse_item_id("demo-i2") is None, "demo-i2 does not parse as item 2")
+    check(parse_item_id("demo-i1") is None, "demo-i1 does not parse as live id")
+    check(parse_push_id("demo-p2") is None, "demo-p2 does not parse as push 2")
     katex = extract_katex(r"stem $$\lim x$$ tail")
     check("lim" in katex, "extract katex")
     surface = "已知曲面 $$z=x^{2}+y^{2}.$$ 求过点的切平面。"
@@ -245,6 +249,9 @@ def test_bootstrap_submit(tmp_db: str):
         check("answer-preview" in html and "paintDraftPreview" in html, "OCR/source live KaTeX preview")
         check("throwOnError: false" in html, "preview KaTeX fails soft")
         check("提交仍用上方原文" in html, "submit uses edited source not HTML")
+        check("practiceToken" in html and "X-Practice-Token" in html, "shell forwards ?token=")
+        check('p.set("token", t)' in html, "writeUrl preserves existing ?token=")
+        check("&token=" in html and "practicePath" in html, "practicePath keeps URL token")
 
         nid = math_item.get("itemId")
         conn.request("GET", "/api/v1/practice/item?learner=demo_learner&item=" + str(nid))
@@ -960,7 +967,209 @@ def test_report_poor(tmp_db: str):
     check(fresh and int(fresh.get("item_id") or 0) == good, "push rebinding")
 
 
+def test_practice_api_auth():
+    """Token set → missing/wrong 401, correct 200. Empty token → no public bypass."""
+    from deliver.practice_web import client_authorized, token_matches
+
+    secret = "practice-test-secret"
+    check(not token_matches(secret), "no credential → no match")
+    check(not token_matches(secret, authorization="Bearer wrong"), "wrong Bearer")
+    check(not token_matches(secret, x_practice_token="wrong"), "wrong X-Practice-Token")
+    check(not token_matches(secret, query_token="wrong"), "wrong ?token=")
+    check(not token_matches(secret, query_token=""), "empty ?token=")
+    check(token_matches(secret, authorization=f"Bearer {secret}"), "correct Bearer")
+    check(token_matches(secret, x_practice_token=secret), "correct X-Practice-Token")
+    check(token_matches(secret, query_token=secret), "correct ?token=")
+
+    check(
+        not client_authorized(expected_token=secret, peer_ip="127.0.0.1", host="127.0.0.1"),
+        "token set: loopback without credential is 401",
+    )
+    check(
+        client_authorized(
+            expected_token=secret,
+            authorization=f"Bearer {secret}",
+            peer_ip="203.0.113.9",
+            host="practice.longee.icu",
+            headers={"X-Forwarded-For": "203.0.113.9"},
+        ),
+        "token set: correct Bearer allowed even via proxy",
+    )
+    check(
+        not client_authorized(
+            expected_token=secret,
+            authorization="Bearer wrong",
+            peer_ip="203.0.113.9",
+            host="practice.longee.icu",
+            headers={"X-Forwarded-For": "203.0.113.9"},
+        ),
+        "token set: wrong Bearer denied via proxy",
+    )
+
+    check(
+        client_authorized(expected_token="", peer_ip="127.0.0.1", host="127.0.0.1:18770"),
+        "empty token: direct loopback allowed",
+    )
+    check(
+        client_authorized(expected_token="", peer_ip="::1", host="localhost"),
+        "empty token: IPv6 loopback allowed",
+    )
+    check(
+        not client_authorized(expected_token="", peer_ip="203.0.113.9", host="127.0.0.1"),
+        "empty token: public peer denied (do not trust Host)",
+    )
+    check(
+        not client_authorized(
+            expected_token="",
+            peer_ip="127.0.0.1",
+            host="practice.longee.icu",
+        ),
+        "empty token: public Host denied even if peer is 127.0.0.1",
+    )
+    check(
+        not client_authorized(
+            expected_token="",
+            peer_ip="127.0.0.1",
+            host="127.0.0.1",
+            headers={"X-Forwarded-For": "203.0.113.9"},
+        ),
+        "empty token: X-Forwarded-For deny (nginx peer is always 127.0.0.1)",
+    )
+    check(
+        not client_authorized(
+            expected_token="",
+            peer_ip="127.0.0.1",
+            host="127.0.0.1",
+            headers={"X-Real-IP": "203.0.113.9"},
+        ),
+        "empty token: X-Real-IP deny",
+    )
+
+    prev = os.environ.get("PRACTICE_API_TOKEN")
+    os.environ["PRACTICE_API_TOKEN"] = secret
+    import importlib
+    import config
+    from deliver import practice_web as pw
+
+    importlib.reload(config)
+    importlib.reload(pw)
+    httpd = pw.make_server("127.0.0.1", 0)
+    port = httpd.server_address[1]
+    t = threading.Thread(target=httpd.serve_forever, daemon=True)
+    t.start()
+    try:
+        def _get(path, headers=None):
+            conn = HTTPConnection("127.0.0.1", port, timeout=5)
+            conn.request("GET", path, headers=headers or {})
+            r = conn.getresponse()
+            raw = r.read().decode()
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                body = {"_raw": raw}
+            conn.close()
+            return r.status, body
+
+        def _post(path, headers=None):
+            conn = HTTPConnection("127.0.0.1", port, timeout=5)
+            h = {"Content-Type": "application/json"}
+            h.update(headers or {})
+            conn.request("POST", path, body=json.dumps({"learner": "x", "message": "hi"}), headers=h)
+            r = conn.getresponse()
+            raw = r.read().decode()
+            try:
+                body = json.loads(raw) if raw else {}
+            except json.JSONDecodeError:
+                body = {"_raw": raw}
+            conn.close()
+            return r.status, body
+
+        st, body = _get("/health")
+        check(st == 200 and body.get("ok"), "health stays open without token")
+
+        st, _ = _get("/practice")
+        check(st == 200, "shell HTML stays open without token")
+
+        for path in (
+            "/api/v1/agent/manifest",
+            "/api/v1/practice/bootstrap",
+            "/api/v1/practice/params",
+            "/api/v1/exam/papers",
+        ):
+            st, body = _get(path)
+            check(st == 401 and body.get("error") == "unauthorized", f"missing token → 401 {path}")
+            st, body = _get(path, headers={"Authorization": "Bearer wrong-token"})
+            check(st == 401 and body.get("error") == "unauthorized", f"wrong Bearer → 401 {path}")
+            st, body = _get(path, headers={"X-Practice-Token": "wrong-token"})
+            check(st == 401 and body.get("error") == "unauthorized", f"wrong X-Practice-Token → 401 {path}")
+            st, body = _get(path + ("&" if "?" in path else "?") + "token=wrong-token")
+            check(st == 401 and body.get("error") == "unauthorized", f"wrong ?token= → 401 {path}")
+
+        st, body = _get("/api/v1/agent/manifest", headers={"Authorization": f"Bearer {secret}"})
+        check(st == 200 and body.get("ok") and "manifest" in body, "correct Bearer → manifest")
+
+        st, body = _get("/api/v1/exam/papers", headers={"X-Practice-Token": secret})
+        check(st == 200 and body.get("ok") and "papers" in body, "correct X-Practice-Token → papers")
+
+        st, body = _get(f"/api/v1/practice/bootstrap?learner=&token={secret}")
+        check(st == 400 and body.get("ok") is not True, "correct ?token= authorized (no learner → 400)")
+
+        st, body = _post("/api/v1/tutor/chat")
+        check(st == 401 and body.get("error") == "unauthorized", "tutor chat missing token → 401")
+        st, body = _post("/api/v1/tutor/chat", headers={"Authorization": f"Bearer {secret}"})
+        check(st == 501 and body.get("error") == "tutor_agent_not_wired", "tutor chat authorized → 501 stub")
+
+        os.environ["PRACTICE_API_TOKEN"] = ""
+        importlib.reload(config)
+        importlib.reload(pw)
+        # Handler class is bound at server construction; rebuild.
+        httpd.shutdown()
+        httpd.server_close()
+        httpd = pw.make_server("127.0.0.1", 0)
+        port = httpd.server_address[1]
+        t = threading.Thread(target=httpd.serve_forever, daemon=True)
+        t.start()
+
+        conn = HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("GET", "/api/v1/agent/manifest")
+        r = conn.getresponse()
+        man = json.loads(r.read().decode())
+        check(r.status == 200 and man.get("ok"), "empty token + direct loopback → ok")
+        conn.close()
+
+        conn = HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("GET", "/api/v1/agent/manifest", headers={"X-Forwarded-For": "203.0.113.9"})
+        r = conn.getresponse()
+        denied = json.loads(r.read().decode())
+        check(r.status == 401 and denied.get("error") == "unauthorized", "empty token + X-Forwarded-For → 401")
+        conn.close()
+
+        conn = HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("GET", "/api/v1/agent/manifest", headers={"Host": "practice.longee.icu"})
+        r = conn.getresponse()
+        denied = json.loads(r.read().decode())
+        check(r.status == 401 and denied.get("error") == "unauthorized", "empty token + public Host → 401")
+        conn.close()
+    finally:
+        try:
+            httpd.shutdown()
+            httpd.server_close()
+        except Exception:
+            pass
+        if prev is None:
+            os.environ.pop("PRACTICE_API_TOKEN", None)
+        else:
+            os.environ["PRACTICE_API_TOKEN"] = prev
+        import importlib
+        import config
+        from deliver import practice_web as pw
+
+        importlib.reload(config)
+        importlib.reload(pw)
+
+
 def main():
+    test_practice_api_auth()
     test_dto()
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t.db")

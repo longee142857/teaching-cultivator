@@ -1,0 +1,62 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-11",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $\\lim_{x\\to 1}\\frac{1 - \\sqrt[n]{\\cos{2n\\pi}x}}{(x - 1)(x^x - 1)}.$",
+  "answer": "$t = x - 1$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 作变量代换 t = x - 1，化为 $t \\rightarrow 0$ 的情况，再用等价无穷小替换."
+      },
+      {
+        "id": "s2",
+        "text": "令 $t = x - 1$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} & {\\text {原式} = \\lim _ {t \\to 0} \\frac {1 - \\sqrt [ n ]{\\cos 2 n \\pi t}}{t [ (t + 1) ^ {t + 1} - 1 ]} = - \\lim _ {t \\to 0} \\frac {[ 1 + (\\cos 2 n \\pi t - 1) ] ^ {\\frac {1}{n}} - 1}{t [ e ^ {(t + 1) \\ln (t + 1)} - 1 ]}} \\\\ & {\\qquad = - \\lim _ {t \\to 0} \\frac {\\frac {1}{n} (\\cos 2 n \\pi t - 1)}{t (t + 1) \\ln (t + 1)} = \\lim _ {t \\to 0} \\frac {\\frac {1}{n} \\cdot \\frac {1}{2} (2 n \\pi t) ^ {2}}{t ^ {2} (t + 1)} = 2 n \\pi^ {2}.} \\end{array}"
+      }
+    ],
+    "final_answer": "$t = x - 1$",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$t = x - 1$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例11",
+    "page": 19,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

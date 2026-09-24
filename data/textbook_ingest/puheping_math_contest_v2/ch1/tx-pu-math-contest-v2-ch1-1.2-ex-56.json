@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-56",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{n\\to \\infty}\\frac{n^3\\ln(n!)}{a^n}$ $(a > 1)$ .",
+  "answer": "$\\lim_{n \\to \\infty} \\frac{n^3 \\ln(n!)}{a^n} = 0$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于该分式分母增加的速度远比分子快，极限应该是0，所以可利用收敛级数的通项必趋于0来判断."
+      },
+      {
+        "id": "s2",
+        "text": "考察级数 $\\sum_{n=1}^{\\infty} \\frac{n^3 \\ln(n!)}{a^n}$ 的收敛性. 记 $u_n = \\frac{n^3 \\ln(n!)}{a^n}$ , 因为"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l}\\lim _ {n \\rightarrow \\infty} \\frac {u _ {n + 1}}{u _ {n}}&= \\lim _ {n \\rightarrow \\infty} \\frac {(n + 1) ^ {3} \\ln [ (n + 1) ! ]}{a ^ {n + 1}} \\cdot \\frac {a ^ {n}}{n ^ {3} \\ln (n !)}\\\\&= \\frac {1}{a} \\lim _ {n \\rightarrow \\infty} \\left(\\frac {n + 1}{n}\\right) ^ {3} \\frac {\\ln (n !) + \\ln (n + 1)}{\\ln (n !)} = \\frac {1}{a} <   1,\\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "级数 $\\sum_{n=1}^{\\infty} \\frac{n^3 \\ln(n!)}{a^n}$ 收敛，所以 $\\lim_{n \\to \\infty} \\frac{n^3 \\ln(n!)}{a^n} = 0$ 。"
+      }
+    ],
+    "final_answer": "$\\lim_{n \\to \\infty} \\frac{n^3 \\ln(n!)}{a^n} = 0$ 。",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "$\\lim_{n \\to \\infty} \\frac{n^3 \\ln(n!)}{a^n} = 0$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例56*",
+    "page": 46,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

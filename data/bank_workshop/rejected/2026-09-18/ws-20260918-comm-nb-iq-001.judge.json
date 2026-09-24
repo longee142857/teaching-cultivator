@@ -1,0 +1,18 @@
+{
+  "item_id": "ws-20260918-comm-nb-iq-001",
+  "decision": "reject",
+  "reasons": [
+    "I/Q 为基带分量时复包络应为 z=X+jY、s(t)=Re{z e^{jω_c t}}，答案 e^{-jω_c t} 因子与常规定义冲突"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  },
+  "issues": [
+    "solution_correctness"
+  ]
+}

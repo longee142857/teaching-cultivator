@@ -1,0 +1,18 @@
+{
+  "item_id": "ws-20260917-comm-nbfm-001",
+  "decision": "reject",
+  "reasons": [
+    "comm 缺 atom_id/book_id：zhou 对 comm.analog_mod.nbfm 无直接挂载，空 atom 不可入库；应钉最近原子 zhou.ch4.fm.mod.index 并 meta.atom_pin=nearest"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": false
+  },
+  "issues": [
+    "empty_atom_id"
+  ]
+}

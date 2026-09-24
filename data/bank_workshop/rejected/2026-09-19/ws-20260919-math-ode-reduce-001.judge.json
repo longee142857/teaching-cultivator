@@ -1,0 +1,19 @@
+{
+  "item_id": "ws-20260919-math-ode-reduce-001",
+  "decision": "reject",
+  "reasons": [
+    "降阶后 p=Cy ⇒ y'=Cy，通解应为 y=A e^{Cx}，非二次型",
+    "解析第 2 步声称二次通解，与方程不符"
+  ],
+  "checks": {
+    "l3_in_syllabus": true,
+    "l2_match": true,
+    "item_form_ok": true,
+    "no_mcq": true,
+    "cdps_ge_2": true,
+    "atom_book_ok": true
+  },
+  "issues": [
+    "solution_correctness"
+  ]
+}

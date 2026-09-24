@@ -430,7 +430,7 @@ _WEEKDAY_MAP = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun
 # 周日 20:00 学习周报
 WEEKLY_REPORT_SLOT = ("20:00", "sun")
 
-# 隔周周日 08:00 双周检测卷（与每日 github 08:00 错开到同日批次：见 scheduler）
+# 隔周周日 08:00 双周检测卷（与 GitHub Trending 无关；trending 已停每日调度）
 BIWEEKLY_EXAM_SLOT = ("08:00", "sun")
 
 # 组卷不堵 wait/fire 线程：同时只跑一个工作线程
@@ -495,37 +495,22 @@ def _load_today_pushes(now: datetime.datetime) -> list:
         return []
 
 
-def _biweekly_day_skips_cultivate(now: datetime.datetime) -> bool:
-    """隔周周日发卷日：跳过三槽日推（含发卷后 / 重启后同日）。
+def _is_cultivate_skip_day(day: datetime.date) -> bool:
+    """周六/周日（weekday Sat=5, Sun=6）不发 09/15/19 日推。"""
+    return day.weekday() >= 5
 
-    日历只信现有 biweekly_is_due + last_run，不另造周期。
-    发卷成功后 is_due 变 False，故 last_run 落在当天也视为跳过日。
+
+def _biweekly_day_skips_cultivate(now: datetime.datetime) -> bool:
+    """周末（周六/周日，Asia/Shanghai 日历）跳过三槽日推。
+
+    隔周发卷日也是周日，走同一跳过路径；组卷槽本身不在这里关。
+    同日补发/重启也不能把周末槽当过期工作日回填。
     """
-    day = _day_for_slot(now)
-    if day.weekday() != 6:
-        return False
-    try:
-        from learner.biweekly_exam import biweekly_is_due, load_state
-        from learner.db import shanghai_day
-    except Exception:
-        return False
-    try:
-        if biweekly_is_due(now):
-            return True
-    except Exception:
-        pass
-    try:
-        last = (load_state().get("last_run") or "").strip()
-        if not last:
-            return False
-        last_day = datetime.date.fromisoformat(shanghai_day(last))
-        return last_day == day
-    except Exception:
-        return False
+    return _is_cultivate_skip_day(_day_for_slot(now))
 
 
 def _apply_biweekly_cultivate_skip(consumed: set, now: datetime.datetime) -> None:
-    """到期日把 math/comm/review 记为已跳过，同日补发也不能回填。"""
+    """周末把 math/comm/review 记为已跳过，同日补发也不能回填。"""
     if not _biweekly_day_skips_cultivate(now):
         return
     day = _day_for_slot(now)
@@ -537,7 +522,7 @@ def _apply_biweekly_cultivate_skip(consumed: set, now: datetime.datetime) -> Non
             added = True
     if added:
         try:
-            log(f"[定时] 隔周卷日跳过日推 {day.isoformat()} math/comm/review")
+            log(f"[定时] 周末跳过日推 {day.isoformat()} math/comm/review")
         except Exception:
             pass
 
@@ -568,21 +553,22 @@ def _daily_slot_target(
     catch_up_same_day: bool = False,
 ) -> datetime.datetime:
     """日槽目标时刻。catch_up_same_day：过点但仍是今天、且未消费 → 立刻补，不滚到明天。
-    已消费/已跳过的今日槽（含尚未到点的未来槽）一律滚到明天，避免隔周跳过日仍排出 15:00/19:00。
+    已消费/已跳过的今日槽（含尚未到点的未来槽）一律滚到明天，避免跳过日仍排出 15:00/19:00。
+    日推（cultivate）再跳过周六/周日：不把周末槽当过期工作日回填，周五过点滚到周一。
     """
     h, m = map(int, time_str.split(":"))
     target = now.replace(hour=h, minute=m, second=0, microsecond=0)
     key = (kind, payload, _day_for_slot(now))
     if consumed is not None and key in consumed:
-        if target <= now:
-            target += datetime.timedelta(days=1)
-        else:
-            target += datetime.timedelta(days=1)
-        return target
-    if target <= now:
-        if catch_up_same_day:
-            return target
         target += datetime.timedelta(days=1)
+    elif target <= now and not catch_up_same_day:
+        target += datetime.timedelta(days=1)
+    if kind == "cultivate":
+        # 最多跨过 Sat+Sun；工作日停。
+        for _ in range(7):
+            if not _is_cultivate_skip_day(_day_for_slot(target)):
+                break
+            target += datetime.timedelta(days=1)
     return target
 
 
@@ -612,8 +598,8 @@ def _next_scheduled_event(
 
     consumed: 已在当日发出的 (kind, payload, date) 集合。
     today_pushes: list_today_pushes 行；已有同科日推视为已消费（含人工补发）。
-    隔周到期日（biweekly_is_due 或当日已 last_run）三槽视为已跳过。
-    日推（cultivate）过点后仍属同一日历日且未消费时保持今日槽，不 +1 天。
+    周末（周六/周日，Asia/Shanghai）三槽视为已跳过；隔周组卷槽仍按原周期。
+    日推（cultivate）过点后仍属同一工作日且未消费时保持今日槽，不 +1 天。
     """
     consumed = consumed if consumed is not None else set()
     if today_pushes:
@@ -656,11 +642,9 @@ def _next_scheduled_event(
             target += datetime.timedelta(days=1)
         candidates.append((target, "bank_judge", None))
 
-    # GitHub 自动推送：每天 08:00
-    target_gh = now.replace(hour=8, minute=0, second=0, microsecond=0)
-    if target_gh <= now:
-        target_gh += datetime.timedelta(days=1)
-    candidates.append((target_gh, "github_push", None))
+    # GitHub Trending 已停每日调度（2026-09）：不再挂 08:00 github_push。
+    # 模块与 scripts/push_github_trending.py 仍可手动触发。勿再把 trending
+    # 挂回 08:00——隔周卷占用周日该槽。
 
     # 学习周报：每周日 20:00
     wh, wm = map(int, WEEKLY_REPORT_SLOT[0].split(":"))
@@ -685,7 +669,7 @@ def _next_scheduled_event(
 
 
 def _do_github_push(bot: TeachingBot | None = None):
-    """GitHub Trending 推送：每天早上 08:00 触发。"""
+    """GitHub Trending 推送（手动/CLI）。调度器不再自动触发。"""
     if bot is not None:
         bot.push_github_trending()
     else:
@@ -701,7 +685,7 @@ def _do_github_push(bot: TeachingBot | None = None):
 
 
 def scheduler_loop(bot: TeachingBot):
-    """后台线程：到点触发题目推送或 GitHub 自动推送。"""
+    """后台线程：到点触发日推 / 预生成 / 审判 / 周报 / 双周卷。"""
     consumed: set = set()
     while True:
         now = datetime.datetime.now()
@@ -714,7 +698,6 @@ def scheduler_loop(bot: TeachingBot):
             "cultivate": payload,
             "pregen": f"pregen:{payload}",
             "judge": f"judge:{payload}",
-            "github_push": "github-push",
             "weekly_report": "weekly-report",
             "biweekly_exam": "biweekly-exam",
         }
@@ -744,11 +727,6 @@ def scheduler_loop(bot: TeachingBot):
                     from cultivate_judge import run_judge_slot
                     result = run_judge_slot(slot=payload or "")
                     log(f"[OK] judge {payload} → {result}")
-                elif kind == "github_push":
-                    _do_github_push(bot)
-                    # 周日 08:00 同槽：组卷丢到工作线程，避免堵住当日 09:00 日推
-                    if datetime.datetime.now().weekday() == 6:
-                        _start_biweekly_worker(bot)
                 elif kind == "weekly_report":
                     bot.push_weekly_report()
                 elif kind == "biweekly_exam":

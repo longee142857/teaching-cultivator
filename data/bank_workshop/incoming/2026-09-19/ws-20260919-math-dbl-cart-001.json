@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-dbl-cart-001",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "计算 ∬_D xy dA，其中 D 为 0≤x≤1，0≤y≤x。",
+  "answer": "1/8。",
+  "techniques": [
+    "累次积分",
+    "积分区域",
+    "直角坐标"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "D: 0≤y≤x≤1，先 y 后 x：∫₀¹ x(∫₀^x y dy)dx。"
+      },
+      {
+        "id": "s2",
+        "text": "内层 y²/2|₀^x=x²/2，外层 ∫₀¹ x³/2 dx=1/8。"
+      }
+    ],
+    "final_answer": "1/8。",
+    "techniques_used": [
+      "累次积分",
+      "积分区域",
+      "直角坐标"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "画出 D 并写累次积分限。",
+      "expected": "∫₀¹∫₀^x xy dy dx。",
+      "technique": "积分区域",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "计算累次积分。",
+      "expected": "结果 1/8。",
+      "technique": "累次积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

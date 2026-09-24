@@ -154,6 +154,11 @@ def main() -> int:
           "DSH client 新建对话")
     lect = re.search(r"id:\s*'lecturer'.*?tools:\s*\[([^\]]*)\]", host, re.S)
     check(lect is not None and "adjust_difficulty" not in lect.group(1), "lecturer stays read-only")
+    check(lect is not None and "list_today_questions" in lect.group(1), "lecturer can list today+backlog")
+    check("args.include_backlog = true" in host, "mentor path defaults include_backlog true")
+    check("backlogItems 是历史未答" in host, "grounding prompt tells lecturer backlog is indexable")
+    check("show_solution 必须带 item/push" in host, "prompt forbids defaulting show_solution to latest")
+    check("practice_web:show_solution" in host, "show_solution falls back to practice item path")
 
     # Do not treat DSH T1 40 msgs/thread as this bug
     check("if (arr.length > 40) arr.splice(0, arr.length - 40)" in host, "host T1 40 msgs/thread left in place")

@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-53",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{n\\to \\infty}\\frac{1}{n}\\sqrt[n]{n(n + 1)(n + 2)\\cdots(2n - 1)}.$",
+  "answer": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sqrt [ n ]{n (n + 1) (n + 2) \\cdots (2 n - 1)} = e ^ {2 \\ln 2 - 1} = \\frac {4}{e}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是无穷乘积问题，取对数化为无穷和，容易看出用定积分定义计算很方便."
+      },
+      {
+        "id": "s2",
+        "text": "令 $a_{n} = \\frac{1}{n}\\sqrt[n]{n(n + 1)(n + 2)\\cdots(2n - 1)} = \\sqrt[n]{\\left(\\frac{1}{n} + 1\\right)\\left(\\frac{2}{n} + 1\\right)\\cdots\\left(\\frac{n - 1}{n} + 1\\right)}$ 。则"
+      },
+      {
+        "id": "s3",
+        "text": "\\ln a _ {n} = \\frac {1}{n} \\sum_ {k = 1} ^ {n - 1} \\ln \\left(1 + \\frac {k}{n}\\right),"
+      },
+      {
+        "id": "s4",
+        "text": "\\lim _ {n \\rightarrow \\infty} \\ln a _ {n} = \\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sum_ {k = 1} ^ {n - 1} \\ln \\left(1 + \\frac {k}{n}\\right) = \\int_ {0} ^ {1} \\ln (1 + x) d x = 2 \\ln 2 - 1."
+      },
+      {
+        "id": "s5",
+        "text": "故"
+      },
+      {
+        "id": "s6",
+        "text": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sqrt [ n ]{n (n + 1) (n + 2) \\cdots (2 n - 1)} = e ^ {2 \\ln 2 - 1} = \\frac {4}{e}."
+      }
+    ],
+    "final_answer": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sqrt [ n ]{n (n + 1) (n + 2) \\cdots (2 n - 1)} = e ^ {2 \\ln 2 - 1} = \\frac {4}{e}.",
+    "techniques_used": [
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "该极限属于何种未定式，优先用哪类通法（等价/泰勒/夹逼/积分化）？",
+      "technique": "极限计算",
+      "expected": "先判定未定式类型，再选择与题设结构匹配的通法。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终极限值（或所求常数）时依据的关键等式是什么？",
+      "technique": "极限计算",
+      "expected": "\\lim _ {n \\rightarrow \\infty} \\frac {1}{n} \\sqrt [ n ]{n (n + 1) (n + 2) \\cdots (2 n - 1)} = e ^ {2 \\ln 2 - 1} = \\frac {4}{e}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例53",
+    "page": 44,
+    "quality_basis": "source_textbook_worked_example"
+  }
+}

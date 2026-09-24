@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.1-ex-04",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设连续函数 $f(x)$ 满足方程 $f(x) - \\frac{1}{2} f\\left(\\frac{x}{2}\\right) = x^2$ ，求 $f(x)$ 的表达式.",
+  "answer": "\\begin{array}{r l} f (x) & = \\frac {1}{2 ^ {n + 1}} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + \\frac {1}{2 ^ {n}} \\left(\\frac {x}{2 ^ {n}}\\right) ^ {2} + \\frac {1}{2 ^ {n - 1}} \\left(\\frac {x}{2 ^ {n - 1}}\\right) ^ {2} + \\dots + \\frac {1}{2} \\left(\\frac",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "函数复合",
+    "函数方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 已知方程给出了函数的递推关系式，逐次代入，最后求极限就可得到 $f(x)$ 的表达式."
+      },
+      {
+        "id": "s2",
+        "text": "由已知条件，有"
+      },
+      {
+        "id": "s3",
+        "text": "f (x) = \\frac {1}{2} f \\left(\\frac {x}{2}\\right) + x ^ {2},"
+      },
+      {
+        "id": "s4",
+        "text": "\\begin{array}{c} f \\left(\\frac {x}{2}\\right) = \\frac {1}{2} f \\left(\\frac {x}{2 ^ {2}}\\right) + \\left(\\frac {x}{2}\\right) ^ {2} \\\\ \\vdots \\end{array}"
+      },
+      {
+        "id": "s5",
+        "text": "f \\left(\\frac {x}{2 ^ {n}}\\right) = \\frac {1}{2} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + \\left(\\frac {x}{2 ^ {n}}\\right) ^ {2}"
+      },
+      {
+        "id": "s6",
+        "text": "将上面等式从后往前依次代入，得"
+      },
+      {
+        "id": "s7",
+        "text": "\\begin{array}{r l} f (x) & = \\frac {1}{2 ^ {n + 1}} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + \\frac {1}{2 ^ {n}} \\left(\\frac {x}{2 ^ {n}}\\right) ^ {2} + \\frac {1}{2 ^ {n - 1}} \\left(\\frac {x}{2 ^ {n - 1}}\\right) ^ {2} + \\dots + \\frac {1}{2} \\left(\\frac {x}{2}\\right) ^ {2} + x ^ {2} \\\\ & = \\frac {1}{2 ^ {n + 1}} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + x ^ {2} \\sum_ {k = 0} ^ {n} \\frac {1}{2 ^ {3 k}}. \\end{array}"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} f (x) & = \\frac {1}{2 ^ {n + 1}} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + \\frac {1}{2 ^ {n}} \\left(\\frac {x}{2 ^ {n}}\\right) ^ {2} + \\frac {1}{2 ^ {n - 1}} \\left(\\frac {x}{2 ^ {n - 1}}\\right) ^ {2} + \\dots + \\frac {1}{2} \\left(\\frac",
+    "techniques_used": [
+      "函数复合",
+      "函数方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "外层/内层函数的定义域分段如何决定复合后的区间划分？",
+      "technique": "函数复合",
+      "expected": "先按外层分段条件反解内层，得到自变量区间，再代入对应表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终显式表达式（或所求对象）的关键结构是什么？",
+      "technique": "函数方程",
+      "expected": "\\begin{array}{r l} f (x) & = \\frac {1}{2 ^ {n + 1}} f \\left(\\frac {x}{2 ^ {n + 1}}\\right) + \\frac {1}{2 ^ {n}} \\left(\\frac {x}{2 ^ {n}}\\right) ^ {2} + \\frac {1}{2 ^ {n - 1}} \\left(\\frac {x}{2 ^ {n - 1}}\\right) ^ {2} + \\d"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.1",
+    "example_id": "例4",
+    "page": 10,
+    "quality_basis": "source_textbook_worked_example",
+    "syllabus_note": "近似对齐：本节为函数构造/复合/方程，映射至极限与连续邻近 KP"
+  }
+}

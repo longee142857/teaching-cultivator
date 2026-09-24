@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-nb-iq-001",
+  "subject": "comm",
+  "l2": "高斯过程与窄带噪声",
+  "l3_id": "comm.sig_rand.nb.iq",
+  "atom_id": "zhou.ch3.nb.iq.props",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "带通窄带信号 s(t)=Re{z(t)e^{jω_c t}}，其中复包络 z(t)=X(t)+jY(t) 为同相/正交分量构成的基带信号。写出 z 与 s 的关系，并说明 X、Y 为实值时 s(t) 的实部表达式。",
+  "answer": "s(t)=Re{z(t)e^{jω_c t}}=X(t)cos ω_c t−Y(t)sin ω_c t；z=X+jY 为基带等效复包络。",
+  "techniques": [
+    "I/Q 分量",
+    "复包络",
+    "窄带实信号"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "令 z=X+jY，展开 Re{z e^{jω_c t}}=Re{(X+jY)(cos ω_c t+j sin ω_c t)}。"
+      },
+      {
+        "id": "s2",
+        "text": "合并实部得 s=X cos ω_c t−Y sin ω_c t，即标准 I/Q 正交调制形式。"
+      }
+    ],
+    "final_answer": "s(t)=Re{z(t)e^{jω_c t}}=X(t)cos ω_c t−Y(t)sin ω_c t；z=X+jY 为基带等效复包络。",
+    "techniques_used": [
+      "I/Q 分量",
+      "复包络",
+      "窄带实信号"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「I/Q 分量」写出复包络 z 与 X、Y 的关系。",
+      "expected": "z(t)=X(t)+jY(t)，X、Y 为同相/正交基带分量。",
+      "technique": "I/Q 分量",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "用「复包络」写出 s(t) 与 z 的关系并给出实部展开。",
+      "expected": "s(t)=Re{z e^{jω_c t}}=X cos ω_c t−Y sin ω_c t。",
+      "technique": "复包络",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

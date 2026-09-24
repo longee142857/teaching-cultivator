@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-app-phys-001",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.phys",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "质点沿 x 轴运动，速度 v(t)=3t²−2t (m/s)。求 t∈[0,2] 上的平均速度。",
+  "answer": "v̄=2 m/s。",
+  "techniques": [
+    "平均值公式",
+    "定积分",
+    "物理量平均"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "平均速度 v̄=(1/2)∫₀²(3t²−2t)dt。"
+      },
+      {
+        "id": "s2",
+        "text": "积分得 [t³−t²]₀²=8−4=4，v̄=4/2=2 m/s。"
+      }
+    ],
+    "final_answer": "v̄=2 m/s。",
+    "techniques_used": [
+      "平均值公式",
+      "定积分",
+      "物理量平均"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "写出 [0,2] 上速度的时间平均。",
+      "expected": "v̄=1/2∫₀² v(t)dt。",
+      "technique": "平均值公式",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "计算积分得数值。",
+      "expected": "v̄=2 m/s。",
+      "technique": "定积分",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

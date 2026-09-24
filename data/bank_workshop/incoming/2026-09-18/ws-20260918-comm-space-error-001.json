@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-space-error-001",
+  "subject": "comm",
+  "l2": "信号空间与统计判决",
+  "l3_id": "comm.passband.space.error",
+  "atom_id": "zhou.ch6.gray.ber.approx",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "2-PAM 等概率、AWGN，星座点 ±A，噪声方差 σ²。写出成对错误概率 P_e 关于 Q 函数的表达式，并说明判决域为 y=0 超平面两侧。",
+  "answer": "P_e=Q(A/σ)；y>0 判 +A，y<0 判 −A。",
+  "techniques": [
+    "信号空间判决域",
+    "2-PAM 错误概率",
+    "Q 函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "在 1 维信号空间，接收 y=±A+n，最佳门限 0。"
+      },
+      {
+        "id": "s2",
+        "text": "等概时 P_e=P(n>A)=Q(A/σ)，两侧为两判决域。"
+      }
+    ],
+    "final_answer": "P_e=Q(A/σ)；y>0 判 +A，y<0 判 −A。",
+    "techniques_used": [
+      "信号空间判决域",
+      "2-PAM 错误概率",
+      "Q 函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「信号空间判决域」写出第 1 步关键推导或结论。",
+      "expected": "在 1 维信号空间，接收 y=±A+n，最佳门限 0。",
+      "technique": "信号空间判决域",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「2-PAM 错误概率」得到与题意一致的最终结论。",
+      "expected": "等概时 P_e=P(n>A)=Q(A/σ)，两侧为两判决域。",
+      "technique": "2-PAM 错误概率",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-03",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.proof",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上二阶可导， $f(0) = f(1), f'(1) = 1$ ，证明 $\\exists \\xi \\in (0,1)$ 使 $f''(\\xi) = 2$ .",
+  "answer": "$f''(\\xi) = 2$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "辅助函数",
+    "罗尔定理",
+    "拉格朗日中值定理",
+    "泰勒公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由 $f''(x) - 2 = 0 \\Rightarrow f'(x) - 2x = C_1$ . 由 $f'(1) = 1 \\Rightarrow C_1 = -1$ ，所以 $f'(x) - 2x + 1 = 0$ ,\n\n$f(x) - x^{2} + x = C_{2}$ ，得辅助函数 $F(x) = f(x) - x^2 +x$"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $F(x) = f(x) - x^2 + x, x \\in [0,1]$ ，则 $F(x) \\in C[0,1]D(0,1), F(0) = F(1)$ 。由罗尔定理知 $\\exists \\eta \\in (0,1)$ ，使 $F'(\\eta) = 0$ 。\n\n又 $F^{\\prime}(x) = f^{\\prime}(x) - 2x + 1$ ，有 $F^{\\prime}(1) = f^{\\prime}(1) - 1 = 0 = F^{\\prime}(\\eta)$ ，对 $F^{\\prime}(x)$ 用罗尔定理， $\\exists \\xi \\in (\\eta ,1)\\subset (0,1)$ 使 $F''(\\xi) = 0$ .因为 $F''(x) = f''(x) - 2$ ，所以 $f''(\\xi) = 2$ ："
+      },
+      {
+        "id": "s3",
+        "text": "方法2 令 $F(x) = f(x) - x^2, x \\in [0,1]$ . 由拉格朗日中值定理知 $\\exists \\eta \\in (0,1)$ ，使\n\n$$\nF (1) - F (0) = F ^ {\\prime} (\\eta) (1 - 0) \\Rightarrow F ^ {\\prime} (\\eta) = - 1.\n$$\n\n又 $F^{\\prime}(x) = f^{\\prime}(x) - 2x$ ， $F^{\\prime}(x)\\in C[0,1]\\cap D(0,1)$ ， $F^{\\prime}(1) = f^{\\prime}(1) - 2 = -1 = F^{\\prime}(\\eta)$ .由罗尔定理知 $\\exists \\xi$ $\\in (\\eta ,1)\\subset (0,1)$ ，使 $F''(\\xi) = 0$ ，由于 $F''(x) = f''(x) - 2$ ，所以 $f''(\\xi) = 2$ ："
+      },
+      {
+        "id": "s4",
+        "text": "方法3 令 $F(x) = xf'(x) - x^2 - f(x)$ ，则 $F(x) \\in C[0,1]D(0,1)$ ， $F(0) = F(1)$ 。由罗尔定理知 $\\exists \\xi \\in (0,1)$ ，使 $F'(\\xi) = 0$ ，即 $\\xi f''(\\xi) - 2\\xi = 0$ 。所以 $f''(\\xi) = 2$ 。\n\n辅助函数的来源：由 $f''(x) = 2 \\Rightarrow xf''(x) - 2x = 0$ ，两边积分得 $xf'(x) - f(x) - x^2 = C$ ."
+      },
+      {
+        "id": "s5",
+        "text": "方法4 在 $x = 1$ 处将 $f(x)$ 展开为一阶泰勒公式\n\n$$\nf (x) = f (1) + f ^ {\\prime} (1) (x - 1) + \\frac {1}{2} f ^ {\\prime \\prime} (\\xi_ {1}) (x - 1) ^ {2}, \\quad \\xi_ {1} \\in (x, 1).\n$$\n\n取 $x = 0$ ，有\n\n$$\nf (0) = f (1) - f ^ {\\prime} (1) + \\frac {1}{2} f ^ {\\prime \\prime} (\\xi), \\quad \\xi \\in (0, 1).\n$$\n\n将 $f(0) = f(1)$ , $f'(1) = 1$ 代入得 $f''(\\xi) = 2$ .\n\n评注（1）辅助函数不唯一，选取的形式不同，证明的难易程度也不同."
+      },
+      {
+        "id": "s6",
+        "text": "(2) 若要证等式中含 $f''(\\xi)$ ，则通常需用两次中值定理，即需要对 $f'(x)$ 再用一次中值定理；若要证明 $\\exists \\xi \\in I$ ，使得 $f''(\\xi) = 0$ ，只需证明 $f(x)$ 在 $I$ 上有三个不同点，其函数值相等；证明 $f^{(n)}(\\xi) = 0$ 可以此类推."
+      },
+      {
+        "id": "s7",
+        "text": "(3) 对含有高阶导数项的中值等式，用泰勒公式求解会更简便。"
+      }
+    ],
+    "final_answer": "$f''(\\xi) = 2$ 。",
+    "techniques_used": [
+      "辅助函数",
+      "罗尔定理",
+      "拉格朗日中值定理",
+      "泰勒公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔、拉格朗日、柯西还是泰勒公式？是否需要构造辅助函数或反证？",
+      "technique": "罗尔定理",
+      "expected": "根据结论形态选择中值定理或泰勒展开；多中值问题常多次应用或构造辅助函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "拉格朗日中值定理",
+      "expected": "$f''(\\xi) = 2$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 85,
+    "syllabus_note": "二阶中值综合证明"
+  }
+}

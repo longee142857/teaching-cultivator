@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-26",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.taylor.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 x=0 的某领域内二阶可导，且 $\\lim_{x\\to0}\\left(\\frac{\\sin3x}{x^{3}}+\\frac{f(x)}{x^{2}}\\right)=0$ ，求 $\\lim_{x\\to0}\\frac{f(x)+3}{x^{2}}$ ，以及 $f(0), f'(0), f''(0)$ .",
+  "answer": "$$ \\frac {f (x) + 3}{x ^ {2}} = \\frac {9}{2} + \\alpha (x), \\text {其中} \\lim _ {x \\to 0} \\alpha (x) = 0. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒公式",
+    "麦克劳林公式",
+    "拉格朗日中值定理"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将已知极限式变形可得到所求的极限；再由极限式可得到 $f(x)$ 在 $x = 0$ 附近的多项式形式的局部表达式，即函数的麦克劳林展开式。由展开式的唯一性可得到 $f(x)$ 在 $x = 0$ 处的函数值及各阶导数值。\n\n$$\n0 = \\lim _ {x \\rightarrow 0} \\left(\\frac {\\sin 3 x}{x ^ {3}} + \\frac {f (x)}{x ^ {2}}\\right) = \\lim _ {x \\rightarrow 0} \\frac {\\frac {\\sin 3 x}{x} + f (x)}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {\\frac {\\sin 3 x}{x} - 3 + f (x) + 3}{x ^ {2}}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "则\n\n$$\n\\begin{array}{r l}\\lim _ {x \\rightarrow 0} \\frac {f (x) + 3}{x ^ {2}}&= \\lim _ {x \\rightarrow 0} \\frac {3 - \\frac {\\sin 3 x}{x}}{x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {3 x - \\sin 3 x}{x ^ {3}}\\\\&= \\lim _ {x \\rightarrow 0} \\frac {3 - 3 \\cos 3 x}{3 x ^ {2}} = \\lim _ {x \\rightarrow 0} \\frac {3 \\sin 3 x}{2 x} = \\frac {9}{2}.\\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "从而\n\n$$\n\\frac {f (x) + 3}{x ^ {2}} = \\frac {9}{2} + \\alpha (x), \\text {其中} \\lim _ {x \\to 0} \\alpha (x) = 0.\n$$\n\n即\n\n$$\nf (x) = - 3 + \\frac {9}{2} x ^ {2} + o \\left(x ^ {2}\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由函数的麦克劳林公式，知 $f(0) = -3, f'(0) = 0, f''(0) = 9$"
+      }
+    ],
+    "final_answer": "$$ \\frac {f (x) + 3}{x ^ {2}} = \\frac {9}{2} + \\alpha (x), \\text {其中} \\lim _ {x \\to 0} \\alpha (x) = 0. $$",
+    "techniques_used": [
+      "泰勒公式",
+      "麦克劳林公式",
+      "拉格朗日中值定理"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题应展开到几阶？选用 Peano 余项还是 Lagrange 余项？展开点取哪里？",
+      "technique": "麦克劳林公式",
+      "expected": "按题设精度选阶数与余项类型，在指定点（常为 0）展开并比较系数或取极限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终系数、极限或中值极限的结论是什么？",
+      "technique": "拉格朗日中值定理",
+      "expected": "$$ \\frac {f (x) + 3}{x ^ {2}} = \\frac {9}{2} + \\alpha (x), \\text {其中} \\lim _ {x \\to 0} \\alpha (x) = 0. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例26",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 97
+  }
+}

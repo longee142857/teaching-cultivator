@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch1-1.2-ex-60",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知 $x_0 = 1, x_1 = \\frac{1}{x_0^3 + 4}, \\dots, x_{n+1} = \\frac{1}{x_n^3 + 4}$ . 求证：\n\n(1) 数列 $\\{x_{n}\\}$ 收敛;\n\n(2) $\\{x_{n}\\}$ 的极限值 $a$ 是方程 $x^{4} + 4x - 1 = 0$ 的唯一正根.",
+  "answer": "根唯一.评注（1）数列 $\\{x_{n}\\}$ 与级数 $\\sum_{n = 1}^{\\infty}(x_{n + 1} - x_n)$ 有相同的敛散性．要善于利用两者间的相互转化.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "介值定理",
+    "单调有界",
+    "递推数列",
+    "极限计算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易看出数列 $\\{x_{n}\\}$ 不单调，所以不便用单调有界原理。但容易证明级数 $\\sum_{n=0}^{\\infty}(x_{n+1} - x_n)$ 绝对收敛，从而得到数列 $\\{x_{n}\\}$ 收敛。"
+      },
+      {
+        "id": "s2",
+        "text": "（1）易知 $0 < x_{n} < 1$ ，且有"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{r l} \\left| x _ {n + 1} - x _ {n} \\right| & = \\left| \\frac {1}{x _ {n} ^ {3} + 4} - \\frac {1}{x _ {n - 1} ^ {3} + 4} \\right| = \\frac {\\left| x _ {n} ^ {3} - x _ {n - 1} ^ {3} \\right|}{(x _ {n} ^ {3} + 4) (x _ {n - 1} ^ {3} + 4)} \\\\ & <   \\frac {\\left| x _ {n} - x _ {n - 1} \\right| \\left| x _ {n} ^ {2} + x _ {n} x _ {n - 1} + x _ {n - 1} ^ {2} \\right|}{4 ^ {2}} <   \\frac {3 \\left| x _ {n} - x _ {n - 1} \\right|}{1 6} \\\\ & <   \\left(\\frac {3}{1 6}\\right) ^ {2} \\left| x _ {n - 1} - x _ {n - 2} \\right| <   \\dots <   \\left(\\frac {3}{1 6}\\right) ^ {n} \\left| x _ {1} - x _ {0} \\right| = \\frac {4}{5} \\left(\\frac {3}{1 6}\\right) ^ {n}. \\end{array}"
+      },
+      {
+        "id": "s4",
+        "text": "因为 $\\sum_{n=0}^{\\infty}\\left(\\frac{3}{16}\\right)^n$ 收敛，所以 $\\sum_{n=0}^{\\infty}(x_{n+1}-x_n)$ 收敛（绝对收敛），其部分和为 $S_n = x_{n+1} - x_0$ 。故 $\\{x_n\\}$ 收敛。（2）令 $\\lim_{n\\to\\infty}x_n=a$ ，由 $0<x_n<1$ ，知 $0\\leqslant a\\leqslant 1$ 。"
+      },
+      {
+        "id": "s5",
+        "text": "由 $x_{n + 1} = \\frac{1}{x_n^3 + 4}$ 取极限得 $a = \\frac{1}{a^3 + 4}$ . 显然 $a \\neq 0$ , 所以 $a$ 是方程 $x^4 + 4x - 1 = 0$ 的正根."
+      },
+      {
+        "id": "s6",
+        "text": "再由 $(x^{4} + 4x - 1)^{\\prime} = 4x^{3} + 4 > 0$ ， $x\\in [0,1]$ ，知 $f(x) = x^4 +4x - 1$ 在[0,1]上严格单调递增，故根唯一.评注（1）数列 $\\{x_{n}\\}$ 与级数 $\\sum_{n = 1}^{\\infty}(x_{n + 1} - x_n)$ 有相同的敛散性．要善于利用两者间的相互转化."
+      },
+      {
+        "id": "s7",
+        "text": "(2) 该题还可用以下两种方法证明有极限:"
+      }
+    ],
+    "final_answer": "根唯一.评注（1）数列 $\\{x_{n}\\}$ 与级数 $\\sum_{n = 1}^{\\infty}(x_{n + 1} - x_n)$ 有相同的敛散性．要善于利用两者间的相互转化.",
+    "techniques_used": [
+      "介值定理",
+      "单调有界",
+      "递推数列",
+      "极限计算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明路径应先建立何种辅助对象或不等式（如单调性、夹逼、辅助函数）？",
+      "technique": "介值定理",
+      "expected": "先根据题设构造辅助函数或估计式，再落到极限/连续性结论，而不是直接对结论做形式变形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "关键步骤中如何把题设条件转化为可操作的极限或连续性质？",
+      "technique": "单调有界",
+      "expected": "根唯一.评注（1）数列 $\\{x_{n}\\}$ 与级数 $\\sum_{n = 1}^{\\infty}(x_{n + 1} - x_n)$ 有相同的敛散性．要善于利用两者间的相互转化."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "",
+    "book_author": "蒲和平",
+    "chapter": "",
+    "section": "1.2",
+    "example_id": "例60*",
+    "page": 48,
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true
+  }
+}

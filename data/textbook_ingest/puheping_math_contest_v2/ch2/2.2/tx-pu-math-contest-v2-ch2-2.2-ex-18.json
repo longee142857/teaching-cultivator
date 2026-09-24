@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.2-ex-18",
+  "subject": "math",
+  "l2": "微分中值定理与泰勒",
+  "l3_id": "math.calc.mvt.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\mathbf{e} < a < b < \\mathbf{e}^2$ ，证明 $\\ln^2 b - \\ln^2 a > \\frac{4}{\\mathbf{e}^2} (b - a)$ .",
+  "answer": "$$ \\frac {2 \\ln \\xi}{\\xi} > \\frac {4}{\\mathrm{e} ^ {2}} \\Rightarrow \\ln^ {2} b - \\ln^ {2} a > \\frac {2}{\\mathrm{e} ^ {2}} (b - a). $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日中值定理",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 不等式左边是函数 $\\ln^2 x$ 在区间 $[a, b]$ 的增量，右边是自变量在对应区间上的增量的常数倍，所以可考虑用拉格朗日中值定理来证明."
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\ln^2 x (e \\leqslant x \\leqslant e^2)$ ，在 $[a, b]$ 上由拉格朗日中值定理，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\ln^ {2} b - \\ln^ {2} a = \\frac {2 \\ln \\xi}{\\xi} (b - a) (a <   \\xi <   b).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "易求得函数 $\\frac{\\ln x}{x}$ 在区间 $[\\mathbf{e},\\mathbf{e}^2]$ 上单调递减，其最小值为 $f(\\mathbf{e}^2) = \\frac{2}{\\mathbf{e}^2}$ ，所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\frac {2 \\ln \\xi}{\\xi} > \\frac {4}{\\mathrm{e} ^ {2}} \\Rightarrow \\ln^ {2} b - \\ln^ {2} a > \\frac {2}{\\mathrm{e} ^ {2}} (b - a).\n$$"
+      }
+    ],
+    "final_answer": "$$ \\frac {2 \\ln \\xi}{\\xi} > \\frac {4}{\\mathrm{e} ^ {2}} \\Rightarrow \\ln^ {2} b - \\ln^ {2} a > \\frac {2}{\\mathrm{e} ^ {2}} (b - a). $$",
+    "techniques_used": [
+      "拉格朗日中值定理",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对哪个函数、哪个区间用拉格朗日中值定理？是否需要先验证连续可导条件？",
+      "technique": "拉格朗日中值定理",
+      "expected": "确认 C[a,b]∩D(a,b) 后对目标函数应用拉氏中值，或对适当变形后的函数应用。"
+    },
+    {
+      "id": "c2",
+      "prompt": "中值等式如何导出最终的 ξ、不等式或存在性结论？",
+      "technique": "辅助函数",
+      "expected": "$$ \\frac {2 \\ln \\xi}{\\xi} > \\frac {4}{\\mathrm{e} ^ {2}} \\Rightarrow \\ln^ {2} b - \\ln^ {2} a > \\frac {2}{\\mathrm{e} ^ {2}} (b - a). $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.2",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 94,
+    "commentary": "评注 利用微分中值公式证明不等式的方法:\n\n(1) 根据不等式的特点，选择适当的函数与适当的区间；\n\n(2) 对微分中值公式中含 “中值” 的部分做适当的放大或缩小，得到所证明的结果."
+  }
+}

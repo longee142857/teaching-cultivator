@@ -64,6 +64,9 @@ def parse_item_id(raw: str | int | None) -> Optional[int]:
     s = str(raw).strip()
     if not s:
         return None
+    # Demo fixtures (DSH DEMO_ITEMS) must never resolve to a real items row.
+    if s.lower() == "demo" or s.lower().startswith("demo-"):
+        return None
     if s.startswith("i") and s[1:].isdigit():
         return int(s[1:])
     if s.isdigit():
@@ -76,6 +79,8 @@ def parse_push_id(raw: str | int | None) -> Optional[int]:
         return None
     s = str(raw).strip()
     if not s or s in ("dingtalk", "expired", "bad"):
+        return None
+    if s.lower() == "demo" or s.lower().startswith("demo-"):
         return None
     if s.isdigit():
         return int(s)

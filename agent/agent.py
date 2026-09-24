@@ -327,8 +327,14 @@ class TeachingAgent:
                 "type": "function",
                 "function": {
                     "name": "show_solution",
-                    "description": "显示最近题目的解答和解题思路（用户只答短选项/空泛思路时先追问思路，暂缓调用本工具）",
-                    "parameters": {"type": "object", "properties": {}},
+                    "description": "显示题目的解答和解题思路。可传 item/push 指定历史或积压题；省略则最新题。用户只答短选项/空泛思路时先追问思路，暂缓调用本工具",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "item": {"type": "string", "description": "公开题号，如 i12"},
+                            "push": {"type": "string", "description": "推送号"},
+                        },
+                    },
                 },
             },
             {
@@ -1091,7 +1097,10 @@ class TeachingAgent:
                     args.get("user_answer", ""),
                 )
             elif name == "show_solution":
-                ans = show_solution()
+                ans = show_solution(
+                    item=args.get("item", "") or "",
+                    push=args.get("push", "") or "",
+                )
                 return ans or "当前题目暂无解答记录"
             elif name == "adjust_difficulty":
                 return adjust_difficulty(

@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-isi-ideal-001",
+  "subject": "comm",
+  "l2": "ISI与奈奎斯特准则",
+  "l3_id": "comm.baseband.isi.ideal",
+  "atom_id": "zhou.ch5.isi.ideal.channel",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "理想基带信道（无限带宽、无失真）下，矩形 NRZ 是否会产生 ISI？为什么？",
+  "answer": "不会产生 ISI：脉冲不展宽，符号在非整数倍 T 处为零，抽样点仅含本符号。",
+  "techniques": [
+    "理想信道",
+    "矩形脉冲",
+    "零 ISI"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "理想 LTI 不展宽 ⇒ 保持矩形或 sinc 零点对齐。"
+      },
+      {
+        "id": "s2",
+        "text": "在 kT 抽样仅当前符号非零 ⇒ 无 ISI。"
+      }
+    ],
+    "final_answer": "不会产生 ISI：脉冲不展宽，符号在非整数倍 T 处为零，抽样点仅含本符号。",
+    "techniques_used": [
+      "理想信道",
+      "矩形脉冲",
+      "零 ISI"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "理想信道对脉冲的影响。",
+      "expected": "无展宽失真。",
+      "technique": "理想信道",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "判断是否有 ISI 并说明。",
+      "expected": "无 ISI。",
+      "technique": "零 ISI",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import accepted bank_workshop incoming JSON into teaching.db.
+"""Import accepted bank_workshop / textbook_ingest JSON into teaching.db.
 
 Isolated ops path: does **not** touch cultivate.py / cultivate_bank.py /
 learner/item_bank.py / learner/db.py / prompts / web.
@@ -7,12 +7,18 @@ learner/item_bank.py / learner/db.py / prompts / web.
 Writes via the same store API as cultivate_bank:
 
     store.insert_bank_item(..., status="ready")  # quality_tier starts pending
-    store.apply_judge_verdict(iid, verdict="pass", reasons=["workshop_accept"],
-                              confidence=1.0)
+    store.apply_judge_verdict(iid, verdict="pass", ...)
 
-Default is dry-run (no DB writes, no file moves). Pass --apply to commit.
-Never prints secrets. Never scans rejected/. Never touches learners /
-attempts / pushes / BKT / sessions / .env.
+Workshop (`meta.source=cloud_cursor_workshop`) still requires companion
+`*.judge.json` with `decision==accept` and reasons=`workshop_accept`.
+Textbook examples (`meta.source=textbook_example`) do **not** need a
+judge file: original worked solutions, pass with reasons=`textbook_example`.
+Do **not** auto-pass workshop items.
+
+`--incoming` may point at `data/textbook_ingest/puheping_math_contest_v2`
+(recursive). Default is dry-run (no DB writes, no file moves). Pass
+`--apply` to commit. Never prints secrets. Never scans rejected/.
+Never touches learners / attempts / pushes / BKT / sessions / .env.
 """
 from __future__ import annotations
 
@@ -31,12 +37,21 @@ ROOT = Path(__file__).resolve().parents[3]
 VALIDATE_PATH = ROOT / "data" / "bank_workshop" / "validate_incoming.py"
 DEFAULT_INCOMING = ROOT / "data" / "bank_workshop" / "incoming"
 DEFAULT_IMPORTED = ROOT / "data" / "bank_workshop" / "imported"
+DEFAULT_TEXTBOOK_INCOMING = (
+    ROOT / "data" / "textbook_ingest" / "puheping_math_contest_v2"
+)
 LOCAL_SYLL_COMM = ROOT / "data" / "syllabus_comm.json"
 LOCAL_SYLL_MATH = ROOT / "data" / "syllabus_math.json"
 
 ALLOWED_SUBJECTS = {"math", "comm"}
 ALLOWED_DIFFICULTY = {"", "hit"}
-REF_SOURCE = "cloud_cursor_workshop"
+SOURCE_WORKSHOP = "cloud_cursor_workshop"
+SOURCE_TEXTBOOK = "textbook_example"
+REF_SOURCE = SOURCE_WORKSHOP  # workshop default; textbook uses textbook:{book_id}
+DEFAULT_TEXTBOOK_BOOK_ID = "puheping_math_contest_v2"
+TEXTBOOK_REF_SOURCE = f"textbook:{DEFAULT_TEXTBOOK_BOOK_ID}"
+TEXTBOOK_ID_PREFIX = "tx-pu-"
+SKIP_ITEM_NAMES = {"schema.example.json"}
 TZ_SHANGHAI = timezone(timedelta(hours=8), name="Asia/Shanghai")
 DAY_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 STEP_SPLIT = re.compile(r"(?=(?:^|[；;.。]\s*)\d+[\)）.、]\s*)")
@@ -95,10 +110,43 @@ def iter_item_paths(incoming: Path) -> list[Path]:
     for p in incoming.rglob("*.json"):
         if p.name.endswith(".judge.json"):
             continue
+        if p.name in SKIP_ITEM_NAMES or p.name.endswith(".example.json"):
+            continue
         if "rejected" in p.parts:
             continue
         files.append(p)
     return sorted(files)
+
+
+def item_meta(item: dict | None) -> dict[str, Any]:
+    if not isinstance(item, dict):
+        return {}
+    meta = item.get("meta")
+    return dict(meta) if isinstance(meta, dict) else {}
+
+
+def item_source(item: dict | None) -> str:
+    return str(item_meta(item).get("source") or "").strip()
+
+
+def is_textbook_item(item: dict | None) -> bool:
+    return item_source(item) == SOURCE_TEXTBOOK
+
+
+def textbook_book_id(item: dict) -> str:
+    meta = item_meta(item)
+    book = str(item.get("book_id") or meta.get("book_id") or "").strip()
+    return book or DEFAULT_TEXTBOOK_BOOK_ID
+
+
+def textbook_ref_source(item: dict) -> str:
+    """Keep JSON ref_source if present; else textbook:{book_id}."""
+    meta = item_meta(item)
+    for raw in (item.get("ref_source"), meta.get("ref_source")):
+        text = str(raw or "").strip()
+        if text:
+            return text
+    return f"textbook:{textbook_book_id(item)}" or TEXTBOOK_REF_SOURCE
 
 
 def judge_path_for(item_path: Path) -> Path:
@@ -185,7 +233,8 @@ def as_cdps(raw: Any, techniques: list) -> tuple[list[dict], str]:
     return [], "cdps_not_object_list"
 
 
-def workshop_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
+def item_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
+    """Map incoming JSON → insert_bank_item kwargs. kp←l2, l3_id←l3_id."""
     subject = str(item.get("subject") or "").strip()
     if subject not in ALLOWED_SUBJECTS:
         return None, f"subject_not_math_comm={subject!r}"
@@ -203,10 +252,44 @@ def workshop_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
     cdps, cdp_err = as_cdps(item.get("cdps"), techniques)
     if cdp_err:
         return None, cdp_err
-    meta: dict[str, Any] = {}
-    if isinstance(item.get("meta"), dict):
-        meta.update(item["meta"])
-    meta["source"] = REF_SOURCE
+    textbook = is_textbook_item(item)
+    src = item_source(item)
+    if textbook:
+        wid = str(item.get("id") or "").strip()
+        book = textbook_book_id(item)
+        if book == DEFAULT_TEXTBOOK_BOOK_ID and not wid.startswith(TEXTBOOK_ID_PREFIX):
+            return None, f"textbook_id_prefix_expected_{TEXTBOOK_ID_PREFIX}"
+        atom_id = str(item.get("atom_id") or "").strip()
+        # math may omit atom_id; comm still needs a Zhou atom (validate_incoming).
+        meta: dict[str, Any] = item_meta(item)
+        meta["source"] = SOURCE_TEXTBOOK
+        meta["book_id"] = book
+        if wid:
+            meta.setdefault("textbook_id", wid)
+        ref_source = textbook_ref_source(item)
+        kwargs = {
+            "subject": subject,
+            "question": str(item.get("question") or ""),
+            "answer": answer,
+            "difficulty": diff,
+            "kp": l2,
+            "l3_id": l3_id,
+            "item_form": str(item.get("item_form") or ""),
+            "ability_goal": str(item.get("ability_goal") or ""),
+            "ref_source": ref_source,
+            "techniques": techniques,
+            "solution": as_solution(item.get("solution"), answer=answer, techniques=techniques),
+            "cdps": cdps,
+            "meta": meta,
+            "status": "ready",
+            "atom_id": atom_id,
+            "book_id": book if subject == "math" else str(item.get("book_id") or "").strip(),
+        }
+        return kwargs, ""
+    if src and src != SOURCE_WORKSHOP:
+        return None, f"unsupported_meta.source={src!r}"
+    meta = item_meta(item)
+    meta["source"] = SOURCE_WORKSHOP
     meta["workshop_id"] = item.get("id") or ""
     kwargs = {
         "subject": subject,
@@ -227,6 +310,11 @@ def workshop_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
         "book_id": str(item.get("book_id") or "").strip(),
     }
     return kwargs, ""
+
+
+def workshop_to_bank_kwargs(item: dict) -> tuple[Optional[dict[str, Any]], str]:
+    """Alias: workshop + textbook mapping share item_to_bank_kwargs."""
+    return item_to_bank_kwargs(item)
 
 
 def load_syllabus_index(validate, comm: str, math: str) -> dict[str, dict]:
@@ -281,16 +369,19 @@ def item_for_workshop_check(item: dict) -> dict:
 
 
 def classify_skip(item: dict | None, judge: dict | None, judge_file: Path) -> str:
-    if not judge_file.exists() or judge is None:
-        return "no_judge"
-    dec = judge.get("decision")
-    if dec != "accept":
-        return f"judge.decision={dec!r}"
     if item is None:
         return "bad_item_json"
     subj = str(item.get("subject") or "").strip()
     if subj not in ALLOWED_SUBJECTS:
         return f"subject_not_math_comm={subj!r}"
+    if is_textbook_item(item):
+        # Textbook originals: no companion judge file. Workshop is NOT auto-pass.
+        return ""
+    if not judge_file.exists() or judge is None:
+        return "no_judge"
+    dec = judge.get("decision")
+    if dec != "accept":
+        return f"judge.decision={dec!r}"
     return ""
 
 
@@ -341,6 +432,13 @@ def process(
         return 2
 
     print(f"mode={mode} incoming={incoming} db={db_path}")
+    n_examples = sum(
+        1
+        for p in incoming.rglob("*.json")
+        if p.name in SKIP_ITEM_NAMES or p.name.endswith(".example.json")
+    )
+    if n_examples:
+        print(f"note: skipped {n_examples} catalog example JSON (not imported)")
     if not db_path.is_file():
         print(f"note: teaching.db not found at {db_path} (--apply will fail)")
 
@@ -377,7 +475,15 @@ def process(
             print(f"SKIP {path.relative_to(incoming)} {skip_reason}")
             continue
 
-        errs = validate.check_item(item_for_workshop_check(item), syll, True, judge)
+        textbook = is_textbook_item(item)
+        allowed_sources = {SOURCE_TEXTBOOK} if textbook else {SOURCE_WORKSHOP}
+        errs = validate.check_item(
+            item_for_workshop_check(item),
+            syll,
+            not textbook,
+            judge,
+            allowed_sources=allowed_sources,
+        )
         if errs:
             failed += 1
             print(f"FAIL {path.relative_to(incoming)}")
@@ -385,7 +491,7 @@ def process(
                 print(f"  - {e}")
             continue
 
-        kwargs, map_err = workshop_to_bank_kwargs(item)
+        kwargs, map_err = item_to_bank_kwargs(item)
         if map_err or not kwargs:
             failed += 1
             print(f"FAIL {path.relative_to(incoming)} map:{map_err}")
@@ -402,32 +508,47 @@ def process(
             print(f"FAIL {path.relative_to(incoming)} payload:{payload_err}")
             continue
 
+        src_id = kwargs["meta"].get("textbook_id") or kwargs["meta"].get("workshop_id")
         if not apply:
             imported += 1
             print(
                 f"DRY  {path.relative_to(incoming)} "
-                f"id={kwargs['meta'].get('workshop_id')} "
+                f"id={src_id} source={kwargs['meta'].get('source')} "
+                f"ref_source={kwargs['ref_source']} "
                 f"subject={kwargs['subject']} kp={kwargs['kp']} l3={kwargs['l3_id']}"
             )
             continue
 
         assert store is not None
         item_id = None
+        if textbook:
+            reasons = ["textbook_example"]
+            details = {
+                "source": SOURCE_TEXTBOOK,
+                "ref_source": kwargs["ref_source"],
+                "quality_basis": kwargs["meta"].get("quality_basis"),
+                "textbook_id": src_id,
+            }
+        else:
+            reasons = ["workshop_accept"]
+            details = judge or {}
         try:
             item_id = store.insert_bank_item(**kwargs)
             store.apply_judge_verdict(
                 item_id,
                 verdict="pass",
-                reasons=["workshop_accept"],
+                reasons=reasons,
                 confidence=1.0,
-                details=judge or {},
+                details=details,
             )
         except Exception as e:
             failed += 1
             print(f"FAIL {path.relative_to(incoming)} insert:{e}")
             continue
 
-        if move:
+        # Catalog JSON stays in textbook_ingest/; only workshop incoming is moved.
+        do_move = move and not textbook
+        if do_move:
             try:
                 dest = move_pair(
                     path,
@@ -448,6 +569,7 @@ def process(
         imported += 1
         print(
             f"OK   {path.name} item_id={item_id} "
+            f"source={kwargs['meta'].get('source')} "
             f"subject={kwargs['subject']} kp={kwargs['kp']} -> {loc}"
         )
 
@@ -457,7 +579,10 @@ def process(
 
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        description="Import accepted bank_workshop incoming JSON into teaching.db"
+        description=(
+            "Import accepted bank_workshop incoming JSON, or textbook_example "
+            "JSON from data/textbook_ingest/, into teaching.db"
+        )
     )
     ap.add_argument(
         "--db",
@@ -467,7 +592,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--incoming",
         default=str(DEFAULT_INCOMING),
-        help="incoming root to scan recursively (default: data/bank_workshop/incoming)",
+        help=(
+            "incoming root to scan recursively "
+            "(default: data/bank_workshop/incoming; "
+            "textbook: data/textbook_ingest/puheping_math_contest_v2)"
+        ),
     )
     ap.add_argument(
         "--imported",
@@ -483,7 +612,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument(
         "--apply",
         action="store_true",
-        help="insert_bank_item + apply_judge_verdict(pass) and move on success",
+        help=(
+            "insert_bank_item + apply_judge_verdict(pass) and move workshop "
+            "incoming on success. textbook_example: pass without judge file; "
+            "cloud_cursor_workshop is NOT auto-passed"
+        ),
     )
     ap.add_argument(
         "--no-move",

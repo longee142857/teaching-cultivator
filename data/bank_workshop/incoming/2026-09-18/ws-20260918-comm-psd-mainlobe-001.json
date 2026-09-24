@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-psd-mainlobe-001",
+  "subject": "comm",
+  "l2": "基带信号功率谱密度",
+  "l3_id": "comm.baseband.psd.mainlobe",
+  "atom_id": "zhou.ch5.pam.mpam.bw",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "矩形脉冲 g(t)=rect(t/T) 的谱 G(f)=T sinc(fT)。写出第一零点频率及主瓣带宽。",
+  "answer": "第一零点 f=±1/T；主瓣带宽 2/T。",
+  "techniques": [
+    "sinc 零点",
+    "rect 谱",
+    "主瓣带宽"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "sinc(fT)=0 ⇒ fT=±1。"
+      },
+      {
+        "id": "s2",
+        "text": "主瓣介于 ±1/T，带宽 2/T。"
+      }
+    ],
+    "final_answer": "第一零点 f=±1/T；主瓣带宽 2/T。",
+    "techniques_used": [
+      "sinc 零点",
+      "rect 谱",
+      "主瓣带宽"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「sinc 零点」写出第 1 步关键推导或结论。",
+      "expected": "sinc(fT)=0 ⇒ fT=±1。",
+      "technique": "sinc 零点",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「rect 谱」得到与题意一致的最终结论。",
+      "expected": "主瓣介于 ±1/T，带宽 2/T。",
+      "technique": "rect 谱",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

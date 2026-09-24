@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-nb-envelope-001",
+  "subject": "comm",
+  "l2": "高斯过程与窄带噪声",
+  "l3_id": "comm.sig_rand.nb.envelope",
+  "atom_id": "zhou.ch3.nb.rayleigh.envelope",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "零均值窄带高斯 n(t)=n_c cos ω_c t − n_s sin ω_c t，n_c,n_s 独立 N(0,σ²)。写出包络 R=√(n_c²+n_s²) 的分布类型及 E[R²]。",
+  "answer": "R 服从瑞利分布；E[R²]=2σ²（两分量方差和）。",
+  "techniques": [
+    "瑞利包络",
+    "同相正交分解",
+    "窄带高斯"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "n_c,n_s 独立高斯 ⇒ 包络为瑞利。"
+      },
+      {
+        "id": "s2",
+        "text": "E[R²]=E[n_c²+n_s²]=2σ²。"
+      }
+    ],
+    "final_answer": "R 服从瑞利分布；E[R²]=2σ²（两分量方差和）。",
+    "techniques_used": [
+      "瑞利包络",
+      "同相正交分解",
+      "窄带高斯"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「瑞利包络」写出第 1 步关键推导或结论。",
+      "expected": "n_c,n_s 独立高斯 ⇒ 包络为瑞利。",
+      "technique": "瑞利包络",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「同相正交分解」得到与题意一致的最终结论。",
+      "expected": "E[R²]=E[n_c²+n_s²]=2σ²。",
+      "technique": "同相正交分解",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}

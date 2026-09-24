@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-math-dbl-concept-001",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.concept",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 f(x,y) 在闭区域 D 上连续且 f≥0。说明 ∬_D f dA 的几何意义，并判断：若 f 在 D 内恒为 2 且 Area(D)=3，则积分值是否为 6？",
+  "answer": "意义：以 D 为底、曲面 z=f 为顶的曲顶柱体体积；积分值=6。",
+  "techniques": [
+    "曲顶柱体体积",
+    "线性性质",
+    "面积元"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "f≥0 时二重积分表示曲顶柱体体积。"
+      },
+      {
+        "id": "s2",
+        "text": "∬2 dA=2·Area(D)=2×3=6。"
+      }
+    ],
+    "final_answer": "意义：以 D 为底、曲面 z=f 为顶的曲顶柱体体积；积分值=6。",
+    "techniques_used": [
+      "曲顶柱体体积",
+      "线性性质",
+      "面积元"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明 ∬_D f dA 在 f≥0 时的几何意义。",
+      "expected": "曲顶柱体体积。",
+      "technique": "曲顶柱体体积",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "用 f≡2 与面积求积分值。",
+      "expected": "积分=6。",
+      "technique": "线性性质",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

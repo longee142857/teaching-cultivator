@@ -434,12 +434,53 @@ def grade_answer(last_question: str = "", user_answer: str = "") -> str:
         return f"批改失败：{e}"
 
 
-def show_solution() -> str:
-    """优先渲染题库结构化 solution；否则现场 LLM 解答。"""
-    entry = _read_latest_entry()
+def _lookup_entry_by_ref(item: str = "", push: str = "") -> dict | None:
+    """Resolve a push/item row for show_solution. None if unspecified or missing."""
+    item = (item or "").strip()
+    push = (push or "").strip()
+    if not item and not push:
+        return None
+    try:
+        from modules.bridge.practice_dto import parse_item_id, parse_push_id
+        from learner.db import get_store
+
+        store = get_store()
+        lid = _db_sid() or None
+        pid = parse_push_id(push) if push else None
+        iid = parse_item_id(item) if item else None
+        if pid is not None:
+            row = store.get_push(pid)
+            if row:
+                return row
+        if iid is not None:
+            recent = store.list_recent_pushes(lid, days=30)
+            for r in recent:
+                try:
+                    if int(r.get("item_id") or 0) == iid:
+                        return r
+                except (TypeError, ValueError):
+                    continue
+            it = store.get_item(iid)
+            if it:
+                return it
+    except Exception:
+        return None
+    return None
+
+
+def show_solution(item: str = "", push: str = "") -> str:
+    """优先渲染题库结构化 solution；否则现场 LLM 解答。
+
+    item/push 指定历史或积压题；都空则回落到该学员最新推送。指定了但找不到则 NO_ENTRY，不静默改讲最新题。
+    """
+    specified = bool((item or "").strip() or (push or "").strip())
+    entry = _lookup_entry_by_ref(item, push) if specified else None
+    if specified and not entry:
+        return f"NO_ENTRY 指定题未找到（item={item} push={push}）"
     if not entry:
-        # DB 最新推送
-        entry = _load_last_push_record()
+        entry = _read_latest_entry()
+        if not entry:
+            entry = _load_last_push_record()
     if not entry:
         return "NO_ENTRY"
     question = entry.get("question", "")
@@ -450,10 +491,10 @@ def show_solution() -> str:
     if not solution:
         try:
             from learner.db import get_store
-            item = get_store().get_item_by_question(question, entry.get("subject") or "")
-            if item:
-                solution = item.get("solution") or {}
-                entry.setdefault("answer", item.get("answer") or "")
+            item_row = get_store().get_item_by_question(question, entry.get("subject") or "")
+            if item_row:
+                solution = item_row.get("solution") or {}
+                entry.setdefault("answer", item_row.get("answer") or "")
         except Exception:
             pass
 

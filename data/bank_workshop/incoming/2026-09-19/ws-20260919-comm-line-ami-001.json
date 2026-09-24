@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260919-comm-line-ami-001",
+  "subject": "comm",
+  "l2": "数字基带波形与线路码型",
+  "l3_id": "comm.baseband.line.ami",
+  "atom_id": "zhou.ch5.line.ami",
+  "book_id": "zhou_comm",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "",
+  "question": "简述 AMI 码如何表示二进制 1 与 0；连续多个 1 时极性如何变化？",
+  "answer": "AMI：1 用交替正负脉冲表示，0 用零电平；连续 1 极性交替翻转。",
+  "techniques": [
+    "AMI 规则",
+    "极性交替",
+    "零电平传 0"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "1 映射为 ±A 脉冲且相邻 1 极性相反。"
+      },
+      {
+        "id": "s2",
+        "text": "0 为 0 电平，不破坏交替规则。"
+      }
+    ],
+    "final_answer": "AMI：1 用交替正负脉冲表示，0 用零电平；连续 1 极性交替翻转。",
+    "techniques_used": [
+      "AMI 规则",
+      "极性交替",
+      "零电平传 0"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "说明 AMI 对 1/0 的编码。",
+      "expected": "1→交替脉冲，0→零电平。",
+      "technique": "AMI 规则",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "连续 1 时极性如何变。",
+      "expected": "相邻 1 极性交替。",
+      "technique": "极性交替",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-19",
+    "workshop_date": "2026-09-19"
+  }
+}

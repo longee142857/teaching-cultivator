@@ -11,7 +11,7 @@
 
 | 角色 | 工具 | 数据源 |
 |------|------|--------|
-| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points`（只读） | system_api:8770 → practice_web:8768 → demo |
+| 讲师 | `practice_get_item` `show_solution` `kb_query` `list_knowledge_points` `list_today_questions`（只读） | system_api:8770 → practice_web:8768 → demo |
 | 助教 | `get_learner_params` `get_capability_evidence` `get_learner_snapshot` `list_today_questions` `build_report` `practice_bootstrap`（只读）+ `adjust_difficulty`（写，POST `:8770/v1/tools/adjust_difficulty` → 旧 `agent/tools.py` / `cultivate.set_difficulty_pref`） | 同上 |
 
 执行链：**system_api(:8770，`X-System-Token`)** → **practice_web(:8768)** → **本地演示数据（前缀「【演示数据】」）**。写工具 `adjust_difficulty` **仅 POST JSON**，不走 GET。LLM（DeepSeek 直连）**按需调用工具**取数，工具结果成为 `citations`（逐条证据引用）。批改/命题仍由教学运行时负责（边界闸）；学员明确要求改变难度时助教可写难度偏好，不改 BKT/η、不改已推送今日题。
@@ -28,6 +28,7 @@ TUTOR_BACKEND_URL=http://127.0.0.1:61900
 PRACTICE_API_BASE=http://127.0.0.1:8768
 SYSTEM_API_BASE=http://127.0.0.1:8770
 SYSTEM_API_TOKEN=<与 system_api 同 key，勿入库>
+PRACTICE_API_TOKEN=<与 practice_web 同 key，勿入库；live bootstrap/item 走 X-Practice-Token>
 DEEPSEEK_API_KEY=...          # 或 LLM_API_KEY
 LLM_BASE_URL=https://api.deepseek.com/v1
 TUTOR_MODEL=deepseek-flash
@@ -50,18 +51,19 @@ ssh -i ~/.ssh/ccc.pem -N -L 8768:127.0.0.1:8768 -L 8770:127.0.0.1:8770 ubuntu@15
 // {workspace}/.mentor-team/config.json（勿提交仓库）
 {
   "SYSTEM_API_TOKEN": "……",
+  "PRACTICE_API_TOKEN": "……",
   "DEEPSEEK_API_KEY": "……"
 }
 ```
 
-未配置/不可达时：工具回落演示数据（带「【演示数据】」标注），LLM 不可用回落规则应答，均显式声明，不冒充真实学情。
+未配置/不可达时：工具回落演示数据（带「【演示数据】」标注，题号为 `demo-i*`，不可当真实 `items` 行），LLM 不可用回落规则应答，均显式声明，不冒充真实学情。mentor host 调 live practice API 必须带 `X-Practice-Token`（env `PRACTICE_API_TOKEN`）；缺 token 且远端 401 时保持 `detached`，不要把 DEMO 当 live 库存去 enrich。
 
 ---
 
 ## 记忆（T0/T1/T2）
 
 - T0 工作状态：`phase`（idle/awaiting_answer/reviewing/planning）+ `todos` + `activeItemId`，随工具调用更新，注入 LLM 上下文。
-- T1 情节：线程（内存，≤40 条/线程）。
+- T1 情节：线程（内存，≤40 条/线程）。`buildMessages` 把同一 `learner|threadId` 的最近 12 条注入 LLM；`mentor.export` 仍导出该线程（至多 40）。讨论从题目进入时沿用原 `item` / `threadId`，不另开 `general-*`。
 - T2 语义：`card.json`（weak/notes/milestones），`mentor.export`/`mentor.clearCard` 导出与清空。
 
 ## 边界

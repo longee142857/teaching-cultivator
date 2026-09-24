@@ -1,0 +1,59 @@
+{
+  "id": "ws-20260918-comm-space-opt-001",
+  "subject": "comm",
+  "l2": "信号空间与统计判决",
+  "l3_id": "comm.passband.space.opt",
+  "atom_id": "zhou.ch6.space.opt.awgn",
+  "book_id": "zhou_comm",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "",
+  "question": "M 元等能量信号 {s_i}，AWGN。简述最佳接收机：相关器组 + 比较器，并说明充分统计量为在各 s_i 上的投影。",
+  "answer": "各支路 r·s_i（或匹配滤波输出），选最大者为 ML/MAP（等概即 ML）。",
+  "techniques": [
+    "相关器组",
+    "充分统计量",
+    "AWGN 最佳接收"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "噪声白且信号正交展开时，r 在 signal space 的坐标即 r·s_i。"
+      },
+      {
+        "id": "s2",
+        "text": "ML 选使 ||r−si||² 最小的 i，即最大投影。"
+      }
+    ],
+    "final_answer": "各支路 r·s_i（或匹配滤波输出），选最大者为 ML/MAP（等概即 ML）。",
+    "techniques_used": [
+      "相关器组",
+      "充分统计量",
+      "AWGN 最佳接收"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "cdp1",
+      "prompt": "针对题干，选用「相关器组」写出第 1 步关键推导或结论。",
+      "expected": "噪声白且信号正交展开时，r 在 signal space 的坐标即 r·s_i。",
+      "technique": "相关器组",
+      "depends_on": []
+    },
+    {
+      "id": "cdp2",
+      "prompt": "综合前面中间结果，用「充分统计量」得到与题意一致的最终结论。",
+      "expected": "ML 选使 ||r−si||² 最小的 i，即最大投影。",
+      "technique": "充分统计量",
+      "depends_on": [
+        "cdp1"
+      ]
+    }
+  ],
+  "meta": {
+    "source": "cloud_cursor_workshop",
+    "batch": "batch_2026-09-18",
+    "workshop_date": "2026-09-18"
+  }
+}
