@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-18",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{x^4 + x + 1}{x^3 + 1} \\mathrm{d}x$ .",
+  "answer": "将右边通分合并，再比较两边分子，可得 $A = \\frac{1}{3}$ ， $B = -\\frac{1}{3}$ ， $C = \\frac{2}{3}$ 。于是",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若有理函数的积分不能通过凑微分或换元法来化简，则一般的求解方法是：\n\n（1）用多项式除法化被积函数为整式与真分式之和；\n\n（2）将真分式的分母做因式分解（分解为一次与二次不可约因式的乘积），再化分式为最简部分分式之和；\n\n(3) 逐项积分各部分分式."
+      },
+      {
+        "id": "s2",
+        "text": "$\\frac{x^4 + x + 1}{x^3 + 1} = x + \\frac{1}{x^3 + 1}$ ，由于 $x^3 + 1 = (x + 1)(x^2 - x + 1)$ ，设"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {1}{x ^ {3} + 1} = \\frac {A}{x + 1} + \\frac {B x + C}{x ^ {2} - x + 1}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "将右边通分合并，再比较两边分子，可得 $A = \\frac{1}{3}$ ， $B = -\\frac{1}{3}$ ， $C = \\frac{2}{3}$ 。于是"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} I & = \\int x \\mathrm{d} x + \\int \\frac {\\mathrm{d} x}{x ^ {3} + 1} = \\frac {1}{2} x ^ {2} + \\frac {1}{3} \\int \\left(\\frac {1}{x + 1} - \\frac {x - 2}{x ^ {2} - x + 1}\\right) \\mathrm{d} x \\\\ & = \\frac {1}{2} x ^ {2} + \\frac {1}{3} \\int \\frac {1}{x + 1} \\mathrm{d} x - \\frac {1}{6} \\int \\frac {2 x - 1}{x ^ {2} - x + 1} \\mathrm{d} x + \\frac {1}{2} \\int \\frac {\\mathrm{d} \\left(x - \\frac {1}{2}\\right)}{\\left(x - \\frac {1}{2}\\right) ^ {2} + \\frac {3}{4}} \\\\ & = \\frac {1}{2} x ^ {2} + \\frac {1}{6} \\ln \\frac {(x + 1) ^ {2}}{x ^ {2} - x + 1} + \\frac {1}{\\sqrt {3}} \\arctan \\frac {2 x - 1}{\\sqrt {3}} + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "将右边通分合并，再比较两边分子，可得 $A = \\frac{1}{3}$ ， $B = -\\frac{1}{3}$ ， $C = \\frac{2}{3}$ 。于是",
+    "techniques_used": [
+      "无理函数积分",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "无理函数积分",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "将右边通分合并，再比较两边分子，可得 $A = \\frac{1}{3}$ ， $B = -\\frac{1}{3}$ ， $C = \\frac{2}{3}$ 。于是"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 141,
+    "syllabus_note": "有理函数积分",
+    "commentary": "评注 若被积函数为 $\\frac{hx + k}{ax^2 + bx + c}$ 型，则将其分拆为 $\\frac{2ax + b}{ax^2 + bx + c}$ 与 $\\frac{1}{ax^2 + bx + c}$ 的线性组合。前式用凑微分法，后式将分母配方再积分。"
+  }
+}

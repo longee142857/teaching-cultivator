@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-04",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{x\\mathrm{d}x}{(1 + x^2 + \\sqrt{x^2 + 1})\\ln(1 + \\sqrt{x^2 + 1})}$ 。",
+  "answer": "\\begin{array}{r l} I & = \\frac {1}{2} \\int \\frac {\\mathrm{d} (1 + x ^ {2})}{\\sqrt {x ^ {2} + 1} (1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\int \\frac {\\mathrm{d} \\sqrt {x ^ {2} + 1}}{(1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} = \\int \\frac {\\mathrm{d} \\ln (1 + \\sqrt {x ^ {2} + 1})}{\\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\ln | \\ln (1 + \\sqrt {x ^ {2} + 1}) | + C. \\e",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数的分子为 $x$ 的一次式，分母中的变量可统一为 $\\sqrt{x^2 + 1}$ 的形式，做凑微分，使 $\\sqrt{x^2 + 1}$ 为积分变量，积分式就简单了."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} I & = \\frac {1}{2} \\int \\frac {\\mathrm{d} (1 + x ^ {2})}{\\sqrt {x ^ {2} + 1} (1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\int \\frac {\\mathrm{d} \\sqrt {x ^ {2} + 1}}{(1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} = \\int \\frac {\\mathrm{d} \\ln (1 + \\sqrt {x ^ {2} + 1})}{\\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\ln | \\ln (1 + \\sqrt {x ^ {2} + 1}) | + C. \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} I & = \\frac {1}{2} \\int \\frac {\\mathrm{d} (1 + x ^ {2})}{\\sqrt {x ^ {2} + 1} (1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\int \\frac {\\mathrm{d} \\sqrt {x ^ {2} + 1}}{(1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} = \\int \\frac {\\mathrm{d} \\ln (1 + \\sqrt {x ^ {2} + 1})}{\\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\ln | \\ln (1 + \\sqrt {x ^ {2} + 1}) | + C. \\e",
+    "techniques_used": [
+      "无理函数积分",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用凑微分还是显式换元？中间变量如何选取？",
+      "technique": "换元积分法",
+      "expected": "按根号/三角/指数结构选代换或凑微分，使积分化为基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出换元后的积分与代回原变量后的原函数（含 +C）。",
+      "technique": "换元积分法",
+      "expected": "\\begin{array}{r l} I & = \\frac {1}{2} \\int \\frac {\\mathrm{d} (1 + x ^ {2})}{\\sqrt {x ^ {2} + 1} (1 + \\sqrt {x ^ {2} + 1}) \\ln (1 + \\sqrt {x ^ {2} + 1})} \\\\ & = \\int \\frac {\\mathrm{d} \\sqrt {x ^ {2} + "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 134,
+    "syllabus_note": "根式换元",
+    "commentary": "评注 若积分式中含有根式，但通过凑微分就能完成积分的，就没必要作变量代换消去根式。一般说来用第一类型换元法（凑微分法）较用第二类型换元法更简便，所以应该注意观察被积函数的特点，尽可能用第一类型换元法。"
+  }
+}

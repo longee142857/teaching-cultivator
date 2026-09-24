@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-20",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{7\\sin x + \\cos x}{3\\sin x + 4\\cos x}\\mathrm{d}x.$",
+  "answer": "$$ I = \\int \\mathrm{d} x - \\int \\frac {\\mathrm{d} (3 \\sin x + 4 \\cos x)}{3 \\sin x + 4 \\cos x} = x - \\ln | 3 \\sin x + 4 \\cos x | + C. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "三角有理式",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 当被积函数是正弦、余弦的线性齐次分式函数时，可将分子拆分为分母及其导数的常数倍，再分项积分；也可以用“组合积分法”来计算."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为 $7\\sin x + \\cos x = (3\\sin x + 4\\cos x) - (3\\sin x + 4\\cos x)^{\\prime}$ ，所以\n\n$$\nI = \\int \\mathrm{d} x - \\int \\frac {\\mathrm{d} (3 \\sin x + 4 \\cos x)}{3 \\sin x + 4 \\cos x} = x - \\ln | 3 \\sin x + 4 \\cos x | + C.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 记 $I_{1} = \\int \\frac{\\sin x}{3\\sin x + 4\\cos x}\\mathrm{d}x$ ， $I_{2} = \\int \\frac{\\cos x}{3\\sin x + 4\\cos x}\\mathrm{d}x$ ，则\n\n$$\n\\begin{array}{r l} 3 I _ {1} + 4 I _ {2} & = \\int \\mathrm{d} x = x + C _ {1}, \\\\ - 4 I _ {1} + 3 I _ {2} & = \\int \\frac {- 4 \\sin x + 3 \\cos x}{3 \\sin x + 4 \\cos x} \\mathrm{d} x = \\int \\frac {\\mathrm{d} (3 \\sin x + 4 \\cos x)}{3 \\sin x + 4 \\cos x} \\\\ & = \\ln | 3 \\sin x + 4 \\cos x | + C _ {2}. \\end{array}\\tag{①}\n$$\n\n②\n\n①-②式得\n\n$$\nI = 7 I _ {1} + I _ {2} = x - \\ln | 3 \\sin x + 4 \\cos x | + C.\n$$"
+      }
+    ],
+    "final_answer": "$$ I = \\int \\mathrm{d} x - \\int \\frac {\\mathrm{d} (3 \\sin x + 4 \\cos x)}{3 \\sin x + 4 \\cos x} = x - \\ln | 3 \\sin x + 4 \\cos x | + C. $$",
+    "techniques_used": [
+      "三角有理式",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "三角有理式",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "$$ I = \\int \\mathrm{d} x - \\int \\frac {\\mathrm{d} (3 \\sin x + 4 \\cos x)}{3 \\sin x + 4 \\cos x} = x - \\ln | 3 \\sin x + 4 \\cos x | + C. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例20",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 142,
+    "syllabus_note": "三角有理式",
+    "commentary": "评注 若被积函数为 $\\frac{a\\sin x + b\\cos x}{c\\sin x + d\\cos x}$ ，则可令\n\n$$\na \\sin x + b \\cos x = A (c \\sin x + d \\cos x) + B (c \\sin x + d \\cos x) ^ {\\prime},\n$$\n\n解出 A, B 得到拆分式，再积分."
+  }
+}

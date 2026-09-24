@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-22",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\sin 2x + \\cos x}{2\\sin^4 x + \\cos^2 x + 7}\\mathrm{d}x.$",
+  "answer": "\\begin{array}{l} = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 \\sin^ {2} x - 1}{3 \\sqrt {7}} + \\frac {\\sqrt {1 4}}{5 6} \\arctan \\frac {\\sqrt {1 4}}{7} \\left(\\sin x - \\frac {2}{\\sin x}\\right) + \\\\ \\frac {\\sqrt {2}}{4 8} \\ln \\frac {\\sin x + \\frac {2}{\\sin x} + \\frac {3 \\sqrt {2}}{2}}{\\sin x + \\frac {2}{\\sin x} - \\frac {3 \\sqrt {2}}{2}} + C. \\end{array}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数属于 $R(\\sin x, -\\cos x) = -R(\\sin x, \\cos x)$ 型，宜作变量代换 $\\sin x = t$ 。"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} I & = \\int \\frac {2 \\sin x + 1}{2 \\sin^ {4} x - \\sin^ {2} x + 8} \\mathrm{d} \\sin x \\stackrel {t = \\sin x} {=} \\int \\frac {2 t + 1}{2 t ^ {4} - t ^ {2} + 8} \\mathrm{d} t \\\\ & = \\int \\frac {1}{2 t ^ {4} - t ^ {2} + 8} \\mathrm{d} t ^ {2} + \\frac {1}{4} \\int \\frac {t ^ {2} + 2}{2 t ^ {4} - t ^ {2} + 8} \\mathrm{d} t - \\frac {1}{4} \\int \\frac {t ^ {2} - 2}{2 t ^ {4} - t ^ {2} + 8} \\mathrm{d} t \\\\ & = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 t ^ {2} - 1}{3 \\sqrt {7}} + \\frac {1}{8} \\int \\frac {1 + 2 / t ^ {2}}{(t - 2 / t) ^ {2} + 7 / 2} \\mathrm{d} t + \\frac {1}{8} \\int \\frac {1 - 2 / t ^ {2}}{9 / 2 - (t + 2 / t) ^ {2}} \\mathrm{d} t \\\\ & = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 t ^ {2} - 1}{3 \\sqrt {7}} + \\frac {1}{8} \\int \\frac {\\mathrm{d} (t - 2 / t)}{(t - 2 / t) ^ {2} + 7 / 2} + \\frac {1}{8} \\int \\frac {\\mathrm{d} (t - 2 / t)}{9 / 2 - (t + 2 / t) ^ {2}} \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "\\begin{array}{l} = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 \\sin^ {2} x - 1}{3 \\sqrt {7}} + \\frac {\\sqrt {1 4}}{5 6} \\arctan \\frac {\\sqrt {1 4}}{7} \\left(\\sin x - \\frac {2}{\\sin x}\\right) + \\\\ \\frac {\\sqrt {2}}{4 8} \\ln \\frac {\\sin x + \\frac {2}{\\sin x} + \\frac {3 \\sqrt {2}}{2}}{\\sin x + \\frac {2}{\\sin x} - \\frac {3 \\sqrt {2}}{2}} + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{l} = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 \\sin^ {2} x - 1}{3 \\sqrt {7}} + \\frac {\\sqrt {1 4}}{5 6} \\arctan \\frac {\\sqrt {1 4}}{7} \\left(\\sin x - \\frac {2}{\\sin x}\\right) + \\\\ \\frac {\\sqrt {2}}{4 8} \\ln \\frac {\\sin x + \\frac {2}{\\sin x} + \\frac {3 \\sqrt {2}}{2}}{\\sin x + \\frac {2}{\\sin x} - \\frac {3 \\sqrt {2}}{2}} + C. \\end{array}",
+    "techniques_used": [
+      "无理函数积分",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "无理函数积分",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "\\begin{array}{l} = \\frac {2}{3 \\sqrt {7}} \\arctan \\frac {4 \\sin^ {2} x - 1}{3 \\sqrt {7}} + \\frac {\\sqrt {1 4}}{5 6} \\arctan \\frac {\\sqrt {1 4}}{7} \\left(\\sin x - \\frac {2}{\\sin x}\\right) + \\\\ \\frac {\\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例22",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 143,
+    "syllabus_note": "三角有理式换元",
+    "commentary": "评注 三角函数有理数式的积分在无法用凑微分计算时，通常是作变量代换化为有理函数的积分."
+  }
+}

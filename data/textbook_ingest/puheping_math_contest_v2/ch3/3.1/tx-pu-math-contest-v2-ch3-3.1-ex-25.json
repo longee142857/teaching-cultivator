@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-25",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\int [x]\\left|\\sin\\pi x\\right|dx(x\\geqslant0)$ ，其中 [x] 为取整函数.",
+  "answer": ". 由 $\\int [x]|\\sin \\pi x| \\mathrm{d}x = \\int_0^x [t]|\\sin \\pi t| \\mathrm{d}t + C$ ，在区间 $[0, x]$ 内插入整数点，再分段积分即可.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "取整函数",
+    "原函数性质",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数是分段函数，分段点是全体整数，但被积函数在这些点处均连续，所以有原函数. 由 $\\int [x]|\\sin \\pi x| \\mathrm{d}x = \\int_0^x [t]|\\sin \\pi t| \\mathrm{d}t + C$ ，在区间 $[0, x]$ 内插入整数点，再分段积分即可.\n\n$$\n\\begin{array}{r l} {\\text {解}} & {\\int [ x ] \\big | \\sin \\pi x \\big | \\mathrm{d} x = \\int_ {0} ^ {x} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + C} \\\\ & {= \\int_ {0} ^ {1} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {1} ^ {2} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {2} ^ {3} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\dots + \\int_ {[ x ] - 1} ^ {[ x ]} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {[ x ]} ^ {x} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + C} \\\\ & {= 0 - \\int_ {1} ^ {2} \\sin \\pi t \\mathrm{d} t + 2 \\int_ {2} ^ {3} \\sin \\pi t \\mathrm{d} t + \\dots + (- 1) ^ {[ x ] - 1} ([ x ] - 1) \\int_ {[ x ] - 1} ^ {[ x ]} \\sin \\pi t \\mathrm{d} t + (- 1) ^ {[ x ]} [ x ] \\int_ {[ x ]} ^ {x} \\sin \\pi t \\mathrm{d} t + C} \\\\ & {= \\frac {1}{\\pi} \\cdot 2 + \\frac {2}{\\pi} \\cdot 2 + \\dots + \\frac {(- 1) ^ {[ x ]} ([ x ] - 1)}{\\pi} \\cdot 2 (- 1) ^ {[ x ]} + \\frac {(- 1) ^ {[ x ] + 1} [ x ]}{\\pi} (\\cos \\pi x - (- 1) ^ {[ x ]}) + C} \\\\ & {= \\frac {2}{\\pi} (1 + 2 + \\dots + ([ x ] - 1)) + \\frac {[ x ]}{\\pi} + \\frac {(- 1) ^ {[ x ] + 1} [ x ]}{\\pi} \\cos \\pi x + C} \\\\ & {= \\frac {[ x ]}{\\pi} ([ x ] - (- 1) ^ {[ x ]} \\cos \\pi x) + C.} \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 被积函数是分段函数，分段点是全体整数，但被积函数在这些点处均连续，所以有原函数. 由 $\\int [x]|\\sin \\pi x| \\mathrm{d}x = \\int_0^x [t]|\\sin \\pi t| \\mathrm{d}t + C$ ，在区间 $[0, x]$ 内插入整数点，再分段积分即可."
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} {\\text {解}} & {\\int [ x ] \\big | \\sin \\pi x \\big | \\mathrm{d} x = \\int_ {0} ^ {x} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + C} \\\\ & {= \\int_ {0} ^ {1} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {1} ^ {2} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {2} ^ {3} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\dots + \\int_ {[ x ] - 1} ^ {[ x ]} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + \\int_ {[ x ]} ^ {x} [ t ] \\big | \\sin \\pi t \\big | \\mathrm{d} t + C} \\\\ & {= 0 - \\int_ {1} ^ {2} \\sin \\pi t \\mathrm{d} t + 2 \\int_ {2} ^ {3} \\sin \\pi t \\mathrm{d} t + \\dots + (- 1) ^ {[ x ] - 1} ([ x ] - 1) \\int_ {[ x ] - 1} ^ {[ x ]} \\sin \\pi t \\mathrm{d} t + (- 1) ^ {[ x ]} [ x ] \\int_ {[ x ]} ^ {x} \\sin \\pi t \\mathrm{d} t + C} \\\\ & {= \\frac {1}{\\pi} \\cdot 2 + \\frac {2}{\\pi} \\cdot 2 + \\dots + \\frac {(- 1) ^ {[ x ]} ([ x ] - 1)}{\\pi} \\cdot 2 (- 1) ^ {[ x ]} + \\frac {(- 1) ^ {[ x ] + 1} [ x ]}{\\pi} (\\cos \\pi x - (- 1) ^ {[ x ]}) + C} \\\\ & {= \\frac {2}{\\pi} (1 + 2 + \\dots + ([ x ] - 1)) + \\frac {[ x ]}{\\pi} + \\frac {(- 1) ^ {[ x ] + 1} [ x ]}{\\pi} \\cos \\pi x + C} \\\\ & {= \\frac {[ x ]}{\\pi} ([ x ] - (- 1) ^ {[ x ]} \\cos \\pi x) + C.} \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "评注 当不定积分中的被积函数是分段函数，且分段点较多时，将其转换为变上限的定积分来计算更为方便（利用定积分的区间可加性，插入分段点，再分段积分即可）。但需要注意的是，被积函数的分段点不允许出现第一类间断点，否则积分不存在。"
+      }
+    ],
+    "final_answer": ". 由 $\\int [x]|\\sin \\pi x| \\mathrm{d}x = \\int_0^x [t]|\\sin \\pi t| \\mathrm{d}t + C$ ，在区间 $[0, x]$ 内插入整数点，再分段积分即可.",
+    "techniques_used": [
+      "取整函数",
+      "原函数性质",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "取整函数",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "原函数性质",
+      "expected": ". 由 $\\int [x]|\\sin \\pi x| \\mathrm{d}x = \\int_0^x [t]|\\sin \\pi t| \\mathrm{d}t + C$ ，在区间 $[0, x]$ 内插入整数点，再分段积分即可."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例25*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 145,
+    "starred": true,
+    "syllabus_note": "取整与周期被积",
+    "commentary": "评注 当不定积分中的被积函数是分段函数，且分段点较多时，将其转换为变上限的定积分来计算更为方便（利用定积分的区间可加性，插入分段点，再分段积分即可）。但需要注意的是，被积函数的分段点不允许出现第一类间断点，否则积分不存在。"
+  }
+}

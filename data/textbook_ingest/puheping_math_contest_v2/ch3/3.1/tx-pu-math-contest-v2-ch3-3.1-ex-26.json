@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-26",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $y(x - y)^2 = x$ ，求 $\\int \\frac{1}{x - 3y} \\mathrm{d}x$ .",
+  "answer": "= \\int \\frac {t}{t ^ {2} - 1} d t = \\frac {1}{2} \\ln | t ^ {2} - 1 | + C = \\frac {1}{2} \\ln | (x - y) ^ {2} - 1 | + C.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部积分法",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由所给的隐函数方程难以得到函数的显表达式 $y = y(x)$ （或 $x = x(x)$ ），较好的方法是将隐函数化为参数式函数，再做积分。积分后消去参数。"
+      },
+      {
+        "id": "s2",
+        "text": "已知 $y(x - y)^2 = x$ ，令 $x - y = t$ ，则 $y = x - t$ ，代入前式，得 $(x - t)t^2 = x$ ，可得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nx = \\frac {t ^ {3}}{t ^ {2} - 1}, \\quad y = \\frac {t}{t ^ {2} - 1}, \\quad \\mathrm{d} x = \\frac {t ^ {2} (t ^ {2} - 3)}{(t ^ {2} - 1) ^ {2}} \\mathrm{d} t,"
+      },
+      {
+        "id": "s4",
+        "text": "\\int \\frac {\\mathrm{d} x}{x - 3 y} = \\int \\frac {1}{\\frac {t ^ {3}}{t ^ {2} - 1} - \\frac {3 t}{t ^ {2} - 1}} \\cdot \\frac {t ^ {2} (t ^ {2} - 3)}{(t ^ {2} - 1) ^ {2}} \\mathrm{d} t = \\int \\frac {t ^ {2} - 1}{t (t ^ {2} - 3)} \\cdot \\frac {t ^ {2} (t ^ {2} - 3)}{(t ^ {2} - 1) ^ {2}} \\mathrm{d} t"
+      },
+      {
+        "id": "s5",
+        "text": "= \\int \\frac {t}{t ^ {2} - 1} d t = \\frac {1}{2} \\ln | t ^ {2} - 1 | + C = \\frac {1}{2} \\ln | (x - y) ^ {2} - 1 | + C.\n$$"
+      }
+    ],
+    "final_answer": "= \\int \\frac {t}{t ^ {2} - 1} d t = \\frac {1}{2} \\ln | t ^ {2} - 1 | + C = \\frac {1}{2} \\ln | (x - y) ^ {2} - 1 | + C.",
+    "techniques_used": [
+      "分部积分法",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用凑微分还是显式换元？中间变量如何选取？",
+      "technique": "换元积分法",
+      "expected": "按根号/三角/指数结构选代换或凑微分，使积分化为基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出换元后的积分与代回原变量后的原函数（含 +C）。",
+      "technique": "换元积分法",
+      "expected": "= \\int \\frac {t}{t ^ {2} - 1} d t = \\frac {1}{2} \\ln | t ^ {2} - 1 | + C = \\frac {1}{2} \\ln | (x - y) ^ {2} - 1 | + C."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例26",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 145,
+    "syllabus_note": "隐函数化参数换元",
+    "commentary": "评注 隐函数的积分，通常是将其化为参数式函数来积分，其本质仍是换元积分法."
+  }
+}

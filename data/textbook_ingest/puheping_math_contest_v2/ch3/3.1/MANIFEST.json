@@ -1,0 +1,314 @@
+{
+  "section": "3.1",
+  "chapter": "第3章 一元函数积分学",
+  "title": "不定积分",
+  "page_range": [
+    132,
+    145
+  ],
+  "page_note": "merged MD §3.1 → ## 习题3.1; OCR PDF pages 132–145 (book TOC ~125–139)",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 26,
+  "starred_count": 1,
+  "starred": [
+    "例25*"
+  ],
+  "l3_counts": {
+    "math.calc.int.sub": 6,
+    "math.calc.int.special": 10,
+    "math.calc.int.parts": 9,
+    "math.calc.int.indef": 1
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch3-3.1-ex-01",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-02",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-03",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-04",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-05",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-06",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-07",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-08",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-09",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-10",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-11",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-12",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-13",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-14",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-15",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-16",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-17",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-18",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-19",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-20",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-21",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-22",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-23",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-24",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-25",
+    "tx-pu-math-contest-v2-ch3-3.1-ex-26"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-01",
+      "example_id": "例1",
+      "page": 133,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-02",
+      "example_id": "例2",
+      "page": 133,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-03",
+      "example_id": "例3",
+      "page": 134,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-04",
+      "example_id": "例4",
+      "page": 134,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-05",
+      "example_id": "例5",
+      "page": 134,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-06",
+      "example_id": "例6",
+      "page": 135,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-07",
+      "example_id": "例7",
+      "page": 135,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-08",
+      "example_id": "例8",
+      "page": 136,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-09",
+      "example_id": "例9",
+      "page": 137,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-10",
+      "example_id": "例10",
+      "page": 137,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-11",
+      "example_id": "例11",
+      "page": 137,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-12",
+      "example_id": "例12",
+      "page": 137,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-13",
+      "example_id": "例13",
+      "page": 138,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-14",
+      "example_id": "例14",
+      "page": 139,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-15",
+      "example_id": "例15",
+      "page": 139,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-16",
+      "example_id": "例16",
+      "page": 140,
+      "l3_id": "math.calc.int.parts",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-17",
+      "example_id": "例17",
+      "page": 140,
+      "l3_id": "math.calc.int.indef",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-18",
+      "example_id": "例18",
+      "page": 141,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-19",
+      "example_id": "例19",
+      "page": 141,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-20",
+      "example_id": "例20",
+      "page": 142,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-21",
+      "example_id": "例21",
+      "page": 142,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-22",
+      "example_id": "例22",
+      "page": 143,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-23",
+      "example_id": "例23",
+      "page": 144,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-24",
+      "example_id": "例24",
+      "page": 144,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-25",
+      "example_id": "例25*",
+      "page": 145,
+      "l3_id": "math.calc.int.special",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch3-3.1-ex-26",
+      "example_id": "例26",
+      "page": 145,
+      "l3_id": "math.calc.int.sub",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

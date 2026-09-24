@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-23",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\sin 10x}{\\sin x} \\mathrm{d}x$ .",
+  "answer": "分析 若能将分母中的 $\\sin x$ 消掉，积分就容易计算了。为此，可将分子做增项，再利用和差化积公式。解 将分子增项，再利用和差化积公式，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "三角有理式",
+    "三角恒等变形",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若能将分母中的 $\\sin x$ 消掉，积分就容易计算了。为此，可将分子做增项，再利用和差化积公式。解 将分子增项，再利用和差化积公式，有\n\n所以\n\n$$\n\\begin{array}{r l} & {\\sin 1 0 x = (\\sin 1 0 x - \\sin 8 x) + (\\sin 8 x - \\sin 6 x) + (\\sin 6 x - \\sin 4 x) + (\\sin 4 x - \\sin 2 x) + \\sin 2 x} \\\\ & {\\qquad = 2 \\sin x (\\cos 9 x + \\cos 7 x + \\cos 5 x + \\cos 3 x + \\cos x).} \\\\ & {\\qquad I = 2 \\int (\\cos 9 x + \\cos 7 x + \\cos 5 x + \\cos 3 x + \\cos x)   \\mathrm{d} x} \\\\ & {\\qquad = 2 \\left(\\frac {1}{9} \\sin 9 x + \\frac {1}{7} \\sin 7 x + \\frac {1}{5} \\sin 5 x + \\frac {1}{3} \\sin 3 x + \\sin x\\right) + C.} \\\\ & {\\text {注} \\quad \\text {一般有}    \\frac {\\sin 2 n x}{\\sin x} = 2 \\sum_ {k = 1} ^ {n} \\cos (2 k - 1) x,    \\frac {\\sin (2 n + 1) x}{\\sin x} = 1 + 2 \\sum_ {k = 1} ^ {n} \\cos 2 k x.} \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 若能将分母中的 $\\sin x$ 消掉，积分就容易计算了。为此，可将分子做增项，再利用和差化积公式。解 将分子增项，再利用和差化积公式，有"
+      },
+      {
+        "id": "s3",
+        "text": "所以"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\begin{array}{r l} & {\\sin 1 0 x = (\\sin 1 0 x - \\sin 8 x) + (\\sin 8 x - \\sin 6 x) + (\\sin 6 x - \\sin 4 x) + (\\sin 4 x - \\sin 2 x) + \\sin 2 x} \\\\ & {\\qquad = 2 \\sin x (\\cos 9 x + \\cos 7 x + \\cos 5 x + \\cos 3 x + \\cos x).} \\\\ & {\\qquad I = 2 \\int (\\cos 9 x + \\cos 7 x + \\cos 5 x + \\cos 3 x + \\cos x)   \\mathrm{d} x} \\\\ & {\\qquad = 2 \\left(\\frac {1}{9} \\sin 9 x + \\frac {1}{7} \\sin 7 x + \\frac {1}{5} \\sin 5 x + \\frac {1}{3} \\sin 3 x + \\sin x\\right) + C.} \\\\ & {\\text {注} \\quad \\text {一般有}    \\frac {\\sin 2 n x}{\\sin x} = 2 \\sum_ {k = 1} ^ {n} \\cos (2 k - 1) x,    \\frac {\\sin (2 n + 1) x}{\\sin x} = 1 + 2 \\sum_ {k = 1} ^ {n} \\cos 2 k x.} \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "分析 若能将分母中的 $\\sin x$ 消掉，积分就容易计算了。为此，可将分子做增项，再利用和差化积公式。解 将分子增项，再利用和差化积公式，有",
+    "techniques_used": [
+      "三角有理式",
+      "三角恒等变形",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "三角有理式",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "三角恒等变形",
+      "expected": "分析 若能将分母中的 $\\sin x$ 消掉，积分就容易计算了。为此，可将分子做增项，再利用和差化积公式。解 将分子增项，再利用和差化积公式，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例23",
+    "quality_basis": "source_textbook_worked_example",
+    "syllabus_note": "三角恒等增项",
+    "page": 144
+  }
+}
