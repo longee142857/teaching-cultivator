@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-06",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.taylor.proof",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "若函数 $f(x)$ 对于一切 $u \\neq v$ 均有 $\\frac{f(u) - f(v)}{u - v} = \\alpha f'(u) + \\beta f'(v)$ ，其中， $\\alpha, \\beta > 0, \\alpha + \\beta = 1$ 。试证 $f(x)$ 是一次或二次函数。",
+  "answer": "$f(x)$ 是一次或二次函数",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 从所给等式可知 $f(x)$ 具有任意阶导数。只需证明 $f'(x)$ 或 $f''(x)$ 为常数。另一方面，将所给等式转化为 $f(x)$ 的微分方程，求解方程，问题也就解决了。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为\n\n$$\n\\frac {f (u) - f (v)}{u - v} = \\alpha f ^ {\\prime} (u) + \\beta f ^ {\\prime} (v),\\tag{①}\n$$\n\n交换 $u, v$ 可得\n\n$$\n\\frac {f (v) - f (u)}{v - u} = \\alpha f ^ {\\prime} (v) + \\beta f ^ {\\prime} (u).\\tag{②}\n$$\n\n当 $\\alpha \\neq \\beta$ 时，①-②式有\n\n$$\n(\\alpha - \\beta) (f ^ {\\prime} (u) - f ^ {\\prime} (v)) = 0,\n$$\n\n故 $f^{\\prime}(x)$ 为常数. 所以 $f(x)$ 是一次函数.\n\n当 $\\alpha = \\beta = \\frac{1}{2}$ 时，所给等式变形为\n\n$$\nf (u) - f (v) = \\frac {1}{2} (u - v) \\left(f ^ {\\prime} (u) + f ^ {\\prime} (v)\\right),\n$$\n\n两边分别对 $u, v$ 求导，整理得\n\n$$\nf ^ {\\prime} (u) - f ^ {\\prime} (v) = (u - v) f ^ {\\prime \\prime} (u), \\quad f ^ {\\prime} (u) - f ^ {\\prime} (v) = (u - v) f ^ {\\prime \\prime} (v).\n$$\n\n由此得 $f''(u)=f''(v)$ 。即知 $f''(x)$ 为常数，所以 $f(x)$ 是二次函数。\n\n反之，易验证：若 $f(x)$ 是一次或二次函数，对任意 $\\alpha, \\beta > 0$ ， $\\alpha + \\beta = 1$ ，均有等式\n\n$$\n\\frac {f (u) - f (v)}{u - v} = \\alpha f ^ {\\prime} (u) + \\beta f ^ {\\prime} (v).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 取 $u = x, v = 0$ ，则有\n\n$$\nf (x) - f (0) = x \\left(\\alpha f ^ {\\prime} (x) + \\beta f ^ {\\prime} (0)\\right),\n$$\n\n即\n\n$$\nf ^ {\\prime} (x) - \\frac {1}{\\alpha x} f (x) = \\frac {1}{\\alpha x} f (0) - \\frac {\\beta}{\\alpha} f ^ {\\prime} (0).\n$$\n\n这是一阶线性微分方程，其通解为\n\n$$\nf (x) = f (0) + f ^ {\\prime} (0) x + C x ^ {\\frac {1}{\\alpha}}.\n$$\n\n将通解代入关系式 $\\frac{f(u) - f(v)}{u - v} = \\alpha f'(u) + \\beta f'(v)$ ，化简得\n\n$$\n\\frac {C}{u - v} \\left(u ^ {\\frac {1}{\\alpha}} - v ^ {\\frac {1}{\\alpha}}\\right) = C \\left(u ^ {\\frac {1}{\\alpha} - 1} + \\frac {\\beta}{\\alpha} v ^ {\\frac {1}{\\alpha} - 1}\\right),\n$$\n\n取 $u = 0$ ，可得 $\\alpha = \\beta = \\frac{1}{2}$ 或 $C = 0(\\alpha \\neq \\beta)$ .所以 $f(x)$ 是一次或二次函数"
+      }
+    ],
+    "final_answer": "$f(x)$ 是一次或二次函数",
+    "techniques_used": [
+      "单调性",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用罗尔/拉格朗日/柯西中值还是泰勒公式？是否需要构造辅助函数？",
+      "technique": "单调性",
+      "expected": "按结论形态选中值定理或泰勒展开；达布型问题常用费马+辅助函数或介值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出完成证明的关键一步（中值关系或估计式）。",
+      "technique": "辅助函数",
+      "expected": "$f(x)$ 是一次或二次函数"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 106,
+    "syllabus_note": "函数方程推一次/二次",
+    "commentary": "评注 记 $u = x_0, v = x_1$ ，题设条件可写成： $\\frac{f(x_0)}{x_0 - x_1} + \\frac{f(x_1)}{x_1 - x_0} = \\alpha f'(x_0) + \\beta f'(x_1)$ 。该题结论可推广成：设 $f(x)$ 在 $\\mathbb{R}$ 上 $n$ 阶可导，若对任意 $n + 1$ 个不同的点 $x_0, x_1, \\dots, x_n$ ，都有\n\n$$\n\\sum_ {i = 0} ^ {n} \\frac {f (x _ {i})}{(x _ {i} - x _ {0}) \\cdots (x _ {i} - x _ {i - 1}) (x _ {i} - x _ {i + 1}) \\cdots (x _ {i} - x _ {n})} = \\sum_ {i = 0} ^ {n} \\alpha_ {i} f ^ {(n)} (x _ {i}),\n$$\n\n其中 $\\alpha_{0},\\alpha_{1},\\cdots,\\alpha_{n}$ 是 $n+1$ 个常数. 则 $f(x)$ 是次数不超过 $n+1$ 的多项式（见综合题 2 $^{*}$ 第 29 题）."
+  }
+}

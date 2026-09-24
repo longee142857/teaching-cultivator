@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-11",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "对每一个正整数 $n$ ，令 $p_n = \\left(1 + \\frac{1}{n}\\right)^n$ ， $q_n = \\left(1 + \\frac{1}{n}\\right)^{n+1}$ ， $h_n = \\frac{2p_nq_n}{p_n + q_n}$ 。证明 $\\{h_n\\}$ 严格单调递增。",
+  "answer": "$g'(x)>0$ 。因而 $g(x)$ 在 $x\\geqslant1$ 时严格单调递增，故 $h_{n}=\\exp g(n)$ 是一严格增序列。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "辅助函数",
+    "单调性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 当数列的单调性不易判断时，通常借助对应函数来判断.\n\n容易得出 $h_n = 2(n + 1)^{n + 1}n^{-n}(2n + 1)^{-1}$ ，取对数后可做辅助函数\n\n$$\ng (x) = \\ln 2 + (x + 1) \\ln (x + 1) - x \\ln x - \\ln (2 x + 1) (x \\geqslant 1).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因为\n\n$$\ng ^ {\\prime} (x) = \\ln (x + 1) - \\ln x - \\frac {2}{2 x + 1},\n$$\n\n其符号不易判断，再求导数得\n\n$$\ng ^ {\\prime \\prime} (x) = \\frac {1}{x + 1} - \\frac {1}{x} + \\frac {4}{(2 x + 1) ^ {2}} = - \\frac {1}{x (x + 1) (2 x + 1) ^ {2}} <   0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "因此 $g'$ 在 $x \\geqslant 1$ 时严格单调递减. 由于\n\n$$\n\\lim _ {x \\rightarrow + \\infty} g ^ {\\prime} (x) = \\lim _ {x \\rightarrow + \\infty} \\ln \\left(\\frac {x + 1}{\\dot {x}}\\right) - \\lim _ {x \\rightarrow + \\infty} \\frac {2}{2 x + 1} = 0,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $g'(x)>0$ 。因而 $g(x)$ 在 $x\\geqslant1$ 时严格单调递增，故 $h_{n}=\\exp g(n)$ 是一严格增序列。"
+      }
+    ],
+    "final_answer": "$g'(x)>0$ 。因而 $g(x)$ 在 $x\\geqslant1$ 时严格单调递增，故 $h_{n}=\\exp g(n)$ 是一严格增序列。",
+    "techniques_used": [
+      "辅助函数",
+      "单调性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "辅助函数",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "单调性",
+      "expected": "$g'(x)>0$ 。因而 $g(x)$ 在 $x\\geqslant1$ 时严格单调递增，故 $h_{n}=\\exp g(n)$ 是一严格增序列。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 109,
+    "syllabus_note": "数列单调性",
+    "commentary": "评注 用单调性来证明不等式是很常用的方法，其步骤如下：\n\n(1) 将不等式变形为 $F(x) \\geqslant 0$ 或 $F(x) \\leqslant 0$ 的形式，使 $F'(x)$ 容易计算；\n\n(2) 根据 $F'(x)$ 的符号讨论 $F(x)$ 的增减性或极值，由此确定 $F(x)$ 的符号；\n\n(3) 当 $F'(x)$ 的符号不易判断时，可再次求导利用单调性做判别；\n\n(4) 当直接利用单调性证明有困难时，要结合具体情况做改进与变通，如前面例 9 和例 10."
+  }
+}

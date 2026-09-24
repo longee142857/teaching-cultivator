@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-17",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 n 为正整数， $f(x)=x^{n}+x-1$ 。证明：\n\n（1）若 $n$ 为奇数，则 $f(x)$ 存在唯一零点，是正的（记为 $x_{n}$ ）；若 $n$ 为偶数，则恰存在两个零点，一正（仍记为 $x_{n}$ ），一负（记为 $\\overline{x}_n$ ）。\n\n(2) $\\{x_{n}\\}$ 与 $\\{\\overline{x}_n\\}$ 均为严格单调递增的，并求 $\\lim_{n\\to \\infty}x_n$ 与 $\\lim_{n\\to \\infty}\\overline{x}_n$",
+  "answer": "$b = -1$ ，即 $\\lim_{n \\to \\infty} \\overline{x}_n = -1$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "反证法",
+    "单调性",
+    "极值",
+    "最值",
+    "凹凸性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）函数的具体表达式已知，零点的存在性可用介值定理证明，唯一性可根据函数的单调性或最值来判断.\n\n（2）数列的单调性可用对应的函数的导数来判断；极限要存在，还得说明数列有上界."
+      },
+      {
+        "id": "s2",
+        "text": "(1) $f^{\\prime}(x) = nx^{n - 1} + 1$\n\n（1）当 $n$ 为奇数时， $n - 1$ 为偶数， $f'(x) > 0$ ， $f(x)$ 严格单调递增。又 $f(0) = -1 < 0, f(1) = 1 > 0$ ，故 $f(x)$ 有且仅有 1 个零点 $x_n$ ，且 $0 < x_n < 1$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 n 为偶数时，n-1 为奇数.\n\n在区间 $(0, +\\infty)$ 内， $f'(x) > 0$ ， $f(0) = -1$ ， $f(1) = 1$ ，所以在区间 $(0, +\\infty)$ 内 $f(x)$ 有且仅有 1 个零点 $x_n$ ，且 $0 < x_n < 1$ 。\n\n在区间 $(- \\infty, -1)$ 内， $f'(x) = nx^{n-1} + 1 < 0, f(-2) > 0, f(-1) < 0, f(x)$ 在区间 $(- \\infty, -1)$ 内有且仅有1个零点 $\\overline{x}_n$ ，且 $-2 < \\overline{x}_n < -1$ .\n\n在区间 $[-1,0]$ 内， $f(0) = -1 < 0$ ， $f(-1) = -1 < 0$ 。由 $f'(x) = nx^{n-1} + 1 = 0$ ，得驻点 $x_0 = -\\left(\\frac{1}{n}\\right)^{\\frac{1}{n-1}}$\n\n$$\nf \\left(x _ {0}\\right) = \\left[ - \\left(\\frac {1}{n}\\right) ^ {\\frac {1}{n - 1}} \\right] ^ {n} - \\left(\\frac {1}{n}\\right) ^ {\\frac {1}{n - 1}} - 1 = \\left(\\frac {1}{n}\\right) ^ {\\frac {n}{n - 1}} - \\left(\\frac {1}{n}\\right) ^ {\\frac {1}{n - 1}} - 1 = \\left(\\frac {1}{n}\\right) ^ {\\frac {1}{n - 1}} \\left(\\frac {1}{n} - 1\\right) - 1 <   0,\n\nf ^ {\\prime \\prime} (x) = n (n - 1) x ^ {n - 2} > 0.\n$$\n\n曲线 $y = f(x)$ 在区间 $[-1,0]$ 内是下凸的，唯一极小值也是最小值 $f(x_0) < 0$ ; 最大值 $\\max \\{f(-1), f(0)\\} = -1 < 0$ ，所以在区间 $[-1,0]$ 上均有 $f(x) < 0$ . 无零点. (1) 证毕."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 对于给定的正整数 n，记对应的正零点 $x_{n} = \\varphi(n)$ ，满足\n\n$$\n(\\varphi (n)) ^ {n} + \\varphi (n) - 1 = 0.\\tag{①}\n$$\n\n为了利用导数来判断单调性，将①式改写为连续变量的隐函数方程\n\n$$\n(\\varphi (u)) ^ {u} + \\varphi (u) - 1 = 0 \\quad (u \\geqslant 1).\n$$\n\n两边对 $u$ 求导，得\n\n$$\n\\mathrm{e} ^ {u \\ln \\varphi (u)} \\left(\\ln \\varphi (u) + \\frac {u \\varphi^ {\\prime} (u)}{\\varphi (u)}\\right) + \\varphi^ {\\prime} (u) = 0 \\Rightarrow \\varphi^ {\\prime} (u) = - \\frac {(\\varphi (u)) ^ {u} \\ln \\varphi (u)}{u \\varphi^ {u - 1} (u) + 1}.\n$$\n\n由于当 $u = n$ 时， $\\varphi(u) = x_n, 0 < x_n < 1$ ，所以 $\\ln \\varphi(u) < 0, \\varphi'(u) > 0$ 。从而知 $\\{x_n\\}$ 严格单调递增，又因 $0 < x_n < 1$ ，所以 $\\lim_{n \\to \\infty} x_n$ 存在。记 $\\lim_{n \\to \\infty} x_n = a$ ，则有 $0 < a \\leqslant 1$ 。\n\n以下证明 $a = 1$ 。用反证法，设 $0 < a < 1$ 。由于 $\\{x_{n}\\}$ 严格单调递增且趋于 $a$ ，所以 $x_{n} < a$ ，则\n\n$$\n0 = x _ {n} ^ {n} + x _ {n} - 1 <   a ^ {n} + a - 1.\n$$\n\n令 $n \\to \\infty$ ，并注意到 $\\lim_{n \\to \\infty} a^n = 0$ ，可得 $a > 1$ ，矛盾。所以 $a = 1$ 。\n\n以下证明：当 $n$ 为偶数时， $\\{\\overline{x}_n\\}$ 严格单调递增，且 $\\lim_{n\\to \\infty}\\overline{x}_n = -1$\n\n做变换 $y = -x$ ，原函数成为 $f(-y) = (-y)^n - y - 1 = y^n - y - 1$ ，记为 $\\overline{f}(y) = y^n - y - 1$ 。因为\n\n$$\n\\bar {f} ^ {\\prime} (y) = n y ^ {n - 1} - 1 > 0, y \\in (1, + \\infty),\n$$\n\n又 $\\overline{f}(1) = -1 < 0, \\overline{f}(+\\infty) > 0$ ，所以当 $y \\in (1, +\\infty)$ 时， $\\overline{f}(y)$ 存在唯一零点 $y_n, 1 < y_n < +\\infty$ .\n\n记 $y_{n} = \\psi (n)\\in (1, + \\infty)$ ，它满足 $(\\psi (n))^n -\\psi (n) - 1 = 0$ ，对应隐函数方程\n\n$$\n(\\psi (v)) ^ {v} - \\psi (v) - 1 = 0.\n$$\n\n两边对 $\\nu$ 求导，得\n\n$$\ne ^ {\\nu \\ln \\psi (\\nu)} \\left(\\ln \\psi (\\nu) + \\frac {\\nu \\psi^ {\\prime} (\\nu)}{\\psi (\\nu)}\\right) - \\psi^ {\\prime} (\\nu) = 0 \\Rightarrow \\psi^ {\\prime} (\\nu) = - \\frac {(\\psi (\\nu)) ^ {\\nu} \\ln \\psi (\\nu)}{\\nu \\psi^ {\\nu - 1} (\\nu) - 1}.\n$$\n\n由于当 $v = n$ 时， $\\psi(v) = y_n, 1 < y_n < +\\infty, \\ln \\psi(v) > 0$ ，所以 $\\psi'(v) < 0$ 。从而 $\\{y_n\\}$ 严格单调递减， $\\{\\overline{x}_n\\} = \\{-y_n\\}$ ，所以 $\\{\\overline{x}_n\\}$ 严格单调递增，且 $\\overline{x}_n < -1$ ，所以 $\\lim_{n \\to \\infty} \\overline{x}_n \\triangleq b$ 存在，且有 $b \\leqslant -1$ 。\n\n以下证明 $b = -1$ 。用反证法，设 $b < -1$ ，由于 $\\{\\overline{x}_n\\}$ 严格单调递增且趋于 $b$ ，所以 $\\overline{x}_n < b < -1$ ，有\n\n$$\n1 - \\overline {{{x}}} _ {n} = \\overline {{{x}}} _ {n} ^ {n} > b ^ {n} > 1, (\\text {由于} n \\text {为偶数}) \\Rightarrow \\frac {1}{b ^ {n}} - \\frac {\\overline {{{x}}} _ {n}}{b ^ {n}} > 1.\n$$\n\n令 $n \\to \\infty$ ，并注意到 $\\lim_{n \\to \\infty} b^n = \\infty$ ，得 $0 \\geqslant 1$ ，矛盾。所以 $b = -1$ ，即 $\\lim_{n \\to \\infty} \\overline{x}_n = -1$ 。"
+      }
+    ],
+    "final_answer": "$b = -1$ ，即 $\\lim_{n \\to \\infty} \\overline{x}_n = -1$ 。",
+    "techniques_used": [
+      "反证法",
+      "单调性",
+      "极值",
+      "最值",
+      "凹凸性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "单调性",
+      "expected": "$b = -1$ ，即 $\\lim_{n \\to \\infty} \\overline{x}_n = -1$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例17*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 113,
+    "starred": true,
+    "syllabus_note": "根的存在/个数",
+    "commentary": "评注 数列 $\\{x_{n}\\}$ 的单调性也可用初等运算来得到：由 $x_{n + 1}^{n + 1} + x_{n + 1} - 1 = 0$ 与 $x_{n}^{n} + x_{n} - 1 = 0$ ，有\n\n$$\n\\begin{array}{r l} & 0 = (x _ {n + 1} ^ {n + 1} + x _ {n + 1} - 1) - (x _ {n} ^ {n} + x _ {n} - 1) = x _ {n + 1} ^ {n + 1} - x _ {n} ^ {n} + (x _ {n + 1} - x _ {n}) \\\\ & \\quad = x _ {n + 1} ^ {n + 1} - x _ {n} ^ {n + 1} + x _ {n} ^ {n + 1} - x _ {n} ^ {n} + (x _ {n + 1} - x _ {n}) = x _ {n + 1} ^ {n + 1} - x _ {n} ^ {n + 1} + x _ {n} ^ {n + 1} - x _ {n} ^ {n} + (x _ {n + 1} - x _ {n}) \\\\ & \\quad = (x _ {n + 1} - x _ {n}) (x _ {n + 1} ^ {n} + x _ {n + 1} ^ {n - 1} x _ {n} + \\dots + x _ {n} ^ {n}) + x _ {n} ^ {n} (x _ {n} - 1) + (x _ {n + 1} - x _ {n}) \\\\ & \\quad = (x _ {x + 1} - x _ {n}) (x _ {n + 1} ^ {n} + x _ {n + 1} ^ {n - 1} x _ {n} + \\dots + x _ {n} ^ {n} + 1) + x _ {n} ^ {n"
+  }
+}

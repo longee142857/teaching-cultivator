@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-12",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a > 0, b > 0, a + b = 1$ ，证明 $a^b + b^a \\leqslant \\sqrt{a} + \\sqrt{b} \\leqslant a^a + b^b$ .",
+  "answer": "不等式①成立，从而 $f'(x) < f'(b) \\leqslant 0$ ， $f(x)$ 在 $(0, b]$ 上单调递减，所证不等式成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "不等式估计"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 利用关系式 $a + b = 1$ 可将不等式中的两个参数化为一个来处理。为避免讨论幂指函数，可令 $f(x) = a^x + b^{1 - x}$ ，问题转化为证明不等式 $f(b) \\leqslant f\\left(\\frac{1}{2}\\right) \\leqslant f(a)$ 。因而可考虑用函数的单调性来证明。"
+      },
+      {
+        "id": "s2",
+        "text": "当 $a = b = \\frac{1}{2}$ 时，显然不等式中的等号成立。当 $a \\neq b$ 时，不妨设 $0 < a < \\frac{1}{2} < b < 1$ ，考虑函数 $f(x) = a^x + b^{1 - x}$ ，只需证明 $f(x)$ 在 $(0, b]$ 上单调递减，则有 $f(b) \\leqslant f\\left(\\frac{1}{2}\\right) \\leqslant f(a)$ ，不等式得证。"
+      },
+      {
+        "id": "s3",
+        "text": "对 $x \\in (0, b)$ ，因为 $f'(x) = a^x \\ln a - b^{1 - x} \\ln b$ ，而 $f''(x) = a^x (\\ln a)^2 + b^{1 - x} (\\ln b)^2 > 0$ ，所以 $f'(x)$ 单调递增，有 $f'(x) < f'(b)$ 。下证 $f'(b) \\leqslant 0$ ，即证"
+      },
+      {
+        "id": "s4",
+        "text": "$$\na ^ {b} \\ln a \\leqslant b ^ {a} \\ln b \\Leftrightarrow a ^ {1 - a} \\ln a \\leqslant b ^ {1 - b} \\ln b \\Leftrightarrow \\frac {\\ln a ^ {a}}{a ^ {a}} \\leqslant \\frac {\\ln b ^ {b}}{b ^ {b}}.\\tag{①}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "令 $g(x) = \\frac{\\ln x}{x} (0 < x < 1)$ . 因为 $g'(x) = \\frac{1}{x^2} (1 - \\ln x) > 0$ , 所以 $g(x) = \\frac{\\ln x}{x}$ 在 $(0,1)$ 内单调递增. 问题归结为证明 $0 < a^a < b^b < 1$ , 这等价于 $\\frac{\\ln a}{1 - a} < \\frac{\\ln b}{1 - b}$ , 而这由函数 $h(x) = \\frac{\\ln x}{1 - x}$ 在 $(0,1)$ 内单调递增得到. 这是因为"
+      },
+      {
+        "id": "s6",
+        "text": "$$\nh ^ {\\prime} (x) = \\frac {1}{(1 - x) ^ {2}} \\left(\\ln x - \\frac {x - 1}{x}\\right) > 0.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "故不等式①成立，从而 $f'(x) < f'(b) \\leqslant 0$ ， $f(x)$ 在 $(0, b]$ 上单调递减，所证不等式成立."
+      }
+    ],
+    "final_answer": "不等式①成立，从而 $f'(x) < f'(b) \\leqslant 0$ ， $f(x)$ 在 $(0, b]$ 上单调递减，所证不等式成立.",
+    "techniques_used": [
+      "单调性",
+      "不等式估计"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "不等式估计",
+      "expected": "不等式①成立，从而 $f'(x) < f'(b) \\leqslant 0$ ， $f(x)$ 在 $(0, b]$ 上单调递减，所证不等式成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 110,
+    "commentary": "评注 利用单调性证明含字母参数的不等式，一定要将所证不等式做适当变形，以便辅助函数的选取，如本题中的①式；要使辅助函数的形式尽量简单，如本题中 $f(x)$ 的选取（而不是简单的将 $a$ 换为 $x$ ）；所选的辅助函数在所考虑的区间中要有单调性，如本题中证明 $a^a < b^b$ 选取了 $h(x) = \\frac{\\ln x}{1 - x}$ ，而不是选取 $h(x) = x^x$ （因为该函数在(0,1)内不单调）。"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-26",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明：（1）若 $x > 0$ ，则 $\\frac{4}{\\pi^2} < \\frac{1}{(\\arctan x)^2} - \\frac{1}{x^2} < \\frac{2}{3}$ ；（2）若 $x \\neq 0$ ，则 $\\left|\\frac{1}{\\arctan x} - \\frac{1}{x}\\right| < \\frac{2}{\\pi}$ .",
+  "answer": "当 $x \\neq 0$ 时，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调性",
+    "辅助函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）不等式两边均为数，只需证明它们分别是中间函数的最大与最小值（或上下确界）；\n\n(2) 绝对值内的函数是奇函数，只需证明当 x > 0 时，有 $\\frac{1}{\\arctan x} - \\frac{1}{x} < \\frac{2}{\\pi}$ ."
+      },
+      {
+        "id": "s2",
+        "text": "(1) 令 $f(x) = \\frac{1}{(\\arctan x)^2} - \\frac{1}{x^2} (x > 0)$ ，则\n\n$$\nf ^ {\\prime} (x) = \\frac {- 2}{(1 + x ^ {2}) (\\arctan x) ^ {3}} + \\frac {2}{x ^ {3}} = \\frac {2 [ (1 + x ^ {2}) (\\arctan x) ^ {3} - x ^ {3} ]}{x ^ {3} (1 + x ^ {2}) (\\arctan x) ^ {3}}.\\tag{①}\n$$\n\n下证 $(1 + x^{2})(\\arctan x)^{3} - x^{3} < 0$ ，即 $\\arctan x < \\frac{x}{\\sqrt[3]{1 + x^2}}.$\n\n令 $g(x) = \\arctan x - \\frac{x}{\\sqrt[3]{1 + x^2}} (x > 0)$ ，因为\n\n$$\ng ^ {\\prime} (x) = \\frac {1}{1 + x ^ {2}} - \\frac {1}{\\sqrt [ 3 ]{1 + x ^ {2}}} - \\frac {2 x ^ {2}}{3 \\sqrt [ 3 ]{(1 + x ^ {2}) ^ {4}}} <   0,\n$$\n\n所以当 $x > 0$ 时， $g(x)$ 单调递减。又 $g(0) = 0$ ，故 $g(x) < 0$ ，即有 $\\arctan x < \\frac{x}{\\sqrt[3]{1 + x^2}}$ 。由①式，知当 $x > 0$ 时， $f'(x) < 0$ ，从而 $f(x)$ 单调递减。所以 $\\lim_{x \\to +\\infty} f(x) < f(x) < \\lim_{x \\to 0^+} f(x)$ 。\n\n由于\n\n$$\n\\begin{array}{r l} \\lim _ {x \\to 0 ^ {+}} f (x) & = \\lim _ {x \\to 0 ^ {+}} \\frac {x ^ {2} - (\\arctan x) ^ {2}}{x ^ {2} (\\arctan x) ^ {2}} = \\lim _ {x \\to 0 ^ {+}} \\frac {x + \\arctan x}{x} \\cdot \\frac {x - \\arctan x}{x ^ {3}} \\\\ & = 2 \\lim _ {x \\to 0 ^ {+}} \\frac {x - \\arctan x}{x ^ {3}} = 2 \\lim _ {x \\to 0 ^ {+}} \\frac {1 - \\frac {1}{1 + x ^ {2}}}{3 x ^ {2}} = \\frac {2}{3}; \\\\ \\lim _ {x \\to + \\infty} f (x) & = \\frac {4}{\\pi^ {2}}. \\end{array}\n$$\n\n所以\n\n$$\n\\frac {4}{\\pi^ {2}} <   \\frac {1}{(\\arctan x) ^ {2}} - \\frac {1}{x ^ {2}} <   \\frac {2}{3} (x > 0).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 令 $h(x) = \\frac{1}{\\arctan x} - \\frac{1}{x} (x \\neq 0)$ ，则\n\n$$\nh ^ {\\prime} (x) = \\frac {1}{(1 + x ^ {2}) (\\arctan x) ^ {2}} - \\frac {1}{x ^ {2}} = \\frac {(1 + x ^ {2}) (\\arctan x) ^ {2} - x ^ {2}}{x ^ {2} (1 + x ^ {2}) (\\arctan x) ^ {2}}.\n$$\n\n类似于（1），易证当 $x > 0$ 时，有 $\\arctan x > \\frac{x}{\\sqrt{1 + x^2}}$ ，所以当 $x > 0$ 时， $h'(x) > 0$ ， $h(x)$ 单调递增.由于 $\\lim_{x\\to +\\infty}h(x) = \\frac{2}{\\pi}$ ，所以当 $x > 0$ 时， $h(x) <   \\frac{2}{\\pi}$ ，即\n\n$$\n\\frac {1}{\\arctan x} - \\frac {1}{x} <   \\frac {2}{\\pi}.\n$$\n\n由于 $h(x)$ 是奇函数，所以当 $x \\neq 0$ 时，有\n\n$$\n\\left| \\frac {1}{\\arctan x} - \\frac {1}{x} \\right| <   \\frac {2}{\\pi}.\n$$"
+      }
+    ],
+    "final_answer": "当 $x \\neq 0$ 时，有",
+    "techniques_used": [
+      "单调性",
+      "辅助函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "单调性",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "辅助函数",
+      "expected": "当 $x \\neq 0$ 时，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例26",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 118,
+    "commentary": "评注 若所证不等式两边均为数值，则只需证明它们分别是中间函数的最大值与最小值（或上下确界）."
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-36",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.concavity",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求曲线 $2y^{3} - 2y^{2} + 2xy - x^{2} = 1$ 在点(1,1)处的曲率半径.",
+  "answer": "曲线 $2y^3 - 2y^2 + 2xy - x^2 = 1$ 在(1,1)处的曲率为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "曲率",
+    "极值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 用隐函数求导法则得到 $y'$ 和 $y''$ ，代入曲率公式.\n\n方程两端对 $x$ 求导，得\n\n$$\n6 y ^ {2} y ^ {\\prime} - 4 y y ^ {\\prime} + 2 y + 2 x y ^ {\\prime} - 2 x = 0,\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "所以 $y' = \\frac{x - y}{3y^2 - 2y + x}$ . 在点(1,1)处有 $y' = 0$ .\n\n将①式两端对 $x$ 求导，得\n\n$$\n\\begin{array}{c} (6 y y ^ {\\prime} - 2 y ^ {\\prime} + 1) y ^ {\\prime} + (3 y ^ {2} - 2 y + x) y ^ {\\prime \\prime} + y ^ {\\prime} - 1 = 0, \\\\ y ^ {\\prime \\prime} = - \\frac {(6 y y ^ {\\prime} - 2 y ^ {\\prime} + 1) y ^ {\\prime} + y ^ {\\prime} - 1}{3 y ^ {2} - 2 y + x}. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "在点(1,1)处有 $y'' = \\frac{1}{2}$ . 故曲线 $2y^3 - 2y^2 + 2xy - x^2 = 1$ 在(1,1)处的曲率为\n\n$$\n\\kappa | _ {(1 1)} = \\frac {\\left| y ^ {\\prime \\prime} \\right|}{(1 + y ^ {\\prime 2}) ^ {\\frac {3}{2}}} = \\frac {1}{2}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "曲率半径为 $R = \\frac{1}{\\kappa} = 2$"
+      }
+    ],
+    "final_answer": "曲线 $2y^3 - 2y^2 + 2xy - x^2 = 1$ 在(1,1)处的曲率为",
+    "techniques_used": [
+      "曲率",
+      "极值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "计算前需验证哪些可导/连续条件？关键求导步骤是什么？",
+      "technique": "曲率",
+      "expected": "确认定义域与可导性后按法则求导并求驻点或表达式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终关于拐点、渐近线或曲率的结论。",
+      "technique": "极值",
+      "expected": "曲线 $2y^3 - 2y^2 + 2xy - x^2 = 1$ 在(1,1)处的曲率为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例36",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 125,
+    "syllabus_note": "曲率半径"
+  }
+}

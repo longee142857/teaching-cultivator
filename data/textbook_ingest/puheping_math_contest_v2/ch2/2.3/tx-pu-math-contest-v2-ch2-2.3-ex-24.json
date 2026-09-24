@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-24",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.mono_ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $y = f(x)$ 在点 $x_{0}$ 处 $n (n \\geqslant 3)$ 阶可导，且 $f^{(k)}(x_{0}) = 0 (k = 1, 2, \\cdots, n - 1)$ . 证明若 $f^{(n)}(x_{0}) \\neq 0$ ，当 n 为奇数时， $x_{0}$ 不是函数 $f(x)$ 的极值点， $(x_{0}, f(x_{0}))$ 是曲线 $y = f(x)$ 的拐点；当 n 为偶数时， $x_{0}$ 是函数 $f(x)$ 的极值点， $(x_0, f(x_0))$ 不是曲线 $y = f(x)$ 的拐点.",
+  "answer": "点, $(x_0, f(x_0))$ 不是曲线 $y = f(x)$ 的拐点. 评注 该题结论可作为定理来用.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒公式",
+    "极值",
+    "凹凸性",
+    "单调性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $x_{0}$ 是否是 $f(x)$ 的极值点，在于 $f'(x)$ 在点 $x_{0}$ 的左、右两侧附近是否异号； $(x_{0}, f(x_{0}))$ 是否为曲线的拐点，在于 $f''(x)$ 在点 $x_{0}$ 的左、右两侧附近是否异号。由于 $f^{(k)}(x_{0}) = 0 (k = 1, 2, \\cdots, n - 1)$ ，所以只需将 $f'(x)$ 与 $f''(x)$ 在点 $x_{0}$ 处分别做 n-1 与 n-2 阶泰勒展开。"
+      },
+      {
+        "id": "s2",
+        "text": "将 $f'(x)$ 与 $f''(x)$ 在点 $x_0$ 处分别做 $n - 1$ 与 $n - 2$ 阶泰勒展开，有\n\n$$\nf ^ {\\prime} (x) = \\frac {f ^ {(n)} \\left(x _ {0}\\right)}{(n - 1) !} \\left(x - x _ {0}\\right) ^ {n - 1} + o \\left(\\left(x - x _ {0}\\right) ^ {n - 1}\\right),\\tag{①}\n\nf ^ {n} (x) = \\frac {f ^ {(n)} \\left(x _ {0}\\right)}{(n - 2) !} \\left(x - x _ {0}\\right) ^ {n - 2} + o \\left(\\left(x - x _ {0}\\right) ^ {n - 2}\\right).\\tag{②}\n$$\n\n由于 $f^{(n)}(x_0)\\neq 0$ ，不妨设 $f^{(n)}(x_0) > 0$\n\n（1）当 $n$ 为奇数时，由①式知 $f'(x)$ 在点 $x_0$ 的左、右两侧附近是同号的（为正），由②式知 $f''(x)$ 在点 $x_0$ 的左、右两侧附近是异号的，所以 $x_0$ 不是函数的极值点， $(x_0, f(x_0))$ 是曲线 $y = f(x)$ 的拐点."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 $n$ 为偶数时, 由①式知 $f'(x)$ 在点 $x_0$ 的左、右两侧附近是异号的, 由②式知 $f''(x)$ 在点 $x_0$ 的左、右两侧附近是同号的 (为正), 所以 $x_0$ 是函数的极值点, $(x_0, f(x_0))$ 不是曲线 $y = f(x)$ 的拐点. 评注 该题结论可作为定理来用."
+      }
+    ],
+    "final_answer": "点, $(x_0, f(x_0))$ 不是曲线 $y = f(x)$ 的拐点. 评注 该题结论可作为定理来用.",
+    "techniques_used": [
+      "泰勒公式",
+      "极值",
+      "凹凸性",
+      "单调性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "构造什么辅助函数（或直接对目标函数求导）来讨论单调/极值/根的个数？",
+      "technique": "极值",
+      "expected": "求导分析符号变化；驻点用一阶/二阶充分条件；根的个数结合零点与单调性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "单调区间、极值或不等式的最终结论是什么？",
+      "technique": "极值",
+      "expected": "点, $(x_0, f(x_0))$ 不是曲线 $y = f(x)$ 的拐点. 评注 该题结论可作为定理来用."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例24",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 117,
+    "syllabus_note": "高阶导数极值/拐点判别"
+  }
+}

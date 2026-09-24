@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch2-2.3-ex-32",
+  "subject": "math",
+  "l2": "一元微分学（求导与作图）",
+  "l3_id": "math.calc.diff.opt",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "在区间 $\\left(0, \\frac{\\pi}{2}\\right)$ 内，试比较函数 $\\tan(\\sin x)$ 与 $\\sin(\\tan x)$ 的大小，并证明结论.",
+  "answer": "可得，当 $x \\in \\left(0, \\frac{\\pi}{2}\\right)$ 时， $\\tan (\\sin x) > \\sin (\\tan x)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "凹凸性",
+    "不等式估计",
+    "单调性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 令 $f(x) = \\tan (\\sin x) - \\sin (\\tan x)$ ，显然 $f(0) = 0$ ，只需判断 $f(x)$ 在区间 $\\left(0, \\frac{\\pi}{2}\\right)$ 内的单调性.\n\n设 $f(x) = \\tan (\\sin x) - \\sin (\\tan x)$ ，则\n\n$$\nf ^ {\\prime} (x) = \\sec^ {2} (\\sin x) \\cos x - \\cos (\\tan x) \\sec^ {2} x = \\frac {\\cos^ {3} x - \\cos (\\tan x) \\cos^ {2} (\\sin x)}{\\cos^ {2} (\\sin x) \\cos^ {2} x}.\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "当 $0 < x < \\arctan{\\frac{\\pi}{2}}$ 时， $0 < \\tan x < \\frac{\\pi}{2}$ ， $0 < \\sin x < \\frac{\\pi}{2}$ .\n\n利用均值不等式，再由余弦函数在区间 $\\left(0, \\frac{\\pi}{2}\\right)$ 内是上凸的，有\n\n$$\n\\sqrt [ 3 ]{\\cos (\\tan x) \\cos^ {2} (\\sin x)} \\leqslant \\frac {1}{3} [ \\cos (\\tan x) + 2 \\cos (\\sin x) ] \\leqslant \\cos \\frac {\\tan x + 2 \\sin x}{3}.\\tag{②}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "设 $\\varphi(x) = \\tan x + 2\\sin x - 3x$ ，则\n\n$$\n\\begin{array}{r l} \\varphi^ {\\prime} (x) & = \\sec^ {2} x + 2 \\cos x - 3 = \\sec^ {2} x + \\cos x + \\cos x - 3 \\\\ & \\geqslant 3 \\sqrt [ 3 ]{\\sec^ {2} x \\cdot \\cos x \\cdot \\cos x} - 3 = 0. \\end{array}\n$$\n\n所以当 $x > 0$ 时， $\\varphi (x) > \\varphi (0)$ ，于是 $\\tan x + 2\\sin x > 3x$ ，从而"
+      },
+      {
+        "id": "s4",
+        "text": "$\\cos \\frac{\\tan x + 2\\sin x}{3} < \\cos x$ 。由②式知 $\\cos (\\tan x)\\cos^2 (\\sin x) < \\cos^3 x$ 。\n\n于是当 $x \\in \\left(0, \\arctan \\frac{\\pi}{2}\\right)$ 时， $f'(x) > 0$ ，又 $f(0) = 0$ ，所以 $f(x) > 0$ .\n\n当 $x \\in \\left[\\arctan\\frac{\\pi}{2}, \\frac{\\pi}{2}\\right)$ 时， $\\sin\\left(\\arctan\\frac{\\pi}{2}\\right) < \\sin x < 1$ ，由于"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\sin \\left(\\arctan {\\frac {\\pi}{2}}\\right) = \\frac {\\tan \\left(\\arctan {\\frac {\\pi}{2}}\\right)}{\\sqrt {1 + \\tan^ {2} \\left(\\arctan {\\frac {\\pi}{2}}\\right)}} = \\frac {\\frac {\\pi}{2}}{\\sqrt {1 + \\frac {\\pi^ {2}}{4}}} = \\frac {\\pi}{\\sqrt {4 + \\pi^ {2}}} > \\frac {\\pi}{4},\n$$\n\n故 $\\frac{\\pi}{4} < \\sin x < 1$ ，于是 $1 < \\tan (\\sin x) < \\tan 1$ ，所以当 $x \\in \\left[\\arctan \\frac{\\pi}{2}, \\frac{\\pi}{2}\\right)$ 时， $f(x) > 0$ ."
+      },
+      {
+        "id": "s6",
+        "text": "综上可得，当 $x \\in \\left(0, \\frac{\\pi}{2}\\right)$ 时， $\\tan (\\sin x) > \\sin (\\tan x)$ ."
+      }
+    ],
+    "final_answer": "可得，当 $x \\in \\left(0, \\frac{\\pi}{2}\\right)$ 时， $\\tan (\\sin x) > \\sin (\\tan x)$ .",
+    "techniques_used": [
+      "凹凸性",
+      "不等式估计",
+      "单调性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "目标量如何表示为单变量函数？约束/参数如何消元？",
+      "technique": "凹凸性",
+      "expected": "建立目标函数，求驻点并用一阶/二阶或端点比较得最值。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最值点与最值分别是什么？如何验证是最大/最小？",
+      "technique": "不等式估计",
+      "expected": "可得，当 $x \\in \\left(0, \\frac{\\pi}{2}\\right)$ 时， $\\tan (\\sin x) > \\sin (\\tan x)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第2章 一元函数微分学",
+    "section": "2.3",
+    "example_id": "例32*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 123,
+    "starred": true,
+    "commentary": "评注 本章有多处涉及不等式的证明，归纳起来有以下一些常见方法：\n\n(1) 利用导数的定义;\n\n(2) 利用微分中值定理;\n\n(3) 利用函数的单调性;\n\n(4) 利用泰勒公式;\n\n(5) 利用函数的极值与最值;\n\n(6) 利用函数的凸凹性;\n\n(7) 利用一些重要不等式;\n\n(8) 利用归纳法或反正法.\n\n在应用中要合理设置函数，注意方法的灵活与综合运用."
+  }
+}
