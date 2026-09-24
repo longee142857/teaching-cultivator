@@ -147,6 +147,56 @@ def clear_draft(paper_id: str, uid: str) -> None:
         pass
 
 
+def resolve_entry_code(code: str) -> str:
+    """周卷口令 → 学员 id。
+
+    data/exam_bank/entry.json（gitignore）或环境变量 EXAM_ENTRY_CODE / EXAM_ENTRY_UID。
+    两边都没配时，纯数字本身就是学员编号（旧入口）。
+    """
+    code = (code or "").strip()
+    if not re.fullmatch(r"[0-9]{1,24}", code or ""):
+        return ""
+    env_code = (os.environ.get("EXAM_ENTRY_CODE") or "").strip()
+    env_uid = (os.environ.get("EXAM_ENTRY_UID") or "").strip()
+    file_code = ""
+    file_uid = ""
+    try:
+        from learner.biweekly_exam import BANK_DIR
+
+        path = os.path.join(BANK_DIR, "entry.json")
+        if os.path.isfile(path):
+            data = json.loads(open(path, encoding="utf-8").read() or "{}")
+            if isinstance(data, dict):
+                file_code = str(data.get("code") or "").strip()
+                file_uid = str(data.get("uid") or "").strip()
+    except (OSError, json.JSONDecodeError):
+        pass
+    if env_code and code == env_code and env_uid:
+        return env_uid
+    if file_code and code == file_code and file_uid:
+        return file_uid
+    if env_code or file_code:
+        return ""
+    return code
+
+
+def exam_record(paper_id: str, uid: str) -> dict:
+    """已交卷则带批改正文；未交卷 sealed=False，草稿纸仍走 draft。"""
+    from learner.biweekly_exam import ANSWERS_DIR, get_exam_result
+
+    safe_pid = re.sub(r"[^A-Za-z0-9_\-]", "", paper_id or "")[:64]
+    safe_uid = re.sub(r"[^A-Za-z0-9_\-]", "", uid or "")[:64]
+    grade = os.path.join(ANSWERS_DIR, f"{safe_pid}_{safe_uid}_grade.md")
+    if not safe_pid or not safe_uid or not os.path.isfile(grade):
+        return {"sealed": False, "report": ""}
+    try:
+        report = get_exam_result(paper_id, uid)
+    except Exception:
+        logger.exception("exam record read failed")
+        report = ""
+    return {"sealed": True, "report": report or ""}
+
+
 def _exchange_auth_code(auth_code: str) -> str:
     """钉钉免登 authCode → staffId；失败返回空串（前端降级设备 UUID）。"""
     import requests
@@ -526,6 +576,26 @@ class ExamHandler(BaseHTTPRequestHandler):
             self._json(404, {"ok": False, "error": "not found"})
             return
         token, action = parsed
+
+        if action == "session":
+            meta = resolve_token(token)
+            if not meta:
+                self._json(404, {"ok": False, "error": "invalid or expired token"})
+                return
+            data = self._read_json()
+            uid = resolve_entry_code(str(data.get("code") or ""))
+            if not uid:
+                self._json(401, {"ok": False, "error": "bad_code"})
+                return
+            rec = exam_record(str(meta.get("paper_id") or ""), uid)
+            self._json(200, {
+                "ok": True,
+                "uid": uid,
+                "sealed": bool(rec.get("sealed")),
+                "report": rec.get("report") or "",
+                "exp": meta.get("exp") or "",
+            })
+            return
 
         if action == "identify":
             meta = resolve_token(token)

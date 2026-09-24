@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>高校每日练习 · Teaching Shell</title>
+  <title>高校每日练习</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -57,7 +57,28 @@
       content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.045'/></feComponentTransfer></filter><rect width='150' height='150' filter='url(%23n)'/></svg>");
     }
+    .studio-bar { display: none; }
     .studio-bar, .app { position: relative; z-index: 1; }
+    .app.is-exam .page-chrome,
+    .app.is-exam .practice-dock,
+    .app.is-exam .chat-dock,
+    .app.is-exam .tutor-strip,
+    .app.is-notes .page-chrome,
+    .app.is-notes .practice-dock,
+    .app.is-notes .chat-dock,
+    .app.is-notes .tutor-strip { display: none; }
+    .app.is-exam .content { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+    .app.is-exam .flip-sheet { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .exam-embed { flex: 1; min-height: 0; width: 100%; border: 0; background: var(--bg); }
+    .exam-pick { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .notes-layout { display: grid; grid-template-columns: minmax(140px, 200px) 1fr; gap: 12px; min-height: 52vh; align-items: start; }
+    .notes-list { display: flex; flex-direction: column; gap: 6px; }
+    .note-row { text-align: left; width: 100%; border: 1px solid var(--border); background: var(--surface); color: var(--fg); border-radius: 2px; padding: 8px 10px; cursor: pointer; font: inherit; }
+    .note-row.is-on { border-color: var(--accent); color: var(--accent); }
+    .notes-view { border: 1px solid var(--border); background: var(--surface); min-height: 240px; padding: 10px; }
+    .notes-view img { width: 100%; height: auto; display: block; background: #fff; }
+    .notes-view .note-cap { margin: 8px 0 0; }
+    @media (max-width: 720px) { .notes-layout { grid-template-columns: 1fr; } }
     button, input, textarea { font: inherit; color: inherit; }
     button { cursor: pointer; }
     h1, h2, h3, p { margin: 0; }
@@ -78,7 +99,7 @@
     .rail { display: none; }
     .tabbar {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       border-top: 1px solid var(--border);
       background: color-mix(in oklch, var(--surface) 88%, transparent);
       backdrop-filter: blur(16px);
@@ -730,7 +751,7 @@
 
     /* hand-drawn sketch overrides */
     .studio-bar {
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      display: none; align-items: center; gap: 12px; flex-wrap: wrap;
       position: relative;
       padding: 8px 14px; border-bottom: 1px solid transparent;
       background: linear-gradient(180deg, rgba(249,243,231,.96), rgba(236,227,210,.9));
@@ -868,11 +889,10 @@
 <body>
   <div class="studio-bar" data-od-id="studio-bar">
     <label for="module-switch">模块</label>
-    <select id="module-switch" aria-label="切换 Teaching / Capability">
-      <option value="teaching" selected>Teaching Shell · 练习台</option>
-      <option value="brain">Capability Brain · 事件预测</option>
+    <select id="module-switch" aria-label="切换练习台与能力">
+      <option value="teaching" selected>练习台</option>
+      <option value="brain">能力</option>
     </select>
-    <span class="hint">VPS practice API · LearnerParams</span>
   </div>
   <div class="app" id="app" data-od-id="app-shell">
     <aside class="rail" data-od-id="app-rail">
@@ -884,6 +904,14 @@
         <button type="button" class="nav-btn" data-nav="practice" data-od-id="nav-practice">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>
           <span class="nav-label">练习台</span>
+        </button>
+        <button type="button" class="nav-btn" data-nav="exam" data-od-id="nav-exam">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9.5A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M14 3.5V8h4.5M8.5 12h7M8.5 15.5h5"/></svg>
+          <span class="nav-label">周卷</span>
+        </button>
+        <button type="button" class="nav-btn" data-nav="notes" data-od-id="nav-notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="1.5"/><circle cx="9" cy="10" r="1.4"/><path d="M4 16.5 9 12l3.5 3 2-1.6L20 17"/></svg>
+          <span class="nav-label">资料</span>
         </button>
         <button type="button" class="nav-btn" data-nav="tutor" data-od-id="nav-tutor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg>
@@ -918,7 +946,7 @@
           </form>
         </footer>
         <div class="brain-host" id="brain-host" hidden data-od-id="brain-host">
-          <iframe id="brain-frame" title="Capability Brain" src="about:blank"></iframe>
+          <iframe id="brain-frame" title="能力" src="about:blank"></iframe>
         </div>
       </div>
     </div>
@@ -927,6 +955,14 @@
       <button type="button" class="tab-btn" data-nav="practice" data-od-id="tab-practice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>
         练习台
+      </button>
+      <button type="button" class="tab-btn" data-nav="exam" data-od-id="tab-exam">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9.5A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M14 3.5V8h4.5"/></svg>
+        周卷
+      </button>
+      <button type="button" class="tab-btn" data-nav="notes" data-od-id="tab-notes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="1.5"/><circle cx="9" cy="10" r="1.4"/><path d="M4 16.5 9 12l3.5 3L20 17"/></svg>
+        资料
       </button>
       <button type="button" class="tab-btn" data-nav="tutor" data-od-id="tab-tutor">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg>
@@ -937,7 +973,7 @@
 
   <div class="source-sheet" id="source-sheet" hidden data-od-id="source-sheet" role="dialog" aria-modal="true" aria-labelledby="source-sheet-title">
     <div class="source-card">
-      <h3 id="source-sheet-title">讲师回复源码</h3>
+      <h3 id="source-sheet-title">讲师回复原文</h3>
       <p class="hint" style="margin:0">钉钉等内置浏览器常拦剪贴板。可长按下方文本全选复制，或点「复制到剪贴板」。</p>
       <textarea id="source-sheet-text" readonly rows="12" data-od-id="source-sheet-text"></textarea>
       <div class="btn-row two">
@@ -964,13 +1000,25 @@
       var CAPABILITY = null;
       var PLACEHOLDER_LEARNER = "stu_1024";
 
+      function practiceToken() {
+        try {
+          return new URL(location.href).searchParams.get("token") || "";
+        } catch (e) {
+          return "";
+        }
+      }
       function apiUrl(path) {
-        return (API_BASE || "") + path;
+        var url = (API_BASE || "") + path;
+        var t = practiceToken();
+        if (!t) return url;
+        return url + (url.indexOf("?") >= 0 ? "&" : "?") + "token=" + encodeURIComponent(t);
       }
       function apiHeaders(extra) {
         var h = { "Accept": "application/json" };
         if (extra) Object.keys(extra).forEach(function (k) { h[k] = extra[k]; });
         if (typeof state !== "undefined" && state && state.learner) h["X-Learner-Id"] = state.learner;
+        var t = practiceToken();
+        if (t) h["X-Practice-Token"] = t;
         return h;
       }
       function applyBootstrap(data) {
@@ -1071,7 +1119,9 @@
         tutorHeaderDetail: false,
         ocrBusy: false,
         ocrMsg: "",
-        ocrMode: "document"
+        ocrMode: "document",
+        linkExp: "",
+        linkSig: ""
       };
       var ocrPayload = null;
 
@@ -1187,7 +1237,14 @@
         return { key: "overdue", label: "过窗覆盖中" };
       }
       function practicePath(item, push) {
-        return "/practice?learner=" + (state.learner || "") + (item ? "&item=" + item : "") + (push ? "&push=" + push : "");
+        var u = "/practice?learner=" + encodeURIComponent(state.learner || "");
+        if (item) u += "&item=" + encodeURIComponent(item);
+        if (push) u += "&push=" + encodeURIComponent(push);
+        if (state.linkExp) u += "&exp=" + encodeURIComponent(state.linkExp);
+        if (state.linkSig) u += "&sig=" + encodeURIComponent(state.linkSig);
+        var t = practiceToken();
+        if (t) u += "&token=" + encodeURIComponent(t);
+        return u;
       }
 
       function writeUrl() {
@@ -1199,6 +1256,10 @@
         if ((state.view === "desk" || state.view === "result") && item) p.set("item", item.id);
         if (state.mode === "tutor" && state.contextItemId) p.set("item", state.contextItemId);
         if (state.push) p.set("push", state.push);
+        if (state.linkExp) p.set("exp", state.linkExp);
+        if (state.linkSig) p.set("sig", state.linkSig);
+        var t = practiceToken();
+        if (t) p.set("token", t);
         var q = p.toString();
         history.replaceState(null, "", location.pathname + (q ? "?" + q : ""));
       }
@@ -1211,7 +1272,9 @@
             lastResult: state.lastResult, railExpanded: state.railExpanded,
             contextItemId: state.contextItemId, threads: state.threads, recents: state.recents,
             headerCollapsed: !!state.headerCollapsed,
-            recentsCollapsed: !!state.recentsCollapsed
+            recentsCollapsed: !!state.recentsCollapsed,
+            linkExp: state.linkExp || "",
+            linkSig: state.linkSig || ""
           }));
         } catch (e) {}
       }
@@ -1504,7 +1567,7 @@
       function runOcr() {
         if (!ocrPayload || !ocrPayload.dataUrl || state.ocrBusy) return;
         state.ocrBusy = true;
-        state.ocrMsg = state.ocrMode === "formula" ? "正在用标准公式模型识别…" : "正在整页识别…";
+        state.ocrMsg = state.ocrMode === "formula" ? "正在识别公式…" : "正在整页识别…";
         state.error = "";
         render();
         fetch(apiUrl("/api/v1/practice/ocr"), {
@@ -1826,7 +1889,9 @@
             push: blank ? null : (item && item.pushId != null ? String(item.pushId) : state.push),
             message: trimmed,
             threadId: tid,
-            blank: blank
+            blank: blank,
+            exp: state.linkExp || "",
+            sig: state.linkSig || ""
           })
         }).then(function (r) {
           var ct = (r.headers && r.headers.get && r.headers.get("content-type")) || "";
@@ -1837,7 +1902,7 @@
           if (pack && pack.sse) return;
           var msg;
           if (pack.status === 501 || (pack.body && pack.body.error === "tutor_agent_not_wired")) {
-            msg = "讲师 agent 尚未接入。练习批改已走后端；对话接口契约见 /api/v1/agent/manifest。你刚才问：「" + trimmed + "」。";
+            msg = "讲师暂时连不上。你刚才问：「" + trimmed + "」。";
           } else if (pack.body && pack.body.reply && pack.status < 500) {
             msg = pack.body.reply;
             applyTutorMeta(pack.body);
@@ -2027,6 +2092,15 @@
       function renderHeader() {
         headerEl.classList.toggle("is-collapsed", !!state.headerCollapsed);
         headerEl.classList.toggle("is-expanded-detail", state.mode === "tutor" && !!state.tutorHeaderDetail);
+        if (state.mode === "exam" || state.mode === "notes") {
+          var paneTitle = state.mode === "exam" ? "周卷" : "资料库";
+          headerEl.innerHTML =
+            '<div class="brand-row">' +
+              '<span class="brand">' + paneTitle + "</span>" +
+              '<div class="meta">' + (state.learner ? esc(state.learner) : "") + "</div>" +
+            "</div>";
+          return;
+        }
         if (state.mode === "tutor") {
           var it = contextItem();
           var isGeneral = isGeneralThreadId(state.contextItemId);
@@ -2061,7 +2135,7 @@
             : "问这题卡住的步骤…";
           return;
         }
-        var map = { today: "今日三槽 · 时间窗覆盖", desk: "练习主台", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
+        var map = { today: "今日练习", desk: "作答", result: "批改结果", done: "今日已完成", invalid: "链接失效" };
         var learnerMeta = state.learner ? esc(state.learner) : "未指定学员";
         var collapsed = !!state.headerCollapsed;
         headerEl.innerHTML =
@@ -2074,7 +2148,7 @@
           "</div>" +
           (collapsed ? "" :
             '<div class="sub">' + esc(map[state.view] || "练习台") + "</div>" +
-            '<div class="flip-hint" data-od-id="flip-hint"><b>SWIPE</b> 左右滑动翻页 · ‹ › 亦可</div>');
+            '<div class="flip-hint" data-od-id="flip-hint">左右滑动，或用两侧箭头翻页</div>');
       }
 
       function toggleHeader() {
@@ -2138,6 +2212,104 @@
         }
       }
 
+      function openExamFrame(url) {
+        var frame = document.getElementById("exam-frame");
+        if (!frame || !url) return;
+        if (frame.getAttribute("src") !== url) frame.src = url;
+      }
+      function renderExam() {
+        return (
+          '<div class="exam-pick" id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>' +
+          '<iframe class="exam-embed" id="exam-frame" title="周卷" src="about:blank"></iframe>'
+        );
+      }
+      function showNote(id, name) {
+        var view = document.getElementById("notes-view");
+        if (!view || !state.learner) return;
+        document.querySelectorAll(".note-row").forEach(function (btn) {
+          btn.classList.toggle("is-on", btn.getAttribute("data-note-id") === id);
+        });
+        view.innerHTML = '<p class="calm-note" style="margin:0">正在打开这张笔记…</p>';
+        fetch(apiUrl("/api/v1/notes/item?learner=" + encodeURIComponent(state.learner) + "&id=" + encodeURIComponent(id)), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (!view || !d || !d.data_url) {
+            if (view) view.innerHTML = '<p class="calm-note" style="margin:0">这张笔记打不开。</p>';
+            return;
+          }
+          view.innerHTML = '<img alt="' + escAttr(name || "手写笔记") + '" src="' + escAttr(d.data_url) + '">' +
+            '<p class="hint note-cap">' + esc(name || "手写笔记") + "</p>";
+        }).catch(function () {
+          if (view) view.innerHTML = '<p class="calm-note" style="margin:0">这张笔记打不开。</p>';
+        });
+      }
+      function loadNotes() {
+        var list = document.getElementById("notes-list");
+        var view = document.getElementById("notes-view");
+        if (!list) return;
+        if (!state.learner) {
+          list.innerHTML = '<p class="calm-note" style="margin:0">请从钉钉练习链接进入后再放笔记。</p>';
+          return;
+        }
+        fetch(apiUrl("/api/v1/notes?learner=" + encodeURIComponent(state.learner)), { headers: apiHeaders() })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var notes = (d && d.notes) || [];
+            if (!notes.length) {
+              list.innerHTML = '<p class="calm-note" style="margin:0">还没有手写笔记。点上方放入图片即可。</p>';
+              if (view) view.innerHTML = '<p class="calm-note" style="margin:0">放入后点名字，在这里看原图。</p>';
+              return;
+            }
+            list.innerHTML = notes.map(function (n) {
+              return '<button type="button" class="note-row" data-note-id="' + escAttr(n.id) + '">' +
+                esc(n.name || "手写笔记") + "</button>";
+            }).join("");
+            list.querySelectorAll(".note-row").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                showNote(btn.getAttribute("data-note-id"), btn.textContent);
+              });
+            });
+            showNote(notes[0].id, notes[0].name || "手写笔记");
+          })
+          .catch(function () {
+            list.innerHTML = '<p class="calm-note" style="margin:0">资料库暂时打不开。</p>';
+          });
+      }
+      function bindNotes() {
+        loadNotes();
+        var input = document.getElementById("note-file");
+        if (!input) return;
+        input.addEventListener("change", function () {
+          var file = input.files && input.files[0];
+          input.value = "";
+          if (!file || !state.learner) return;
+          var reader = new FileReader();
+          reader.onload = function () {
+            fetch(apiUrl("/api/v1/notes?learner=" + encodeURIComponent(state.learner)), {
+              method: "POST",
+              headers: Object.assign({ "Content-Type": "application/json" }, apiHeaders()),
+              body: JSON.stringify({ learner: state.learner, name: file.name || "手写笔记", image: String(reader.result || "") })
+            }).then(function () { loadNotes(); }).catch(function () { loadNotes(); });
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+      function renderNotes() {
+        return (
+          '<div class="stack" data-od-id="view-notes">' +
+            '<section class="card stack">' +
+              '<div class="row between wrap"><h1>资料库</h1>' +
+                '<label class="btn ghost">放入手写图片<input id="note-file" type="file" accept="image/*" hidden></label>' +
+              "</div>" +
+              '<p class="hint">左边是目录，右边看原图。图片存在云端，问讲师时可以让他看这些笔记。</p>' +
+              '<div class="notes-layout">' +
+                '<div class="notes-list" id="notes-list"><p class="calm-note" style="margin:0">正在读取…</p></div>' +
+                '<div class="notes-view" id="notes-view"><p class="calm-note" style="margin:0">选一条笔记，在这里看原图。</p></div>' +
+              "</div>" +
+            "</section>" +
+          "</div>"
+        );
+      }
       function fetchExamPapers() {
         var el = document.getElementById("exam-list");
         if (!el) return;
@@ -2145,20 +2317,21 @@
           .then(function (r) { return r.json(); })
           .then(function (d) {
             if (!d || !d.ok || !(d.papers || []).length) {
-              el.innerHTML = '<p class="calm-note" style="margin:0">这期还没有可打开的双周卷。有卷时会显示在这里。</p>';
+              el.innerHTML = '<p class="calm-note" style="margin:0">这期还没有可打开的周卷。有卷时会显示在这里。</p>';
               return;
             }
-            el.innerHTML = d.papers.map(function (p) {
-              var subj = p.subject === "math" ? "数学" : (p.subject === "comm" ? "通信" : p.subject);
-              return '<a class="slot-row" href="' + escAttr(p.url) + '" target="_blank" rel="noopener" data-od-id="exam-' + escAttr(p.id) + '">' +
-                '<div class="slot-title">' + esc(subj + " · " + p.title) + '</div>' +
-                '<div class="slot-status">打开试卷</div>' +
-                '<div class="slot-meta">' + (p.n_questions || 0) + ' 题 · KaTeX 渲染</div>' +
-              '</a>';
+            el.innerHTML = d.papers.map(function (p, i) {
+              var subj = p.subject === "math" ? "数学" : (p.subject === "comm" ? "通信" : (p.subject || "试卷"));
+              return '<button type="button" class="btn' + (i === 0 ? " primary" : " ghost") + '" data-exam-url="' + escAttr(p.url) + '">' +
+                esc(subj + " · " + p.title) + "</button>";
             }).join("");
+            el.querySelectorAll("[data-exam-url]").forEach(function (btn) {
+              btn.addEventListener("click", function () { openExamFrame(btn.getAttribute("data-exam-url")); });
+            });
+            openExamFrame(d.papers[0].url);
           })
           .catch(function () {
-            el.innerHTML = '<p class="calm-note" style="margin:0">双周卷暂时打不开，稍后再试即可。</p>';
+            el.innerHTML = '<p class="calm-note" style="margin:0">周卷暂时打不开，稍后再试即可。</p>';
           });
       }
 
@@ -2168,7 +2341,7 @@
             '<div class="empty" data-od-id="view-need-learner">' +
               '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5M12 16h.01"/></svg></div>' +
               "<h1>需要学员编号</h1>" +
-              '<p>请从钉钉提醒的练习链接进入，或在地址栏加上 <span class="mono">?learner=你的编号</span>。不会默认成演示学员。</p>' +
+              "<p>请从钉钉提醒里的练习链接进入。</p>" +
             "</div>"
           );
         }
@@ -2181,7 +2354,7 @@
           var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
           var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 今日未排程");
           var statusLabel = it ? st.label : "从题库补练";
-          var meta = "窗 " + slot.window + " · " + slot.kind + (it ? (" · " + it.kp) : " · 点此从 ready 题库抽一题");
+          var meta = "时段 " + slot.window + (it ? (" · " + it.kp) : " · 点此补一题");
           return (
             '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '" data-slot-kind="' + escAttr(slot.kind) + '">' +
               '<div class="slot-title">' + esc(title) + "</div>" +
@@ -2202,7 +2375,7 @@
           : '<p class="calm-note" style="margin:0">没有历史未答。今日槽或题库补练可直接开做。</p>';
         var cta = left === 0 ? (backlog.length ? "去历史未答" : "查看完成状态") : "从最早未答开始";
         var capErr = CAPABILITY && CAPABILITY.error
-          ? '<p class="calm-note" data-od-id="cap-hint">能力参数暂时读不到，薄弱提示可能不完整。练习仍可继续。</p>'
+          ? '<p class="calm-note" data-od-id="cap-hint">薄弱提示暂时读不到。练习仍可继续。</p>'
           : "";
         var bootNote = state.error
           ? '<p class="calm-note" data-od-id="boot-error" role="status">' + esc(calmError(state.error)) + "</p>"
@@ -2210,24 +2383,19 @@
         return (
           '<div class="stack" data-od-id="view-today">' +
             '<section class="card stack" data-od-id="task-bar">' +
-              '<div class="row between wrap"><h1 data-od-id="today-title">今日三槽</h1><span class="pill" data-od-id="date-pill">' + esc(todayLabel()) + "</span></div>" +
+              '<div class="row between wrap"><h1 data-od-id="today-title">今日练习</h1><span class="pill" data-od-id="date-pill">' + esc(todayLabel()) + "</span></div>" +
               '<div class="stats" data-od-id="task-stats">' +
-                '<div class="stat"><div class="n">' + (SLOTS.length || 0) + '</div><div class="t">日缓存</div></div>' +
+                '<div class="stat"><div class="n">' + (SLOTS.length || 0) + '</div><div class="t">今日题</div></div>' +
                 '<div class="stat"><div class="n">' + left + '</div><div class="t">今日剩余</div></div>' +
                 '<div class="stat"><div class="n">' + done + '</div><div class="t">今日完成</div></div>' +
               "</div>" +
               bootNote + capErr +
-              '<p class="hint" data-od-id="coverage-hint"><strong>时间覆盖</strong> — 数学 / 通信 / 复习各一槽；过窗未答仍可回补，不占用次日缓存。钉钉只发提醒与深链。LearnerParams（BKT+η）见模块下拉 → Capability Brain。</p>' +
+              '<p class="hint" data-od-id="coverage-hint">数学、通信、复习各一题。过了时间窗没做的，今天仍可补，不占明天的题。</p>' +
               '<div class="stack" data-od-id="slot-list">' + slotHtml + "</div>" +
               '<p class="hint" data-od-id="weak-hint"><strong>薄弱提示</strong> — ' + esc(weakHint()) + "</p>" +
               '<button type="button" class="btn primary" data-od-id="cta-start-today" id="btn-start">' + esc(cta) + "</button>" +
-              '<button type="button" class="text-link" data-od-id="link-sim-dingtalk" id="btn-sim-dingtalk">模拟钉钉提醒落地（通信槽）</button>' +
             "</section>" +
             '<div class="today-grid">' +
-              '<section class="card stack" data-od-id="exam-zone">' +
-                '<div class="row between wrap"><h2>双周卷</h2><span class="pill">H5</span></div>' +
-                '<div id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>' +
-              "</section>" +
               '<section class="card stack" data-od-id="backlog-zone">' +
                 "<h2>历史未答</h2>" + backlogBody +
               "</section>" +
@@ -2240,7 +2408,7 @@
         var item = currentItem();
         if (!item) return renderInvalid();
         var deep = state.fromDeepLink
-          ? '<section class="card stack" data-od-id="deeplink-banner"><h3>来自钉钉提醒，已直达本题</h3><div class="query-strip">' + esc(practicePath(item.id, state.push || "dingtalk")) + "</div></section>"
+          ? '<section class="card stack" data-od-id="deeplink-banner"><h3>来自钉钉提醒，已打开这道题</h3></section>'
           : "";
         var err = state.error ? '<div class="field-error" data-od-id="answer-error" role="alert">' + esc(state.error) + "</div>" : "";
         return (
@@ -2276,7 +2444,7 @@
                       (ocrPayload && !state.ocrBusy && !state.pending ? "" : " disabled") + ">" + (state.ocrBusy ? "识别中…" : "识别") + "</button>" +
                   "</div>" +
                   (ocrPayload
-                    ? '<div class="ocr-preview" data-od-id="ocr-preview"><img id="ocr-preview-img" alt="手写预览" src="' + escAttr(ocrPayload.dataUrl) + '"><div class="ocr-meta"><strong>' + esc(ocrPayload.name) + "</strong>" + esc(state.ocrMsg || (state.ocrMode === "formula" ? "标准公式模型 · 核对后再提交。" : "整页 markdown · 核对后再提交。")) + "</div></div>"
+                    ? '<div class="ocr-preview" data-od-id="ocr-preview"><img id="ocr-preview-img" alt="手写预览" src="' + escAttr(ocrPayload.dataUrl) + '"><div class="ocr-meta"><strong>' + esc(ocrPayload.name) + "</strong>" + esc(state.ocrMsg || "识别结果，核对后再提交。") + "</div></div>"
                     : '<p class="hint" style="margin:0">演算纸用「整页识别」；只拍一条公式用「公式加强」。点「识别」填入下方原文，预览在文本框下，也可直接手打。</p>') +
                 "</div>" +
                 '<label class="hint" style="margin:0;padding:0;border:0;background:transparent" for="answer-input">原文（可改）</label>' +
@@ -2352,7 +2520,7 @@
           '<div class="empty" data-od-id="view-done">' +
             '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>' +
             '<h1 data-od-id="done-title">今日练习已完成</h1>' +
-            "<p data-od-id=\"done-copy\">今日三槽已提交。明日会写入新缓存；历史漏答仍可从入口回补。</p>" +
+            "<p data-od-id=\"done-copy\">今天的题都交过了。明天会有新题；漏做的仍可从今日入口补。</p>" +
             '<div class="stack" style="width:100%;max-width:280px;margin:0 auto"><button type="button" class="btn ghost" data-od-id="btn-done-home" id="btn-done-home">回到今日入口</button></div>' +
           "</div>"
         );
@@ -2363,7 +2531,6 @@
             '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5M12 16h.01"/></svg></div>' +
             '<h1 data-od-id="invalid-title">链接已失效</h1>' +
             "<p data-od-id=\"invalid-copy\">推送可能过期，或题目编号不存在。请从今日入口重新进入。</p>" +
-            '<div class="query-strip" style="text-align:left;max-width:320px;margin-inline:auto">' + esc("/practice?learner=" + state.learner + "&item=unknown&push=expired") + "</div>" +
             '<div class="stack" style="width:100%;max-width:280px;margin:0 auto"><button type="button" class="btn primary" data-od-id="btn-invalid-home" id="btn-invalid-home">回到今日入口</button></div>' +
           "</div>"
         );
@@ -2379,7 +2546,7 @@
           btn.textContent = "已复制";
           btn.classList.add("is-ok");
           setTimeout(function () {
-            btn.textContent = btn.getAttribute("data-label") || "复制源码";
+            btn.textContent = btn.getAttribute("data-label") || "复制原文";
             btn.classList.remove("is-ok");
           }, 1400);
         }
@@ -2469,7 +2636,7 @@
           var cidx = parseInt(copyBtn.getAttribute("data-copy-msg"), 10);
           var craw = msgSourceAt(cidx);
           if (!craw) {
-            openSourceSheet("（这条消息没有可复制的源码）");
+            openSourceSheet("（这条消息没有可复制的原文）");
             return;
           }
           openSourceSheet(craw);
@@ -2530,8 +2697,8 @@
         if (msg.role !== "user" && !msg.streaming) {
           actions =
             '<div class="msg-actions">' +
-              '<button type="button" class="msg-action" data-copy-msg="' + idx + '" data-od-id="msg-copy-' + idx + '" title="打开源码面板（可长按复制）">复制源码</button>' +
-              '<button type="button" class="msg-action" data-fill-msg="' + idx + '" data-od-id="msg-fill-' + idx + '" title="把这段源码填回练习台原文框">填入原文</button>' +
+              '<button type="button" class="msg-action" data-copy-msg="' + idx + '" data-od-id="msg-copy-' + idx + '" title="打开原文，可长按复制">复制原文</button>' +
+              '<button type="button" class="msg-action" data-fill-msg="' + idx + '" data-od-id="msg-fill-' + idx + '" title="把这段原文填回作答框">填入原文</button>' +
             "</div>";
         }
         return (
@@ -2552,8 +2719,8 @@
               '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg></div>' +
               "<h1>" + (general ? "新对话" : "问讲师") + "</h1>" +
               "<p>" + (general
-                ? "空白通用对话，不绑定题目。可问周卷成绩、学情、计划；需要讲某题时从练习台或历史未答点进讲师。"
-                : "结合当前题目提问。讲师由导师团 agent 驱动（按需取数后作答），非演示。") + "</p>" +
+                ? "可以问周卷成绩、学情或接下来怎么练。要讲某一题，从练习台点「不懂，问讲师」。"
+                : "就这道题问卡住的步骤。") + "</p>" +
             "</div>"
           );
         }
@@ -2679,6 +2846,8 @@
       function syncChrome() {
         appEl.classList.toggle("is-expanded", !!state.railExpanded);
         appEl.classList.toggle("is-tutor", state.mode === "tutor");
+        appEl.classList.toggle("is-exam", state.mode === "exam");
+        appEl.classList.toggle("is-notes", state.mode === "notes");
         appEl.classList.toggle("is-brain", state.mode === "brain");
         appEl.classList.toggle("is-recents-collapsed", state.mode === "tutor" && !!state.recentsCollapsed);
         syncBrainHost();
@@ -2697,16 +2866,6 @@
       function bindPractice() {
         var start = document.getElementById("btn-start");
         if (start) start.addEventListener("click", startToday);
-        var sim = document.getElementById("btn-sim-dingtalk");
-        if (sim) sim.addEventListener("click", function () {
-          (function () {
-            var slot = null;
-            for (var si = 0; si < SLOTS.length; si++) if (SLOTS[si].kind === "comm" && SLOTS[si].itemId) { slot = SLOTS[si]; break; }
-            if (!slot) for (var sj = 0; sj < SLOTS.length; sj++) if (SLOTS[sj].itemId) { slot = SLOTS[sj]; break; }
-            if (!slot || !slot.itemId) { state.error = "暂无通信槽题目可模拟落地。"; render(); return; }
-            applyDeepLink(new URLSearchParams("learner=" + encodeURIComponent(state.learner || "") + "&item=" + encodeURIComponent(slot.itemId) + "&push=" + encodeURIComponent(slot.pushId != null ? String(slot.pushId) : "dingtalk")));
-          })();
-        });
         root.querySelectorAll("[data-item-id], [data-slot-kind]").forEach(function (btn) {
           btn.addEventListener("click", function () {
             var id = btn.getAttribute("data-item-id");
@@ -2799,6 +2958,20 @@
           }
           return;
         }
+        if (state.mode === "exam") {
+          lastPaintKey = key;
+          root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderExam() + "</div>";
+          practiceDock.innerHTML = "";
+          fetchExamPapers();
+          return;
+        }
+        if (state.mode === "notes") {
+          lastPaintKey = key;
+          root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderNotes() + "</div>";
+          practiceDock.innerHTML = "";
+          bindNotes();
+          return;
+        }
         var html;
         switch (state.view) {
           case "today": html = renderToday(); break;
@@ -2816,7 +2989,6 @@
         bindPractice();
         mountMath();
         paintDraftPreview();
-        if (state.view === "today") fetchExamPapers();
         lastPaintKey = key;
         // Same-view refresh (fold 讲解 / OCR / pending) must keep scroll.
         // Leaving desk/result (or switching the item) still jumps to top.
@@ -2931,6 +3103,12 @@
         var viewHint = params.get("view");
         var modeHint = params.get("mode");
         state.learner = learner;
+        var expQ = params.get("exp");
+        var sigQ = params.get("sig");
+        if (expQ) state.linkExp = expQ;
+        else if (saved && saved.linkExp) state.linkExp = saved.linkExp;
+        if (sigQ) state.linkSig = sigQ;
+        else if (saved && saved.linkSig) state.linkSig = saved.linkSig;
         if (!learner) {
           state.mode = "practice";
           setView("today", { push: null, fromDeepLink: false });
@@ -3030,6 +3208,10 @@
         var saved = restore();
         var learner = learnerFrom(params, saved);
         state.learner = learner;
+        if (params.get("exp")) state.linkExp = params.get("exp");
+        else if (saved && saved.linkExp) state.linkExp = saved.linkExp;
+        if (params.get("sig")) state.linkSig = params.get("sig");
+        else if (saved && saved.linkSig) state.linkSig = saved.linkSig;
         if (saved && typeof saved.railExpanded === "boolean") state.railExpanded = saved.railExpanded;
         else state.railExpanded = wideDesktop();
         if (!learner) {

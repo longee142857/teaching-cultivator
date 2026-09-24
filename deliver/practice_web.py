@@ -13,13 +13,17 @@ Routes (nginx may reverse-proxy /practice/ -> :8768):
   POST /api/v1/tutor/chat          -> proxy TUTOR_BACKEND_URL or 501 stub
 
 Auth: PRACTICE_API_TOKEN via Bearer / X-Practice-Token / ?token=
-      (empty token → localhost-only trust, same as ops/exam)
+      Non-empty token → matching credential required (missing/wrong = 401).
+      Empty token → fail-closed except a *direct* loopback client
+      (socket peer is loopback, Host is local, no forwarded-client headers).
+      nginx on 127.0.0.1 is not enough: public Host / X-Forwarded-For deny.
 
 Tutor: set TUTOR_BACKEND_URL (e.g. http://127.0.0.1:61900) to proxy
       POST /api/v1/tutor/chat to DSH mentor-team host; unset → 501.
 """
 from __future__ import annotations
 
+import hmac
 import json
 import logging
 import os
@@ -146,7 +150,6 @@ def _proxy_tutor_chat(payload: dict[str, Any], learner: str) -> tuple[int, dict[
 def _cfg() -> dict[str, Any]:
     try:
         from config import (
-            PRACTICE_API_TOKEN,
             PRACTICE_WEB_HOST,
             PRACTICE_WEB_HTTP,
             PRACTICE_WEB_PORT,
@@ -155,15 +158,137 @@ def _cfg() -> dict[str, Any]:
         return {
             "host": PRACTICE_WEB_HOST or "127.0.0.1",
             "port": int(PRACTICE_WEB_PORT),
-            "token": (PRACTICE_API_TOKEN or "").strip(),
+            "token": _expected_token(),
             "enabled": bool(PRACTICE_WEB_HTTP),
         }
     except Exception:
         return {
-            "host": os.environ.get("PRACTICE_WEB_HOST", "127.0.0.1"),            "port": int(os.environ.get("PRACTICE_WEB_PORT", "8768")),
-            "token": (os.environ.get("PRACTICE_API_TOKEN") or "").strip(),
+            "host": os.environ.get("PRACTICE_WEB_HOST", "127.0.0.1"),
+            "port": int(os.environ.get("PRACTICE_WEB_PORT", "8768")),
+            "token": _expected_token(),
             "enabled": os.environ.get("PRACTICE_WEB_HTTP", "1") == "1",
         }
+
+
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+_PROXY_CLIENT_HEADERS = (
+    "X-Forwarded-For",
+    "X-Real-IP",
+    "Forwarded",
+    "CF-Connecting-IP",
+    "True-Client-IP",
+)
+
+
+def _expected_token() -> str:
+    """Read token at request time (env wins; config import may be stale)."""
+    tok = (os.environ.get("PRACTICE_API_TOKEN") or "").strip()
+    if tok:
+        return tok
+    try:
+        from config import PRACTICE_API_TOKEN
+
+        return (PRACTICE_API_TOKEN or "").strip()
+    except Exception:
+        return ""
+
+
+def _eq_token(expected: str, got: str) -> bool:
+    if not expected or not got:
+        return False
+    if len(expected) != len(got):
+        return False
+    return hmac.compare_digest(expected, got)
+
+
+def _hostname_from_host_header(host: str) -> str:
+    host = (host or "").strip().lower()
+    if not host:
+        return ""
+    if host.startswith("["):
+        end = host.find("]")
+        return host[1:end] if end > 0 else host.strip("[]")
+    return host.split("%", 1)[0].split(":", 1)[0]
+
+
+def is_loopback_ip(ip: str) -> bool:
+    ip = (ip or "").strip().lower()
+    if not ip:
+        return False
+    if ip in _LOOPBACK_HOSTS:
+        return True
+    if ip.startswith("::ffff:"):
+        return is_loopback_ip(ip.rsplit(":", 1)[-1])
+    if ip.startswith("127."):
+        parts = ip.split(".")
+        return len(parts) == 4 and all(p.isdigit() and 0 <= int(p) <= 255 for p in parts)
+    return False
+
+
+def host_looks_local(host: str) -> bool:
+    hostname = _hostname_from_host_header(host)
+    return not hostname or hostname in _LOOPBACK_HOSTS
+
+
+def has_forwarded_client_headers(headers: Any) -> bool:
+    """True when a proxy advertised a client IP. Used only as a *deny* signal."""
+    getter = headers.get if headers is not None and hasattr(headers, "get") else lambda _k: ""
+    for name in _PROXY_CLIENT_HEADERS:
+        if (getter(name) or "").strip():
+            return True
+    return False
+
+
+def token_matches(
+    expected: str,
+    *,
+    authorization: str = "",
+    x_practice_token: str = "",
+    query_token: str = "",
+) -> bool:
+    if not expected:
+        return False
+    if authorization == f"Bearer {expected}" or (
+        authorization.startswith("Bearer ") and _eq_token(expected, authorization[7:].strip())
+    ):
+        return True
+    if _eq_token(expected, (x_practice_token or "").strip()):
+        return True
+    tok = (query_token or "").strip()
+    return _eq_token(expected, tok)
+
+
+def client_authorized(
+    *,
+    expected_token: str,
+    authorization: str = "",
+    x_practice_token: str = "",
+    query_token: str = "",
+    peer_ip: str = "",
+    host: str = "",
+    headers: Any = None,
+) -> bool:
+    """Practice API gate.
+
+    Token set: require Bearer / X-Practice-Token / ?token= (no loopback bypass).
+    Token empty: allow only a direct loopback client. Do not trust forwarded
+    client-IP headers to *allow*; their presence (or a public Host) denies.
+    """
+    expected = (expected_token or "").strip()
+    if expected:
+        return token_matches(
+            expected,
+            authorization=authorization or "",
+            x_practice_token=x_practice_token,
+            query_token=query_token,
+        )
+    if not is_loopback_ip(peer_ip):
+        return False
+    if has_forwarded_client_headers(headers):
+        return False
+    if not host_looks_local(host):
+        return False
+    return True
 
 
 def static_dir() -> str:
@@ -254,18 +379,19 @@ class PracticeHandler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def _authorized(self) -> bool:
-        expected = _cfg()["token"]
-        if not expected:
-            return True
-        auth = self.headers.get("Authorization", "")
-        if auth == f"Bearer {expected}":
-            return True
-        tok = (self.headers.get("X-Practice-Token") or "").strip()
-        if tok == expected:
-            return True
         qs = parse_qs(urlparse(self.path).query)
-        tok = (qs.get("token") or [""])[0].strip()
-        return tok == expected and bool(tok)
+        peer = ""
+        if self.client_address:
+            peer = self.client_address[0] or ""
+        return client_authorized(
+            expected_token=_expected_token(),
+            authorization=self.headers.get("Authorization", "") or "",
+            x_practice_token=self.headers.get("X-Practice-Token") or "",
+            query_token=(qs.get("token") or [""])[0],
+            peer_ip=peer,
+            host=self.headers.get("Host") or "",
+            headers=self.headers,
+        )
 
     def _read_json(self, max_bytes: int = 2_000_000) -> dict:
         length = int(self.headers.get("Content-Length") or 0)
@@ -400,6 +526,25 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(200, _exam_papers())
             return
 
+        if path == "/api/v1/notes":
+            from deliver.hand_notes import list_notes
+
+            self._json(200, list_notes(self._learner(qs)))
+            return
+
+        if path == "/api/v1/notes/item":
+            from deliver.hand_notes import read_note
+
+            self._json(
+                200,
+                read_note(
+                    self._learner(qs),
+                    (qs.get("id") or [""])[0],
+                    with_image=True,
+                ),
+            )
+            return
+
         self._json(404, {"ok": False, "error": "not found"})
 
     def do_POST(self) -> None:  # noqa: N802
@@ -412,9 +557,29 @@ class PracticeHandler(BaseHTTPRequestHandler):
             self._json(401, {"ok": False, "error": "unauthorized"})
             return
 
-        body = self._read_json(4_000_000 if path.endswith("/ocr") else 2_000_000)
+        body = self._read_json(
+            6_000_000 if path.endswith("/ocr") or path == "/api/v1/notes" else 2_000_000
+        )
         qs = parse_qs(parsed.query)
         from modules.bridge import practice_service as ps
+
+        if path == "/api/v1/notes":
+            from deliver.hand_notes import save_note
+
+            out = save_note(
+                self._learner(qs, body),
+                str(body.get("image") or body.get("data_url") or ""),
+                str(body.get("name") or ""),
+            )
+            err = str(out.get("error") or "")
+            if out.get("ok"):
+                code = 200
+            elif err in ("learner_required", "empty_image", "bad_image", "image_too_large"):
+                code = 400
+            else:
+                code = 500
+            self._json(code, out)
+            return
 
         if path == "/api/v1/practice/ocr":
             out = ps.practice_ocr(

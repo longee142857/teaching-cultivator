@@ -3,26 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>双周检测卷</title>
+  <title>周卷</title>
   <link rel="stylesheet" href="/static/katex/katex.min.css" />
   <style>
     :root {
-      --bg: #f6f4ef; --card: #fffdf8; --ink: #1c1a16; --muted: #6b655c;
-      --line: #e4ddd0; --accent: #0b6e4f; --danger: #9b2c2c;
+      --bg: #F4EDE0; --card: #F8F2E3; --ink: #2B2118; --muted: rgba(43,33,24,.62);
+      --line: rgba(43,33,24,.22); --accent: #3A6B7C; --danger: #A0432F;
+      --font-display: "Source Serif 4", "Songti SC", "Noto Serif CJK SC", Georgia, serif;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: linear-gradient(180deg, #efe8da 0%, var(--bg) 28%, #f3f1ec 100%);
-      color: var(--ink); line-height: 1.65; min-height: 100vh;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink); line-height: 1.75; min-height: 100vh;
     }
     .wrap { max-width: 820px; margin: 0 auto; padding: 20px 16px 64px; }
-    header h1 { font-size: 1.45rem; margin: 0 0 6px; }
+    header h1 { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; margin: 0 0 6px; }
     .meta { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
     .status { padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid var(--line); margin-bottom: 16px; }
     .status.err { border-color: #f0c2c2; color: var(--danger); background: #fff5f5; }
-    .q { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 16px; }
+    .q { background: var(--card); border: 1px solid var(--line); border-radius: 2px; padding: 16px; margin: 0 0 16px; }
     .q h2 { font-size: 1.05rem; margin: 0 0 10px; }
     .q .body { overflow-x: auto; }
     .q .body p { margin: 0.55em 0; white-space: pre-wrap; }
@@ -30,19 +31,50 @@
     textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
     label.ans { display: block; margin-top: 12px; color: var(--muted); font-size: 0.88rem; }
     .actions { position: sticky; bottom: 0; padding: 12px 0 8px; background: linear-gradient(180deg, transparent, var(--bg) 35%); }
-    button { appearance: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font: inherit; font-weight: 600; padding: 12px 22px; width: 100%; cursor: pointer; }
+    .action-row { display: flex; gap: 8px; align-items: stretch; }
+    .action-row button { width: auto; flex: 1; }
+    button { appearance: none; border: 0; border-radius: 2px; background: var(--accent); color: #F4EDE0; font: inherit; font-weight: 600; padding: 12px 22px; width: 100%; cursor: pointer; }
     button:disabled { opacity: 0.55; cursor: not-allowed; }
+    #ocrFab {
+      position: static; z-index: auto; right: auto; bottom: auto;
+      background: transparent; color: var(--ink); border: 1px solid var(--line);
+      box-shadow: none; border-radius: 2px; padding: 12px 16px;
+    }
+    body.is-sealed #questions,
+    body.is-sealed #head { opacity: 0.38; filter: grayscale(0.4); }
+    .seal {
+      position: fixed; inset: 0; z-index: 25; display: grid; place-items: center;
+      pointer-events: none;
+    }
+    .seal[hidden] { display: none !important; }
+    .seal span {
+      font-family: var(--font-display); font-size: 7.5rem; line-height: 1;
+      color: rgba(160, 67, 47, 0.78);
+      border: 6px solid currentColor; border-radius: 6px;
+      padding: 0.05em 0.22em; transform: rotate(-16deg);
+    }
+    #gradeFab {
+      position: fixed; z-index: 36;
+      right: max(16px, env(safe-area-inset-right, 0px));
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      width: 52px; height: 52px; padding: 0; border-radius: 50%;
+      font-size: 0.92rem; box-shadow: 0 8px 20px rgba(43, 33, 24, 0.18);
+    }
+    #gradeFab[hidden] { display: none !important; }
+    .grade-sheet {
+      position: fixed; inset: 0; z-index: 40; display: none;
+      align-items: flex-end; justify-content: center;
+      background: rgba(28, 26, 22, 0.4);
+      padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+    .grade-sheet.is-open { display: flex; }
+    .grade-card {
+      width: min(640px, 100%); max-height: min(80vh, 720px); overflow: auto;
+      background: var(--card); border: 1px solid var(--line); border-radius: 2px; padding: 14px;
+    }
+    .grade-card pre { white-space: pre-wrap; font: inherit; margin: 0 0 12px; }
     .report { margin-top: 20px; padding: 16px; border-radius: 12px; background: #fff; border: 1px solid var(--line); white-space: pre-wrap; }
     .hint { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
-    #ocrFab {
-      position: fixed; z-index: 30;
-      right: max(12px, env(safe-area-inset-right, 0px));
-      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
-      appearance: none; border: 0; background: var(--accent); color: #fff;
-      font: inherit; font-size: 0.86rem; font-weight: 600;
-      padding: 10px 14px; border-radius: 999px; width: auto; cursor: pointer;
-      box-shadow: 0 8px 22px rgba(11, 110, 79, 0.32);
-    }
     #ocrFab[hidden] { display: none !important; }
     .ocr-sheet.is-open ~ #ocrFab { visibility: hidden; pointer-events: none; }
     .ocr-sheet {
@@ -109,13 +141,13 @@
   <div class="wrap">
     <div id="boot" class="status">加载试卷中…</div>
     <div id="gate" class="status" hidden>
-      <label for="uidInput" style="display:block;margin-bottom:8px;font-weight:600;">输入你的编号进入试卷</label>
+      <label for="uidInput" style="display:block;margin-bottom:8px;font-weight:600;">输入口令进入这份卷</label>
       <div style="display:flex;gap:10px;">
         <input id="uidInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="24"
-               placeholder="纯数字编号（钉钉学员号可 20 位）" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;" />
+               placeholder="老师私发的一串数字" style="flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:2px;font:inherit;" />
         <button type="button" id="uidBtn" style="width:auto;padding:10px 20px;">进入</button>
       </div>
-      <p class="hint">编号由老师发给你。请填完整数字号（可至 20 位钉钉学员号），不要只用短号 1。同一编号会恢复草稿。</p>
+      <p class="hint">口令对应你的作答记录。没交卷会接着上次的草稿纸；交过的卷会封存，只能看批改。</p>
     </div>
     <div id="draftNote" class="status" hidden>
       已恢复上次作答草稿
@@ -127,8 +159,12 @@
     </header>
     <div id="questions"></div>
     <div class="actions" id="actions" hidden>
-      <button type="button" id="submitBtn">提交答卷</button>
-      <p class="hint">作答会自动保存草稿，退出去再进来不丢；提交后服务端批改。手写点右下角「手写识别」，核对源码与预览后再填入指定题。也可继续用钉钉私聊发 md /「交卷」。</p>
+      <div class="action-row">
+        <button type="button" id="ocrFab" hidden>手写识别</button>
+        <button type="button" id="submitBtn">提交答卷</button>
+      </div>
+      <p class="hint" id="timeLeft"></p>
+      <p class="hint">作答会自动保存草稿。手写识别和提交在同一行，核对后再交。截止前未交的卷可以接着写。</p>
     </div>
     <div id="report" class="report" hidden></div>
   </div>
@@ -167,7 +203,15 @@
       </div>
     </div>
   </div>
-  <button type="button" id="ocrFab" hidden>手写识别</button>
+  <div class="seal" id="seal" hidden><span>封</span></div>
+  <button type="button" id="gradeFab" hidden aria-label="周卷批改记录">批</button>
+  <div class="grade-sheet" id="gradeSheet" aria-hidden="true">
+    <div class="grade-card" role="dialog" aria-modal="true" aria-labelledby="gradeTitle">
+      <h3 id="gradeTitle">周卷批改记录</h3>
+      <pre id="gradeBody"></pre>
+      <button type="button" id="gradeClose">关闭</button>
+    </div>
+  </div>
   <script>
 (function () {
   const boot = document.getElementById("boot");
@@ -226,7 +270,7 @@
   }
 
   async function saveDraftNow() {
-    if (!UID) return;
+    if (!UID || document.body.classList.contains("is-sealed")) return;
     try {
       await fetch("/e/" + TOKEN + "/draft", {
         method: "POST",
@@ -559,6 +603,7 @@
       " " + I18N.metaSubj + (paper.subject || "-") +
       " " + (paper.n_questions || (paper.items || []).length) + I18N.metaQ +
       (data.exp ? (" " + I18N.metaExp + data.exp) : "");
+    if (data.exp) paperExp = data.exp;
     qRoot.innerHTML = "";
     (paper.items || []).forEach(function (it) {
       const card = document.createElement("section");
@@ -596,8 +641,7 @@
       if (!r.ok || !data.ok) {
         reportEl.textContent = (data && data.error) || ("HTTP " + r.status);
       } else {
-        reportEl.textContent = data.report || "OK";
-        submitBtn.textContent = I18N.submitted;
+        applySeal(data.report || "");
         return;
       }
     } catch (e) {
@@ -617,24 +661,93 @@
       .then(function () { wireAutosave(); });
   }
 
+  let paperExp = "";
+  function formatLeft(exp) {
+    const end = Date.parse(exp || "");
+    if (!end) return "";
+    const left = end - Date.now();
+    if (left <= 0) return "已截止";
+    const totalMin = Math.floor(left / 60000);
+    const days = Math.floor(totalMin / (60 * 24));
+    const hours = Math.floor((totalMin % (60 * 24)) / 60);
+    const mins = totalMin % 60;
+    if (days > 0) return "剩余 " + days + " 天 " + hours + " 小时";
+    if (hours > 0) return "剩余 " + hours + " 小时 " + mins + " 分";
+    return "剩余 " + Math.max(mins, 1) + " 分";
+  }
+  function tickClock() {
+    const el = document.getElementById("timeLeft");
+    if (!el) return;
+    if (!paperExp) { el.textContent = ""; return; }
+    const label = formatLeft(paperExp);
+    el.textContent = label;
+    if (label === "已截止" && !document.body.classList.contains("is-sealed")) {
+      qRoot.querySelectorAll("textarea").forEach(function (ta) { ta.readOnly = true; });
+      submitBtn.disabled = true;
+      submitBtn.textContent = "已截止";
+    }
+  }
+  function applySeal(report) {
+    document.body.classList.add("is-sealed");
+    const seal = document.getElementById("seal");
+    if (seal) seal.hidden = false;
+    qRoot.querySelectorAll("textarea").forEach(function (ta) { ta.readOnly = true; });
+    actions.hidden = true;
+    if (ocrOpen) ocrOpen.hidden = true;
+    const fab = document.getElementById("gradeFab");
+    const body = document.getElementById("gradeBody");
+    if (body) body.textContent = report || "批改记录还没有写完。";
+    if (fab) fab.hidden = false;
+    draftNote.hidden = true;
+    boot.hidden = true;
+  }
   function enterWithUid(v) {
     UID = v;
     gate.hidden = true;
     boot.hidden = false;
     boot.className = "status";
     boot.textContent = "加载试卷中…";
-    startExam();
+    startExam().then(function () {
+      if (window.__examSeal != null) applySeal(window.__examSeal);
+      tickClock();
+      setInterval(tickClock, 30000);
+    });
+  }
+  function enterWithCode(code) {
+    boot.hidden = false;
+    boot.className = "status";
+    boot.textContent = "正在核对口令…";
+    fetch("/e/" + TOKEN + "/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code }),
+    }).then(function (r) { return r.json().then(function (j) { return { okHttp: r.ok, body: j }; }); })
+      .then(function (pack) {
+        const data = pack.body || {};
+        if (!pack.okHttp || !data.ok || !data.uid) {
+          boot.className = "status err";
+          boot.textContent = "口令不对。用老师私发的那一串数字。";
+          return;
+        }
+        paperExp = data.exp || "";
+        window.__examSeal = data.sealed ? (data.report || "") : null;
+        enterWithUid(data.uid);
+      })
+      .catch(function () {
+        boot.className = "status err";
+        boot.textContent = "口令暂时对不上，稍后再试。";
+      });
   }
 
   uidBtn.addEventListener("click", function () {
     const v = String(uidInput.value || "").trim();
-    if (!/^[0-9]{1,24}$/.test(v)) {
+    if (!/^[0-9]{4,24}$/.test(v)) {
       boot.hidden = false;
       boot.className = "status err";
-      boot.textContent = "编号需为纯数字（1–24 位，钉钉学员号请填完整）";
+      boot.textContent = "口令是一串数字。";
       return;
     }
-    enterWithUid(v);
+    enterWithCode(v);
   });
 
   uidInput.addEventListener("keydown", function (e) {
@@ -652,6 +765,18 @@
       if (typeof katex === "undefined") throw new Error("katex missing");
       boot.hidden = true;
       gate.hidden = false;
+      const gradeFab = document.getElementById("gradeFab");
+      const gradeSheet = document.getElementById("gradeSheet");
+      if (gradeFab && gradeSheet) {
+        gradeFab.addEventListener("click", function () {
+          gradeSheet.classList.add("is-open");
+          gradeSheet.setAttribute("aria-hidden", "false");
+        });
+        document.getElementById("gradeClose").addEventListener("click", function () {
+          gradeSheet.classList.remove("is-open");
+          gradeSheet.setAttribute("aria-hidden", "true");
+        });
+      }
     })
     .catch(function (e) {
       boot.hidden = false;

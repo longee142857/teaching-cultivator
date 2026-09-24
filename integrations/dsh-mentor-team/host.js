@@ -20,16 +20,23 @@ return {
     const SYSTEM_API_BASE = env('SYSTEM_API_BASE', 'http://127.0.0.1:8770').replace(/\/$/, '')
     const LLM_BASE = (env('LLM_BASE_URL', '') || env('DEEPSEEK_API_BASE', '') || 'https://api.deepseek.com/v1').replace(/\/$/, '')
     const TUTOR_MODEL = env('TUTOR_MODEL', 'deepseek-flash')
+    // dsv4.1f：现行 API 名 deepseek-flash（V4.1 Flash，原生视觉）。与文本讲师同一 base / 同一把 DeepSeek key。
+    const VISION_BASE = (env('TUTOR_VISION_BASE', '') || LLM_BASE).replace(/\/$/, '')
+    const VISION_MODEL = env('TUTOR_VISION_MODEL', '') || TUTOR_MODEL
     const MAX_TOOL_ROUNDS = 4
 
     let cfgCache = null
     async function getCfg() {
       if (cfgCache) return cfgCache
       let token = ''
+      let practiceToken = ''
       let llmKey = ''
+      let visionKey = ''
       if (IS_NODE) {
         token = env('SYSTEM_API_TOKEN', '')
-        llmKey = env('DEEPSEEK_API_KEY', '') || env('LLM_API_KEY', '')
+        practiceToken = env('PRACTICE_API_TOKEN', '')
+        llmKey = env('TUTOR_LLM_API_KEY', '') || env('DEEPSEEK_API_KEY', '') || env('LLM_API_KEY', '')
+        visionKey = env('TUTOR_VISION_API_KEY', '') || llmKey
       } else if (fs && workspaceRoot) {
         try {
           const t = await fs.resolve(workspaceRoot + '/.mentor-team/config.json')
@@ -38,13 +45,33 @@ return {
             const p = JSON.parse(await fs.readText(t))
             if (p && typeof p === 'object') {
               if (p.SYSTEM_API_TOKEN) token = String(p.SYSTEM_API_TOKEN)
-              if (p.DEEPSEEK_API_KEY || p.LLM_API_KEY) llmKey = String(p.DEEPSEEK_API_KEY || p.LLM_API_KEY)
+              if (p.PRACTICE_API_TOKEN) practiceToken = String(p.PRACTICE_API_TOKEN)
+              if (p.TUTOR_LLM_API_KEY || p.DEEPSEEK_API_KEY || p.LLM_API_KEY) llmKey = String(p.TUTOR_LLM_API_KEY || p.DEEPSEEK_API_KEY || p.LLM_API_KEY)
+              visionKey = String(p.TUTOR_VISION_API_KEY || llmKey || '')
             }
           }
         } catch (e) {}
       }
-      cfgCache = { token: token, llmKey: llmKey }
+      cfgCache = { token: token, practiceToken: practiceToken, llmKey: llmKey, visionKey: visionKey }
       return cfgCache
+    }
+
+    async function practiceHeaders(lid) {
+      const c = await getCfg()
+      const h = { 'X-Learner-Id': lid || 'demo1' }
+      if (c.practiceToken) h['X-Practice-Token'] = c.practiceToken
+      return h
+    }
+
+    // Demo fixtures must never collide with live items.i{n} / pushes ids.
+    function isDemoRef(itemId, pushId) {
+      const ids = [itemId, pushId]
+      for (let i = 0; i < ids.length; i++) {
+        const s = String(ids[i] == null ? '' : ids[i]).trim().toLowerCase()
+        if (!s) continue
+        if (s === 'demo' || s.indexOf('demo-') === 0) return true
+      }
+      return false
     }
 
     // ── HTTP 助手（通用：Node=web.fetch 全功能；DSH=subprocess curl） ──
@@ -108,8 +135,8 @@ return {
     // ── 角色（工具 = 只读白名单 + 助教可写 adjust_difficulty） ──
     const ROSTER = [
       { id: 'auto', name: '团长', role: '自动分派', emoji: '🧭', tools: [] },
-      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points'] },
-      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty'] },
+      { id: 'lecturer', name: '讲师', role: '讲题 · Socratic · 记忆', emoji: '📖', tools: ['practice_get_item', 'show_solution', 'kb_query', 'list_knowledge_points', 'list_today_questions', 'list_hand_notes', 'read_hand_note'] },
+      { id: 'assistant', name: '学习助教', role: '诊断 · 规划 · 难度偏好', emoji: '🧑‍🏫', tools: ['get_learner_params', 'get_capability_evidence', 'get_learner_snapshot', 'list_today_questions', 'build_report', 'practice_bootstrap', 'adjust_difficulty', 'list_hand_notes', 'read_hand_note'] },
     ]
 
     // ── LLM ──
@@ -181,8 +208,8 @@ return {
         required: [],
       },
       show_solution: {
-        desc: '读取当前/指定题的完整解题步骤与参考要点（只读）',
-        params: { item: { type: 'string' }, push: { type: 'string' } },
+        desc: '读取指定题的完整解题步骤与参考要点（只读）。必须传 item 或 push；不要省略，否则会落到最新题。',
+        params: { item: { type: 'string', description: '公开题号，如 i12' }, push: { type: 'string', description: '推送号' } },
         required: [],
       },
       kb_query: {
@@ -194,6 +221,16 @@ return {
         desc: '列出教学大纲知识点目录（只读）',
         params: { subject: { type: 'string', description: 'math 或 comm' }, query: { type: 'string' } },
         required: [],
+      },
+      list_hand_notes: {
+        desc: '列出当前学员放在资料库里的手写笔记（只要元数据，不含图片）',
+        params: {},
+        required: [],
+      },
+      read_hand_note: {
+        desc: '用视觉模型阅读一张手写笔记并转写。id 来自 list_hand_notes。不要把文本模型当视觉模型。',
+        params: { id: { type: 'string', description: '笔记 id' } },
+        required: ['id'],
       },
       get_learner_params: {
         desc: '读取学员能力参数 LearnerParams（BKT mastery + 域 η + assumptions，只读）',
@@ -211,10 +248,10 @@ return {
         required: [],
       },
       list_today_questions: {
-        desc: '列出今日推送题目（只读）。include_backlog=true 时另附历史未答/积压，不计入今日排程槽。',
+        desc: '列出今日推送题目（只读）。导师团默认附带历史未答/积压（include_backlog=true），不计入今日排程槽。只要今日题时传 include_backlog=false。',
         params: {
           subject: { type: 'string' },
-          include_backlog: { type: 'boolean', description: '是否附带未答积压（默认 false）' },
+          include_backlog: { type: 'boolean', description: '是否附带未答积压（导师团默认 true）' },
         },
         required: [],
       },
@@ -254,9 +291,22 @@ return {
     }
 
     async function practiceFallback(name, args, lid) {
+      if (isDemoRef(args.item, args.push)) return null
+      const headers = await practiceHeaders(lid)
       const q = [ 'learner=' + encodeURIComponent(lid || 'demo1') ]
       if (args.item) q.push('item=' + encodeURIComponent(String(args.item)))
       if (args.push) q.push('push=' + encodeURIComponent(String(args.push)))
+      if (name === 'show_solution') {
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { headers: headers })
+        if (r.data && r.data.ok && r.data.item) {
+          const it = r.data.item
+          const steps = it.solutionSteps || (it.explain ? [String(it.explain)] : [])
+          const lines = ['题目：' + (it.title || it.id || ''), it.stem || '', '讲解：']
+          steps.forEach(function (s) { lines.push('- ' + s) })
+          return { ok: true, source: 'practice_web:show_solution', text: lines.filter(Boolean).join('\n') }
+        }
+        return null
+      }
       const map = {
         practice_get_item: '/api/v1/practice/item',
         practice_bootstrap: '/api/v1/practice/bootstrap',
@@ -264,7 +314,7 @@ return {
       }
       const path = map[name]
       if (path) {
-        const r = await httpJson(PRACTICE_BASE + path + '?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        const r = await httpJson(PRACTICE_BASE + path + '?' + q.join('&'), { headers: headers })
         if (r.data && r.data.ok) {
           const res = r.data.item || r.data.result || r.data.params || r.data
           return { ok: true, source: 'practice_web:' + name, text: JSON.stringify(res) }
@@ -272,7 +322,7 @@ return {
         return null
       }
       if (name === 'get_capability_evidence') {
-        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/params?' + q.join('&'), { headers: { 'X-Learner-Id': lid || 'demo1' } })
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/practice/params?' + q.join('&'), { headers: headers })
         if (r.data && r.data.ok) {
           const full = r.data.params || r.data
           const ev = {
@@ -296,6 +346,10 @@ return {
       if (name === 'show_solution') {
         const it = findItem()
         return { ok: true, source: 'demo:show_solution', text: DEMO_TAG + (it ? it.title + '\n' + (it.solutionSteps || []).join('\n') : '无题') }
+      }
+      if (name === 'practice_get_item') {
+        const it = findItem()
+        return { ok: true, source: 'demo:practice_get_item', text: DEMO_TAG + JSON.stringify(it || {}) }
       }
       if (name === 'kb_query') {
         const kp = args.kp || args.query || ''
@@ -338,9 +392,63 @@ return {
 
     const WRITE_TOOLS = { adjust_difficulty: true }
 
+    async function visionRead(dataUrl, name) {
+      const cfg = await getCfg()
+      if (!cfg.visionKey) return { ok: false, text: '视觉模型未配置（需要 DEEPSEEK_API_KEY，模型 ' + VISION_MODEL + '）' }
+      const body = {
+        model: VISION_MODEL,
+        thinking: { type: 'disabled' },
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: '这是学员的手写笔记（' + (name || '未命名') + '）。请转写可见文字，公式用 LaTeX。看不清的地方标明，不要编造。' },
+            { type: 'image_url', image_url: { url: dataUrl } },
+          ],
+        }],
+      }
+      const r = await httpRequest(VISION_BASE + '/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + cfg.visionKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const msg = r.data && r.data.choices && r.data.choices[0] && r.data.choices[0].message
+      let text = msg && msg.content
+      if (Array.isArray(text)) text = text.map(function (p) { return (p && p.text) || '' }).join('')
+      if (!(r.status >= 200 && r.status < 300) || !text) {
+        const err = (r.data && r.data.error && (r.data.error.message || r.data.error)) || ('vision_http_' + (r.status || '?'))
+        return { ok: false, text: '视觉模型读取失败：' + String(err).slice(0, 300) }
+      }
+      return { ok: true, text: String(text) }
+    }
+
     async function execTool(name, args, lid, allowed) {
       if (Array.isArray(allowed) && allowed.indexOf(name) < 0) {
         return { ok: false, source: name, text: '当前角色无权调用 ' + name }
+      }
+      if (name === 'list_hand_notes' || name === 'read_hand_note') {
+        const headers = await practiceHeaders(lid)
+        if (name === 'list_hand_notes') {
+          const r = await httpJson(PRACTICE_BASE + '/api/v1/notes?learner=' + encodeURIComponent(lid || ''), { headers: headers })
+          const notes = (r.data && r.data.notes) || []
+          return { ok: !!(r.data && r.data.ok), source: 'practice_web:list_hand_notes', text: JSON.stringify(notes) }
+        }
+        const id = args && args.id ? String(args.id) : ''
+        const r = await httpJson(PRACTICE_BASE + '/api/v1/notes/item?learner=' + encodeURIComponent(lid || '') + '&id=' + encodeURIComponent(id), { headers: headers })
+        if (!r.data || !r.data.ok || !r.data.data_url) {
+          return { ok: false, source: 'practice_web:read_hand_note', text: '没有这张笔记' }
+        }
+        const seen = await visionRead(r.data.data_url, (r.data.note && r.data.note.name) || id)
+        return { ok: seen.ok, source: 'vision:' + VISION_MODEL, text: seen.text }
+      }
+      args = Object.assign({}, args || {})
+      if (name === 'list_today_questions') {
+        const raw = args.include_backlog
+        if (raw === undefined || raw === null || String(raw) === '') args.include_backlog = true
+      }
+      if (isDemoRef(args.item, args.push)) {
+        const dm = demoFallback(name, args)
+        if (dm) return dm
+        return { ok: false, source: 'demo:' + name, text: '演示题号不能查询真实题库' }
       }
       const headers = await sysHeaders(lid)
       // 1) system_api :8770 — 写工具必须 POST（与 system_api 白名单一致）
@@ -396,9 +504,9 @@ return {
       ],
     }
     const DEMO_ITEMS = [
-      { id: 'i1', pushId: 1, title: '极限 · 夹逼定理', kp: '极限 · 夹逼定理', subject: '高等数学', stem: '已知 1/n ≤ a_n ≤ (n+1)/n²，求 lim a_n。', answer: '0', finalAnswer: '0', solutionSteps: ['由 1/n ≤ a_n ≤ (n+1)/n²', '两端 n→∞ 均趋于 0，故 a_n → 0'] },
-      { id: 'i2', pushId: 2, title: '信号与系统 · 卷积', kp: '卷积', subject: '通信', stem: '求输出 y(t)=x(t)*h(t) 的表达式要点。', answer: 'y=x*h', finalAnswer: 'y(t)=x*h', solutionSteps: ['输出为输入与冲激响应的卷积', '先画支撑再定积分限'] },
-      { id: 'i3', pushId: 3, title: '导数 · 隐函数求导', kp: '导数 · 隐函数求导', subject: '高等数学', stem: 'x²+xy+y²=3，求 (1,1) 处 dy/dx。', answer: '-1', finalAnswer: '-1', solutionSteps: ['两边对 x 求导得 y′=−(2x+y)/(x+2y)', '点 (1,1) 处为 −1'] },
+      { id: 'demo-i1', pushId: 'demo-p1', title: '极限 · 夹逼定理', kp: '极限 · 夹逼定理', subject: '高等数学', stem: '已知 1/n ≤ a_n ≤ (n+1)/n²，求 lim a_n。', answer: '0', finalAnswer: '0', solutionSteps: ['由 1/n ≤ a_n ≤ (n+1)/n²', '两端 n→∞ 均趋于 0，故 a_n → 0'] },
+      { id: 'demo-i2', pushId: 'demo-p2', title: '信号与系统 · 卷积', kp: '卷积', subject: '通信', stem: '求输出 y(t)=x(t)*h(t) 的表达式要点。', answer: 'y=x*h', finalAnswer: 'y(t)=x*h', solutionSteps: ['输出为输入与冲激响应的卷积', '先画支撑再定积分限'] },
+      { id: 'demo-i3', pushId: 'demo-p3', title: '导数 · 隐函数求导', kp: '导数 · 隐函数求导', subject: '高等数学', stem: 'x²+xy+y²=3，求 (1,1) 处 dy/dx。', answer: '-1', finalAnswer: '-1', solutionSteps: ['两边对 x 求导得 y′=−(2x+y)/(x+2y)', '点 (1,1) 处为 −1'] },
     ]
     const DEMO_KB = {
       '极限 · 夹逼定理': { def: '若 g(n) ≤ a_n ≤ h(n) 且 g、h 同趋于 L，则 a_n → L。关键：两端必须收敛到同一个值。', source: 'syllabus_math.json · 极限' },
@@ -447,6 +555,22 @@ return {
       const arr = mem.threads[key] || (mem.threads[key] = [])
       arr.push({ role: role, text: String(text || '').slice(0, 2000), ts: Date.now() })
       if (arr.length > 40) arr.splice(0, arr.length - 40)
+    }
+    const THREAD_PROMPT_TURNS = 12
+    function recentThreadMessages(lid, tid, currentMsg) {
+      if (tid == null || String(tid) === '') return []
+      const arr = mem.threads[safe(lid) + '|' + safe(tid)] || []
+      const start = Math.max(0, arr.length - THREAD_PROMPT_TURNS)
+      const cur = String(currentMsg || '').trim()
+      const out = []
+      for (let i = start; i < arr.length; i++) {
+        const turn = arr[i] || {}
+        const text = String(turn.text || '').trim()
+        if (!text) continue
+        out.push({ role: turn.role === 'user' ? 'user' : 'assistant', content: text })
+      }
+      if (cur && out.length && out[out.length - 1].role === 'user' && out[out.length - 1].content === cur) out.pop()
+      return out
     }
 
     // T0 工作记忆：phase + todos + 当前题（对齐 memory_blocks.py）
@@ -558,25 +682,38 @@ return {
         solutionSteps: it.solutionSteps || (it.explain ? [String(it.explain)] : []),
       }
     }
+    let lastPracticeError = ''
     async function enrichItem(learnerId, itemId, pushId) {
       if (!itemId && !pushId) return null
+      if (isDemoRef(itemId, pushId)) return null
       const q = []
       if (learnerId) q.push('learner=' + encodeURIComponent(learnerId))
       if (itemId) q.push('item=' + encodeURIComponent(itemId))
       if (pushId) q.push('push=' + encodeURIComponent(pushId))
-      const data = await fetchJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), { 'X-Learner-Id': learnerId })
+      const headers = await practiceHeaders(learnerId)
+      const data = await fetchJson(PRACTICE_BASE + '/api/v1/practice/item?' + q.join('&'), headers)
       if (data && data.ok && data.item) return mapItem(data.item)
       return null
     }
     async function tryLive(learnerId) {
       const lid = learnerId || 'demo1'
-      const boot = await fetchJson(PRACTICE_BASE + '/api/v1/practice/bootstrap?learner=' + encodeURIComponent(lid), { 'X-Learner-Id': lid })
-      if (!(boot && boot.ok)) return null
+      const headers = await practiceHeaders(lid)
+      const bootR = await httpJson(PRACTICE_BASE + '/api/v1/practice/bootstrap?learner=' + encodeURIComponent(lid), { headers: headers })
+      if (bootR.status === 401) {
+        lastPracticeError = 'unauthorized'
+        return null
+      }
+      const boot = bootR.data
+      if (!(boot && boot.ok)) {
+        lastPracticeError = bootR.status ? ('http_' + bootR.status) : 'unreachable'
+        return null
+      }
+      lastPracticeError = ''
       const items = (boot.items || []).map(mapItem).filter(Boolean)
       let mastery = mapMastery((boot.capability && boot.capability.masteryWeak) || [])
       let eta = mapEta((boot.capability && boot.capability.eta) || {})
       let assumptions = []
-      const params = await fetchJson(PRACTICE_BASE + '/api/v1/practice/params?learner=' + encodeURIComponent(lid), { 'X-Learner-Id': lid })
+      const params = await fetchJson(PRACTICE_BASE + '/api/v1/practice/params?learner=' + encodeURIComponent(lid), headers)
       if (params && params.ok) {
         const full = params.params || params
         const m2 = mapMastery(full.mastery || full.masteryWeak || (params.capability && params.capability.masteryWeak))
@@ -606,6 +743,9 @@ return {
     async function ground(learnerId) {
       const live = await tryLive(learnerId)
       if (live) return live
+      const why = lastPracticeError === 'unauthorized'
+        ? 'practice_web 401（未配置或无效 PRACTICE_API_TOKEN；演示题不是真实库存）'
+        : '本地演示数据（教学系统未连接）'
       return {
         kind: 'demo',
         detached: true,
@@ -613,7 +753,7 @@ return {
         items: DEMO_ITEMS,
         kb: DEMO_KB,
         weakHint: '近期易错：极限 · 夹逼定理',
-        sources: [{ source: '本地演示数据（教学系统未连接）', ref: 'demo' }],
+        sources: [{ source: why, ref: 'demo' }],
       }
     }
 
@@ -803,6 +943,7 @@ return {
     }
 
     function buildMessages(mentor, msg, g, learnerId, itemId, opts) {
+      const prior = recentThreadMessages(learnerId, opts && opts.threadId, msg)
       const item = pickItem(g, msg, itemId || '', opts)
       const learner = g.learner || {}
       const weak = weakList(learner)
@@ -833,12 +974,14 @@ return {
         '可做：讲题、追问、概念澄清、薄弱诊断建议、学习节奏建议；需要数据时【调用工具】获取，不要编造；Capability Brain 事件写入由系统特殊指令处理。',
         '工具返回的内容是权威证据；引用时用 [n] 标注。若工具不可用或数据缺失，明确说明「暂未取到」，不要硬编。',
         '用简洁中文；有当前题时紧扣题干与知识点。',
-        ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。' : '',
+        prior.length ? '本线程已有最近对话（紧随其后的 user/assistant 消息）。短追问要承接上文，不要当成没有上下文的新话题。' : '',
+        '接地：todayItems 是今日排程；backlogItems 是历史未答（可索引讲解，不占今日槽）。学员问历史/过期/未答/索引或点名某题号时，先 list_today_questions（导师团默认含积压）或直接用上下文 id，再 practice_get_item(item) 取题干、show_solution(item 或 push) 取解答。禁止编造题干。show_solution 必须带 item/push，勿默认讲最新题。',
+        ctx.blankChat ? '当前是空白/通用对话：不要默认绑定今日某道题；学员问周卷成绩、学情、计划等时按问题回答，勿强行讲题。问历史未答题时仍可按 backlogItems / list_today_questions 索引后讲解。' : '',
+        '学员问手写笔记、资料库、自己拍的笔记时：先 list_hand_notes，再对具体 id 调用 read_hand_note。read_hand_note 已用视觉模型 ' + VISION_MODEL + ' 看过图，按转写回答，不要声称自己直接看见了原图。',
       ].filter(Boolean).join('\n')
-      return [
-        { role: 'system', content: system },
+      return [{ role: 'system', content: system }].concat(prior, [
         { role: 'user', content: '【接地上下文】\n' + JSON.stringify(ctx, null, 2) + '\n\n【学员消息】\n' + msg },
-      ]
+      ])
     }
 
     // ── LLM 工具循环（按需取数 → 逐条证据 → 最终生成） ──
@@ -901,7 +1044,8 @@ return {
       return out
     }
     async function listCapabilityEvents() {
-      const data = await fetchJson(PRACTICE_BASE + '/api/v1/capability/events', {})
+      const headers = await practiceHeaders('demo1')
+      const data = await fetchJson(PRACTICE_BASE + '/api/v1/capability/events', headers)
       if (data && data.ok && Array.isArray(data.events)) return data.events
       return []
     }
@@ -909,9 +1053,10 @@ return {
       if (IS_NODE && !web) return { ok: false, error: 'web_unavailable' }
       try {
         const body = Object.assign({}, payload || {}, { mentor: mentorId || 'assistant' })
+        const headers = Object.assign({ 'Content-Type': 'application/json' }, await practiceHeaders('demo1'))
         const r = await httpRequest(PRACTICE_BASE + '/api/v1/capability/events', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: JSON.stringify(body),
         })
         if (r.data) return r.data
@@ -1029,7 +1174,7 @@ return {
       let out = null
       if (await llmEnabled()) {
         try {
-          out = await runAgent(mentor, msg, g, learnerId, blankChat ? '' : itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null, pickOpts)
+          out = await runAgent(mentor, msg, g, learnerId, blankChat ? '' : itemId, sse ? function (d) { sse.send('delta', { text: d }) } : null, Object.assign({}, pickOpts, { threadId: threadId }))
         } catch (e) {
           out = null
         }
@@ -1084,7 +1229,18 @@ return {
     disposers.push(harness.handle('mentor.status', async function (args) {
       const lid = (args && args.learner) || 'demo1'
       const live = await tryLive(lid)
-      return { connected: !!live, workspaceRoot: workspaceRoot, mentorCount: ROSTER.length, threads: Object.keys(mem.threads).length, practiceBase: PRACTICE_BASE, systemApiBase: SYSTEM_API_BASE, tools: Object.keys(TOOLS) }
+      const c = await getCfg()
+      return {
+        connected: !!live,
+        workspaceRoot: workspaceRoot,
+        mentorCount: ROSTER.length,
+        threads: Object.keys(mem.threads).length,
+        practiceBase: PRACTICE_BASE,
+        systemApiBase: SYSTEM_API_BASE,
+        tools: Object.keys(TOOLS),
+        practiceTokenConfigured: !!c.practiceToken,
+        practiceError: lastPracticeError || '',
+      }
     }))
 
     disposers.push(harness.handle('mentor.card', async function (args) {
