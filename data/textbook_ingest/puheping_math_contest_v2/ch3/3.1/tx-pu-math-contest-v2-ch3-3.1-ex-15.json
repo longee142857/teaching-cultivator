@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-15",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $\\int \\frac{\\mathrm{e}^x(1 + \\sin x)}{1 + \\cos x}\\mathrm{d}x.$",
+  "answer": "(2) 分部积分计算中，某些难以算出的部分可能在合并中被消掉.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "凑微分",
+    "分部积分法",
+    "三角有理式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数为指数函数与三角函数的乘积，需用分部积分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} & I = \\int \\frac {1 + \\sin x}{1 + \\cos x} \\mathrm{d} e ^ {x} = e ^ {x} \\cdot \\frac {1 + \\sin x}{1 + \\cos x} - \\int e ^ {x} \\cdot \\frac {1 + \\cos x + \\sin x}{(1 + \\cos x) ^ {2}} \\mathrm{d} x \\\\ & \\quad = e ^ {x} \\cdot \\frac {1 + \\sin x}{1 + \\cos x} - \\int \\frac {\\mathrm{d} e ^ {x}}{1 + \\cos x} - \\int \\frac {e ^ {x} \\sin x}{(1 + \\cos x) ^ {2}} \\mathrm{d} x \\\\ & \\quad = e ^ {x} \\cdot \\frac {1 + \\sin x}{1 + \\cos x} - \\frac {e ^ {x}}{1 + \\cos x} + \\int \\frac {e ^ {x} \\sin x}{(1 + \\cos x) ^ {2}} \\mathrm{d} x - \\int \\frac {e ^ {x} \\sin x}{(1 + \\cos x) ^ {2}} \\mathrm{d} x \\\\ & \\quad = \\frac {e ^ {x} \\sin x}{1 + \\cos x} + C. \\\\ & I = \\int \\frac {e ^ {x} (1 + 2 \\sin \\frac {x}{2} \\cos \\frac {x}{2})}{2 \\cos^ {2} \\frac {x}{2}} \\mathrm{d} x = \\int \\left(e ^ {x} \\frac {1}{2 \\cos^ {2} \\frac {x}{2}} + e ^ {x} \\tan \\frac {x}{2}\\right) \\mathrm{d} x \\\\ & \\quad = \\int [ e ^ {x} d (\\tan \\frac {x}{2}) + \\tan \\frac {x}{2} d e ^ {x} ] = \\int d (\\mathrm{e} ^ {x} \\tan \\frac {x}{2}) = e ^ {x} \\tan \\frac {x}{2} + C. \\end{array}\n$$\n\n评注（1）凑微分的方式不同，分部积分的形式会有所差异。若需多次使用分部积分法，则每次应将同类函数凑到微分符号后。"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 分部积分计算中，某些难以算出的部分可能在合并中被消掉."
+      }
+    ],
+    "final_answer": "(2) 分部积分计算中，某些难以算出的部分可能在合并中被消掉.",
+    "techniques_used": [
+      "凑微分",
+      "分部积分法",
+      "三角有理式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "分部积分法",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "分部积分法",
+      "expected": "(2) 分部积分计算中，某些难以算出的部分可能在合并中被消掉."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 139
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-21",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "$\\int \\frac{1 + \\sin x}{1 + \\sin x + \\cos x}\\mathrm{d}x.$",
+  "answer": "\\begin{array}{r l} \\text {原式} & = \\int \\frac {\\left(\\sin \\frac {x}{2} + \\cos \\frac {x}{2}\\right) ^ {2}}{2 \\sin \\frac {x}{2} \\cos \\frac {x}{2} + 2 \\cos^ {2} \\frac {x}{2}} \\mathrm{d} x = \\frac {1}{2} \\int \\frac {\\left(1 + \\tan \\frac {x}{2}\\right) ^ {2}}{1 + \\tan \\frac {x}{2}} \\mathrm{d} x \\\\ & = \\frac {1}{2} \\int \\left(1 + \\tan \\frac {x}{2}\\right) \\mathrm{d} x = \\frac {x}{2} + \\ln \\left| \\sec \\frac",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "三角有理式",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 可用类似于例20的方法，将分子拆分，再分项积分；也可作万能代换化为有理函数的积分；最简单的方法是做凑微分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1\n\n$$\n\\begin{array}{r l} \\text {原式} & = \\int \\frac {\\frac {1}{2} (1 + \\sin x + \\cos x) + \\frac {1}{2} (\\sin x - \\cos x) + \\frac {1}{2}}{1 + \\sin x + \\cos x} d x \\\\ & = \\frac {1}{2} \\int d x - \\frac {1}{2} \\int \\frac {\\cos x - \\sin x}{1 + \\sin x + \\cos x} d x + \\frac {1}{2} \\int \\frac {1}{1 + \\sin x + \\cos x} d x \\\\ & = \\frac {1}{2} x - \\frac {1}{2} \\int \\frac {d (1 + \\sin x + \\cos x)}{1 + \\sin x + \\cos x} + \\frac {1}{2} \\int \\frac {1}{2 \\sin \\frac {x}{2} \\cos \\frac {x}{2} + 2 \\cos^ {2} \\frac {x}{2}} d x \\\\ & = \\frac {1}{2} x - \\frac {1}{2} \\ln | 1 + \\sin x + \\cos x | + \\frac {1}{2} \\int \\frac {1}{\\tan \\frac {x}{2} + 1} d \\tan \\frac {x}{2} \\\\ & = \\frac {1}{2} x - \\frac {1}{2} \\ln | 1 + \\sin x + \\cos x | + \\frac {1}{2} \\ln | \\tan \\frac {x}{2} + 1 | + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 令 $u = \\tan \\frac{x}{2}$ ，则 $x = 2\\arctan u$ ， $\\mathrm{d}x = \\frac{2}{1 + u^2}\\mathrm{d}u$ ， $\\sin x = \\frac{2u}{1 + u^2}$ ， $\\cos x = \\frac{1 - u^2}{1 + u^2}$ .\n\n$$\n\\begin{array}{r l} \\text {原式} & = \\int \\frac {1 + \\frac {2 u}{1 + u ^ {2}}}{1 + \\frac {2 u}{1 + u ^ {2}} + \\frac {1 - u ^ {2}}{1 + u ^ {2}}} \\cdot \\frac {2}{1 + u ^ {2}} \\mathrm{d} u = \\int \\frac {u + 1}{1 + u ^ {2}} \\mathrm{d} u \\\\ & = \\arctan u + \\frac {1}{2} \\ln (1 + u ^ {2}) + C = \\frac {x}{2} + \\ln \\left| \\sec \\frac {x}{2} \\right| + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3\n\n$$\n\\begin{array}{r l} \\text {原式} & = \\int \\frac {\\left(\\sin \\frac {x}{2} + \\cos \\frac {x}{2}\\right) ^ {2}}{2 \\sin \\frac {x}{2} \\cos \\frac {x}{2} + 2 \\cos^ {2} \\frac {x}{2}} \\mathrm{d} x = \\frac {1}{2} \\int \\frac {\\left(1 + \\tan \\frac {x}{2}\\right) ^ {2}}{1 + \\tan \\frac {x}{2}} \\mathrm{d} x \\\\ & = \\frac {1}{2} \\int \\left(1 + \\tan \\frac {x}{2}\\right) \\mathrm{d} x = \\frac {x}{2} + \\ln \\left| \\sec \\frac {x}{2} \\right| + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} \\text {原式} & = \\int \\frac {\\left(\\sin \\frac {x}{2} + \\cos \\frac {x}{2}\\right) ^ {2}}{2 \\sin \\frac {x}{2} \\cos \\frac {x}{2} + 2 \\cos^ {2} \\frac {x}{2}} \\mathrm{d} x = \\frac {1}{2} \\int \\frac {\\left(1 + \\tan \\frac {x}{2}\\right) ^ {2}}{1 + \\tan \\frac {x}{2}} \\mathrm{d} x \\\\ & = \\frac {1}{2} \\int \\left(1 + \\tan \\frac {x}{2}\\right) \\mathrm{d} x = \\frac {x}{2} + \\ln \\left| \\sec \\frac",
+    "techniques_used": [
+      "三角有理式",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "三角有理式",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "\\begin{array}{r l} \\text {原式} & = \\int \\frac {\\left(\\sin \\frac {x}{2} + \\cos \\frac {x}{2}\\right) ^ {2}}{2 \\sin \\frac {x}{2} \\cos \\frac {x}{2} + 2 \\cos^ {2} \\frac {x}{2}} \\mathrm{d} x = \\frac {1}{2} \\i"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例21",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 142,
+    "syllabus_note": "三角有理式/万能代换",
+    "commentary": "评注 三角函数有理式的积分 $\\int R(\\sin x, \\cos x) \\mathrm{d}x$ ，作万能代换 $u = \\tan \\frac{x}{2}$ ，可化为有理函数积分：\n\n$$\n\\int R (\\sin x, \\cos x) d x = \\int R \\left(\\frac {2 u}{1 + u ^ {2}}, \\frac {1 - u ^ {2}}{1 + u ^ {2}}\\right) \\frac {2}{1 + u ^ {2}} d u.\n$$\n\n这种方法一定可行，但未必简单."
+  }
+}

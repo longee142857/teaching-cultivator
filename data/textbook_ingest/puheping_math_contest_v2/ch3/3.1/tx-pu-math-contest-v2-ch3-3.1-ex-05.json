@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-05",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\mathrm{d}x}{\\sin^4 x + \\cos^4 x}$ .",
+  "answer": "= \\int \\frac {\\mathrm{d} \\tan 2 x}{\\tan^ {2} 2 x + 2} = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {\\tan 2 x}{\\sqrt {2}}\\right) + C.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 三角函数有理式的积分, 要利用三角函数的恒等式把它化简后再积分. 尽量用凑微分法, 把被积函数化为积分变量的有理函数形式, 积分就容易计算了. 必要时可作万能代换."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 用倍角公式降次，得\n\n$$\nI = \\int {\\frac {\\mathrm{d} x}{\\left({\\frac {1 - \\cos 2 x}{2}}\\right) ^ {2} + \\left({\\frac {1 + \\cos 2 x}{2}}\\right) ^ {2}}} = \\int {\\frac {\\sec^ {2} 2 x}{\\sec^ {2} 2 x + 1}} \\mathrm{d} (2 x)\n\n= \\int \\frac {\\mathrm{d} \\tan 2 x}{\\tan^ {2} 2 x + 2} = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {\\tan 2 x}{\\sqrt {2}}\\right) + C.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{l} I = \\int \\frac {\\sec^ {4} x \\mathrm{d} x}{\\tan^ {4} x + 1} = \\int \\frac {1 + \\tan^ {2} x}{\\tan^ {4} x + 1} \\mathrm{d} (\\tan x) \\\\ \\underline {{\\underline {{\\tan x = t}}}} \\int \\frac {t ^ {2} + 1}{t ^ {4} + 1} \\mathrm{d} t = \\int \\frac {1 + 1 / t ^ {2}}{t ^ {2} + 1 / t ^ {2}} \\mathrm{d} t = \\int \\frac {\\mathrm{d} (t - 1 / t)}{(t - 1 / t) ^ {2} + 2} \\\\ = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {t - 1 / t}{\\sqrt {2}}\\right) + C = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {\\tan x - \\cot x}{\\sqrt {2}}\\right) + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "= \\int \\frac {\\mathrm{d} \\tan 2 x}{\\tan^ {2} 2 x + 2} = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {\\tan 2 x}{\\sqrt {2}}\\right) + C.",
+    "techniques_used": [
+      "无理函数积分",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "无理函数积分",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "换元积分法",
+      "expected": "= \\int \\frac {\\mathrm{d} \\tan 2 x}{\\tan^ {2} 2 x + 2} = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {\\tan 2 x}{\\sqrt {2}}\\right) + C."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 134,
+    "syllabus_note": "三角有理式凑微分/换元",
+    "commentary": "评注 当被积函数为三角函数有理式 $R(\\sin x, \\cos x)$ ，作以下代换，积分会更为简便：\n\n若 $R(-\\sin x, \\cos x) = -R(\\sin x, \\cos x)$ ，令 $\\cos x = t$ ；\n\n若 $R(\\sin x, -\\cos x) = -R(\\sin x, \\cos x)$ ，令 $\\sin x = t$ ；\n\n若 $R(-\\sin x, -\\cos x) = R(\\sin x, \\cos x)$ ，令 $\\tan x = t$ 。"
+  }
+}

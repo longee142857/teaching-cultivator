@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-16",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求积分 $I_{n} = \\int \\frac{\\mathrm{d}x}{\\sin^{n}x} (n > 2)$ 的递推公式，并计算 $I_{5} = \\int \\frac{\\mathrm{d}x}{\\sin^{5}x}$ .",
+  "answer": "I _ {n} = - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} + \\frac {n - 2}{n - 1} I _ {n - 2}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "递推公式",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 分子利用 $1 = \\sin^2 x + \\cos^2 x$ ，可降低分母次数，得到递推式"
+      },
+      {
+        "id": "s2",
+        "text": "方法1\n\n$$\n\\begin{array}{r l} I _ {n} & = \\int \\frac {\\mathrm{d} x}{\\sin^ {n} x} = \\int \\frac {\\sin^ {2} x + \\cos^ {2} x}{\\sin^ {n} x} \\mathrm{d} x = I _ {n - 2} - \\frac {1}{n - 1} \\int \\cos x \\mathrm{d} \\left(\\frac {1}{\\sin^ {n - 1} x}\\right) \\\\ & = I _ {n - 2} - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} - \\frac {1}{n - 1} I _ {n - 2} = - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} + \\frac {n - 2}{n - 1} I _ {n - 2} \\end{array}\n\n\\begin{array}{r l} I _ {5} & = \\int \\frac {\\mathrm{d} x}{\\sin^ {5} x} = - \\frac {\\cos x}{4 \\sin^ {4} x} + \\frac {3}{4} I _ {3} = - \\frac {\\cos x}{4 \\sin^ {4} x} + \\frac {3}{4} \\cdot \\left(- \\frac {\\cos x}{2 \\sin^ {2} x} + \\frac {1}{2} I _ {1}\\right) \\\\ & = - \\frac {\\cos x}{4 \\sin^ {4} x} - \\frac {3 \\cos x}{8 \\sin^ {2} x} + \\frac {3}{8} \\ln \\left| \\tan \\frac {x}{2} \\right| + C \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} I _ {n} & = - \\int \\frac {\\mathrm{d} \\cot x}{\\sin^ {n - 2} x} = - \\frac {\\cot x}{\\sin^ {n - 2} x} - (n - 2) \\int \\frac {\\cot x \\cos x}{\\sin^ {n - 1} x} \\mathrm{d} x \\\\ & = - \\frac {\\cos x}{\\sin^ {n - 1} x} - (n - 2) \\int \\frac {1 - \\sin^ {2} x}{\\sin^ {n} x} \\mathrm{d} x = - \\frac {\\cos x}{\\sin^ {n - 1} x} - (n - 2) (I _ {n} - I _ {n - 2}), \\end{array}\n$$\n\n移项得\n\n$$\nI _ {n} = - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} + \\frac {n - 2}{n - 1} I _ {n - 2}.\n$$"
+      }
+    ],
+    "final_answer": "I _ {n} = - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} + \\frac {n - 2}{n - 1} I _ {n - 2}.",
+    "techniques_used": [
+      "递推公式",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "递推公式",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "分部积分法",
+      "expected": "I _ {n} = - \\frac {\\cos x}{(n - 1) \\sin^ {n - 1} x} + \\frac {n - 2}{n - 1} I _ {n - 2}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 140,
+    "syllabus_note": "分部递推",
+    "commentary": "评注 (1) 类似可求得 $I_{n} = \\int \\frac{\\mathrm{d}x}{(a\\sin x + b\\cos x)^{n}} (n > 2)$ 的递推公式. 因为\n\n$a\\sin x + b\\cos x = \\sqrt{a^2 + b^2}\\sin (x + \\theta)$ ，式中 $\\theta = \\arctan{\\frac{b}{a}}$\n\n(2) 若 $I_{n} = \\int f(x, n) \\mathrm{d}x$ 难以计算，而 $I_{0}$ 或 $I_{1}$ 容易计算，可考虑用分部积分来得到 $I_{n}$ 的递推式.\n\n对 $I_{n} = \\int f^{n}(x)\\mathrm{d}x$ ，常利用恒等变形 $f^n (x) = f^{n - 1}(x)(1 + g(x)),f^n (x) = f^{n - 2}(x)(1 + h(x))$ 或 $f^n (x) = f^{n - 1}(x)\\cdot f(x),f^n (x) = f^{n - 2}(x)\\cdot f^2 (x)$ 等方式，再用分部积分来获得递推公式．例如， $I_{n} = \\int \\sin^{n}x\\mathrm{d}x$ ，可通过 $I_{n} = -\\int \\sin^{n - 1}x\\mathrm{d}\\cos x$ 或 $I_{n} = \\int \\sin^{n - 2}x\\cdot (1 - \\cos^{2}x)\\mathrm{d}x$ ，再用分部积分得到递推公式 $I_{n} = -\\frac{\\sin^{n - 1}x\\cos x}{n} +\\frac{n - 1}{n} I_{n - 2}$ ；例16中的积分利用了变形 $\\frac{1}{\\sin^n x} = \\frac{\\csc^2x}{\\sin^{n - 2}x}$\n\n再如 $I_{n}"
+  }
+}

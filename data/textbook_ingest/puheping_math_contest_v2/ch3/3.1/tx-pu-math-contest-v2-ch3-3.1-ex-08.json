@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-08",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\cos (\\ln x) \\, \\mathrm{d}x$ .",
+  "answer": "\\int \\cos (\\ln x) d x = \\frac {x}{2} (\\sin (\\ln x) + \\cos (\\ln x)) + C.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部积分法",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 作变量代换 $\\ln x = t$ ，被积函数变为 $\\cos t \\cdot e^t$ ，故用分部积分计算."
+      },
+      {
+        "id": "s2",
+        "text": "令 $\\ln x = t$ ，则 $x = e^t$ ， $dx = e^t dt$"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\int \\cos (\\ln x) \\mathrm{d} x & = \\int \\mathrm{e} ^ {t} \\cos t \\mathrm{d} t = \\mathrm{e} ^ {t} \\sin t - \\int \\mathrm{e} ^ {t} \\sin t \\mathrm{d} t \\\\ & = \\mathrm{e} ^ {t} \\sin t + \\mathrm{e} ^ {t} \\cos t - \\int \\mathrm{e} ^ {t} \\cos t \\mathrm{d} t, \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "移项得到"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\int \\mathrm{e} ^ {t} \\cos t \\mathrm{d} t = \\frac {\\mathrm{e} ^ {t}}{2} (\\sin t + \\cos t) + C.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "即"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\int \\cos (\\ln x) d x = \\frac {x}{2} (\\sin (\\ln x) + \\cos (\\ln x)) + C.\n$$"
+      }
+    ],
+    "final_answer": "\\int \\cos (\\ln x) d x = \\frac {x}{2} (\\sin (\\ln x) + \\cos (\\ln x)) + C.",
+    "techniques_used": [
+      "分部积分法",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "分部积分法",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "换元积分法",
+      "expected": "\\int \\cos (\\ln x) d x = \\frac {x}{2} (\\sin (\\ln x) + \\cos (\\ln x)) + C."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 136,
+    "syllabus_note": "分部：cos(ln x)",
+    "commentary": "评注 该题也可以不作变量代换，直接用分部积分计算。但要留意多次使用分部积分后出现的循环。"
+  }
+}

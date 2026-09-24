@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-10",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{x\\ln x}{(1 + x^2)^2}\\mathrm{d}x$",
+  "answer": "\\begin{array}{r l} I & = - \\frac {1}{2} \\int \\ln x \\mathrm{d} \\frac {1}{1 + x ^ {2}} = - \\frac {1}{2} \\left(\\frac {\\ln x}{1 + x ^ {2}} - \\int \\frac {1}{x (1 + x ^ {2})} \\mathrm{d} x\\right) \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\int \\left(\\frac {1}{x} - \\frac {x}{1 + x ^ {2}}\\right) \\mathrm{d} x \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\ln x - \\frac {1}{4} \\ln (1 + x",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部积分法",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $\\ln x$ 以外的函数 $\\frac{x}{(1 + x^2)^2}$ 能凑微分并置于微分符号后，所以适宜做分部积分."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} I & = - \\frac {1}{2} \\int \\ln x \\mathrm{d} \\frac {1}{1 + x ^ {2}} = - \\frac {1}{2} \\left(\\frac {\\ln x}{1 + x ^ {2}} - \\int \\frac {1}{x (1 + x ^ {2})} \\mathrm{d} x\\right) \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\int \\left(\\frac {1}{x} - \\frac {x}{1 + x ^ {2}}\\right) \\mathrm{d} x \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\ln x - \\frac {1}{4} \\ln (1 + x ^ {2}) + C. \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} I & = - \\frac {1}{2} \\int \\ln x \\mathrm{d} \\frac {1}{1 + x ^ {2}} = - \\frac {1}{2} \\left(\\frac {\\ln x}{1 + x ^ {2}} - \\int \\frac {1}{x (1 + x ^ {2})} \\mathrm{d} x\\right) \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\int \\left(\\frac {1}{x} - \\frac {x}{1 + x ^ {2}}\\right) \\mathrm{d} x \\\\ & = - \\frac {\\ln x}{2 (1 + x ^ {2})} + \\frac {1}{2} \\ln x - \\frac {1}{4} \\ln (1 + x",
+    "techniques_used": [
+      "分部积分法",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "分部积分法",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "换元积分法",
+      "expected": "\\begin{array}{r l} I & = - \\frac {1}{2} \\int \\ln x \\mathrm{d} \\frac {1}{1 + x ^ {2}} = - \\frac {1}{2} \\left(\\frac {\\ln x}{1 + x ^ {2}} - \\int \\frac {1}{x (1 + x ^ {2})} \\mathrm{d} x\\right) \\\\ & = - \\f"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 137,
+    "commentary": "评注 积分式中含有对数函数的几种情况：\n\n\\- 当 $f(x)$ 能凑微分时，则 $\\int f(x)\\ln g(x)\\mathrm{d}x = \\int \\ln g(x)\\mathrm{d}F(x)$ ，再分部积分；\n\n$\\int \\frac{f(\\ln x)}{x} \\mathrm{d}x = \\int f(\\ln x) \\mathrm{d}\\ln x$ ，凑微分（或换元）后再积分；\n\n$\\int f(\\ln x)\\mathrm{d}x$ ，令 $t = \\ln x$ ，换元后再积分，或直接做分部积分."
+  }
+}

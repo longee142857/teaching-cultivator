@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-14",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\sqrt{x - 1}\\arctan\\sqrt{x - 1}}{x}\\mathrm{d}x.$",
+  "answer": "\\begin{array}{r l} I & \\xlongequal {\\sqrt {x - 1} = t} 2 \\int \\frac {t ^ {2} \\arctan t}{t ^ {2} + 1} \\mathrm{d} t = 2 \\int \\arctan t \\mathrm{d} t - 2 \\int \\frac {\\arctan t}{t ^ {2} + 1} \\mathrm{d} t \\\\ & = 2 t \\arctan t - 2 \\int \\frac {t}{1 + t ^ {2}} \\mathrm{d} t - 2 \\int \\arctan t \\mathrm{d} \\arctan t \\\\ & = 2 t \\arctan t - \\ln (1 + t ^ {2}) - (\\arctan t) ^ {2} + C \\\\ & = 2 \\sqrt {x - 1} \\arctan",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 按上例评注提供的方法，可得到几种不同的解法."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $t = \\arctan \\sqrt{x - 1}$ ，则 $\\sqrt{x - 1} = \\tan t, x = \\sec^2 t, \\mathrm{d}x = 2\\sec^2 t\\tan t\\mathrm{d}t,$\n\n$$\n\\begin{array}{r l} I & = \\int \\frac {\\tan t \\cdot t}{\\sec^ {2} t} \\cdot 2 \\sec^ {2} t \\tan t \\mathrm{d} t = 2 \\int t \\tan^ {2} t \\mathrm{d} t = 2 \\int (t \\sec^ {2} t - t) \\mathrm{d} t \\\\ & = - t ^ {2} + 2 \\int t \\mathrm{d} \\tan t = - t ^ {2} + 2 t \\tan t + 2 \\ln | \\cos t | + C \\\\ & = - (\\arctan \\sqrt {x - 1}) ^ {2} + 2 \\sqrt {x - 1} \\arctan \\sqrt {x - 1} - \\ln x + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 因 $\\int \\frac{\\sqrt{x - 1}}{x}\\mathrm{d}x\\stackrel {\\sqrt{x - 1} = t}{=}\\int \\frac{2t^2}{t^2 + 1}\\mathrm{d}t = \\int \\left(2 - \\frac{2}{t^2 + 1}\\right)\\mathrm{d}t = 2t - 2\\arctan t + C$ ，则\n\n$$\n\\begin{array}{r l} I & \\xlongequal {\\sqrt {x - 1} = t} 2 \\int \\arctan t \\mathrm{d} (t - \\arctan t) = 2 (t - \\arctan t) \\arctan t - 2 \\int \\frac {(t - \\arctan t)}{1 + t ^ {2}} \\mathrm{d} t \\\\ & = 2 (t - \\arctan t) \\arctan t - \\ln (1 + t ^ {2}) + 2 \\int \\arctan t \\mathrm{d} \\arctan t \\\\ & = 2 t \\arctan t - (\\arctan t) ^ {2} - \\ln (1 + t ^ {2}) + C \\\\ & = 2 \\sqrt {x - 1} \\arctan \\sqrt {x - 1} - (\\arctan \\sqrt {x - 1}) ^ {2} - \\ln x + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3\n\n$$\n\\begin{array}{r l} I & \\xlongequal {\\sqrt {x - 1} = t} 2 \\int \\frac {t ^ {2} \\arctan t}{t ^ {2} + 1} \\mathrm{d} t = 2 \\int \\arctan t \\mathrm{d} t - 2 \\int \\frac {\\arctan t}{t ^ {2} + 1} \\mathrm{d} t \\\\ & = 2 t \\arctan t - 2 \\int \\frac {t}{1 + t ^ {2}} \\mathrm{d} t - 2 \\int \\arctan t \\mathrm{d} \\arctan t \\\\ & = 2 t \\arctan t - \\ln (1 + t ^ {2}) - (\\arctan t) ^ {2} + C \\\\ & = 2 \\sqrt {x - 1} \\arctan \\sqrt {x - 1} - (\\arctan \\sqrt {x - 1}) ^ {2} - \\ln x + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} I & \\xlongequal {\\sqrt {x - 1} = t} 2 \\int \\frac {t ^ {2} \\arctan t}{t ^ {2} + 1} \\mathrm{d} t = 2 \\int \\arctan t \\mathrm{d} t - 2 \\int \\frac {\\arctan t}{t ^ {2} + 1} \\mathrm{d} t \\\\ & = 2 t \\arctan t - 2 \\int \\frac {t}{1 + t ^ {2}} \\mathrm{d} t - 2 \\int \\arctan t \\mathrm{d} \\arctan t \\\\ & = 2 t \\arctan t - \\ln (1 + t ^ {2}) - (\\arctan t) ^ {2} + C \\\\ & = 2 \\sqrt {x - 1} \\arctan",
+    "techniques_used": [
+      "无理函数积分",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "分部积分法",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "分部积分法",
+      "expected": "\\begin{array}{r l} I & \\xlongequal {\\sqrt {x - 1} = t} 2 \\int \\frac {t ^ {2} \\arctan t}{t ^ {2} + 1} \\mathrm{d} t = 2 \\int \\arctan t \\mathrm{d} t - 2 \\int \\frac {\\arctan t}{t ^ {2} + 1} \\mathrm{d} t \\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 139
+  }
+}

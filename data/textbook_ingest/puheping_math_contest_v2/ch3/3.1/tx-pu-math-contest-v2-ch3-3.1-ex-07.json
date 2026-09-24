@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-07",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\mathrm{d}x}{\\sin^3 x + \\cos^3 x}$ .",
+  "answer": "原积分",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "换元积分法",
+    "分部积分法",
+    "三角有理式",
+    "无理函数积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将分母做因式分解，化简后再寻找变量代换方法或凑微分方法."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 由于\n\n$$\n\\begin{array}{r l} \\sin^ {3} x + \\cos^ {3} x & = (\\sin x + \\cos x) (\\sin^ {2} x - \\sin x \\cos x + \\cos^ {2} x) \\\\ & = \\frac {1}{2} (\\sin x + \\cos x) [ 1 + (\\sin x - \\cos x) ^ {2} ] \\\\ & = \\frac {1}{\\sqrt {2}} \\cos \\left(x - \\frac {\\pi}{4}\\right) \\left(1 + 2 \\sin^ {2} \\left(x - \\frac {\\pi}{4}\\right)\\right). \\end{array}\n$$\n\n得\n\n$$\nI = \\sqrt {2} \\int \\frac {\\mathrm{d} x}{\\cos \\left(x - \\frac {\\pi}{4}\\right) \\left(1 + 2 \\sin^ {2} \\left(x - \\frac {\\pi}{4}\\right)\\right)}.\n$$\n\n令 $u = x - \\frac{\\pi}{4}$ ，得\n\n$$\nI = \\sqrt {2} \\int \\frac {\\mathrm{d} u}{\\cos u (1 + 2 \\sin^ {2} u)} = \\sqrt {2} \\int \\frac {d \\sin u}{\\cos^ {2} u (1 + 2 \\sin^ {2} u)}\n\n\\begin{array}{l} \\frac {t = \\sin u}{\\sqrt {2}} \\int \\frac {\\mathrm{d} t}{(1 - t ^ {2}) (1 + 2 t ^ {2})} = \\frac {\\sqrt {2}}{3} \\left(\\int \\frac {\\mathrm{d} u}{1 - t ^ {2}} + \\int \\frac {2 \\mathrm{d} t}{1 + 2 t ^ {2}}\\right) \\\\ = \\frac {\\sqrt {2}}{3} \\left(\\frac {1}{2} \\ln \\left| \\frac {1 + t}{1 - t} \\right| + \\sqrt {2} \\arctan \\sqrt {2} t\\right) + C \\\\ = \\frac {\\sqrt {2}}{6} \\ln \\left| \\frac {1 + \\sin \\left(x - \\frac {\\pi}{4}\\right)}{1 - \\sin \\left(x - \\frac {\\pi}{4}\\right)} \\right| + \\frac {2}{3} \\arctan \\left(\\sqrt {2} \\sin \\left(x - \\frac {\\pi}{4}\\right)\\right) + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{l} I = \\frac {2}{3} \\int \\frac {[ 1 + (\\sin x - \\cos x) ^ {2} ] + (\\sin x + \\cos x) ^ {2}}{(\\sin x + \\cos x) [ 1 + (\\sin x - \\cos x) ^ {2} ]} d x \\\\ = \\frac {2}{3} \\left[ \\int \\frac {1}{\\sin x + \\cos x} d x + \\int \\frac {\\sin x + \\cos x}{1 + (\\sin x - \\cos x) ^ {2}} d x \\right]. \\end{array}\n$$\n\n其中\n\n$$\n\\int \\frac {\\mathrm{d} x}{\\sin x + \\cos x} = \\frac {1}{\\sqrt {2}} \\int \\frac {\\mathrm{d} x}{\\cos \\left(x - \\frac {\\pi}{4}\\right)} = \\frac {\\sqrt {2}}{2} \\ln \\left| \\sec \\left(x - \\frac {\\pi}{4}\\right) + \\tan \\left(x - \\frac {\\pi}{4}\\right) \\right| + C _ {1},\n\n\\int \\frac {\\sin x + \\cos x}{1 + (\\sin x - \\cos x) ^ {2}} d x = \\int \\frac {d (\\sin x - \\cos x)}{1 + (\\sin x - \\cos x) ^ {2}} = \\arctan (\\sin x - \\cos x). + C _ {2}.\n$$\n\n所以原积分\n\n$$\nI = \\frac {\\sqrt {2}}{3} \\ln \\left| \\sec \\left(x - \\frac {\\pi}{4}\\right) + \\tan \\left(x - \\frac {\\pi}{4}\\right) \\right| + \\frac {2}{3} \\arctan (\\sin x - \\cos x). + C.\n$$\n\n## 2. 分部积分法\n\n分部积分法是微分学中“两个函数乘积求导法则”的逆运算，该方法与换元积分法的针对性是不同的，要根据被积函数的特点选取合理的方法。一般来说，以下任意两类函数乘积的积分宜用分部积分：\n\n（1）幂函数（多项式，某些分式）类；"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 指数函数（对数函数）类;"
+      },
+      {
+        "id": "s5",
+        "text": "(3) 三角函数（反三角函数）类;"
+      },
+      {
+        "id": "s6",
+        "text": "(4) 含有 $f'(x)$ , $f''(x)$ 的函数类."
+      }
+    ],
+    "final_answer": "原积分",
+    "techniques_used": [
+      "换元积分法",
+      "分部积分法",
+      "三角有理式",
+      "无理函数积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "三角有理式",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "原积分"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 135,
+    "syllabus_note": "三角有理式"
+  }
+}

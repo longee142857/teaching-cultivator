@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-19",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\mathrm{d}x}{x^8 + x^4 + 1}$ .",
+  "answer": "$$ \\begin{array}{r l} \\frac {1}{x ^ {8} + x ^ {4} + 1} & = \\frac {1}{2} \\left(\\frac {x ^ {2} + 1}{x ^ {4} + x ^ {2} + 1} - \\frac {x ^ {2} - 1}{x ^ {4} - x ^ {2} + 1}\\right) \\\\ & = \\frac {1}{4} \\left(\\frac {1}{x ^ {2} + x + 1} + \\frac {1}{x ^ {2} - x + 1}\\right) - \\frac {1}{2} \\left(\\frac {- \\frac {1}{\\sqrt {3}} x - \\frac {1}{2}}{x ^ {2} + \\sqrt {3} x + 1} + \\frac {\\frac {1}{\\sqrt {3}} x - \\frac {1",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将被积函数拆分为最简部分分式之和再逐项积分. 如果能凑微分应尽量避免前者."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为\n\n$$\nx ^ {8} + x ^ {4} + 1 = (x ^ {4} + 1) ^ {2} - x ^ {4} = (x ^ {4} + x ^ {2} + 1) (x ^ {4} - x ^ {2} + 1),\n\nx ^ {4} + x ^ {2} + 1 = (x ^ {2} + 1) ^ {2} - x ^ {2} = (x ^ {2} + x + 1) (x ^ {2} - x + 1),\n\nx ^ {4} - x ^ {2} + 1 = (x ^ {2} + 1) ^ {2} - 3 x ^ {2} = (x ^ {2} + \\sqrt {3} x + 1) (x ^ {2} - \\sqrt {3} x + 1),\n$$\n\n所以\n\n$$\n\\begin{array}{r l} \\frac {1}{x ^ {8} + x ^ {4} + 1} & = \\frac {1}{2} \\left(\\frac {x ^ {2} + 1}{x ^ {4} + x ^ {2} + 1} - \\frac {x ^ {2} - 1}{x ^ {4} - x ^ {2} + 1}\\right) \\\\ & = \\frac {1}{4} \\left(\\frac {1}{x ^ {2} + x + 1} + \\frac {1}{x ^ {2} - x + 1}\\right) - \\frac {1}{2} \\left(\\frac {- \\frac {1}{\\sqrt {3}} x - \\frac {1}{2}}{x ^ {2} + \\sqrt {3} x + 1} + \\frac {\\frac {1}{\\sqrt {3}} x - \\frac {1}{2}}{x ^ {2} - \\sqrt {3} x + 1}\\right). \\end{array}\n\n\\begin{array}{l} I = \\frac {1}{4} \\int \\frac {\\mathrm{d} x}{x ^ {2} + x + 1} + \\frac {1}{4} \\int \\frac {\\mathrm{d} x}{x ^ {2} - x + 1} + \\frac {1}{4 \\sqrt {3}} \\int \\frac {2 x + \\sqrt {3}}{x ^ {2} + \\sqrt {3} x + 1} \\mathrm{d} x - \\frac {1}{4 \\sqrt {3}} \\int \\frac {2 x - \\sqrt {3}}{x ^ {2} - \\sqrt {3} x + 1} \\mathrm{d} x \\\\ = \\frac {1}{2 \\sqrt {3}} \\left(\\arctan \\left(\\frac {2 x + 1}{\\sqrt {3}}\\right) + \\arctan \\left(\\frac {2 x - 1}{\\sqrt {3}}\\right)\\right) + \\frac {1}{4 \\sqrt {3}} \\left(\\ln (x ^ {2} + \\sqrt {3} x + 1) - \\ln (x ^ {2} - \\sqrt {3} x + 1)\\right) + C \\\\ = \\frac {1}{2 \\sqrt {3}} \\arctan \\left(\\frac {\\sqrt {3} x}{1 - x ^ {2}}\\right) + \\frac {1}{4 \\sqrt {3}} \\ln \\frac {x ^ {2} + \\sqrt {3} x + 1}{x ^ {2} - \\sqrt {3} x + 1} + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} I & = \\frac {1}{2} \\int \\left(\\frac {x ^ {2} + 1}{x ^ {4} + x ^ {2} + 1} - \\frac {x ^ {2} - 1}{x ^ {4} - x ^ {2} + 1}\\right) \\mathrm{d} x = \\frac {1}{2} \\int \\left(\\frac {1 + 1 / x ^ {2}}{x ^ {2} + 1 + 1 / x ^ {2}} - \\frac {1 - 1 / x ^ {2}}{x ^ {2} - 1 + 1 / x ^ {2}}\\right) \\mathrm{d} x \\\\ & = \\frac {1}{2} \\int \\frac {\\mathrm{d} (x - 1 / x)}{(x - 1 / x) ^ {2} + 3} - \\frac {1}{2} \\int \\frac {\\mathrm{d} (x + 1 / x)}{(x + 1 / x) ^ {2} - 3} \\\\ & = \\frac {1}{2 \\sqrt {3}} \\arctan \\frac {x - 1 / x}{\\sqrt {3}} - \\frac {1}{4 \\sqrt {3}} \\ln \\left| \\frac {(x + 1 / x) - \\sqrt {3}}{(x + 1 / x) + \\sqrt {3}} \\right| + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$$ \\begin{array}{r l} \\frac {1}{x ^ {8} + x ^ {4} + 1} & = \\frac {1}{2} \\left(\\frac {x ^ {2} + 1}{x ^ {4} + x ^ {2} + 1} - \\frac {x ^ {2} - 1}{x ^ {4} - x ^ {2} + 1}\\right) \\\\ & = \\frac {1}{4} \\left(\\frac {1}{x ^ {2} + x + 1} + \\frac {1}{x ^ {2} - x + 1}\\right) - \\frac {1}{2} \\left(\\frac {- \\frac {1}{\\sqrt {3}} x - \\frac {1}{2}}{x ^ {2} + \\sqrt {3} x + 1} + \\frac {\\frac {1}{\\sqrt {3}} x - \\frac {1",
+    "techniques_used": [
+      "无理函数积分",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题属于有理、三角有理还是无理型？宜用部分分式、万能代换还是特定三角代换？",
+      "technique": "无理函数积分",
+      "expected": "按被积函数类型选标准变形或代换，化为可积的基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出最终不定积分结果。",
+      "technique": "分部积分法",
+      "expected": "$$ \\begin{array}{r l} \\frac {1}{x ^ {8} + x ^ {4} + 1} & = \\frac {1}{2} \\left(\\frac {x ^ {2} + 1}{x ^ {4} + x ^ {2} + 1} - \\frac {x ^ {2} - 1}{x ^ {4} - x ^ {2} + 1}\\right) \\\\ & = \\frac {1}{4} \\left(\\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 141,
+    "syllabus_note": "有理函数积分",
+    "commentary": "评注 （1）化真分式为最简部分分式做积分是计算有理函数积分的有效方法，但未必简单。要尽量利用凑微分法做计算。\n\n(2) 注意计算积分 $\\int \\frac{x^2 + b}{x^4 + ax^2 + b^2} \\mathrm{d}x$ 的凑微分法."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-01",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int x^3\\sqrt{4 - x^2}\\mathrm{d}x.$",
+  "answer": "这些分解式在对应函数求导（高阶导数）、积分、幂级数展开等方面都会带来很大的方便.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "三角代换",
+    "三角有理式",
+    "无理函数积分",
+    "三角恒等变形",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 为消去根号，可令 $x = 2\\sin t$ ，也可令 $\\sqrt{4 - x^2} = t$ ："
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $x = 2\\sin t$ ，则 $\\mathrm{dx} = 2\\cos t\\mathrm{dt}$ ，有\n\n$$\n\\begin{array}{r l} \\int x ^ {3} \\sqrt {4 - x ^ {2}} \\mathrm{d} x & = \\int (2 \\sin t) ^ {3} \\sqrt {4 - 4 \\sin^ {2} t} \\cdot 2 \\cos t \\mathrm{d} t \\\\ & = 3 2 \\int \\sin^ {3} t \\cos^ {2} t \\mathrm{d} t = 3 2 \\int \\sin t (1 - \\cos^ {2} t) \\cos^ {2} t \\mathrm{d} t \\\\ & = - 3 2 \\int (\\cos^ {2} t - \\cos^ {4} t) \\mathrm{d} \\cos t = - 3 2 \\left(\\frac {1}{3} \\cos^ {3} t - \\frac {1}{5} \\cos^ {5} t\\right) + C \\\\ & = - \\frac {4}{3} \\left(\\sqrt {4 - x ^ {2}}\\right) ^ {3} + \\frac {1}{5} \\left(\\sqrt {4 - x ^ {2}}\\right) ^ {5} + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 令 $\\sqrt{4 - x^2} = t$ ，则 $x^{2} = 4 - t^{2}$ ， $x\\mathrm{d}x = -t\\mathrm{d}t$ ，有\n\n$$\n\\begin{array}{r l} \\int x ^ {3} \\sqrt {4 - x ^ {2}} \\mathrm{d} x & = - \\int (4 - t ^ {2}) t ^ {2} \\mathrm{d} t = \\frac {1}{5} t ^ {5} - \\frac {4}{3} t ^ {3} + C \\\\ & = \\frac {1}{5} \\left(\\sqrt {4 - x ^ {2}}\\right) ^ {5} - \\frac {4}{3} \\left(\\sqrt {4 - x ^ {2}}\\right) ^ {3} + C. \\end{array}\n$$\n\n评注（1）对积分 $\\int x^{m}f\\left(\\sqrt{a^{2}\\pm x^{2}}\\right)\\mathrm{d}x$ ，仅当 $m$ 为奇数时，作代换 $\\sqrt{a^2\\pm x^2} = t$ 才能消去根式，否则需作三角代换."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 在方法 1 中涉及积分 $\\int \\sin^3 t \\cos^2 t \\, \\mathrm{d}t$ ，一般对 $\\int \\sin^m x \\cos^n x \\, \\mathrm{d}x$ 型积分（ $m, n$ 为自然数），可分两种情况求积分：\n\n① 当 $m$ 和 $n$ 中至少有一个为奇数时，如 $m = 2k + 1 (k = 0, 1, 2, \\cdots)$ ，则\n\n$$\n\\int \\sin^ {2 k + 1} x \\cdot \\cos^ {n} x d x = - \\int (1 - \\cos^ {2} x) ^ {k} \\cos^ {n} x d \\cos x\n$$\n\n这是关于 $\\cos x$ 的多项式的积分，容易求得结果.\n\n② 当 $m$ 和 $n$ 都是偶数（不太大）或其中之一为零时，用倍角公式\n\n$$\n\\sin^ {2} x = \\frac {1 - \\cos 2 x}{2}, \\quad \\cos^ {2} x = \\frac {1 + \\cos 2 x}{2}, \\quad \\sin x \\cos x = \\frac {1}{2} \\sin 2 x\n$$\n\n降次（降到1次为止）或用下面（3）中的分解式求积分."
+      },
+      {
+        "id": "s5",
+        "text": "(3) 三角函数的“倍角公式”与“积化和差”都可视为“三角多项式的分解”，其效果是降次。由欧拉公式可得更一般的分解：\n\n$$\n\\sin^ {2 m} x \\cos^ {n} x = A _ {0} \\cos (2 m + n) x + A _ {1} \\cos (2 m + n - 2) x + \\dots\\tag{①}\n\n\\sin^ {2 m + 1} x \\cos^ {n} x = A _ {0} \\sin (2 m + n + 1) x + A _ {1} \\sin (2 m + n - 1) x + \\dots\\tag{②}\n$$\n\n其系数 $A_0, A_1, \\cdots$ 可由欧拉公式运算得到，也可由“赋值法”确定。注意①式的两端是偶函数，②式的两端是奇函数，这有助于我们的记忆。\n\n这些分解式在对应函数求导（高阶导数）、积分、幂级数展开等方面都会带来很大的方便."
+      }
+    ],
+    "final_answer": "这些分解式在对应函数求导（高阶导数）、积分、幂级数展开等方面都会带来很大的方便.",
+    "techniques_used": [
+      "三角代换",
+      "三角有理式",
+      "无理函数积分",
+      "三角恒等变形",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用凑微分还是显式换元？中间变量如何选取？",
+      "technique": "三角代换",
+      "expected": "按根号/三角/指数结构选代换或凑微分，使积分化为基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出换元后的积分与代回原变量后的原函数（含 +C）。",
+      "technique": "三角有理式",
+      "expected": "这些分解式在对应函数求导（高阶导数）、积分、幂级数展开等方面都会带来很大的方便."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 133,
+    "syllabus_note": "三角/根号换元"
+  }
+}

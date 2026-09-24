@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-12",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $I = \\int \\ln \\left(\\sqrt{1 + x} +\\sqrt{1 - x}\\right)\\mathrm{d}x$",
+  "answer": "I = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\frac {x}{2} + \\frac {1}{2} \\arcsin x + C.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "无理函数积分",
+    "分部积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 适宜直接做分部积分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1\n\n$$\n\\begin{array}{l} I = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\int \\frac {x \\left(\\frac {1}{2 \\sqrt {1 + x}} - \\frac {1}{2 \\sqrt {1 - x}}\\right)}{\\sqrt {1 + x} + \\sqrt {1 - x}} d x \\\\ = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\frac {1}{2} \\int \\frac {x (\\sqrt {1 - x} - \\sqrt {1 + x})}{(\\sqrt {1 + x} + \\sqrt {1 - x}) \\sqrt {1 - x ^ {2}}} d x \\\\ = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) + \\frac {1}{4} \\int \\frac {(\\sqrt {1 - x} - \\sqrt {1 + x}) ^ {2}}{\\sqrt {1 - x ^ {2}}} d x \\\\ = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) + \\frac {1}{2} \\int \\frac {1 - \\sqrt {1 - x ^ {2}}}{\\sqrt {1 - x ^ {2}}} d x \\\\ = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) + \\frac {1}{4} [ \\arcsin x - x ] + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 用组合积分法. 记 $J = \\int \\ln \\left(\\sqrt{1 + x} - \\sqrt{1 - x}\\right) \\mathrm{d}x$ ，则\n\n①\n\n$$\n\\begin{array}{l} I + J = \\int \\left(\\ln \\left(\\sqrt {1 + x} + \\sqrt {1 - x}\\right) + \\ln \\left(\\sqrt {1 + x} - \\sqrt {1 - x}\\right)\\right) d x = \\int \\ln 2 x d x = x \\ln 2 x - x + C _ {1}. \\\\ I - J = \\int \\left(\\ln \\left(\\sqrt {1 + x} + \\sqrt {1 - x}\\right) - \\ln \\left(\\sqrt {1 + x} - \\sqrt {1 - x}\\right)\\right) d x = \\int \\ln \\frac {1 + \\sqrt {1 - x ^ {2}}}{x} d x \\\\ \\stackrel {{x = \\sin t}} {{=}} \\int \\ln \\cot \\frac {t}{2} d \\sin t = \\sin t \\cdot \\ln \\cot \\frac {t}{2} + \\int d t = \\sin t \\cdot \\ln \\cot \\frac {t}{2} + t + C _ {2} \\\\ = x \\ln \\frac {\\left(\\sqrt {1 + x} + \\sqrt {1 - x}\\right) ^ {2}}{2 x} + \\arcsin x + C _ {2}. \\end{array}\\tag{②}\n$$\n\n联立①，②式，解得\n\n$$\nI = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\frac {x}{2} + \\frac {1}{2} \\arcsin x + C.\n$$"
+      }
+    ],
+    "final_answer": "I = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\frac {x}{2} + \\frac {1}{2} \\arcsin x + C.",
+    "techniques_used": [
+      "无理函数积分",
+      "分部积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "分部积分如何选取 u 与 dv？是否需要多次分部或递推？",
+      "technique": "分部积分法",
+      "expected": "通常对数/反三角/幂作 u，指数/三角作 dv；同类项移到左边解出。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终原函数（或递推公式）是什么？",
+      "technique": "分部积分法",
+      "expected": "I = x \\ln (\\sqrt {1 + x} + \\sqrt {1 - x}) - \\frac {x}{2} + \\frac {1}{2} \\arcsin x + C."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 137,
+    "commentary": "评注 “组合积分法”的关键是引入适当的积分式 $J$ ，使得 $k_{1}I + k_{2}J$ 与 $k_{3}I + k_{4}J$ 易于计算（常数 $k_{1}k_{4} - k_{2}k_{3} \\neq 0$ ），再求解关于 $I, J$ 的线性方程组得到所求积分（常取 $k_{1} = k_{2} = k_{3} = 1, k_{4} = -1$ ）。"
+  }
+}

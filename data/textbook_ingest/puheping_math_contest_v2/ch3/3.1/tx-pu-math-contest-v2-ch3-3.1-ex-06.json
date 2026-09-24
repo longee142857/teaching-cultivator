@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.1-ex-06",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int \\frac{\\mathrm{d}x}{\\sin x\\sqrt{1 + \\cos x}}.$",
+  "answer": "解 被积函数分子、分母同乘以 $\\sin x$ ，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "三角有理式",
+    "无理函数积分",
+    "换元积分法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数属 $R(-\\sin x, \\cos x) = -R(\\sin x, \\cos x)$ 型，宜作变量代换 $\\cos x = t$"
+      },
+      {
+        "id": "s2",
+        "text": "被积函数分子、分母同乘以 $\\sin x$ ，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} I & = - \\int \\frac {\\mathrm{d} (\\cos x)}{\\sin^ {2} x \\sqrt {1 + \\cos x}} \\stackrel {\\cos x = t} {=} - \\int \\frac {\\mathrm{d} t}{(1 - t ^ {2}) \\sqrt {1 + t}} \\\\ & = - 2 \\int \\frac {\\mathrm{d} \\sqrt {1 + t}}{1 - t ^ {2}} \\stackrel {\\sqrt {1 + t} = u} {=} - 2 \\int \\frac {\\mathrm{d} u}{1 - (u ^ {2} - 1) ^ {2}} = - 2 \\int \\frac {\\mathrm{d} u}{u ^ {2} (2 - u ^ {2})} \\\\ & = - \\int \\left(\\frac {1}{u ^ {2}} + \\frac {1}{2 - u ^ {2}}\\right) \\mathrm{d} u = \\frac {1}{u} + \\frac {1}{2 \\sqrt {2}} \\ln \\left| \\frac {\\sqrt {2} - u}{\\sqrt {2} + u} \\right| + C \\\\ & = \\frac {1}{\\sqrt {1 + \\cos x}} + \\frac {1}{2 \\sqrt {2}} \\ln \\left| \\frac {\\sqrt {2} - \\sqrt {1 + \\cos x}}{\\sqrt {2} + \\sqrt {1 + \\cos x}} \\right| + C. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "解 被积函数分子、分母同乘以 $\\sin x$ ，有",
+    "techniques_used": [
+      "三角有理式",
+      "无理函数积分",
+      "换元积分法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用凑微分还是显式换元？中间变量如何选取？",
+      "technique": "换元积分法",
+      "expected": "按根号/三角/指数结构选代换或凑微分，使积分化为基本形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "写出换元后的积分与代回原变量后的原函数（含 +C）。",
+      "technique": "无理函数积分",
+      "expected": "解 被积函数分子、分母同乘以 $\\sin x$ ，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.1",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 135,
+    "syllabus_note": "三角/无理换元"
+  }
+}
