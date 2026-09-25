@@ -570,7 +570,7 @@ def test_pick_rejects_pending_poor_and_sanitizes_stored_ref() -> None:
 
 
 def test_review_walk_uses_next_stocked_kp() -> None:
-    """review 第一薄弱点无库存时，按序走到有 pass 的 KP；单科不走。"""
+    """review 第一薄弱点无库存时，按序走到有 pass 的 KP；数学 walk 不抽 review 科目库存。"""
     from learner.db import Store
     from learner.item_bank import pick_for_push, pick_for_push_walk
 
@@ -609,7 +609,7 @@ def test_review_walk_uses_next_stocked_kp() -> None:
             check(hit and int(hit["id"]) == rid, "review walk lands on stocked 函数极限")
             check(
                 pick_for_push_walk("math", kp="循环码与CRC") is None,
-                "math does not walk across KPs",
+                "math walk stays inside math stock",
             )
 
 
@@ -693,9 +693,14 @@ def test_comm_walk_uses_stocked_pass() -> None:
                 f"comm walk lands on stocked 随机过程 (got {hit})",
             )
             check((hit or {}).get("kp") == "随机过程", "comm walk stays on comm KP")
+            hit_math = pick_for_push_walk("math", kp=prefer)
             check(
-                pick_for_push_walk("math", kp=prefer) is None,
-                "math still does not walk across KPs",
+                hit_math and int(hit_math["id"]) == math_pass,
+                f"math walk falls through to stocked math pass (got {hit_math})",
+            )
+            check(
+                (hit_math or {}).get("kp") == "函数极限与连续",
+                "math walk does not keep the empty comm prefer_kp",
             )
             check(
                 pick_for_push_walk("comm", kp=prefer)
@@ -813,6 +818,221 @@ def test_author_spec_drops_cross_subject_ref() -> None:
         check(it and (it.get("ref_source") or "") == "", "mismatched 通信原理 dropped")
 
 
+def test_math_slot_falls_through_empty_or_mastered_kp() -> None:
+    """09:00 数学：prefer_kp 无 ready+pass，或该 KP 已掌握，仍抽其它数学 ready+pass。
+
+    不打开 BANK_LIVE_FALLBACK。非「已掌握」的 defer 仍整槽跳过。
+    """
+    from types import SimpleNamespace
+    from learner.context import bind_learner
+    from learner.db import Store
+    from learner.item_bank import pick_for_push, pick_for_push_walk
+    import cultivate
+
+    empty_kp = "特征值与特征向量"
+    other_kp = "常微分方程"
+    mastered_kp = "一元微分学（求导与作图）"
+    sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+    cdps = [
+        {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+        {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+    ]
+
+    def _item(store, subject, question, kp):
+        return store.insert_bank_item(
+            subject=subject,
+            question=question,
+            answer="1",
+            kp=kp,
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta={"content_subject": subject},
+        )
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        pending = _item(store, "math", "特征值 pending", empty_kp)
+        ode = _item(store, "math", "常微分方程题", other_kp)
+        _mark_pass(store, ode)
+        comm = _item(store, "comm", "通信题不应被数学 walk 抽到", "随机过程")
+        _mark_pass(store, comm)
+
+        def fake_ranked(subject, limit=8):
+            if subject == "math":
+                return [(empty_kp, 4.0), (other_kp, 2.0)]
+            return [("随机过程", 3.0)]
+
+        with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked):
+            check(
+                pick_for_push("math", kp=empty_kp) is None,
+                "hard filter still empty when prefer_kp has no ready+pass",
+            )
+            hit = pick_for_push_walk("math", kp=empty_kp)
+            check(
+                hit and int(hit["id"]) == ode,
+                f"empty prefer_kp walks to other math ready+pass (got {hit})",
+            )
+            check((hit or {}).get("kp") == other_kp, "walk lands on 常微分方程")
+            check(int((hit or {}).get("id") or 0) != comm, "math walk does not enter comm")
+            check(int((hit or {}).get("id") or 0) != pending, "walk skips pending")
+
+        called = {"generate": 0}
+
+        def fake_generate(*_a, **_k):
+            called["generate"] += 1
+            return "should-not-author"
+
+        decision = SimpleNamespace(
+            type="push",
+            difficulty="intermediate",
+            reason=f"{empty_kp}: 缺口 [ability=compute] [content_subject=math]",
+            ability_goal="compute",
+        )
+        with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked), \
+             patch("learner.item_bank.pick_technique_for_kp", return_value=""), \
+             patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+             patch("cultivate.decide", return_value=decision), \
+             patch("cultivate.generate", side_effect=fake_generate), \
+             patch("cultivate.deliver", return_value=True), \
+             patch("cultivate._save_last_push"), \
+             patch("cultivate._bkt_available", True), \
+             patch("cultivate.DATA_DIR", td), \
+             patch("cultivate.DAILY_RECORD_DIR", td):
+            from cultivate import _cultivate_inner
+            with bind_learner("staff1", binding="schedule"):
+                _cultivate_inner("math")
+        pushed = store._query("SELECT item_id FROM pushes ORDER BY id")
+        check(called["generate"] == 0, "empty prefer_kp does not live-author")
+        check(
+            pushed and int(pushed[0]["item_id"]) == ode,
+            f"cultivate delivers other math item (got {list(pushed)})",
+        )
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        mastered_item = _item(store, "math", "求导已掌握仍有库存", mastered_kp)
+        _mark_pass(store, mastered_item)
+        other_item = _item(store, "math", "改抽微分方程", other_kp)
+        _mark_pass(store, other_item)
+
+        class _KC:
+            def __init__(self, mastered: bool, p: float):
+                self.is_mastered = mastered
+                self.p_effective = p
+                self.opportunity_count = 6 if mastered else 2
+
+            def is_due(self):
+                return False
+
+        class _Log:
+            def get_kp_mastery(self, _uid, kp):
+                if kp == mastered_kp:
+                    return _KC(True, 0.93)
+                return _KC(False, 0.31)
+
+            def get_all_kp_mastery(self, _uid):
+                return {mastered_kp: 0.93, other_kp: 0.31}
+
+        def fake_intervention(**kwargs):
+            kp = kwargs.get("kp_name") or ""
+            if kwargs.get("is_mastered"):
+                return cultivate.InterventionDecision(
+                    type="defer",
+                    difficulty="basic",
+                    reason=f"{kp}: 已掌握，无需干预",
+                    priority=5,
+                )
+            return cultivate.InterventionDecision(
+                type="push",
+                difficulty="intermediate",
+                reason=f"{kp}: 掌握度偏低，出题",
+                priority=3,
+            )
+
+        weights = {"math": {"kp_weights": {mastered_kp: 5.0, other_kp: 1.0}}}
+
+        def fake_ranked(subject, limit=8):
+            return [(mastered_kp, 0.4), (other_kp, 2.5)]
+
+        called = {"generate": 0}
+
+        def fake_generate(*_a, **_k):
+            called["generate"] += 1
+            return "should-not-author"
+
+        with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked), \
+             patch("learner.item_bank.pick_technique_for_kp", return_value=""), \
+             patch("cultivate.assess_state", return_value={"bkt_log": _Log()}), \
+             patch("cultivate.decide_intervention", side_effect=fake_intervention), \
+             patch("cultivate._load_weights", return_value=weights), \
+             patch("cultivate._pick_kp_from_weights", return_value=mastered_kp), \
+             patch("cultivate._uid", return_value="u1"), \
+             patch("cultivate.generate", side_effect=fake_generate), \
+             patch("cultivate.deliver", return_value=True), \
+             patch("cultivate._save_last_push"), \
+             patch("cultivate._bkt_available", True), \
+             patch("cultivate.DATA_DIR", td), \
+             patch("cultivate.DAILY_RECORD_DIR", td):
+            from cultivate import _cultivate_inner
+            with bind_learner("staff1", binding="schedule"):
+                _cultivate_inner("math")
+        pushed = store._query("SELECT item_id FROM pushes ORDER BY id")
+        got = int(pushed[0]["item_id"]) if pushed else None
+        check(called["generate"] == 0, "mastered prefer_kp does not live-author")
+        check(got == other_item, f"mastered prefer_kp still pushes another math item (got {got})")
+        check(got != mastered_item, "does not stay on the mastered KP item")
+
+        other_defer = cultivate.InterventionDecision(
+            type="defer",
+            difficulty="basic",
+            reason=f"{other_kp}: 无 L3 子知识点，跳过",
+            priority=5,
+        )
+        check(
+            not cultivate._is_mastered_defer(other_defer),
+            "non-mastered defer is not treated as a mastered skip",
+        )
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        stocked = _item(store, "math", "无 L3 时不应被抽走", other_kp)
+        _mark_pass(store, stocked)
+        called = {"generate": 0}
+
+        def fake_generate(*_a, **_k):
+            called["generate"] += 1
+            return "nope"
+
+        decision = SimpleNamespace(
+            type="defer",
+            difficulty="basic",
+            reason=f"{other_kp}: 无 L3 子知识点，跳过",
+            ability_goal="",
+        )
+        with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("cultivate.assess_state", return_value={"bkt_log": object()}), \
+             patch("cultivate.decide", return_value=decision), \
+             patch("cultivate.generate", side_effect=fake_generate), \
+             patch("cultivate.deliver", return_value=True), \
+             patch("cultivate._bkt_available", True):
+            from cultivate import _cultivate_inner
+            _cultivate_inner("math")
+        pushed = store._query("SELECT item_id FROM pushes")
+        check(not pushed and called["generate"] == 0, "non-mastered defer still skips the math slot")
+
+
 def main() -> int:
     print("== item bank / CDP unit ==")
     _ensure_cultivate_deps()
@@ -830,6 +1050,7 @@ def main() -> int:
     test_review_walk_uses_next_stocked_kp()
     test_comm_walk_uses_stocked_pass()
     test_retired_pending_poor_quarantine_not_stock()
+    test_math_slot_falls_through_empty_or_mastered_kp()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")

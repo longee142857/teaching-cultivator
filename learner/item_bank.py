@@ -319,11 +319,11 @@ def pick_for_push_walk(
     learner_id: str | None = None,
     atom_id: str = "",
 ) -> dict | None:
-    """日推抽题。硬过滤仍是 L2→L1→空槽；review / comm 可换 prefer_kp 走到有库存的 KP。
+    """日推抽题。硬过滤仍是 L2→L1→空槽；换 prefer_kp 走到有库存的 KP。
 
     白天只抽库存：decide 点的 KP 常无同 L2/L1 pass。review 可跨 math+comm 库存；
-    comm 只在通信 pass 里走（不进数学）。math 不走，避免单科串题。
-    每个 KP 仍只准同 L2 / 同 L1，只换 prefer_kp。
+    math 只在数学 pass 里走，comm 只在通信 pass 里走，不串科。
+    每个 KP 仍只准同 L2 / 同 L1，只换 prefer_kp。不打开 BANK_LIVE_FALLBACK。
     推进模式传入 atom_id 时禁止 walk / L1 回退。
     """
     aid = (atom_id or "").strip()
@@ -333,12 +333,15 @@ def pick_for_push_walk(
     if aid:
         return hit
     subj = (subject or "").strip().lower()
-    if hit or subj not in ("review", "comm"):
+    if hit or subj not in ("review", "comm", "math"):
         return hit
 
     if subj == "review":
         rank_subjects = ("math", "comm")
         pick_subject = "review"
+    elif subj == "math":
+        rank_subjects = ("math",)
+        pick_subject = "math"
     else:
         rank_subjects = ("comm",)
         pick_subject = "comm"
