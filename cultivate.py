@@ -377,6 +377,149 @@ def _pick_kp_from_weights(weights: dict, subject: str, bkt_log: BKTLogger) -> st
     return pick_kp_weighted(subject, kp_w, mastery, due_kps=due_kps)
 
 
+def _is_mastered_defer(decision) -> bool:
+    """干预把当前 KP 判成已掌握并 defer。其它 defer（无 L3、推进阻塞等）仍整槽跳过。"""
+    if getattr(decision, "type", "") != "defer":
+        return False
+    return "已掌握" in (getattr(decision, "reason", "") or "")
+
+
+def _kp_state_mastered(bkt_log, kp: str) -> bool:
+    if not kp or bkt_log is None or not hasattr(bkt_log, "get_kp_mastery"):
+        return False
+    try:
+        kc = bkt_log.get_kp_mastery(_uid(), kp)
+    except Exception:
+        return False
+    return bool(getattr(kc, "is_mastered", False)) if kc else False
+
+
+def _next_unmastered_math_kp(weights: dict, bkt_log, skip: set[str]) -> str | None:
+    """数学日推：当前 KP 已掌握时，按薄弱序改选下一个未掌握 L2。"""
+    from learner.kp_registry import resolve_kp
+
+    ordered: list[str] = []
+    try:
+        from learner.item_bank import weak_kp_ranked
+
+        ordered.extend(
+            (kp or "").strip()
+            for kp, _sc in weak_kp_ranked("math", limit=32)
+            if (kp or "").strip()
+        )
+    except Exception as e:
+        print(f"[cultivate] math mastered fallback rank skipped: {e}")
+    kp_w = (weights.get("math") or {}).get("kp_weights") or {}
+    for kp in kp_w:
+        name = str(kp or "").strip()
+        if name and name not in ordered:
+            ordered.append(name)
+    seen = set(skip)
+    for raw in ordered:
+        resolved = resolve_kp("math", raw, kp_w) or raw
+        resolved = (resolved or "").strip()
+        if not resolved or resolved in seen or raw in seen:
+            continue
+        seen.add(resolved)
+        seen.add(raw)
+        if _kp_state_mastered(bkt_log, resolved):
+            continue
+        return resolved
+    return None
+
+
+def _decision_for_kp(
+    *,
+    subject: str,
+    weight_subj: str,
+    target_kp: str,
+    weights: dict,
+    bkt_log,
+    kc,
+    target_val: float,
+) -> tuple[InterventionDecision, dict]:
+    """对一个 L2 跑干预 + L3。不在这里处理「已掌握则换 KP」。"""
+    from learner.kp_registry import list_l3_for_l2, pick_l3, resolve_kp
+
+    state = {
+        "target_kp": target_kp or "",
+        "target_val": target_val,
+        "is_mastered": False,
+        "opportunity_count": 0,
+        "recent_correct": None,
+        "consecutive_failures": 0,
+        "is_due": False,
+    }
+    if not target_kp:
+        return InterventionDecision("push", "intermediate", "无薄弱点，出综合题", 3), state
+
+    kp_w = (weights.get(weight_subj) or {}).get("kp_weights")
+    resolved_l2 = resolve_kp(weight_subj, target_kp, kp_w)
+    if resolved_l2:
+        target_kp = resolved_l2
+        state["target_kp"] = target_kp
+
+    days_since_last_push = _get_days_since_last_push(subject)
+    consecutive_failures = _get_consecutive_failures(_uid(), bkt_log, target_kp)
+    opportunity_count = 0
+    if kc is None and hasattr(bkt_log, "get_kp_mastery"):
+        kc = bkt_log.get_kp_mastery(_uid(), target_kp)
+    if kc is not None and hasattr(kc, "p_effective"):
+        target_val = kc.p_effective
+    if kc and hasattr(kc, "opportunity_count"):
+        opportunity_count = kc.opportunity_count
+    is_mastered = bool(getattr(kc, "is_mastered", False)) if kc else False
+    is_due = bool(kc.is_due()) if kc and hasattr(kc, "is_due") else False
+    recent_correct = None
+    if hasattr(bkt_log, "get_recent_correct"):
+        try:
+            recent_correct = bkt_log.get_recent_correct(_uid(), target_kp)
+        except Exception:
+            recent_correct = None
+
+    decision = decide_intervention(
+        kp_name=target_kp,
+        mastery=target_val,
+        opportunity_count=opportunity_count,
+        is_mastered=is_mastered,
+        recent_correct=recent_correct,
+        days_since_last_push=days_since_last_push,
+        consecutive_failures=consecutive_failures,
+        is_due=is_due,
+    )
+    decision = _remap_dead_escalate(decision)
+    if decision.type != "defer" and target_kp:
+        l3_id = pick_l3(weight_subj, target_kp)
+        if not l3_id and not list_l3_for_l2(weight_subj, target_kp):
+            kp_alt = (
+                _pick_kp_from_weights(weights, weight_subj, bkt_log)
+                if weight_subj in weights
+                else None
+            )
+            if kp_alt and list_l3_for_l2(weight_subj, kp_alt):
+                target_kp = kp_alt
+                l3_id = pick_l3(weight_subj, target_kp)
+        if l3_id:
+            decision.reason = f"{decision.reason} [l3={l3_id}]"
+        else:
+            decision = InterventionDecision(
+                "defer",
+                decision.difficulty,
+                f"{target_kp}: 无 L3 子知识点，跳过",
+                5,
+            )
+    state.update(
+        target_kp=target_kp,
+        target_val=target_val,
+        is_mastered=is_mastered,
+        opportunity_count=opportunity_count,
+        recent_correct=recent_correct,
+        consecutive_failures=consecutive_failures,
+        is_due=is_due,
+    )
+    return decision, state
+
+
 def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
     """基于结合模型（weights + BKT + 域η）+ 规则决定干预方案。
 
@@ -385,8 +528,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
     2. 无 weights → 回退 BKT 最低掌握度
     """
     from learner.kp_registry import (
-        pick_l3, syllabus_subject, resolve_kp, list_l3_for_l2,
-        l2_for_l3,
+        syllabus_subject, resolve_kp, l2_for_l3,
     )
     if subject == "comm":
         try:
@@ -477,60 +619,45 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
             target_kp = resolved or raw_kp
             target_val = mastery[raw_kp]
 
-    if target_kp:
-        # 确保 target_kp 是考纲 L2（BKT 脏键 / 别名 → 正式名）
-        kp_w = (weights.get(weight_subj) or {}).get("kp_weights")
-        resolved_l2 = resolve_kp(weight_subj, target_kp, kp_w)
-        if resolved_l2:
-            target_kp = resolved_l2
-
-        days_since_last_push = _get_days_since_last_push(subject)
-        consecutive_failures = _get_consecutive_failures(_uid(), bkt_log, target_kp)
-        opportunity_count = 0
-        if kc is None:
-            kc = bkt_log.get_kp_mastery(_uid(), target_kp) \
-                if hasattr(bkt_log, 'get_kp_mastery') else None
-        if kc and hasattr(kc, 'opportunity_count'):
-            opportunity_count = kc.opportunity_count
-        is_mastered = bool(getattr(kc, "is_mastered", False)) if kc else False
-        is_due = bool(kc.is_due()) if kc and hasattr(kc, "is_due") else False
-        recent_correct = None
-        if hasattr(bkt_log, "get_recent_correct"):
-            try:
-                recent_correct = bkt_log.get_recent_correct(_uid(), target_kp)
-            except Exception:
-                recent_correct = None
-
-        decision = decide_intervention(
-            kp_name=target_kp,
-            mastery=target_val,
-            opportunity_count=opportunity_count,
-            is_mastered=is_mastered,
-            recent_correct=recent_correct,
-            days_since_last_push=days_since_last_push,
-            consecutive_failures=consecutive_failures,
-            is_due=is_due,
-        )
-        decision = _remap_dead_escalate(decision)
-        # ── L3 选取 (BIG-TEACH-011c) ──
-        if decision.type != "defer" and target_kp:
-            l3_id = pick_l3(weight_subj, target_kp)
-            if not l3_id and not list_l3_for_l2(weight_subj, target_kp):
-                # 仍非考纲 L2：再从 weights 抽一个有 L3 的 L2
-                kp_alt = _pick_kp_from_weights(weights, weight_subj, bkt_log) \
-                    if weight_subj in weights else None
-                if kp_alt and list_l3_for_l2(weight_subj, kp_alt):
-                    target_kp = kp_alt
-                    l3_id = pick_l3(weight_subj, target_kp)
-            if l3_id:
-                decision.reason = f"{decision.reason} [l3={l3_id}]"
-            else:
-                decision = InterventionDecision(
-                    "defer", decision.difficulty,
-                    f"{target_kp}: 无 L3 子知识点，跳过", 5,
-                )
-    else:
-        decision = InterventionDecision("push", "intermediate", "无薄弱点，出综合题", 3)
+    decision, kp_state = _decision_for_kp(
+        subject=subject,
+        weight_subj=weight_subj,
+        target_kp=target_kp or "",
+        weights=weights,
+        bkt_log=bkt_log,
+        kc=kc,
+        target_val=target_val,
+    )
+    # 数学日推：当前 KP 已掌握只换考点，不把 09:00 整槽 defer 掉。
+    if (subject or "").strip().lower() == "math":
+        tried_mastered: set[str] = set()
+        for _ in range(16):
+            if not _is_mastered_defer(decision):
+                break
+            cur = (kp_state.get("target_kp") or "").strip()
+            if cur:
+                tried_mastered.add(cur)
+            alt = _next_unmastered_math_kp(weights, bkt_log, tried_mastered)
+            if not alt:
+                print(f"[cultivate] math: {cur or '-'} 已掌握，无其它未掌握 KP")
+                break
+            print(f"[cultivate] math: {cur} 已掌握，改选 {alt}")
+            decision, kp_state = _decision_for_kp(
+                subject=subject,
+                weight_subj=weight_subj,
+                target_kp=alt,
+                weights=weights,
+                bkt_log=bkt_log,
+                kc=None,
+                target_val=0.2,
+            )
+    target_kp = kp_state.get("target_kp") or ""
+    target_val = float(kp_state.get("target_val") or 0.0)
+    is_mastered = bool(kp_state.get("is_mastered"))
+    opportunity_count = int(kp_state.get("opportunity_count") or 0)
+    recent_correct = kp_state.get("recent_correct")
+    consecutive_failures = int(kp_state.get("consecutive_failures") or 0)
+    is_due = bool(kp_state.get("is_due"))
 
     # ── ability_goal 选取 (BIG-TEACH-011d)；轮换记账延后到成功 _save_last_push ──
     if decision.type != "defer":
@@ -1031,7 +1158,20 @@ def _cultivate_inner(subject: str):
     state = assess_state(subject)
     bkt_log = state["bkt_log"]
     decision = decide(subject, bkt_log)
-    if decision.type == "defer":
+    if decision.type == "defer" and (subject or "").strip().lower() == "math" and _is_mastered_defer(decision):
+        # decide 找不到未掌握 KP 时仍出题：清掉已掌握 prefer_kp，只在数学 ready 库里走。
+        print(
+            f"[cultivate] math: 考点已掌握，不跳过整槽，改抽其它数学 ready 题"
+            f"（{decision.reason}）"
+        )
+        decision = InterventionDecision(
+            "push",
+            "intermediate",
+            "其它数学考点: 原考点已掌握，改抽 ready 题库 [content_subject=math]",
+            getattr(decision, "priority", 3) or 3,
+        )
+        decision.ability_goal = "compute"
+    elif decision.type == "defer":
         print(f"[cultivate] {subject}: 跳过（{decision.reason}）")
         return
 
