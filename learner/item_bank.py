@@ -203,6 +203,40 @@ def select_gap_spec(subject: str, *, skip_kps: set[str] | None = None) -> dict[s
     return best
 
 
+# 教材入库写入 meta.source。抽题认 item_source，不认 ref_source（textbook:书id）。
+TEXTBOOK_EXAMPLE_SOURCE = "textbook_example"
+# 第 1 章单独就有几十道；排除已掌握 L2 之后仍要看见后面章节。
+_TEXTBOOK_CANDIDATE_LIMIT = 500
+
+
+def _kp_l1(subject: str, kp: str) -> str:
+    from learner.kp_registry import content_subject_for_kp, get_l1, syllabus_subject
+
+    name = (kp or "").strip()
+    if not name:
+        return ""
+    cs = content_subject_for_kp(name) or syllabus_subject(subject) or ""
+    if not cs:
+        return ""
+    return get_l1(cs, name) or ""
+
+
+def _item_l1(subject: str, it: dict) -> str:
+    from learner.kp_registry import (
+        content_subject_for_kp,
+        get_l1,
+        item_content_subject,
+        syllabus_subject,
+    )
+
+    cs = item_content_subject(it) or syllabus_subject(subject) or content_subject_for_kp(
+        (it.get("kp") or "").strip()
+    )
+    if not cs:
+        return ""
+    return get_l1(cs, (it.get("kp") or "").strip()) or ""
+
+
 def pick_for_push(
     subject: str,
     *,
@@ -213,12 +247,6 @@ def pick_for_push(
 ) -> dict | None:
     """结合模型抽 ready+pass。硬过滤：有 atom_id 只认该原子；否则同 L2 → 同 L1 → None。"""
     from modules.capability import pick_best_item
-    from learner.kp_registry import (
-        get_l1,
-        content_subject_for_kp,
-        item_content_subject,
-        syllabus_subject,
-    )
 
     store = get_store()
     excl = store.learner_seen_hashes(learner_id)
@@ -234,12 +262,6 @@ def pick_for_push(
     kp = (kp or "").strip()
     match_tier = "any"
 
-    def _item_l1(it: dict) -> str:
-        cs = item_content_subject(it) or syllabus_subject(subject) or content_subject_for_kp(
-            (it.get("kp") or "").strip()
-        )
-        return get_l1(cs, (it.get("kp") or "").strip()) or ""
-
     pool = list(candidates or [])
     if aid:
         pool = [c for c in pool if (c.get("atom_id") or "").strip() == aid]
@@ -253,9 +275,8 @@ def pick_for_push(
             pool = l2
             match_tier = "l2"
         else:
-            cs = content_subject_for_kp(kp) or syllabus_subject(subject)
-            want_l1 = get_l1(cs, kp) if cs else ""
-            l1_hits = [c for c in pool if want_l1 and _item_l1(c) == want_l1]
+            want_l1 = _kp_l1(subject, kp)
+            l1_hits = [c for c in pool if want_l1 and _item_l1(subject, c) == want_l1]
             if l1_hits:
                 pool = l1_hits
                 match_tier = "l1"
@@ -273,8 +294,7 @@ def pick_for_push(
         l1 = ""
         if kp:
             try:
-                cs = content_subject_for_kp(kp) or syllabus_subject(subject)
-                l1 = get_l1(cs, kp) or "" if cs else ""
+                l1 = _kp_l1(subject, kp)
             except Exception:
                 l1 = ""
         hit = store.pick_ready_item(
@@ -311,6 +331,86 @@ def pick_for_push(
     return best
 
 
+def pick_same_l1_textbook(
+    subject: str,
+    *,
+    kp: str,
+    learner_id: str | None = None,
+) -> dict | None:
+    """已掌握 prefer_kp 之后：同 L1、其它 KP 的 ready+pass textbook_example。
+
+    来源只认 meta.source（item_source == textbook_example），不认 ref_source。
+    池子已经是教材例题，不再加全局加分。没有则返回 None，调用方继续原来的 walk。
+    已见 q_hash 与已掌握的那个 L2 都不抽。
+    """
+    from modules.capability import pick_best_item
+    from modules.capability.select import item_source
+
+    origin = (kp or "").strip()
+    if not origin:
+        return None
+    try:
+        want_l1 = _kp_l1(subject, origin)
+    except Exception as e:
+        print(f"[item_bank] textbook L1 lookup failed kp={origin}: {e}")
+        return None
+    if not want_l1:
+        return None
+    store = get_store()
+    excl = store.learner_seen_hashes(learner_id)
+    try:
+        candidates = store.list_ready_candidates(
+            subject=subject,
+            exclude_hashes=excl,
+            limit=_TEXTBOOK_CANDIDATE_LIMIT,
+            source=TEXTBOOK_EXAMPLE_SOURCE,
+            exclude_kp=origin,
+        )
+    except Exception as e:
+        print(f"[item_bank] textbook candidate list failed: {e}")
+        return None
+    pool = []
+    for it in candidates or []:
+        item_kp = (it.get("kp") or "").strip()
+        if not item_kp or item_kp == origin:
+            continue
+        if item_source(it) != TEXTBOOK_EXAMPLE_SOURCE:
+            continue
+        try:
+            got_l1 = _item_l1(subject, it)
+        except Exception:
+            continue
+        if got_l1 != want_l1:
+            continue
+        pool.append(it)
+    if not pool:
+        return None
+    try:
+        ctx = build_pick_context(subject, learner_id=learner_id or "")
+        best, sc = pick_best_item(pool, ctx)
+    except Exception as e:
+        print(f"[item_bank] textbook pick ctx failed, quality-only fallback: {e}")
+        pool.sort(
+            key=lambda it: (
+                -float(it.get("quality_score") if it.get("quality_score") is not None else 1.0),
+                int(it.get("id") or 0),
+            )
+        )
+        best = pool[0]
+        try:
+            sc = float(best.get("quality_score") if best.get("quality_score") is not None else 1.0)
+        except (TypeError, ValueError):
+            sc = 1.0
+    if not best:
+        return None
+    print(
+        f"[item_bank] mastered same-L1 textbook {origin} l1={want_l1} -> "
+        f"kp={best.get('kp')} id={best.get('id')} score={sc:.3f} "
+        f"source={TEXTBOOK_EXAMPLE_SOURCE}"
+    )
+    return best
+
+
 def pick_for_push_walk(
     subject: str,
     *,
@@ -318,6 +418,7 @@ def pick_for_push_walk(
     technique: str = "",
     learner_id: str | None = None,
     atom_id: str = "",
+    mastered_from: str = "",
 ) -> dict | None:
     """日推抽题。硬过滤仍是 L2→L1→空槽；换 prefer_kp 走到有库存的 KP。
 
@@ -325,8 +426,15 @@ def pick_for_push_walk(
     math 只在数学 pass 里走，comm 只在通信 pass 里走，不串科。
     每个 KP 仍只准同 L2 / 同 L1，只换 prefer_kp。不打开 BANK_LIVE_FALLBACK。
     推进模式传入 atom_id 时禁止 walk / L1 回退。
+    mastered_from：原 prefer_kp 已掌握时，先抽同 L1 其它 KP 的 textbook_example；
+    没有再走原来的薄弱序 / 库存 pass。不是全局教材加分。
     """
     aid = (atom_id or "").strip()
+    origin = (mastered_from or "").strip()
+    if origin and not aid:
+        tb = pick_same_l1_textbook(subject, kp=origin, learner_id=learner_id)
+        if tb:
+            return tb
     hit = pick_for_push(
         subject, kp=kp, technique=technique, learner_id=learner_id, atom_id=aid
     )

@@ -1225,25 +1225,41 @@ class Store:
         limit: int = 60,
         prefer_kp: str = "",
         atom_id: str = "",
+        source: str = "",
+        exclude_kp: str = "",
     ) -> list[dict]:
         """列出 ready+pass 候选（供结合模型打分）；排除已见 q_hash。
 
         prefer_kp：额外并入该 KP 下 pass 库存，避免全局 top-N 挤掉 decide 意图。
         atom_id：推进模式硬过滤，只返回该原子的题。
+        source：只留 meta.source 等于该值的题（教材例题是 textbook_example）。
+        exclude_kp：去掉这个 L2，避免已掌握考点把自己的题又抽回来。
         """
         subj = (subject or "").strip()
         excl = exclude_hashes or set()
         pref = (prefer_kp or "").strip()
         aid = (atom_id or "").strip()
+        src = (source or "").strip()
+        skip_kp = (exclude_kp or "").strip()
+        filt_sql = ""
+        filt_args: list = []
+        if src:
+            filt_sql += " AND json_extract(COALESCE(meta, '{}'), '$.source') = ?"
+            filt_args.append(src)
+        if skip_kp:
+            filt_sql += " AND COALESCE(kp, '') != ?"
+            filt_args.append(skip_kp)
         if aid:
             rows = self._query(
                 """SELECT * FROM items
                    WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
                      AND COALESCE(bank_subject, subject)=?
-                     AND COALESCE(atom_id, '')=?
+                     AND COALESCE(atom_id, '')=?"""
+                + filt_sql
+                + """
                    ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
                    LIMIT ?""",
-                (subj, aid, int(limit)),
+                (subj, aid, *filt_args, int(limit)),
             )
             by_id: dict[int, dict] = {}
             for r in rows:
@@ -1255,10 +1271,12 @@ class Store:
         rows = self._query(
             """SELECT * FROM items
                WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
-                 AND COALESCE(bank_subject, subject)=?
+                 AND COALESCE(bank_subject, subject)=?"""
+            + filt_sql
+            + """
                ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
                LIMIT ?""",
-            (subj, int(limit)),
+            (subj, *filt_args, int(limit)),
         )
         by_id: dict[int, dict] = {}
         for r in rows:
@@ -1266,15 +1284,19 @@ class Store:
                 continue
             d = self._item_dict(r)
             by_id[int(d["id"])] = d
-        if pref:
+        if pref and pref != skip_kp:
+            extra_sql = filt_sql
+            extra_args = list(filt_args)
             extra = self._query(
                 """SELECT * FROM items
                    WHERE status='ready' AND COALESCE(quality_tier, 'pending')='pass'
                      AND COALESCE(bank_subject, subject)=?
-                     AND kp=?
+                     AND kp=?"""
+                + extra_sql
+                + """
                    ORDER BY COALESCE(quality_score, 1.0) DESC, id ASC
                    LIMIT 40""",
-                (subj, pref),
+                (subj, pref, *extra_args),
             )
             for r in extra:
                 if str(r["q_hash"]) in excl:
