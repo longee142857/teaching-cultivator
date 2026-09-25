@@ -384,6 +384,31 @@ def _is_mastered_defer(decision) -> bool:
     return "已掌握" in (getattr(decision, "reason", "") or "")
 
 
+def _tag_mastered_from(reason: str, kp: str) -> str:
+    """记下最初已掌握的 prefer_kp，供抽题优先同 L1 教材例题。"""
+    origin = (kp or "").strip()
+    if not origin or "]" in origin:
+        return reason or ""
+    tag = f"[mastered_from={origin}]"
+    text = reason or ""
+    if tag in text:
+        return text
+    return f"{text} {tag}".strip()
+
+
+def _mastered_from_kp(reason: str) -> str:
+    key = "[mastered_from="
+    text = reason or ""
+    i = text.find(key)
+    if i < 0:
+        return ""
+    rest = text[i + len(key):]
+    j = rest.find("]")
+    if j < 0:
+        return ""
+    return rest[:j].strip()
+
+
 def _kp_state_mastered(bkt_log, kp: str) -> bool:
     if not kp or bkt_log is None or not hasattr(bkt_log, "get_kp_mastery"):
         return False
@@ -629,6 +654,7 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         target_val=target_val,
     )
     # 数学日推：当前 KP 已掌握只换考点，不把 09:00 整槽 defer 掉。
+    mastered_from = ""
     if (subject or "").strip().lower() == "math":
         tried_mastered: set[str] = set()
         for _ in range(16):
@@ -637,6 +663,8 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
             cur = (kp_state.get("target_kp") or "").strip()
             if cur:
                 tried_mastered.add(cur)
+                if not mastered_from:
+                    mastered_from = cur
             alt = _next_unmastered_math_kp(weights, bkt_log, tried_mastered)
             if not alt:
                 print(f"[cultivate] math: {cur or '-'} 已掌握，无其它未掌握 KP")
@@ -678,6 +706,8 @@ def decide(subject: str, bkt_log: BKTLogger) -> InterventionDecision:
         tag = f"[content_subject={content_subj}]"
         if tag not in (decision.reason or ""):
             decision.reason = f"{decision.reason} {tag}"
+    if mastered_from:
+        decision.reason = _tag_mastered_from(decision.reason, mastered_from)
     return decision
 
 
@@ -1164,10 +1194,14 @@ def _cultivate_inner(subject: str):
             f"[cultivate] math: 考点已掌握，不跳过整槽，改抽其它数学 ready 题"
             f"（{decision.reason}）"
         )
+        origin = _mastered_from_kp(decision.reason)
+        fallback_reason = "其它数学考点: 原考点已掌握，改抽 ready 题库 [content_subject=math]"
+        if origin:
+            fallback_reason = _tag_mastered_from(fallback_reason, origin)
         decision = InterventionDecision(
             "push",
             "intermediate",
-            "其它数学考点: 原考点已掌握，改抽 ready 题库 [content_subject=math]",
+            fallback_reason,
             getattr(decision, "priority", 3) or 3,
         )
         decision.ability_goal = "compute"
@@ -1192,12 +1226,19 @@ def _cultivate_inner(subject: str):
     except Exception:
         sid = ""
     atom_id = parse_atom_from_reason(decision.reason) or ""
+    mastered_from = "" if atom_id else _mastered_from_kp(decision.reason)
     if atom_id:
         item = pick_for_push(
             subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
         )
     else:
-        item = pick_for_push_walk(subject, kp=kp, technique=tech, learner_id=sid or None)
+        item = pick_for_push_walk(
+            subject,
+            kp=kp,
+            technique=tech,
+            learner_id=sid or None,
+            mastered_from=mastered_from,
+        )
     if item and not atom_id:
         actual = (item.get("kp") or "").strip()
         if actual and actual != kp:

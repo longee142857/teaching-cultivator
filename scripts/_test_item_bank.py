@@ -1033,6 +1033,226 @@ def test_math_slot_falls_through_empty_or_mastered_kp() -> None:
         check(not pushed and called["generate"] == 0, "non-mastered defer still skips the math slot")
 
 
+def test_mastered_fallback_prefers_same_l1_textbook() -> None:
+    """已掌握 prefer_kp：同 L1 ready+pass textbook_example 先于薄弱 KP / 非教材库存。
+
+    来源只认 meta.source（item_source），不认 ref_source。没有同 L1 教材时仍走 #45。
+    """
+    from learner.context import bind_learner
+    from learner.db import Store
+    from learner.item_bank import pick_for_push_walk
+    import cultivate
+
+    mastered = "一元微分学（求导与作图）"  # calc
+    text_kp = "微分中值定理与泰勒"  # calc
+    walk_kp = "特征值与特征向量"  # linalg
+    other_l1 = "二次型"  # linalg
+    ref_kp = "函数极限与连续"  # calc
+    ode = "常微分方程"  # calc
+    sol = {"steps": [{"id": "s1", "text": "x"}], "final_answer": "1", "techniques_used": ["t"]}
+    cdps = [
+        {"id": "cdp1", "prompt": "a", "expected": "b", "technique": "t", "depends_on": []},
+        {"id": "cdp2", "prompt": "c", "expected": "d", "technique": "t", "depends_on": []},
+    ]
+
+    def _item(store, question, kp, *, source="", ref_source="", quality=None):
+        meta = {"content_subject": "math"}
+        if source:
+            meta["source"] = source
+        iid = store.insert_bank_item(
+            subject="math",
+            question=question,
+            answer="1",
+            kp=kp,
+            ref_source=ref_source,
+            techniques=["t"],
+            solution=sol,
+            cdps=cdps,
+            meta=meta,
+        )
+        _mark_pass(store, iid)
+        if quality is not None:
+            store._txn(lambda conn: conn.execute(
+                "UPDATE items SET quality_score=? WHERE id=?",
+                (float(quality), int(iid)),
+            ))
+        return iid
+
+    def _mark_seen(store, item_id, learner_id="u-seen"):
+        store._txn(lambda conn: conn.execute(
+            """INSERT INTO pushes
+               (item_id, learner_id, day, seq, pushed_at, slot, channel, created_at)
+               VALUES (?,?,?,?,?,?,?,?)""",
+            (
+                int(item_id), learner_id, "2026-09-25", 1,
+                "2026-09-25T01:00:00+00:00", "math", "push",
+                "2026-09-25T01:00:00+00:00",
+            ),
+        ))
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        own_plain = _item(store, "求导普通题", mastered)
+        own_tb = _item(
+            store, "求导教材例题仍留在已掌握 KP", mastered,
+            source="textbook_example", quality=1.0,
+        )
+        same_l1 = _item(
+            store, "泰勒教材例题", text_kp,
+            source="textbook_example", quality=0.2,
+        )
+        walk_item = _item(store, "特征值普通题", walk_kp, quality=1.0)
+        other_tb = _item(
+            store, "二次型教材例题不同 L1", other_l1,
+            source="textbook_example", quality=1.0,
+        )
+        ref_only = _item(
+            store, "极限只写了 ref_source", ref_kp,
+            ref_source="textbook:puheping_math_contest_v2", quality=1.0,
+        )
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store):
+            hit = pick_for_push_walk("math", kp=walk_kp, mastered_from=mastered)
+            check(
+                hit and int(hit["id"]) == same_l1,
+                f"same-L1 textbook wins over weak KP and higher scores (got {hit})",
+            )
+            check((hit or {}).get("kp") == text_kp, "winner is another calc KP")
+            check(
+                int((hit or {}).get("id") or 0) not in (own_plain, own_tb, walk_item, other_tb, ref_only),
+                "does not stay on mastered KP, other L1, or ref_source-only",
+            )
+            check(
+                ((hit or {}).get("meta") or {}).get("source") == "textbook_example",
+                "winner meta.source is textbook_example",
+            )
+            bare = pick_for_push_walk("math", kp=walk_kp)
+            check(
+                bare and int(bare["id"]) == walk_item,
+                f"without mastered_from, walk still takes the preferred KP (got {bare})",
+            )
+            _mark_seen(store, same_l1, "u-seen")
+            seen = pick_for_push_walk(
+                "math", kp=walk_kp, mastered_from=mastered, learner_id="u-seen",
+            )
+            check(
+                seen and int(seen["id"]) == walk_item,
+                f"seen same-L1 textbook falls through to #45 walk (got {seen})",
+            )
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        ode_item = _item(store, "微分方程普通题", ode)
+        _item(
+            store, "特征值教材不在 calc", walk_kp,
+            source="textbook_example", quality=1.0,
+        )
+        _item(
+            store, "极限 ref_source 不是 meta.source", ref_kp,
+            ref_source="textbook:puheping_math_contest_v2", quality=1.0,
+        )
+        pending = store.insert_bank_item(
+            subject="math", question="泰勒 pending 教材", answer="1", kp=text_kp,
+            techniques=["t"], solution=sol, cdps=cdps,
+            meta={"content_subject": "math", "source": "textbook_example"},
+        )
+        with patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.db.get_store", return_value=store):
+            hit = pick_for_push_walk("math", kp=ode, mastered_from=mastered)
+            check(
+                hit and int(hit["id"]) == ode_item,
+                f"no same-L1 textbook keeps #45 L2/walk (got {hit})",
+            )
+            check(int((hit or {}).get("id") or 0) != pending, "pending textbook is not stock")
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        _item(store, "求导普通题", mastered)
+        _item(
+            store, "求导教材例题仍留在已掌握 KP", mastered,
+            source="textbook_example", quality=1.0,
+        )
+        same_l1 = _item(
+            store, "泰勒教材例题", text_kp,
+            source="textbook_example", quality=0.2,
+        )
+        walk_item = _item(store, "特征值普通题", walk_kp, quality=1.0)
+        _item(
+            store, "二次型教材例题不同 L1", other_l1,
+            source="textbook_example", quality=1.0,
+        )
+
+        class _KC:
+            def __init__(self, mastered_flag: bool, p: float):
+                self.is_mastered = mastered_flag
+                self.p_effective = p
+                self.opportunity_count = 6 if mastered_flag else 2
+
+            def is_due(self):
+                return False
+
+        class _Log:
+            def get_kp_mastery(self, _uid, kp):
+                if kp == mastered:
+                    return _KC(True, 0.93)
+                return _KC(False, 0.31)
+
+            def get_all_kp_mastery(self, _uid):
+                return {mastered: 0.93, walk_kp: 0.31, text_kp: 0.4}
+
+        def fake_intervention(**kwargs):
+            kp = kwargs.get("kp_name") or ""
+            if kwargs.get("is_mastered"):
+                return cultivate.InterventionDecision(
+                    type="defer",
+                    difficulty="basic",
+                    reason=f"{kp}: 已掌握，无需干预",
+                    priority=5,
+                )
+            return cultivate.InterventionDecision(
+                type="push",
+                difficulty="intermediate",
+                reason=f"{kp}: 掌握度偏低，出题",
+                priority=3,
+            )
+
+        weights = {"math": {"kp_weights": {mastered: 5.0, walk_kp: 3.0, text_kp: 0.2}}}
+
+        def fake_ranked(subject, limit=8):
+            return [(mastered, 0.2), (walk_kp, 4.0), (text_kp, 0.1)]
+
+        called = {"generate": 0}
+
+        def fake_generate(*_a, **_k):
+            called["generate"] += 1
+            return "should-not-author"
+
+        with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
+             patch("learner.db.get_store", return_value=store), \
+             patch("learner.item_bank.get_store", return_value=store), \
+             patch("learner.item_bank.weak_kp_ranked", side_effect=fake_ranked), \
+             patch("learner.item_bank.pick_technique_for_kp", return_value=""), \
+             patch("cultivate.assess_state", return_value={"bkt_log": _Log()}), \
+             patch("cultivate.decide_intervention", side_effect=fake_intervention), \
+             patch("cultivate._load_weights", return_value=weights), \
+             patch("cultivate._pick_kp_from_weights", return_value=mastered), \
+             patch("cultivate._uid", return_value="u1"), \
+             patch("cultivate.generate", side_effect=fake_generate), \
+             patch("cultivate.deliver", return_value=True), \
+             patch("cultivate._save_last_push"), \
+             patch("cultivate._bkt_available", True), \
+             patch("cultivate.DATA_DIR", td), \
+             patch("cultivate.DAILY_RECORD_DIR", td):
+            from cultivate import _cultivate_inner
+            with bind_learner("staff1", binding="schedule"):
+                _cultivate_inner("math")
+        pushed = store._query("SELECT item_id FROM pushes ORDER BY id")
+        got = int(pushed[0]["item_id"]) if pushed else None
+        check(called["generate"] == 0, "textbook fallback does not live-author")
+        check(got == same_l1, f"cultivate mastered slot draws same-L1 textbook (got {got})")
+        check(got != walk_item, "does not fall through to the weak KP while textbook exists")
+
+
 def main() -> int:
     print("== item bank / CDP unit ==")
     _ensure_cultivate_deps()
@@ -1051,6 +1271,7 @@ def main() -> int:
     test_comm_walk_uses_stocked_pass()
     test_retired_pending_poor_quarantine_not_stock()
     test_math_slot_falls_through_empty_or_mastered_kp()
+    test_mastered_fallback_prefers_same_l1_textbook()
     print("=" * 40)
     if _fails:
         print(f"DONE with {_fails} FAIL(s)")
