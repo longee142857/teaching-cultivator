@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-07",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.fund",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算极限 $\\lim_{x\\to +\\infty}\\frac{1}{x}\\int_0^x |\\sin t|\\mathrm{d}t.$",
+  "answer": "$$ \\frac {2 n}{(n + 1) \\pi} \\leqslant \\frac {1}{x} \\int_ {0} ^ {x} | \\sin t | d t \\leqslant \\frac {2 (n + 1)}{n \\pi}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "变限积分求导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $\\lim_{x\\to +\\infty}\\left|\\sin x\\right|$ 不存在，故不能用洛必达法则。注意积分 $\\int_0^x |\\sin t|\\mathrm{d}t$ ，当 $x = n\\pi$ 时是容易计算的，所以将积分区间做适当放大与缩小就能用夹逼原理求得极限。"
+      },
+      {
+        "id": "s2",
+        "text": "对任意 $x > 0$ ， $\\exists n\\in \\mathbb{N}$ ，使 $n\\pi \\leqslant x < (n + 1)\\pi$ ，于是"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {n \\pi} | \\sin t | \\mathrm{d} t \\leqslant \\int_ {0} ^ {x} | \\sin t | \\mathrm{d} t \\leqslant \\int_ {0} ^ {(n + 1) \\pi} | \\sin t | \\mathrm{d} t.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\int_0^{n\\pi}\\left|\\sin t\\right| \\mathrm{d}t = n\\int_0^\\pi \\sin t \\mathrm{d}t = 2n$ ，由上式得 $2n \\leqslant \\int_0^x |\\sin t| \\mathrm{d}t \\leqslant 2(n + 1)$ ，从而"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\frac {2 n}{(n + 1) \\pi} \\leqslant \\frac {1}{x} \\int_ {0} ^ {x} | \\sin t | d t \\leqslant \\frac {2 (n + 1)}{n \\pi}.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "注意当 $x \\to +\\infty$ 时，有 $n \\to \\infty$ ，利用夹逼原理，得"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\lim _ {x \\rightarrow + \\infty} \\frac {1}{x} \\int_ {0} ^ {x} | \\sin t | d t = \\frac {2}{\\pi}.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\frac {2 n}{(n + 1) \\pi} \\leqslant \\frac {1}{x} \\int_ {0} ^ {x} | \\sin t | d t \\leqslant \\frac {2 (n + 1)}{n \\pi}. $$",
+    "techniques_used": [
+      "夹逼/估值",
+      "变限积分求导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "变限积分求导",
+      "expected": "$$ \\frac {2 n}{(n + 1) \\pi} \\leqslant \\frac {1}{x} \\int_ {0} ^ {x} | \\sin t | d t \\leqslant \\frac {2 (n + 1)}{n \\pi}. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 150,
+    "syllabus_note": "变限积分均值极限",
+    "commentary": "评注（1）本题的一般情形：若 $f(x)$ 是以 $T$ 为周期的连续函数，则 $\\lim_{x\\to \\infty}\\frac{1}{x}\\int_0^x f(t)\\mathrm{d}t = \\frac{1}{T}\\int_0^T f(t)\\mathrm{d}t.$\n\n(2) 可以将本题做许多不同形式的演变（见习题 3.2 第 27（2）题，综合题 3\\*第 12 题，3.3 节例 19 等），但解题思路与基本方法却是一致的。\n\n(3) 涉及积分变限函数的极限问题，通常有以下 4 种处理方法：\n\n● 用洛必达法则；\n\n● 用积分中值定理；\n\n\\- 当积分容易计算时，算出积分再求极限；\n\n\\- 当积分不易计算时，做适当放大与缩小，用夹逼原理."
+  }
+}

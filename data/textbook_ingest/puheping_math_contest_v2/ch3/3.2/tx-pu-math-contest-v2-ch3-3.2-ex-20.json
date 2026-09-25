@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-20",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_{\\pi}^{4\\pi} x\\sin^3 x\\cos^4 x\\mathrm{d}x$ .",
+  "answer": "$$ \\begin{array}{r l} I & = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} \\sin^ {3} x \\cos^ {4} x \\mathrm{d} x = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} (\\cos^ {2} x - 1) \\cos^ {4} x \\mathrm{d} \\cos x \\\\ & = \\frac {5}{2} \\pi \\left[ \\frac {1}{7} \\cos^ {7} x - \\frac {1}{5} \\cos^ {5} x \\right] _ {\\pi} ^ {4 \\pi} = - \\frac {2}{7} \\pi . \\end{array} $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇偶对称",
+    "牛顿-莱布尼茨"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 积分区间的中点为 $x = \\frac{5}{2}\\pi$ ，函数 $\\sin^3 x\\cos^4 x$ 关于直线 $x = \\frac{5}{2}\\pi$ 对称，将被积函数拆分为 $\\left(x - \\frac{5}{2}\\pi\\right)\\sin^3 x\\cos^4 x + \\frac{5}{2}\\pi\\sin^3 x\\cos^4 x$ ，易知前项的积分为零."
+      },
+      {
+        "id": "s2",
+        "text": "$$\nI = \\int_ {\\pi} ^ {4 \\pi} \\left(x - \\frac {5}{2} \\pi\\right) \\sin^ {3} x \\cos^ {4} x d x + \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} \\sin^ {3} x \\cos^ {4} x d x.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "对第1项积分，令 $x - \\frac{5}{2}\\pi = t$ ，则"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\int_ {\\pi} ^ {4 \\pi} \\left(x - \\frac {5}{2} \\pi\\right) \\sin^ {3} x \\cos^ {4} x d x = \\int_ {- \\frac {3}{2} \\pi} ^ {\\frac {3}{2} \\pi} t \\cos^ {3} t \\sin^ {4} t d t = 0\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "(被积函数为奇函数)."
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\begin{array}{r l} I & = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} \\sin^ {3} x \\cos^ {4} x \\mathrm{d} x = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} (\\cos^ {2} x - 1) \\cos^ {4} x \\mathrm{d} \\cos x \\\\ & = \\frac {5}{2} \\pi \\left[ \\frac {1}{7} \\cos^ {7} x - \\frac {1}{5} \\cos^ {5} x \\right] _ {\\pi} ^ {4 \\pi} = - \\frac {2}{7} \\pi . \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$$ \\begin{array}{r l} I & = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} \\sin^ {3} x \\cos^ {4} x \\mathrm{d} x = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} (\\cos^ {2} x - 1) \\cos^ {4} x \\mathrm{d} \\cos x \\\\ & = \\frac {5}{2} \\pi \\left[ \\frac {1}{7} \\cos^ {7} x - \\frac {1}{5} \\cos^ {5} x \\right] _ {\\pi} ^ {4 \\pi} = - \\frac {2}{7} \\pi . \\end{array} $$",
+    "techniques_used": [
+      "奇偶对称",
+      "牛顿-莱布尼茨"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "奇偶对称",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "$$ \\begin{array}{r l} I & = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} \\sin^ {3} x \\cos^ {4} x \\mathrm{d} x = \\frac {5}{2} \\pi \\int_ {\\pi} ^ {4 \\pi} (\\cos^ {2} x - 1) \\cos^ {4} x \\mathrm{d} \\cos x \\\\ & = "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例20",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 157,
+    "syllabus_note": "区间中点对称",
+    "commentary": "评注（1）用该题方法可得一般结论：若 $f(x)$ 关于 $x = \\frac{a + b}{2}$ 对称，则\n\n$$\n\\int_ {a} ^ {b} x f (x) \\mathrm{d} x = \\frac {a + b}{2} \\int_ {a} ^ {b} f (x) \\mathrm{d} x.\n$$\n\n(2) 该题本属于分部积分的类型，可将 $\\sin^3 x\\cos^4 x$ 凑微分再做分部积分，但计算要困难些."
+  }
+}

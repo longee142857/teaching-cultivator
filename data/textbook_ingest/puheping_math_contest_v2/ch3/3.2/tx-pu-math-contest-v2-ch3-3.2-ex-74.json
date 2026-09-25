@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-74",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.phys",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "某建筑工程打地基时，需用气锤将桩打进土层，气锤每次击打都将克服土层对桩的阻力而做功，设土层对桩的阻力的大小与桩被打进地下的深度成正比（比例系数为 k）。气锤第 1 次击打将桩打进地下 a 米，根据设计方案，要求气锤每次打桩时所做的功与前一次击打所做的功之比为常数 r(0 < r < 1)。问：\n\n（1）气锤击打3次后，可将桩打进地下多深？\n\n(2) 若击打次数不限，气锤至多能将桩打进地下多深？",
+  "answer": "为 $w_{n}(n = 1,2,\\dots)$ 。由题意，知桩被打进地下 $x$ 米深时，土层对桩的阻力为 $kx$ ，则",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "物理量",
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是变力做功问题. 题设中给出了阻力的大小（与深度成正比），从而很容易求得气锤每次打桩时所做的功. 根据前、后两次击打所做的功之比为常数，易求得第 $n$ 次击打后桩被打进地下的深度.\n\n解（1）设第 $n$ 次击打后，桩被打进地下 $x_{n}$ 米，第 $n$ 次击打时气锤所做的功为 $w_{n}(n = 1,2,\\dots)$ 。由题意，知桩被打进地下 $x$ 米深时，土层对桩的阻力为 $kx$ ，则\n\n$$\nw _ {1} = \\int_ {0} ^ {x _ {1}} k x \\mathrm{d} x = \\frac {k}{2} x _ {1} ^ {2} = \\frac {k}{2} a ^ {2}, w _ {2} = \\int_ {x _ {1}} ^ {x _ {2}} k x \\mathrm{d} x = \\frac {k}{2} (x _ {2} ^ {2} - x _ {1} ^ {2}) = \\frac {k}{2} (x _ {2} ^ {2} - a ^ {2}).\n$$\n\n由 $w_{2} = rw_{1}$ ，可得 $x_{2}^{2} - a^{2} = ra^{2}\\Rightarrow x_{2} = \\sqrt{1 + ra}$\n\n$$\nw _ {3} = \\int_ {x _ {2}} ^ {x _ {3}} k x \\mathrm{d} x = \\frac {k}{2} \\left(x _ {3} ^ {2} - x _ {2} ^ {2}\\right) = \\frac {k}{2} \\left[ x _ {3} ^ {2} - (1 + r) a ^ {2} \\right].\n$$\n\n由 $w_{3} = r w_{2} = r^{2}w_{1}$ ，可得\n\n$$\nx _ {3} ^ {2} - (1 + r) a ^ {2} = r ^ {2} a ^ {2} \\Rightarrow x _ {3} = \\sqrt {1 + r + r ^ {2}} a.\n$$\n\n(2) 利用归纳法. 设 $x_{n}=\\sqrt{1+r+\\cdots r^{n-1}}a$ ，则\n\n$$\nw _ {n + 1} = \\int_ {x _ {n}} ^ {x _ {n + 1}} k x \\mathrm{d} x = \\frac {k}{2} \\left(x _ {n + 1} ^ {2} - x _ {n} ^ {2}\\right) = \\frac {k}{2} \\left[ x _ {m + 1} ^ {2} - (1 + r + \\dots + r ^ {n - 1}) a ^ {2} \\right].\n$$\n\n由于 $w_{n+1}=rw_{n}=r^{2}w_{n-1}=\\cdots=r^{n}w_{1}$ ，得\n\n$$\nx _ {n + 1} ^ {2} - (1 + r + \\dots + r ^ {n - 1}) a ^ {2} = r ^ {n} a ^ {2}.\n$$\n\n所以\n\n$$\nx _ {n + 1} = \\sqrt {1 + r + r ^ {2} + \\cdots + r ^ {n}} a = \\sqrt {\\frac {1 - r ^ {n + 1}}{1 - r}} a, \\lim _ {n \\rightarrow \\infty} x _ {n} = \\sqrt {\\frac {1}{1 - r}} a.\n$$\n\n不限击打次数，气锤至多能将桩打进地下 $\\sqrt{\\fra"
+      },
+      {
+        "id": "s2",
+        "text": "分析 这是变力做功问题. 题设中给出了阻力的大小（与深度成正比），从而很容易求得气锤每次打桩时所做的功. 根据前、后两次击打所做的功之比为常数，易求得第 $n$ 次击打后桩被打进地下的深度.\n\n解（1）设第 $n$ 次击打后，桩被打进地下 $x_{n}$ 米，第 $n$ 次击打时气锤所做的功为 $w_{n}(n = 1,2,\\dots)$ 。由题意，知桩被打进地下 $x$ 米深时，土层对桩的阻力为 $kx$ ，则\n\n$$\nw _ {1} = \\int_ {0} ^ {x _ {1}} k x \\mathrm{d} x = \\frac {k}{2} x _ {1} ^ {2} = \\frac {k}{2} a ^ {2}, w _ {2} = \\int_ {x _ {1}} ^ {x _ {2}} k x \\mathrm{d} x = \\frac {k}{2} (x _ {2} ^ {2} - x _ {1} ^ {2}) = \\frac {k}{2} (x _ {2} ^ {2} - a ^ {2}).\n$$\n\n由 $w_{2} = rw_{1}$ ，可得 $x_{2}^{2} - a^{2} = ra^{2}\\Rightarrow x_{2} = \\sqrt{1 + ra}$\n\n$$\nw _ {3} = \\int_ {x _ {2}} ^ {x _ {3}} k x \\mathrm{d} x = \\frac {k}{2} \\left(x _ {3} ^ {2} - x _ {2} ^ {2}\\right) = \\frac {k}{2} \\left[ x _ {3} ^ {2} - (1 + r) a ^ {2} \\right].\n$$\n\n由 $w_{3} = r w_{2} = r^{2}w_{1}$ ，可得\n\n$$\nx _ {3} ^ {2} - (1 + r) a ^ {2} = r ^ {2} a ^ {2} \\Rightarrow x _ {3} = \\sqrt {1 + r + r ^ {2}} a.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 利用归纳法. 设 $x_{n}=\\sqrt{1+r+\\cdots r^{n-1}}a$ ，则\n\n$$\nw _ {n + 1} = \\int_ {x _ {n}} ^ {x _ {n + 1}} k x \\mathrm{d} x = \\frac {k}{2} \\left(x _ {n + 1} ^ {2} - x _ {n} ^ {2}\\right) = \\frac {k}{2} \\left[ x _ {m + 1} ^ {2} - (1 + r + \\dots + r ^ {n - 1}) a ^ {2} \\right].\n$$\n\n由于 $w_{n+1}=rw_{n}=r^{2}w_{n-1}=\\cdots=r^{n}w_{1}$ ，得\n\n$$\nx _ {n + 1} ^ {2} - (1 + r + \\dots + r ^ {n - 1}) a ^ {2} = r ^ {n} a ^ {2}.\n$$\n\n所以\n\n$$\nx _ {n + 1} = \\sqrt {1 + r + r ^ {2} + \\cdots + r ^ {n}} a = \\sqrt {\\frac {1 - r ^ {n + 1}}{1 - r}} a, \\lim _ {n \\rightarrow \\infty} x _ {n} = \\sqrt {\\frac {1}{1 - r}} a.\n$$\n\n不限击打次数，气锤至多能将桩打进地下 $\\sqrt{\\frac{1}{1 - r}} a$ 米."
+      }
+    ],
+    "final_answer": "为 $w_{n}(n = 1,2,\\dots)$ 。由题意，知桩被打进地下 $x$ 米深时，土层对桩的阻力为 $kx$ ，则",
+    "techniques_used": [
+      "物理量",
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "物理量（功/引力等）的微元如何建立？坐标系如何取？",
+      "technique": "物理量",
+      "expected": "取合适微元，写出力/位移等再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终物理量结果是什么？",
+      "technique": "面积计算",
+      "expected": "为 $w_{n}(n = 1,2,\\dots)$ 。由题意，知桩被打进地下 $x$ 米深时，土层对桩的阻力为 $kx$ ，则"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例74",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 193,
+    "syllabus_note": "打桩做功"
+  }
+}

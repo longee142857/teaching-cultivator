@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-72",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.volume",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "相切的两个球面有一公共的切锥面. 这三个曲面把空间分成许多部分, 只有一个 “环形” 部分由所有 3 个曲面围成. 假设两个球面的半径分别是 $r$ 和 $R$ , 试求 “环形” 部分的体积 (答案要求表示为 $r$ 和 $R$ 的有理函数).",
+  "answer": "的体积为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "体积计算",
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是旋转体体积问题. 根据题意画出草图（截面图），找到所求体积与锥体、球体（部分）体积的关系，建立适当的坐标系便于相关体积的计算.\n\n设 $a$ 为锥面的半顶角，两球面的位置如截面图（图3.6）所示，球心为 $O_{1}$ 和 $O_{2}$ ，坐标原点在切点 $O$ 处。较大圆的方程是 $x^{2} + y^{2} + 2Rx = 0$ ，较小圆的方程是 $x^{2} + y^{2} - 2rx = 0$ 。由图可知\n\n$$\n\\sin \\alpha = \\frac {\\left| O _ {1} P \\right|}{\\left| O _ {1} O _ {2} \\right|} = \\frac {R - r}{R + r}, \\text {从而} \\cos^ {2} \\alpha = \\frac {4 R r}{(R + r) ^ {2}}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "设四边形 $A_{1}A_{2}B_{2}B_{1}$ 绕 $\\pmb{x}$ 轴旋转所生成的正圆锥台的体积为 $V_{1}$ 。因为以 $B_{1}T$ 为高的圆锥的体积为\n\n$$\n\\begin{array}{r l} V _ {B _ {1} T} & = \\frac {1}{3} \\pi \\left| A _ {1} B _ {1} \\right| ^ {2} \\cdot \\left| B _ {1} T \\right| = \\frac {1}{3} \\pi R ^ {2} \\cos^ {2} \\alpha \\cdot R \\cot \\alpha \\cos \\alpha \\\\ & = \\frac {1 6 \\pi}{3} R ^ {3} \\frac {r ^ {2} R ^ {2}}{(R - r) (R + r) ^ {3}}, \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "以 $B_{2}T$ 为高的圆锥的体积为\n\n$$\nV _ {B _ {2} T} = \\frac {1 6 \\pi}{3} r ^ {3} \\frac {r ^ {2} R ^ {2}}{(R - r) (R + r) ^ {3}}.\n$$\n\n它们的差为\n\n$$\nV _ {1} = \\frac {1 6 \\pi}{3} \\cdot \\frac {r ^ {2} R ^ {2}}{(R + r) ^ {3}} \\cdot (R ^ {2} + R r + r ^ {2}).\n$$\n\n图3.6\n\n设 $V_{2}$ 和 $V_{3}$ 分别是大、小两球含于大、小两圆锥体内的体积，则\n\n$$\nV _ {2} = \\pi \\int_ {R (\\sin \\alpha - 1)} ^ {0} (- x ^ {2} - 2 R x) d x = \\pi \\left[ - \\frac {x ^ {3}}{3} - R x ^ {2} \\right] _ {R (\\sin \\alpha - 1)} ^ {0} = \\frac {4 \\pi R ^ {3} r ^ {2}}{3 (R + r) ^ {3}} (3 R + r).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "这里利用了 $R(\\sin \\alpha - 1) = \\frac{-2Rr}{R + r}$ .\n\n同样有\n\n$$\nV _ {3} = \\pi \\int_ {0} ^ {r (1 + \\sin \\alpha)} (- x ^ {2} + 2 r x) d x = \\pi \\left[ - \\frac {x ^ {3}}{3} + r x ^ {2} \\right] _ {0} ^ {r (1 + \\sin \\alpha)} = \\frac {4 \\pi}{3} \\cdot \\frac {R ^ {2} r ^ {3}}{(R + r) ^ {3}} (R + 3 r).\n$$\n\n于是，所求的体积为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nV = V _ {1} - V _ {2} - V _ {3} = \\frac {4 \\pi}{3} \\cdot \\frac {R ^ {2} r ^ {2}}{(R + r) ^ {3}} \\left[ 4 (R ^ {2} + R r + r ^ {2}) - 3 R ^ {2} - R r - R r - 3 r ^ {2} \\right] = \\frac {4 \\pi}{3} \\cdot \\frac {R ^ {2} r ^ {2}}{R + r}.\n$$"
+      }
+    ],
+    "final_answer": "的体积为",
+    "techniques_used": [
+      "体积计算",
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "旋转轴与截面如何选取？体积微元是圆盘、壳体还是定理法？",
+      "technique": "体积计算",
+      "expected": "按旋转轴选取适当截面，写出体积微元再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求体积是什么？",
+      "technique": "面积计算",
+      "expected": "的体积为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例72*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 192,
+    "starred": true,
+    "syllabus_note": "球锥环形体积",
+    "commentary": "评注 对几何问题，如果题设没给出坐标系，则需要自己建立。建立坐标系要根据图形的对称性与已知条件，使关键点的坐标以及相关曲线的方程尽可能简单，以便问题求解。"
+  }
+}

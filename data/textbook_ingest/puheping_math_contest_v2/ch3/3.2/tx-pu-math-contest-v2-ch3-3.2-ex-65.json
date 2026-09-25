@@ -1,0 +1,84 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-65",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "满足下列条件，是否存在区间[0,5]上的函数，并说明理由.\n\n(1) $f(x)$ 在 $[0,5]$ 上可微； (2) $f(0) = f(5) = 1$ ； (3) $|f'(x)| \\leqslant \\frac{2}{5}$ ; (4) $\\left|\\int_{0}^{5} f(x) \\mathrm{d}x\\right| \\leqslant \\frac{5}{2}$ .",
+  "answer": "满足所给条件的函数不存在.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由前3个条件，利用拉格朗日中值定理容易得到 $f(x)$ 在区间[0,5]上的不等式，然后积分，看得到的结果是否会与条件（4）发生矛盾."
+      },
+      {
+        "id": "s2",
+        "text": "如果存在，则有 $f(0) = f(5) = 1$ ， $-\\frac{2}{5} \\leqslant f'(x) \\leqslant \\frac{2}{5}$ 。将区间 $[0,5]$ 分成两个小区间 $\\left[0, \\frac{5}{2}\\right]$ 与 $\\left[\\frac{5}{2}, 5\\right]$ ，由拉格朗日中值定理，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nf (x) = f (0) + f ^ {\\prime} (\\xi) x \\geqslant 1 - \\frac {2}{5} x, \\quad x \\in \\left[ 0, \\frac {5}{2} \\right];"
+      },
+      {
+        "id": "s4",
+        "text": "f (x) = f (5) + f ^ {\\prime} (\\xi) (x - 5) \\geqslant 1 + \\frac {2}{5} (x - 5), \\quad x \\in \\left[ \\frac {5}{2}, 5 \\right].\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由于 $f(x)$ 在 $[0,5]$ 上可微，所以上面两个不等式不可能同时取等号，否则 $f(x)$ 在 $x = \\frac{5}{2}$ 处不可微. 因而"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\int_ {0} ^ {5} f (x) \\mathrm{d} x = \\int_ {0} ^ {\\frac {5}{2}} f (x) \\mathrm{d} x + \\int_ {\\frac {5}{2}} ^ {5} f (x) \\mathrm{d} x > \\int_ {0} ^ {\\frac {5}{2}} \\left(1 - \\frac {2}{5} x\\right) \\mathrm{d} x + \\int_ {\\frac {5}{2}} ^ {5} \\left(1 + \\frac {2}{5} (x - 5)\\right) \\mathrm{d} x = \\frac {5}{2}.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "这与条件（4）相矛盾，所以满足所给条件的函数不存在."
+      }
+    ],
+    "final_answer": "满足所给条件的函数不存在.",
+    "techniques_used": [
+      "积分中值",
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "夹逼/估值",
+      "expected": "满足所给条件的函数不存在."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例65",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 187,
+    "syllabus_note": "存在性反例/估值",
+    "commentary": "评注 （1）对存在性问题的判断，首先是分析所给条件是否会导致矛盾；其次是看能否找到正反方面的例子；最后才考虑一般性的证明.\n\n(2) 从几何角度看, 该题的结论也是很明显的. 将积分 $\\left|\\int_{0}^{5} f(x) \\mathrm{d}x\\right|$ 视为曲线 $y = f(x)$ 与 $x$ 轴在区间 [0,5] 上所围成图形的面积, 显然 $f(x) = \\begin{cases} 1 - (2/5)x, & x \\in [0,5/2] \\\\ 1 + (2/5)(x - 5), & x \\in [5/2,5] \\end{cases}$ 是满足题设条件（仅在一点不满足）中对应面积最小的那一个, 而这个面积就是 $5/2$ ."
+  }
+}

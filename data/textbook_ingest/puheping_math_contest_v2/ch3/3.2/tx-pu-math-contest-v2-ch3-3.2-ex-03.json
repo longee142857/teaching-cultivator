@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-03",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.eq",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 是以 $T$ 为周期的连续函数，证明 $F(x) = \\int_{a}^{x}\\left(Tf(t) - \\int_{0}^{T}f(t)\\mathrm{d}t\\right)\\mathrm{d}t$ 也是以 $T$ 为周期的函数.",
+  "answer": "$F(x)$ 以 T 为周期.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "变限积分求导",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需验证 $F(x + T) = F(x)$ . 推导中要抓住定积分 $\\int_0^T f(t) \\, \\mathrm{d}t$ 是常数这一概念, 并注意周期函数在任意一个周期区间上的积分都相等."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\int_0^T f(t)\\mathrm{d}t$ 是一个常数，为便于书写，记为 $k$ ，则 $F(x) = \\int_{a}^{x}[Tf(t) - k]\\mathrm{d}t$ 从而"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nF (x + T) = \\int_ {a} ^ {x + T} [ T f (t) - k ] d t = \\int_ {a} ^ {x} [ T f (t) - k ] d t + \\int_ {x} ^ {x + T} [ T f (t) - k ] d t.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "不难验证， $\\varphi (t) = Tf(t) - k$ 也以 $T$ 为周期，利用 $\\int_{a}^{a + T}\\varphi (t)\\mathrm{d}t = \\int_0^T\\varphi (t)\\mathrm{d}t$ ，得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nF (x + T) = F (x) + \\int_ {0} ^ {T} [ T f (t) - k ] d t = F (x).\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "因此， $F(x)$ 以 T 为周期."
+      }
+    ],
+    "final_answer": "$F(x)$ 以 T 为周期.",
+    "techniques_used": [
+      "变限积分求导",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "换元定积分",
+      "expected": "$F(x)$ 以 T 为周期."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 148,
+    "syllabus_note": "变限积分周期性",
+    "commentary": "评注 设 $f(x)$ 是以 $T$ 为周期的连续函数，则 $F(x) = \\int_0^x f(t)\\mathrm{d}t$ 的周期性如下：\n\n(1) $F(x)$ 是以 $T$ 为周期的连续函数的充分必要条件为 $\\int_0^T f(t)\\mathrm{d}t = 0$\n\n(2) 如果 $\\int_0^T f(t)\\mathrm{d}t\\neq 0$ ，则 $F(x)$ 可表示成一线性函数与以 $T$ 为周期的周期函数之和，即\n\n$$\nF (x) = \\int_ {0} ^ {x} f (t) \\mathrm{d} t = \\int_ {0} ^ {x} \\left(f (t) - \\frac {k}{T}\\right) \\mathrm{d} t + \\frac {k}{T} x,\n$$\n\n其中 $k = \\int_0^T f(t)\\mathrm{d}t$"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-46",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明下列不等式.\n\n(1) $\\int_{0}^{\\sqrt{2\\pi}}\\sin x^{2}\\mathrm{d}x > 0$ (2) $\\frac{1}{3} < \\int_{0}^{1}(\\mathrm{e}^{x} - 1)\\ln (x + 1)\\mathrm{d}x < \\frac{1}{2}.$",
+  "answer": "原不等式成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）被积函数的原函数不是初等函数，积分不能算出，将积分做适当的变形，能判断被积函数在积分区域内大于零即可。因此需要将被积函数符号改变的分界点插入积分区间做分段积分。\n\n(2) 不等式左端，只需证明 $(\\mathrm{e}^{x}-1)\\ln(x+1)>x^{2}(0<x<1)$ ；右端利用 $\\ln(x+1)<x$ 即可得到.\n\n（1）令 $x = \\sqrt{t}$ ，则\n\n$$\n\\int_ {0} ^ {\\sqrt {2 \\pi}} \\sin x ^ {2} d x = \\frac {1}{2} \\int_ {0} ^ {2 \\pi} \\frac {\\sin t}{\\sqrt {t}} d t = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\pi} \\frac {\\sin t}{\\sqrt {t}} d t + \\int_ {\\pi} ^ {2 \\pi} \\frac {\\sin t}{\\sqrt {t}} d t \\right].\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "对第2个积分，令 $u = t - \\pi$ ，则\n\n$$\n\\int_ {\\pi} ^ {2 \\pi} \\frac {\\sin t}{\\sqrt {t}} d t = \\int_ {0} ^ {\\pi} \\frac {\\sin (u + \\pi)}{\\sqrt {u + \\pi}} d u = - \\int_ {0} ^ {\\pi} \\frac {\\sin u}{\\sqrt {u + \\pi}} d u,\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {\\sqrt {2 \\pi}} \\sin x ^ {2} \\mathrm{d} x = \\frac {1}{2} \\int_ {0} ^ {\\pi} \\left(\\frac {\\sin t}{\\sqrt {t}} - \\frac {\\sin t}{\\sqrt {t + \\pi}}\\right) \\mathrm{d} t > 0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "（2）由2.3节例9知，当 $x > 0$ 时，有 $(\\mathrm{e}^x -1)\\ln (x + 1) > x^2$ ，所以\n\n$$\n\\int_ {0} ^ {1} \\left(\\mathrm{e} ^ {x} - 1\\right) \\ln (x + 1) \\mathrm{d} x > \\int_ {0} ^ {1} x ^ {2} \\mathrm{d} x = \\frac {1}{3}.\n$$\n\n又因为当 $x > 0$ 时， $\\ln (x + 1) <   x$ ，所以\n\n$$\n\\int_ {0} ^ {1} \\left(\\mathrm{e} ^ {x} - 1\\right) \\ln (x + 1) \\mathrm{d} x <   \\int_ {0} ^ {1} \\left(\\mathrm{e} ^ {x} - 1\\right) x \\mathrm{d} x,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "而\n\n$$\n\\int_ {0} ^ {1} \\left(\\mathrm{e} ^ {x} - 1\\right) x \\mathrm{d} x = \\int_ {0} ^ {1} x \\mathrm{d} \\left(\\mathrm{e} ^ {x} - x\\right) = x \\left(\\mathrm{e} ^ {x} - x\\right) \\left| _ {0} ^ {1} - \\int_ {0} ^ {1} \\left(\\mathrm{e} ^ {x} - x\\right) \\mathrm{d} x = \\mathrm{e} - 1 - \\left(\\mathrm{e} ^ {x} - \\frac {1}{2} x ^ {2}\\right) \\right| _ {0} ^ {1} = \\frac {1}{2}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以原不等式成立."
+      }
+    ],
+    "final_answer": "原不等式成立.",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "原不等式成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例46",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 173,
+    "syllabus_note": "估值/比较",
+    "commentary": "评注（1）若积分不等式的一端为常数，可考虑用定积分的单调性（被积函数大的积分值也大）证明，关键是要将被积函数做适当的放大与缩小，便于算出积分.\n\n(2) 若被积函数在积分区间中不保号，则函数的放大或缩小就会有困难，此时，通常是将函数变号的分界点（零点）插入积分区间分段积分，再做放缩；或作变量代换，将两积分化为同一区间的积分后再放缩."
+  }
+}

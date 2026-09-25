@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-70",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.area",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在[0,1]上连续，在(0,1)内大于零，且满足 $xf'(x) = f(x) + \\frac{3a}{2} x^2$ （ $a$ 为常数），又设曲线 $y = f(x)$ 与 $x = 1$ 及 $y = 0$ 所围面（图形 $S$ ）的面积为2. 求 $a$ 为何值时，图形 $S$ 绕 $x$ 轴旋转一周所得的旋转体的体积最小.",
+  "answer": "最小.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积计算",
+    "体积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要求得图形 $S$ 绕 $x$ 轴旋转一周所得的旋转体的体积，必须要知道函数 $f(x)$ 的表达式。再利用体积最小就可得到所需的 $a$ 的值。\n\n由已知，得\n\n$$\n\\left(\\frac {f (x)}{x}\\right) ^ {\\prime} = \\frac {x f ^ {\\prime} (x) - f (x)}{x ^ {2}} = \\frac {3 a}{2} \\Rightarrow \\frac {f (x)}{x} = \\frac {3 a}{2} x + C,\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "即有\n\n$$\nf (x) = \\frac {3 a}{2} x ^ {2} + C x, \\quad x \\in [ 0, 1 ].\n$$\n\n再由已知条件，有\n\n$$\n2 = \\int_ {0} ^ {1} \\left(\\frac {3 a}{2} x ^ {2} + C x\\right) d x = \\frac {a}{2} + \\frac {C}{2},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "得 $C = 4 - a$ ，因此\n\n$$\nf (x) = \\frac {3 a}{2} x ^ {2} + (4 - a) x.\n$$\n\n旋转体体积为\n\n$$\nV (a) = \\pi \\int_ {0} ^ {1} f ^ {2} (x) \\mathrm{d} x = \\frac {\\pi}{3 0} \\left(a ^ {2} + 1 0 a + 1 6 0\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "令 $V^{\\prime}(a) = \\frac{\\pi}{30} (2a + 10) = 0$ ，得 $a = -5$ 。又 $V''(a) = \\frac{\\pi}{15} >0$ ，故当 $a = -5$ 时，旋转体的体积最小."
+      }
+    ],
+    "final_answer": "最小.",
+    "techniques_used": [
+      "面积计算",
+      "体积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分区间与被积函数（上下曲线差）？",
+      "technique": "面积计算",
+      "expected": "由曲线交点确定区间，面积元为上下边界差。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求面积（或最值）结果是什么？",
+      "technique": "体积计算",
+      "expected": "最小."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例70",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 190,
+    "syllabus_note": "面积条件+微分方程"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-66",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f: [-1,1] \\to \\mathbb{R}$ 为偶函数， $f$ 在 $[0,1]$ 上单调递增，又设 $g$ 是 $[-1,1]$ 上的下凸函数，即对任意 $x, y \\in [-1,1]$ 及 $t \\in (0,1)$ ，有 $g(tx + (1 - t)y) \\leqslant tg(x) + (1 - t)g(y)$ 。证明：\n\n$$\n2 \\int_ {- 1} ^ {1} f (x) g (x) d x \\geqslant \\int_ {- 1} ^ {1} f (x) d x \\cdot \\int_ {- 1} ^ {1} g (x) d x.\n$$",
+  "answer": "结论.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇偶对称",
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 根据已知条件，应将积分区间换到[0,1]上来考虑。由于 $f(x)$ 与 $h(x) = g(x) + g(-x)$ 在[0,1]上都单调递增，因此对任意 $x, y \\in [0,1]$ ，有 $[f(x) - f(y)][h(x) - h(y)] \\geqslant 0$ ，利用二重积分的单调性，问题就解决了。\n\n由于 $f$ 为偶函数，如果 $f(x)g(x)$ 在[-1,1]上可积，则有\n\n$$\n\\int_ {- 1} ^ {1} f (x) g (x) \\mathrm{d} x = \\int_ {- 1} ^ {1} f (x) g (- x) \\mathrm{d} x.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因而\n\n$$\n2 \\int_ {- 1} ^ {1} f (x) g (x) d x = \\int_ {- 1} ^ {1} f (x) [ g (x) + g (- x) ] d x = 2 \\int_ {0} ^ {1} f (x) [ g (x) + g (- x) ] d x.\\tag{①}\n$$\n\n因为 $g$ 为下凸函数, 所以 $h(x) = g(x) + g(-x)$ 在 $[0,1]$ 上单调递增 (见 1.1 节例 9). 从而 $f(x)$ 与 $h(x)$ 在 $[-1,1]$ 上都是可积的, 且对任意 $x, y \\in [0,1]$ , 有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\left[ f (x) - f (y) \\right] \\left[ h (x) - h (y) \\right] \\geqslant 0.\n$$\n\n因而\n\n$$\n\\int_ {0} ^ {1} \\int_ {0} ^ {1} [ f (x) - f (y) ] [ h (x) - h (y) ] d x d y \\geqslant 0.\\tag{②}\n$$\n\n由于②式左端的积分\n\n$$\n\\begin{array}{r l} I & = \\int_ {0} ^ {1} \\int_ {0} ^ {1} [ f (x) h (x) + f (y) h (y) - f (x) h (y) - f (y) h (x) ] \\mathrm{d} x \\mathrm{d} y \\\\ & = 2 \\int_ {0} ^ {1} f (x) h (x) \\mathrm{d} x - 2 \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\cdot \\int_ {0} ^ {1} h (x) \\mathrm{d} x, \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "于是得到\n\n$$\n2 \\int_ {0} ^ {1} f (x) h (x) d x \\geqslant 2 \\int_ {0} ^ {1} f (x) d x \\cdot \\int_ {0} ^ {1} h (x) d x = \\int_ {- 1} ^ {1} f (x) d x \\cdot \\int_ {- 1} ^ {1} g (x) d x.\n$$\n\n结合①式即得结论."
+      }
+    ],
+    "final_answer": "结论.",
+    "techniques_used": [
+      "奇偶对称",
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "奇偶对称",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "夹逼/估值",
+      "expected": "结论."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例66*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 188,
+    "starred": true,
+    "syllabus_note": "凸性+偶函数",
+    "commentary": "评注（1）由于题设没告知 $f(x)$ 与 $g(x)$ 是可积函数，所以有必要说明 $f(x)$ 与 $h(x)$ 的可积性.\n\n(2) 该题求解的关键是要知道 $h(x) = g(x) + g(-x)$ 的单调性，否则是很困难的.\n\n## 5. 定积分的应用\n\n这里主要介绍定积分在几何与物理上的应用。用定积分解决应用问题的基本方法是微元法，要根据问题的背景正确建立微元，再将微元在对应的区间上做累加（定积分）。计算中要合理建立坐标系并充分利用对称性、奇偶性、周期性等使计算简化。"
+  }
+}

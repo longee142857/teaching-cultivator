@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-64",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f$ 是从 $[0, +\\infty)$ 到 $[0, +\\infty)$ 的严格递增可导函数. 设 $g = f^{-1}$ , 证明 $\\forall a, b \\in [0, +\\infty)$ , 都有\n\n$$\n\\int_ {0} ^ {a} f (x) \\mathrm{d} x + \\int_ {0} ^ {b} g (x) \\mathrm{d} x \\geqslant a b.\n$$\n\n并确定等式成立的条件.",
+  "answer": "$h(g(b)) = 0$ ，即有 $\\min_{t\\in [0, + \\infty)}h(t) = 0$ 。所以对 $\\forall a > 0$ ，都有 $h(a)\\geqslant 0$ ，即",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）由于 $ab = \\int_0^a f(x)\\mathrm{d}x + \\int_0^a [b - f(x)]\\mathrm{d}x$ ，所以只需证明 $\\int_0^a [b - f(x)]\\mathrm{d}x\\leqslant \\int_0^b g(y)\\mathrm{d}y$ .这可通过定积分及反函数的定义来完成.\n\n(2) 构造函数 $h(t)=\\int_{0}^{t}f(x)\\mathrm{d}x+\\int_{0}^{b}g(x)\\mathrm{d}x-bt$ ，只需证明该函数在区间 $[0,+\\infty)$ 上的最小值为 0.\n\n（3）从几何上看， $\\int_0^a f(x)\\mathrm{d}x + \\int_0^b g(y)\\mathrm{d}y$ 是如图3.2所示的两曲边梯形的面积之和（阴影部分），该面积显然大于或等于边长分别为 $a,b$ 的矩形的面积.所以也可以借助二重积分（面积）来证明."
+      },
+      {
+        "id": "s2",
+        "text": "方法 1 由题意知 f 与 g 都是 $[0, +\\infty)$ 上的单调递增函数，从而是可积的，且有 $f(0) = g(0) = 0$ .\n\n不失一般性，假设 $f(a) \\leqslant b$ ，有\n\n$$\na b = \\int_ {0} ^ {a} f (x) \\mathrm{d} x + \\int_ {0} ^ {a} [ b - f (x) ] \\mathrm{d} x.\n$$\n\n图3.2\n\n注意到 $g \\circ f$ 是恒等映射，根据定积分的定义，有\n\n$$\n\\begin{array}{l}\\int_ {0} ^ {a} [ b - f (x) ] \\mathrm{d} x = \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} \\left(b - f \\left(\\frac {(k + 1) a}{n}\\right)\\right) \\frac {a}{n}\\\\= a b - \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} f \\left(\\frac {(k + 1) a}{n}\\right) \\frac {a}{n}\\\\= a b - \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} f \\left(\\frac {(k + 1) a}{n}\\right)\\left[ g \\circ f \\left(\\frac {(k + 1) a}{n}\\right) - g \\circ f \\left(\\frac {k a}{n}\\right)\\right]\\\\= a b - a f (a) + \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} g \\circ f \\left(\\frac {k a}{n}\\right)\\left[ f \\left(\\frac {(k + 1) a}{n}\\right) - f \\left(\\frac {k a}{n}\\right)\\right]\\\\= a [ b - f (a) ] + \\int_ {0} ^ {f (a)} g (y) \\mathrm{d} y.\\end{array}\\tag{①}\n$$\n\n注意上面等式①用到了关系式\n\n$$\n\\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} f \\left(\\frac {(k + 1) a}{n}\\right) g \\circ f \\left(\\frac {(k + 1) a}{n}\\right) = \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 0} ^ {n - 1} f \\left(\\frac {k a}{n}\\right) g \\circ f \\left(\\frac {k a}{n}\\right) + f (a) a (\\because f (0) = 0).\n$$\n\n由于对 $y \\in (f(a), b)$ ，有 $g(y) \\geqslant a$ ，便得\n\n$$\na [ b - f (a) ] \\leqslant \\int_ {f (a)} ^ {b} g (y) d y.\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {a} [ b - f (x) ] \\mathrm{d} x \\leqslant \\int_ {0} ^ {f (a)} g (y) \\mathrm{d} y + \\int_ {f (a)} ^ {b} g (y) \\mathrm{d} y = \\int_ {0} ^ {b} g (y) \\mathrm{d} y.\n$$\n\n即\n\n$$\na b \\leqslant \\int_ {0} ^ {a} f (x) d x + \\int_ {0} ^ {b} g (y) d y.\n$$\n\n同时，不难看出等式成立的充要条件是 $f(a) = b$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 构造函数 $h(t) = \\int_0^t f(x)\\mathrm{d}x + \\int_0^b g(x)\\mathrm{d}x - bt$ ， $t\\in [0, + \\infty)$ ，则 $h^\\prime (t) = f(t) - b.$\n\n令 $h'(t) = 0$ ，得 $b = f(t_0)$ ， $t_0 = g(b)$\n\n当 $0 < t < t_0$ 时，由 $f$ 严格递增，知 $f(t) < f(t_0) = f(g(b)) = b$ ，有 $h'(t) < 0$ ；当 $t_0 < t$ 时，有 $f(t_0) = b < f(t)$ ，有 $h'(t) > 0$ 。故当 $t_0 = g(b)$ 时， $h(t)$ 取得极小值，也是最小值 $\\min_{t \\in [0, +\\infty)} h(t) = h(g(b))$ 。\n\n由于\n\n$$\nh (g (b)) = \\int_ {0} ^ {g (b)} f (x) d x + \\int_ {0} ^ {b} g (y) d y - b g (b),\n$$\n\n其中\n\n$$\n\\int_ {0} ^ {b} g (y) \\mathrm{d} y \\stackrel {y = f (x)} {=} \\int_ {0} ^ {g (b)} x \\mathrm{d} f (x) = x f (x) \\left| _ {0} ^ {g (b)} - \\int_ {0} ^ {g (b)} f (x) \\mathrm{d} x = b g (b) - \\int_ {0} ^ {g (b)} f (x) \\mathrm{d} x, \\right.\n$$\n\n所以 $h(g(b)) = 0$ ，即有 $\\min_{t\\in [0, + \\infty)}h(t) = 0$ 。所以对 $\\forall a > 0$ ，都有 $h(a)\\geqslant 0$ ，即\n\n$$\n\\int_ {0} ^ {a} f (x) \\mathrm{d} x + \\int_ {0} ^ {b} g (x) \\mathrm{d} x \\geqslant a b.\n$$\n\n当且仅当 $a = g(b)$ 时，上式取等号."
+      },
+      {
+        "id": "s4",
+        "text": "方法3 不失一般性，假设 $g(b) \\geqslant a$ （或 $f(a) \\leqslant b$ ），则\n\n$$\n\\begin{array}{r l} & {\\int_ {0} ^ {b} g (x) \\mathrm{d} x = \\int_ {0} ^ {b} g (y) \\mathrm{d} y = \\int_ {0} ^ {b} \\mathrm{d} y \\int_ {0} ^ {g (y)} \\mathrm{d} x = \\int_ {0} ^ {g (b)} \\mathrm{d} x \\int_ {f (x)} ^ {b} \\mathrm{d} y (\\text {积分换序})} \\\\ & {\\qquad = \\int_ {0} ^ {g (b)} [ b - f (x) ] \\mathrm{d} x \\geqslant \\int_ {0} ^ {a} [ b - f (x) ] \\mathrm{d} x = a b - \\int_ {0} ^ {a} f (x) \\mathrm{d} x.} \\end{array}\n$$\n\n等号成立当且仅当 $g(b) = a$ （或 $f(a) = b$ ）时."
+      }
+    ],
+    "final_answer": "$h(g(b)) = 0$ ，即有 $\\min_{t\\in [0, + \\infty)}h(t) = 0$ 。所以对 $\\forall a > 0$ ，都有 $h(a)\\geqslant 0$ ，即",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$h(g(b)) = 0$ ，即有 $\\min_{t\\in [0, + \\infty)}h(t) = 0$ 。所以对 $\\forall a > 0$ ，都有 $h(a)\\geqslant 0$ ，即"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例64*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 186,
+    "starred": true,
+    "syllabus_note": "Young 不等式",
+    "commentary": "评注 事实上“方法2”的证明需要 $f(x)$ 的导函数可积；“方法1”和“方法3”仅要求 $f(x)$ 单调，存在反函数就行。也就是该命题可以去掉 $f(x)$ 可导的条件。\n\n注意函数可积的充分条件：闭区域间上的单调函数一定可积."
+  }
+}

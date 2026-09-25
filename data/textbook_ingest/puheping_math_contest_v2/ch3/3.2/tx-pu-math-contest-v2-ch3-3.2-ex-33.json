@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-33",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.eq",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $x \\geqslant 0, f_0(x) > 0$ ，若 $f_n(x) = \\int_0^x f_{n-1}(t) \\mathrm{d}t (n=1,2,3,\\cdots)$ ，证明：\n\n$$\nf _ {n} (x) = \\frac {1}{(n - 1) !} \\int_ {0} ^ {x} (x - t) ^ {n - 1} f _ {0} (t) d t.\n$$",
+  "answer": "对任意正整数 $n$ 均成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部定积分",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需将已知的递推公式转化为需要证明的等式，对 $n$ 用数学归纳法是比较好的选择；另一方面， $f_{n}(x)$ 是积分上限函数，用分部积分来实现等式的转换也是容易想到的。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 用数学归纳法证明. 当 $n = 1$ 时,\n\n$$\nf _ {1} (x) = \\int_ {0} ^ {x} f _ {0} (t) d t = \\frac {1}{(1 - 1) !} \\int_ {0} ^ {x} (x - t) ^ {1 - 1} f _ {0} (t) d t,\n$$\n\n结论成立. 假设当 $n = k$ 时，结论成立，即\n\n$$\nf _ {k} (x) = \\frac {1}{(k - 1) !} \\int_ {0} ^ {x} (x - t) ^ {k - 1} f _ {0} (t) d t = \\frac {1}{(k - 1) !} \\int_ {0} ^ {x} (x - u) ^ {k - 1} f _ {0} (u) d u;\n$$\n\n当 $n = k + 1$ 时，有\n\n$$\n\\begin{array}{r l} {f _ {k + 1} (x) = \\int_ {0} ^ {x} f _ {k} (t) \\mathrm{d} t = \\int_ {0} ^ {x} \\left[ \\frac {1}{(k - 1) !} \\int_ {0} ^ {t} (t - u) ^ {k - 1} f _ {0} (u) \\mathrm{d} u \\right] \\mathrm{d} t} \\\\ & {\\quad = \\frac {1}{(k - 1) !} \\int_ {0} ^ {x} \\mathrm{d} u \\int_ {u} ^ {x} (t - u) ^ {k - 1} f _ {0} (u) \\mathrm{d} t \\quad (\\text {交换积分次序})} \\\\ & {\\quad = \\frac {1}{(k - 1) !} \\int_ {0} ^ {x} \\left[ \\frac {1}{k} (t - u) ^ {k} \\Bigg | _ {u} ^ {x} f _ {0} (u) \\right] \\mathrm{d} u} \\\\ & {\\quad = \\frac {1}{k !} \\int_ {0} ^ {x} (x - u) ^ {k} f _ {0} (u) \\mathrm{d} u = \\frac {1}{k !} \\int_ {0} ^ {x} (x - t) ^ {k} f _ {0} (t) \\mathrm{d} t.} \\end{array}\n$$\n\n结论也成立. 因此对任意正整数 $n$ 均成立."
+      },
+      {
+        "id": "s3",
+        "text": "方法 2 用分部积分法.\n\n$$\n\\begin{array}{r l} f _ {n} (x) & = - \\int_ {0} ^ {x} f _ {n - 1} (t) \\mathrm{d} (x - t) = - (x - t) f _ {n - 1} (t) \\big | _ {0} ^ {x} + \\int_ {0} ^ {x} (x - t) \\mathrm{d} f _ {n - 1} (t) \\\\ & = \\int_ {0} ^ {x} (x - t) f _ {n - 2} (t) \\mathrm{d} t = - \\frac {1}{2} \\int_ {0} ^ {x} f _ {n - 2} (t) \\mathrm{d} (x - t) ^ {2} \\\\ & = - \\frac {1}{2} (x - t) ^ {2} f _ {n - 2} (t) \\big | _ {0} ^ {x} + \\frac {1}{2} \\int_ {0} ^ {x} (x - t) ^ {2} \\mathrm{d} f _ {n - 2} (t) \\\\ & = \\frac {1}{2} \\int_ {0} ^ {x} (x - t) ^ {2} f _ {n - 3} (t) \\mathrm{d} t = \\dots = \\frac {1}{(n - 1) !} \\int_ {0} ^ {x} (x - t) ^ {n - 1} f _ {0} (t) \\mathrm{d} t. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "对任意正整数 $n$ 均成立.",
+    "techniques_used": [
+      "分部定积分",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "分部定积分",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "定积分性质",
+      "expected": "对任意正整数 $n$ 均成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例33",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 165,
+    "syllabus_note": "反复变限积分表示"
+  }
+}

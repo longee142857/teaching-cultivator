@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-63",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上有二阶连续导数，且 $f(0) = f(1) = f'(0) = 0$ ， $f'(1) = 1$ 。证明 $\\int_0^1 [f''(x)]^2 \\mathrm{d}x \\geqslant 4$ 并指出不等式中等号成立的条件。",
+  "answer": "$$ \\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\geqslant 4.\\tag{②} $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "积分不等式",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）满足题设条件的三次多项式是容易确定的，因此可用多项式做近似，再用平方误差非负来得到不等式.\n\n（2）如果被积函数是 $f''(x)$ 与已知函数的乘积，则可通过分部积分来完成计算。因此要得到 $\\int_0^1 [f''(x)]^2\\mathrm{d}x$ 的估计式，可借助柯西不等式来实现被积函数的转换。"
+      },
+      {
+        "id": "s2",
+        "text": "设 $g(x) = ax^3 + bx^2 + cx + d$ ，若 $g(0) = g(1) = g'(0) = 0, g'(1) = 1$ ，则可得 $a = 6, b = -2$ ， $c = d = 0$ 。即 $g(x) = x^3 - x^2, g''(x) = 6x - 2$ ."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 因为\n\n$$\n\\begin{array}{r l} 0 & \\leqslant \\int_ {0} ^ {1} [ f ^ {\\prime \\prime} (x) - (6 x - 2) ] ^ {2} \\mathrm{d} x = \\int_ {0} ^ {1} [ f ^ {\\prime \\prime} (x) ] ^ {2} \\mathrm{d} x - 2 \\int_ {0} ^ {1} f ^ {\\prime \\prime} (x) (6 x - 2) \\mathrm{d} x + \\int_ {0} ^ {1} (6 x - 2) ^ {2} \\mathrm{d} x \\\\ & = \\int_ {0} ^ {1} [ f ^ {\\prime \\prime} (x) ] ^ {2} \\mathrm{d} x - 2 f ^ {\\prime} (x) (6 x - 2) \\Big | _ {0} ^ {1} + 1 2 \\int_ {0} ^ {1} f ^ {\\prime} (x) \\mathrm{d} x + \\frac {1}{1 8} (6 x - 2) ^ {3} \\Big | _ {0} ^ {1} \\\\ & = \\int_ {0} ^ {1} [ f ^ {\\prime \\prime} (x) ] ^ {2} \\mathrm{d} x - 8 + 0 + 4. \\end{array}\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} \\mathrm{d} x \\geqslant 4.\n$$\n\n由于 $f''(x) - (6x - 2)$ 是连续函数，所以\n\n$$\n\\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x = 4 \\Leftrightarrow \\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) - (6 x - 2) \\right] ^ {2} d x = 0 \\Leftrightarrow f ^ {\\prime \\prime} (x) - (6 x - 2) = 0,\n$$\n\n即 $f''(x) = 6x - 2$ 。结合条件 $f(0) = f(1) = f'(0) = 0$ ， $f'(1) = 1$ ，得 $f(x) = x^3 - x^2$ 。"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 取 $g(x)$ 同上，由柯西不等式，得\n\n$$\n\\int_ {0} ^ {1} \\left[ g ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\geqslant \\left[ \\int_ {0} ^ {1} g ^ {\\prime \\prime} (x) f ^ {\\prime \\prime} (x) d x \\right] ^ {2}\\tag{①}\n$$\n\n由于\n\n$$\n\\begin{array}{c} \\int_ {0} ^ {1} [ g ^ {\\prime \\prime} (x) ] ^ {2} \\mathrm{d} x = \\int_ {0} ^ {1} (6 x - 2) ^ {2} \\mathrm{d} x = 4, \\\\ \\int_ {0} ^ {1} g ^ {\\prime \\prime} (x) f ^ {\\prime \\prime} (x) \\mathrm{d} x = \\int_ {0} ^ {1} (6 x - 2) f ^ {\\prime \\prime} (x) \\mathrm{d} x = f ^ {\\prime} (x) (6 x - 2) \\big | _ {0} ^ {1} - 6 f (x) \\big | _ {0} ^ {1} = 4, \\end{array}\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\geqslant 4.\\tag{②}\n$$\n\n②式取等号的充要条件是①式取等号，①式取等号的充要条件是 $f''(x) = kg''(x)$ 。再由条件 $f(0) = f(1) = f'(0) = 0$ ， $f'(1) = 1$ ，可得 $f(x) = g(x)$ 。"
+      }
+    ],
+    "final_answer": "$$ \\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\geqslant 4.\\tag{②} $$",
+    "techniques_used": [
+      "夹逼/估值",
+      "积分不等式",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分不等式",
+      "expected": "$$ \\int_ {0} ^ {1} \\left[ f ^ {\\prime \\prime} (x) \\right] ^ {2} d x \\geqslant 4.\\tag{②} $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例63",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 185,
+    "syllabus_note": "变分不等式",
+    "commentary": "评注 方法1与方法2在本质上是相同的（读者可查阅柯西不等式的证明）。方法1利用了证明柯西不等式的原理，这里按两种方式写出来，是为了帮助读者加深对柯西不等式的理解。"
+  }
+}
