@@ -10,6 +10,7 @@ import threading
 import time
 from http.client import HTTPConnection
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -90,10 +91,12 @@ def test_dto():
     check(eta.get("calc") == 0.4, "eta list → map")
     ocr_empty = practice_ocr("")
     check(ocr_empty.get("error") == "empty_image", "ocr empty")
-    ocr_unwired = practice_ocr(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
-    )
-    check(ocr_unwired.get("error") == "simpletex_not_configured", "ocr uses SimpleTex, unwired → 501 shape")
+    with patch.dict(os.environ, {"DEEPSEEK_API_KEY": ""}, clear=False):
+        ocr_unwired = practice_ocr(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        )
+    check(ocr_unwired.get("error") == "deepseek_not_configured", "ocr uses deepseek-flash, unwired → 501 shape")
+    check("simpletex" not in str(ocr_unwired.get("error")), "ocr error is not simpletex")
     from learner.paths import last_push_file_stale
 
     stale_path = os.path.join(tempfile.mkdtemp(), "last_push.json")
@@ -225,8 +228,35 @@ def test_bootstrap_submit(tmp_db: str):
         ocr = json.loads(r.read().decode())
         check(r.status == 400 and ocr.get("error") == "empty_image", "ocr empty image")
 
+        prev_key = os.environ.get("DEEPSEEK_API_KEY")
+        os.environ["DEEPSEEK_API_KEY"] = ""
+        try:
+            conn.request(
+                "POST",
+                "/api/v1/practice/ocr",
+                body=json.dumps({
+                    "image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+                    "filename": "a.png",
+                }),
+                headers={"Content-Type": "application/json"},
+            )
+            r = conn.getresponse()
+            ocr = json.loads(r.read().decode())
+            check(
+                r.status == 501 and ocr.get("error") == "deepseek_not_configured",
+                "ocr unwired is 501",
+            )
+        finally:
+            if prev_key is None:
+                os.environ.pop("DEEPSEEK_API_KEY", None)
+            else:
+                os.environ["DEEPSEEK_API_KEY"] = prev_key
+
         man_ocr = (man.get("manifest") or {}).get("practice", {}).get("ocr") or {}
         check(man_ocr.get("path") == "/api/v1/practice/ocr", "manifest advertises ocr")
+        check(man_ocr.get("backend") == "decide.router", "manifest ocr backend is decide.router")
+        check("simpletex" not in str(man_ocr.get("status") or ""), "manifest ocr status is not simpletex")
+        check(man_ocr.get("model"), "manifest ocr names the flash model")
 
         conn.request("GET", "/practice")
         r = conn.getresponse()

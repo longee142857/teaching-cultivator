@@ -468,7 +468,10 @@
       empty_image: "请先选择手写图片。",
       image_too_large: "图片过大，请换一张更清晰的近拍。",
       payload_too_large: "图片过大，请换一张。",
+      deepseek_not_configured: "手写识别未配置，请改用手打。",
       simpletex_not_configured: "手写识别未配置，请改用手打。",
+      ocr_failed: "识别服务暂时不可用，请稍后重试。",
+      timeout: "识别超时，请稍后重试。",
       ocr_disabled: "手写识别已关闭，请改用手打。",
       empty_ocr: "未识别出文字，请换一张更清晰、光线更好的图。",
     };
@@ -518,7 +521,7 @@
       ocrSource.value = "";
       ocrPreviewImg.src = payload.dataUrl;
       ocrFileName.textContent = payload.name || "手写图片";
-      ocrMetaHint.textContent = ocrMode === "formula" ? "标准公式模型 · 识别后核对源码与预览。" : "整页 markdown · 识别后核对源码与预览。";
+      ocrMetaHint.textContent = ocrMode === "formula" ? "公式加强 · 按 LaTeX 转写，识别后核对。" : "整页 markdown · 识别后核对源码与预览。";
       ocrPreview.hidden = false;
       paintOcrPreview();
       setOcrMsg("已选图，点「识别」生成源码。", false);
@@ -529,7 +532,7 @@
     if (!ocrPayload || !ocrPayload.dataUrl || ocrBusy) return;
     ocrBusy = true;
     syncOcrButtons();
-    setOcrMsg(ocrMode === "formula" ? "正在用标准公式模型识别…" : "正在整页识别…", false);
+    setOcrMsg(ocrMode === "formula" ? "正在识别公式…" : "正在整页识别…", false);
     fetch("/e/" + TOKEN + "/ocr", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

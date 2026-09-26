@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""SimpleTex 手写/公式 OCR 客户端（北京域名直连，不走代理翻墙）。"""
+"""SimpleTex 手写/公式 OCR 客户端（北京域名直连，不走代理翻墙）。
+
+当前手写路径（练习台 / 试卷页 / ocr_handwriting）已改走 ``deliver.dsf_ocr``。
+本模块保留，运行时不再调用。
+"""
 from __future__ import annotations
 
 import datetime

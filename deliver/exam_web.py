@@ -5,7 +5,7 @@ Routes (nginx TLS reverse-proxy to public):
   GET  /e/{token}          -> HTML shell
   GET  /e/{token}/data     -> paper JSON (parsed from public md; never keys)
   POST /e/{token}/submit   -> assemble answer md -> submit_answer_md
-  POST /e/{token}/ocr      -> handwriting OCR (SimpleTex via practice_service)
+  POST /e/{token}/ocr      -> handwriting OCR (deepseek-flash via practice_service)
   GET  /health             -> healthcheck
 
 Token: random hex stored in data/exam_bank/tokens.json; lazy expiry purge.
@@ -653,7 +653,7 @@ class ExamHandler(BaseHTTPRequestHandler):
             err = str(out.get("error") or "")
             if out.get("ok"):
                 code = 200
-            elif err == "simpletex_not_configured":
+            elif err in ("deepseek_not_configured", "simpletex_not_configured"):
                 code = 501
             elif err in ("empty_image", "image_too_large", "payload_too_large"):
                 code = 400

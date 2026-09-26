@@ -77,7 +77,7 @@ All credentials come from environment variables or `.env` (gitignored).
 
 | Variable | Purpose |
 |----------|---------|
-| `DEEPSEEK_API_KEY` | Author / grade / explain / polish (DeepSeek) |
+| `DEEPSEEK_API_KEY` | Author / grade / explain / polish / handwriting OCR (DeepSeek Flash vision) |
 | `DINGTALK_CLIENT_ID` / `DINGTALK_CLIENT_SECRET` | DingTalk Stream app |
 | `DINGTALK_GROUP_CONVERSATION_ID` | Optional fixed group for scheduled pushes |
 | `OPENROUTER_API_KEY` | reviewer 异厂校验（Flash 回退） |
