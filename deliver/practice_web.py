@@ -590,7 +590,7 @@ class PracticeHandler(BaseHTTPRequestHandler):
             err = str(out.get("error") or "")
             if out.get("ok"):
                 code = 200
-            elif err == "simpletex_not_configured":
+            elif err in ("deepseek_not_configured", "simpletex_not_configured"):
                 code = 501
             elif err in ("empty_image", "image_too_large", "payload_too_large"):
                 code = 400

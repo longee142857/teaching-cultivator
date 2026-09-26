@@ -924,10 +924,10 @@ def ocr_handwriting(image_id: str = "") -> str:
     """
     from learner.context import current_user_id
     from deliver.inbound_images import resolve_image
-    from deliver.simpletex import is_configured, ocr_image
+    from deliver.dsf_ocr import is_configured, ocr_image
 
     if not is_configured():
-        return "SimpleTex 未配置，无法识别。请管理员写入 SIMPLETEX_UAT 或 APP 凭证。"
+        return "手写识别未配置（需要 DEEPSEEK_API_KEY），无法识别。"
     try:
         uid = current_user_id()
     except Exception:
@@ -956,10 +956,10 @@ def grade_handwriting(image_id: str = "") -> str:
     """
     from learner.context import current_user_id
     from deliver.inbound_images import resolve_image
-    from deliver.simpletex import is_configured, ocr_image
+    from deliver.dsf_ocr import is_configured, ocr_image
 
     if not is_configured():
-        return "SimpleTex 未配置，无法识别作答图。"
+        return "手写识别未配置（需要 DEEPSEEK_API_KEY），无法识别作答图。"
     try:
         uid = current_user_id()
     except Exception:

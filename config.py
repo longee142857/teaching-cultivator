@@ -113,7 +113,7 @@ DASHSCOPE_API_BASE = os.environ.get(
     "https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
-# ── SimpleTex 手写/公式 OCR（私聊发图批改）──
+# ── SimpleTex（遗留；手写 OCR 已改 deepseek-flash / DEEPSEEK_API_KEY，这些变量当前路径不读）──
 SIMPLETEX_UAT = os.environ.get("SIMPLETEX_UAT", "")
 SIMPLETEX_APP_ID = os.environ.get("SIMPLETEX_APP_ID", "")
 SIMPLETEX_APP_SECRET = os.environ.get("SIMPLETEX_APP_SECRET", "")

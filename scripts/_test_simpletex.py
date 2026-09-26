@@ -126,8 +126,8 @@ def test_cow_tools_grade_handwriting() -> None:
     uid = "04022300566420984205"
     with tempfile.TemporaryDirectory() as td, \
          patch.object(ii, "_ROOT", td), \
-         patch("deliver.simpletex.is_configured", return_value=True), \
-         patch("deliver.simpletex.ocr_image", return_value={
+         patch("deliver.dsf_ocr.is_configured", return_value=True), \
+         patch("deliver.dsf_ocr.ocr_image", return_value={
              "ok": True, "text": "我的解答", "conf": 0.9, "raw": {}, "error": "", "mode": "general",
          }), \
          patch("agent.tools.grade_answer", return_value="[KP=极限] ✅ 正确，好") as mock_g:

@@ -41,6 +41,7 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
       grade/generate/explain → DeepSeek Flash + thinking high
       author                 → DeepSeek Pro + thinking high（双周卷组卷）
       polish/orchestrate     → DeepSeek Flash（文案，无 thinking）
+      ocr                    → DeepSeek Flash vision（无 thinking；手写转写）
       review_item/verify_grade → REVIEWER_PROVIDER（默认 dashscope/qwen-plus）
       agent                  → DeepSeek Flash + thinking（effort 默认 high）
     """
@@ -53,7 +54,7 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
         return ModelConfig(
             MODEL_PRO, provider="deepseek", thinking=True, effort=REASONING_EFFORT_DEFAULT
         )
-    if task_type in ("polish", "orchestrate"):
+    if task_type in ("polish", "orchestrate", "ocr"):
         return ModelConfig(
             MODEL_FLASH, provider="deepseek", thinking=False, effort=REASONING_EFFORT_DEFAULT
         )
@@ -81,7 +82,7 @@ def select_model(task_type: str, difficulty: str = "intermediate") -> ModelConfi
     )
 
 
-def _post_deepseek(payload: dict) -> dict:
+def _post_deepseek(payload: dict, *, timeout: int = 300) -> dict:
     import requests
     from config import DEEPSEEK_API_BASE, DEEPSEEK_API_KEY
 
@@ -91,7 +92,7 @@ def _post_deepseek(payload: dict) -> dict:
         f"{DEEPSEEK_API_BASE}/chat/completions",
         headers={"Authorization": f"Bearer {DEEPSEEK_API_KEY}"},
         json=payload,
-        timeout=300,
+        timeout=timeout,
         verify=SSL_VERIFY,
     )
     resp.raise_for_status()
@@ -270,6 +271,7 @@ def call_deepseek_chat(
     tool_choice: str | None = "auto",
     thinking: bool | None = None,
     reasoning_effort: str | None = None,
+    timeout: int = 300,
 ) -> dict:
     """DeepSeek chat（Agent 工具循环）；返回完整 API JSON。
 
@@ -300,4 +302,4 @@ def call_deepseek_chat(
         use_thinking,
         payload.get("reasoning_effort", "off"),
     )
-    return _post_deepseek(payload)
+    return _post_deepseek(payload, timeout=timeout)

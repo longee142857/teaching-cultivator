@@ -27,8 +27,8 @@
 |-----------|--------------|---------|
 | `generate_question` | `generate_question(subject, kp_hint)` | 走 cultivate/RAG/质检；不绕闸 |
 | `grade_answer` | `grade_answer(last_question, user_answer)` | confidence→applied/pending；BKT+weights 在系统内；回显 [KP=][TS=] |
-| `ocr_handwriting` | `ocr_handwriting(image_id)` | 读私聊暂存图 → SimpleTex；不批改；image_id 可空=最新 |
-| `grade_handwriting` | `grade_handwriting(image_id)` | OCR → `grade_answer`；仅用户明确作答时由 Cow 调用 |
+| `ocr_handwriting` | `ocr_handwriting(image_id)` | 读私聊暂存图 → deepseek-flash 视觉（`deliver.dsf_ocr`）；不批改；image_id 可空=最新 |
+| `grade_handwriting` | `grade_handwriting(image_id)` | 同上 OCR → `grade_answer`；仅用户明确作答时由 Cow 调用 |
 | `submit_exam_answer_md` | `submit_exam_answer_md(md_text, paper_id)` | 同 grade 链 |
 | `adjust_difficulty` | `adjust_difficulty(subject, level)` | audit_only，不改 mastery |
 | `note_weak_point` | `note_weak_point(subject, kp, reason)` | 只 bump weights（record_bkt=False） |

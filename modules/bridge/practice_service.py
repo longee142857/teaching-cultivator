@@ -47,13 +47,28 @@ def allow_demo_seed() -> bool:
     return os.environ.get("PRACTICE_ALLOW_DEMO_SEED", "0") == "1"
 
 
-def _simpletex_ready() -> bool:
+def _ocr_ready() -> bool:
     try:
-        from deliver.simpletex import is_configured
+        from deliver.dsf_ocr import is_configured
 
         return bool(is_configured())
     except Exception:
         return False
+
+
+def _ocr_model_id() -> str:
+    try:
+        from config import MODEL_FLASH
+
+        return MODEL_FLASH or "deepseek-flash"
+    except Exception:
+        return "deepseek-flash"
+
+
+def _ocr_manifest_status() -> str:
+    if not _ocr_ready():
+        return "stub_501"
+    return _ocr_model_id()
 
 
 def _decode_ocr_image(raw: str) -> bytes:
@@ -75,31 +90,23 @@ def practice_ocr(
     filename: str = "",
     mode: str = "",
 ) -> dict[str, Any]:
-    """POST /api/v1/practice/ocr — existing SimpleTex client, no new OCR product."""
+    """POST /api/v1/practice/ocr — deepseek-flash vision via deliver.dsf_ocr.
+
+    ``formula`` / ``latex`` / ``formula_*`` ask for LaTeX only.
+    ``document`` / ``page`` / ``general`` / empty ask for a markdown page
+    transcript (math still in LaTeX). SimpleTex endpoints are not called.
+    """
+    from deliver.dsf_ocr import MAX_IMAGE_BYTES, ocr_image
+
     data = _decode_ocr_image(image)
     if not data:
         return {"ok": False, "error": "empty_image", "text": ""}
-    if len(data) > 3_500_000:
+    if len(data) > MAX_IMAGE_BYTES:
         return {"ok": False, "error": "image_too_large", "text": ""}
-    if not _simpletex_ready():
-        return {"ok": False, "error": "simpletex_not_configured", "text": ""}
-    use_mode = (mode or "").strip().lower()
-    # Keep document/page as document (整页 markdown); only formula* → latex_ocr.
-    # Empty mode → SimpleTex default (SIMPLETEX_OCR_MODE, usually document).
-    if use_mode in ("page", "general"):
-        use_mode = "document"
-    elif use_mode in ("formula", "latex", "formula_std"):
-        use_mode = "formula"
-    elif use_mode in ("formula_turbo", "turbo", "lightweight"):
-        use_mode = "formula_turbo"
-    elif use_mode == "":
-        use_mode = ""
-    from deliver.simpletex import ocr_image
-
     return ocr_image(
         data,
         filename=(filename or "answer.jpg").strip() or "answer.jpg",
-        mode=use_mode or None,
+        mode=mode or None,
     )
 
 
@@ -132,8 +139,13 @@ def agent_manifest() -> dict[str, Any]:
             "ocr": {
                 "method": "POST",
                 "path": "/api/v1/practice/ocr",
-                "status": "simpletex" if _simpletex_ready() else "stub_501",
-                "backend": "deliver.simpletex",
+                "status": _ocr_manifest_status(),
+                "backend": "decide.router",
+                "model": _ocr_model_id(),
+                "note": (
+                    "deepseek-flash vision. mode document|formula is a prompt hint; "
+                    "SimpleTex is not called."
+                ),
             },
             "params": {"method": "GET", "path": "/api/v1/practice/params"},
             "report_poor": {

@@ -73,7 +73,7 @@ def main() -> None:
     check(cfg_author.thinking is True, "author thinking on", fails)
     check(cfg_author.effort == "high", "author effort=high", fails)
 
-    for t in ("polish", "orchestrate"):
+    for t in ("polish", "orchestrate", "ocr"):
         cfg = select_model(t)
         check(cfg.provider == "deepseek", f"{t} provider=deepseek", fails)
         check(cfg.model == MODEL_FLASH, f"{t} model=flash", fails)
