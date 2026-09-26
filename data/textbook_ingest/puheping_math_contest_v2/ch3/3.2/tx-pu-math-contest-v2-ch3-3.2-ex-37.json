@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-37",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 在闭区间 $[a, b]$ 上是非负的连续函数，且严格单调递增，由积分中值定理，知对任意的正整数 $n$ ，存在唯一的 $x_n \\in (a, b)$ ，使 $\\left[f(x_n)\\right]^n = \\frac{1}{b - a} \\int_a^b \\left[f(x)\\right]^n \\mathrm{d}x$ 。试求极限 $\\lim_{n \\to \\infty} x_n$ ，并证明结论。",
+  "answer": "$\\left[\\frac{f\\left(b - \\frac{p}{2}\\right)}{f(b - p)}\\right]^{n_k} \\to \\infty (k \\to \\infty)$ . 从而得 $1 \\geqslant \\infty$ ，矛盾. 故 $\\lim_{n \\to \\infty} x_n = b$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若设 $f(x) = x, [a,b] = [0,1]$ ，不难算出 $x_{n} = \\frac{1}{\\sqrt[n]{n + 1}} \\to 1 (n \\to \\infty)$ ，这启发我们猜测结论： $\\lim_{n \\to \\infty} x_{n} = b$ 。证明过程可先考虑 $x \\in [0,1]$ 的情况，再做变换 $t = a + x(b - a)$ ，就可将区间 $[0,1]$ 变为 $[a,b]$ 。另一种思考方式是利用上题的结论，并结合题设条件，有\n\n$$\n\\lim _ {n \\rightarrow \\infty} f (x _ {n}) = \\lim _ {n \\rightarrow \\infty} \\sqrt [ n ]{\\frac {1}{b - a}} \\sqrt [ n ]{\\int_ {a} ^ {b} [ f (x) ] ^ {n} d x} = \\max _ {a \\leqslant x \\leqslant b} f (x) = f (b),\n$$\n\n由 $f(x)$ 连续且严格单调递增，知 $\\lim_{n\\to \\infty}x_n = b$"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 先考虑特殊情形： $a = 0, b = 1$ ，下证 $\\lim_{n\\to \\infty}x_n = 1$\n\n由于 $x_{n}\\in (0,1)$ ，只需证明 $\\forall \\varepsilon >0$ ， $\\exists N > 0$ ，当 $n > N$ 时，有 $1 - \\varepsilon < x_{n}$\n\n因为 $f(x)$ 非负连续且严格单调递增，所以 $\\forall c\\in (0,1)$ ，有\n\n$$\n\\int_ {c} ^ {1} [ f (x) ] ^ {n} d x > [ f (c) ] ^ {n} (1 - c).\n$$\n\n取 $c = 1 - \\frac{\\varepsilon}{2}$ ，则 $f(1 - \\varepsilon) < f(c)$ ， $\\frac{f(1 - \\varepsilon)}{f(c)} < 1$ ， $\\lim_{n \\to \\infty} \\left[ \\frac{f(1 - \\varepsilon)}{f(c)} \\right]^n = 0$ 。故 $\\exists N > 0$ ，当 $n > N$ 时，有\n\n$$\n\\left[ \\frac {f (1 - \\varepsilon)}{f (c)} \\right] ^ {n} <   \\frac {\\varepsilon}{2} = 1 - c,\n$$\n\n得\n\n$$\n[ f (1 - \\varepsilon) ] ^ {n} <   [ f (c) ] ^ {n} (1 - c) <   \\int_ {c} ^ {1} [ f (x) ] ^ {n} d x <   \\int_ {0} ^ {1} [ f (x) ] ^ {n} d x = [ f (x _ {n}) ] ^ {n}.\n$$\n\n由此得到 $f(1 - \\varepsilon) < f(x_n)$ . 再由 $f(x)$ 严格单调递增, 知 $1 - \\varepsilon < x_n \\leqslant 1$ . 由 $\\varepsilon$ 的任意性, 得 $\\lim_{n \\to \\infty} x_n = 1$ . 再考虑一般情形. 令 $F(t) = f(a + t(b - a))$ , 由 $f$ 在 $[a, b]$ 上非负连续且严格单调递增, 知 $F$ 在 $[0, 1]$ 上非负连续且严格单调递增, 从而存在 $t_n \\in (0, 1)$ , 使 $\\left[F(t_n)\\right]^n = \\int_0^1 [F(t)]^n \\mathrm{d}x$ , 且 $\\lim_{n \\to \\infty} t_n = 1$ .\n\n记 $x_{n} = a + t_{n}(b - a)$ ，则有\n\n$$\n\\left[ f (x _ {n}) \\right] ^ {n} = \\frac {1}{b - a} \\int_ {a} ^ {b} \\left[ f (x) \\right] ^ {n}   \\mathrm{d} x  ,    \\text {且}   \\lim _ {n \\to \\infty} x _ {n} = a + (b - a) = b.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 利用例36的结论及 $f(x)$ 的单调递增性证明（该方法已在“分析”中给出简略证明，这里不再赘述）."
+      },
+      {
+        "id": "s4",
+        "text": "方法3（反证法）因为 $x_{n} \\in (a, b)$ ，若 $\\lim_{n \\to \\infty} x_{n} \\neq b$ ，则存在 $\\{x_{n}\\}$ 的一个列子 $\\{x_{n_{k}}\\}$ 和正整数 $k_{0}$ ，使当 $k \\geqslant k_{0}$ 时，有 $b - x_{n_{k}} > p > 0$ ，其中 $p$ 是常数。这样就有\n\n$$\n\\begin{array}{l} 1 = \\frac {1}{b - a} \\int_ {a} ^ {b} \\left(\\frac {f (t)}{f (x _ {n _ {k}})}\\right) ^ {n _ {k}} \\mathrm{d} t > \\frac {1}{b - a} \\int_ {b - \\frac {p}{2}} ^ {b} \\left(\\frac {f (t)}{f (x _ {n _ {k}})}\\right) ^ {n _ {k}} \\mathrm{d} t \\\\ > \\frac {p}{2 (b - a)} \\left[ \\frac {f \\left(b - \\frac {p}{2}\\right)}{f (x _ {n _ {k}})} \\right] ^ {n _ {k}} > \\frac {p}{2 (b - a)} \\left[ \\frac {f \\left(b - \\frac {p}{2}\\right)}{f (b - p)} \\right] ^ {n _ {k}} (\\because x _ {n _ {k}} <   b - p). \\end{array}\n$$\n\n因为 $f\\left(b - \\frac{p}{2}\\right) > f(b - p)$ ，所以 $\\left[\\frac{f\\left(b - \\frac{p}{2}\\right)}{f(b - p)}\\right]^{n_k} \\to \\infty (k \\to \\infty)$ . 从而得 $1 \\geqslant \\infty$ ，矛盾. 故 $\\lim_{n \\to \\infty} x_n = b$ ."
+      }
+    ],
+    "final_answer": "$\\left[\\frac{f\\left(b - \\frac{p}{2}\\right)}{f(b - p)}\\right]^{n_k} \\to \\infty (k \\to \\infty)$ . 从而得 $1 \\geqslant \\infty$ ，矛盾. 故 $\\lim_{n \\to \\infty} x_n = b$ .",
+    "techniques_used": [
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$\\left[\\frac{f\\left(b - \\frac{p}{2}\\right)}{f(b - p)}\\right]^{n_k} \\to \\infty (k \\to \\infty)$ . 从而得 $1 \\geqslant \\infty$ ，矛盾. 故 $\\lim_{n \\to \\infty} x_n = b$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例37*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 167,
+    "starred": true,
+    "syllabus_note": "积分中值+极限",
+    "commentary": "评注 对抽象函数的一些存在性命题，当我们难以判断其结果时，通常可以通过某些特例去探求其结果，以帮助我们找到一般性的结论。证明过程也可考虑从特殊到一般的方式，关键要找到将一般转化为特殊的桥梁；如果对一般性结论的证明有困难，可考虑用反证法。"
+  }
+}

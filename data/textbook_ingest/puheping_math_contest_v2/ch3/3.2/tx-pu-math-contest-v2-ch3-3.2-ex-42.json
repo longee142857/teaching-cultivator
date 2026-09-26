@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-42",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 是 $[0, 2\\pi]$ 上的连续函数，证明 $\\lim_{n \\to \\infty} \\int_{0}^{2\\pi} f(x) | \\sin nx | \\, \\mathrm{d}x = \\frac{2}{\\pi} \\int_{0}^{2\\pi} f(x) \\, \\mathrm{d}x$ 。",
+  "answer": "可积，则有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需将等式左端的极限计算出来. 为此, 可用 $\\sin nx$ 的周期分隔点 $\\frac{2\\pi k}{n} (k = 1,2,\\dots,n - 1)$ 插入积分区间做分段积分, 再利用积分第一中值定理将 $f(x)$ 提到积分符号外, 问题就解决了."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} & {\\int_ {0} ^ {2 \\pi} f (x)   | \\sin n x   |   \\mathrm{d} x =  \\sum_ {k = 1} ^ {n}    \\int_ {\\frac {2 \\pi (k - 1)}{n}} ^ {\\frac {2 \\pi k}{n}} f (x)   | \\sin n x   |   \\mathrm{d} x} \\\\ & {\\qquad =  \\sum_ {k = 1} ^ {n} f (\\xi_ {k})    \\int_ {\\frac {2 \\pi (k - 1)}{n}} ^ {\\frac {2 \\pi k}{n}}   | \\sin n x   |   \\mathrm{d} x (\\text {积分第一中值定理})} \\\\ & {\\qquad \\stackrel {n x = t} {=}    \\frac {1}{n}    \\sum_ {k = 1} ^ {n} f (\\xi_ {k})    \\int_ {0} ^ {2 \\pi}   | \\sin t   |   \\mathrm{d} t = \\frac {4}{n}    \\sum_ {k = 1} ^ {n} f (\\xi_ {k}) ,} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "其中 $\\frac{2\\pi(k-1)}{n} \\leqslant \\xi_k \\leqslant \\frac{2\\pi k}{n} (k=1,2,\\cdots,n)$ . 由于 $f(x)$ 在 $[0,2\\pi]$ 上连续，所以可积，则有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\lim _ {n \\rightarrow \\infty} \\int_ {0} ^ {2 \\pi} f (x) | \\sin n x | d x = \\lim _ {n \\rightarrow \\infty} \\frac {4}{n} \\sum_ {k = 1} ^ {n} f (\\xi_ {k}) = \\lim _ {n \\rightarrow \\infty} \\frac {2}{\\pi} \\sum_ {k = 1} ^ {n} f (\\xi_ {k}) \\frac {2 \\pi}{n} = \\frac {2}{\\pi} \\int_ {0} ^ {2 \\pi} f (x) d x.\n$$"
+      }
+    ],
+    "final_answer": "可积，则有",
+    "techniques_used": [
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "可积，则有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例42*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 171,
+    "starred": true,
+    "syllabus_note": "振荡绝对值平均"
+  }
+}

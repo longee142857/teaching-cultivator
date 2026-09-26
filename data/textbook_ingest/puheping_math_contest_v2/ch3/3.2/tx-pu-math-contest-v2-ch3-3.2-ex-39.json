@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-39",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上可积，在 $x = 1$ 处左连续，证明 $\\lim_{n\\to \\infty}n\\int_0^1 f(x)x^{n - 1}\\mathrm{d}x = f(1)$ .",
+  "answer": "$\\lim_{n\\to \\infty}n\\int_0^{1 - \\delta}f(x)x^{n - 1}\\mathrm{d}x = 0.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "定积分性质",
+    "积分中值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $f(x)$ 有界，对 $\\delta > 0$ ，有 $\\lim_{n\\to \\infty}n\\int_0^{1 - \\delta}f(x)x^{n - 1}\\mathrm{d}x = 0$ 。故只需证明 $\\lim_{n\\to \\infty}n\\int_{1 - \\delta}^{1}f(x)x^{n - 1}\\mathrm{d}x = f(1)$ 利用 $f(x)$ 在 $x = 1$ 处左连续，该等式也是不难证明的。\n\n因为 $f(x)$ 在 $x = 1$ 处左连续，对 $\\forall \\varepsilon > 0$ ， $\\exists \\delta > 0$ ，当 $x \\in (1 - \\delta, 1)$ 时，有"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nf (1) - \\varepsilon <   f (x) <   f (1) + \\varepsilon .\\tag{①}\n$$\n\n又 $f(x)$ 在 $[0,1]$ 上可积，故必有界，设 $\\left|f(x)\\right| \\leqslant M$ ，则\n\n$$\nn \\int_ {0} ^ {1} f (x) x ^ {n - 1} \\mathrm{d} x = n \\int_ {0} ^ {1 - \\delta} f (x) x ^ {n - 1} \\mathrm{d} x + n \\int_ {1 - \\delta} ^ {1} f (x) x ^ {n - 1} \\mathrm{d} x.\\tag{②}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "对等式右端的第1项积分，有\n\n$$\n\\left| n \\int_ {0} ^ {1 - \\delta} f (x) x ^ {n - 1} \\mathrm{d} x \\right| \\leqslant M n \\int_ {0} ^ {1 - \\delta} x ^ {n - 1} \\mathrm{d} x = M (1 - \\delta) ^ {n} \\rightarrow 0 (n \\rightarrow \\infty).\n$$\n\n所以 $\\lim_{n\\to \\infty}n\\int_0^{1 - \\delta}f(x)x^{n - 1}\\mathrm{d}x = 0.$"
+      },
+      {
+        "id": "s4",
+        "text": "对第 2 项积分，利用①式，有\n\n$$\n[ f (1) - \\varepsilon ] [ 1 - (1 - \\delta) ^ {n} ] <   n \\int_ {1 - \\delta} ^ {1} f (x) x ^ {n - 1} d x <   [ f (1) + \\varepsilon ] [ 1 - (1 - \\delta) ^ {n} ],\n$$\n\n取极限，并注意到 $\\lim_{n\\to \\infty}(1 - \\delta)^n = 0$ ，有\n\n$$\nf (1) - \\varepsilon \\leqslant \\lim _ {n \\rightarrow \\infty} n \\int_ {1 - \\delta} ^ {1} f (x) x ^ {n - 1} \\mathrm{d} x \\leqslant f (1) + \\varepsilon .\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由 $\\varepsilon$ 的任意性，知 $\\lim_{n\\to \\infty}n\\int_{1 - \\delta}^{1}f(x)x^{n - 1}\\mathrm{d}x = f(1).$ ②式两边取极限，就得到所证等式."
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}n\\int_0^{1 - \\delta}f(x)x^{n - 1}\\mathrm{d}x = 0.$",
+    "techniques_used": [
+      "定积分性质",
+      "积分中值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "定积分性质",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分中值",
+      "expected": "$\\lim_{n\\to \\infty}n\\int_0^{1 - \\delta}f(x)x^{n - 1}\\mathrm{d}x = 0.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例39*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 169,
+    "starred": true,
+    "syllabus_note": "加权积分极限",
+    "commentary": "评注 类比例 36、例 37、例 39，读者不难发现它们的共性。其实，例 37、例 39 都是例 36 的不同演变，如果能察觉这种联系，就不难找到它们的证明方法。"
+  }
+}

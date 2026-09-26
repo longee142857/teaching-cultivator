@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-01",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.eq",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $f(x)$ 连续，且 $\\int_0^x tf(2x - t)\\mathrm{d}t = \\frac{1}{2}\\arctan x^2$ ，已知 $f(1) = 1$ ，求 $\\int_1^2 f(x)\\mathrm{d}x$",
+  "answer": "\\int_ {1} ^ {2} f (x) \\mathrm{d} x = \\frac {3}{4}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "变限积分求导",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 无论是想解出 $f(x)$ 或找到计算 $\\int_{1}^{2} f(x) \\, \\mathrm{d}x$ 的方法都需对所给方程两端关于变量 $x$ 求导数。由于被积函数中含有变量 $x$ ，因此需先做积分变量代换将其从被积函数中置换出来。\n\n令 $u = 2x - t$ ， $\\mathrm{dt} = -\\mathrm{du}$ ，则右端积分为"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\int_ {0} ^ {x} t f (2 x - t) \\mathrm{d} t = - \\int_ {2 x} ^ {x} (2 x - u) f (u) \\mathrm{d} t = 2 x \\int_ {x} ^ {2 x} f (u) \\mathrm{d} u - \\int_ {x} ^ {2 x} u f (u) \\mathrm{d} u,\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "所给等式为\n\n$$\n2 x \\int_ {x} ^ {2 x} f (u) \\mathrm{d} u - \\int_ {x} ^ {2 x} u f (u) \\mathrm{d} u = \\frac {1}{2} \\arctan x ^ {2}.\n$$\n\n等式两边对 $x$ 求导，得"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n2 \\int_ {x} ^ {2 x} f (u) \\mathrm{d} u + 2 x [ 2 f (2 x) - f (x) ] - [ 4 x f (2 x) - x f (x) ] = \\frac {x}{1 + x ^ {4}},\n$$\n\n即"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n2 \\int_ {x} ^ {2 x} f (u) d u = \\frac {x}{1 + x ^ {4}} + x f (x).\n$$\n\n取 $x = 1$ ，可求得\n\n$$\n\\int_ {1} ^ {2} f (x) \\mathrm{d} x = \\frac {3}{4}.\n$$"
+      }
+    ],
+    "final_answer": "\\int_ {1} ^ {2} f (x) \\mathrm{d} x = \\frac {3}{4}.",
+    "techniques_used": [
+      "变限积分求导",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "换元定积分",
+      "expected": "\\int_ {1} ^ {2} f (x) \\mathrm{d} x = \\frac {3}{4}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 147,
+    "syllabus_note": "变限积分方程解出 f",
+    "commentary": "评注（1）变限积分函数的求导公式：设 $f(x)$ 连续， $\\varphi (x),\\psi (x)$ 可导，则\n\n$$\n\\left(\\int_ {\\psi (x)} ^ {\\varphi (x)} f (t) \\mathrm{d} t\\right) ^ {\\prime} = f [ \\varphi (x) ] \\cdot \\varphi^ {\\prime} (x) - f [ \\psi (x) ] \\cdot \\psi^ {\\prime} (x).\n$$\n\n(2) 含参变量积分 $F(x) = \\int_{\\psi(x)}^{\\varphi(x)} f(x, t) \\mathrm{d}t$ 的求导有以下两种方式：\n\n① 积分变量代换，使被积函数中不含有参变量 $x$ ，再用（1）中的公式求导；\n\n② 利用含参变量积分的求导公式：\n\n定理 设函数 $f(x, y)$ 及偏导数 $f_y(x, y)$ 在矩形区域 $[a, b] \\times [c, d]$ 上连续， $\\varphi(x), \\psi(x) \\in D[a, b]$ ，且 $c \\leqslant \\varphi(x) \\leqslant d, c \\leqslant \\psi(x) \\leqslant d$ ，则 $F(x)$ 在 $[a, b]$ 上可导，且\n\n$$\nF ^ {\\prime} (x) = \\int_ {\\psi (x)} ^ {\\varphi (x)} f _ {x} (x, t) \\mathrm{d} t + f (x, \\varphi (x)) \\varphi^ {\\prime} (x) - f (x, \\psi (x)) \\psi^ {\\prime} (x).\n$$\n\n本题是按方法①来计算的，若利用方法②中的公式，则有\n\n$$\n\\frac {\\mathrm{d}}{\\mathrm"
+  }
+}

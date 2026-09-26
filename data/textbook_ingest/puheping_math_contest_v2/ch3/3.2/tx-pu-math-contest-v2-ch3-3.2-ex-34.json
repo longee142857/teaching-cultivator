@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-34",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "若 $f(x)$ 在 $[a, b]$ 上连续，证明：\n\n(1) 若 $f(x) \\geqslant 0$ ，且 $f(x) \\neq 0$ ，则 $\\int_{a}^{b} f(x) \\, dx > 0.$\n\n(2) 对于任意选定的连续函数 $\\Phi(x)$ ，均有 $\\int_{a}^{b} f(x)\\Phi(x)\\mathrm{d}x = 0$ ，则 $f(x) \\equiv 0$ .",
+  "answer": "$f(x) \\equiv 0$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "定积分性质",
+    "积分中值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）若能找到一个子区间 $[\\alpha, \\beta] \\subset [a, b]$ ，有 $\\int_{\\alpha}^{\\beta} f(x) \\mathrm{d}x > 0$ 即可。根据连续函数的局部保号\n\n性，这样的子区间是容易找到的.\n\n(2) 利用 (1) 的结论, 取 $\\Phi(x) = f(x)$ 即可."
+      },
+      {
+        "id": "s2",
+        "text": "（1）因为 $f(x) \\geqslant 0$ ，且 $f(x) \\neq 0$ ，必有 $\\exists x_0 \\in [a, b]$ ，使 $f(x_0) > 0$ 。\n\n若 $x_0 \\in (a, b)$ ，由连续函数的保号性，知 $\\exists \\delta > 0$ ，当 $x \\in (x_0 - \\delta, x_0 + \\delta)$ 时，有 $f(x) > 0$ 。从而\n\n$$\n\\begin{array}{r l} \\int_ {a} ^ {b} f (x) \\mathrm{d} x & = \\int_ {a} ^ {x _ {0} - \\delta} f (x) \\mathrm{d} x + \\int_ {x _ {0} - \\delta} ^ {x _ {0} + \\delta} f (x) \\mathrm{d} x + \\int_ {x _ {0} + \\delta} ^ {b} f (x) \\mathrm{d} x \\\\ & \\geqslant \\int_ {x _ {0} - \\delta} ^ {x _ {0} + \\delta} f (x) \\mathrm{d} x = f (\\xi) 2 \\delta > 0 (x _ {0} - \\delta \\leqslant \\xi \\leqslant x _ {0} + \\delta). \\end{array}\n$$\n\n当 $x_0 = a$ 或 $b$ 时，只需将区间 $[x_0 - \\delta, x_0 + \\delta]$ 换为 $[a, a + \\delta]$ 或 $[b - \\delta, b]$ 即可."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 若 $f(x) \\neq 0$ ，则有 $\\exists x_0 \\in [a, b]$ ，使 $f(x_0) \\neq 0$ 。取 $\\Phi(x) = f(x)$ ，则有 $f(x) \\Phi(x) = f^2(x) \\geqslant 0$ 。利用（1）的结论，有 $\\int_{a}^{b} f(x) \\Phi(x) \\mathrm{d}x > 0$ ，矛盾，所以 $f(x) \\equiv 0$ 。"
+      }
+    ],
+    "final_answer": "$f(x) \\equiv 0$ 。",
+    "techniques_used": [
+      "定积分性质",
+      "积分中值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "定积分性质",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分中值",
+      "expected": "$f(x) \\equiv 0$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例34",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 165,
+    "syllabus_note": "定积分性质",
+    "commentary": "评注 本题（1）中的结论较常用，与该命题等价的形式有多种，例如：\n\n① 设 $f(x) \\in C[a, b]$ , 且 $f(x) \\geqslant 0$ , 若 $\\int_{a}^{b} f(x) \\mathrm{d}x = 0$ , 则 $f(x) \\equiv 0$ .\n\n② 设 $f(x), g(x) \\in C[a, b]$ , 且 $f(x) \\geqslant g(x)$ , 若 $\\int_{a}^{b} [f(x) - g(x)] \\mathrm{d}x = 0$ , 则 $f(x) \\equiv g(x)$ .\n\n③ 设 $f(x) \\in C(-\\infty, +\\infty)$ , $a, b$ 为任意常数, 若 $\\int_{a}^{b} f(x) \\mathrm{d}x = 0$ , 则 $f(x) \\equiv 0$ ."
+  }
+}

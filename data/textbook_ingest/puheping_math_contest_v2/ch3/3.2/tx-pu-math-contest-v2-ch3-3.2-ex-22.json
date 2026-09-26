@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-22",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知函数 $f(x) = \\begin{cases} x, & 0 \\leqslant x \\leqslant 1 \\\\ 2 - x, & 1 < x \\leqslant 2 \\end{cases}$ ，求 $I_n = \\int_{2n}^{2n + 2} f(x - 2n) e^{-x} dx \\quad (n = 2,3,\\dots)$ .",
+  "answer": "\\begin{array}{r l} I _ {n} & = \\int_ {0} ^ {2} f (t) e ^ {- t - 2 n} d t = e ^ {- 2 n} \\int_ {0} ^ {2} f (t) e ^ {- t} d t = e ^ {- 2 n} \\left(\\int_ {0} ^ {1} x e ^ {- x} d x + \\int_ {1} ^ {2} (2 - x) e ^ {- x} d x\\right) \\\\ & = e ^ {- 2 n} \\left(- [ x e ^ {- x} ] _ {0} ^ {1} + \\int_ {0} ^ {1} e ^ {- x} d x - [ (2 - x) e ^ {- x} ] _ {0} ^ {1} - \\int_ {1} ^ {2} e ^ {- x} d x\\right) = e ^ {- 2 n} (1",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于仅知道 $f(x)$ 在区间[0,2]的表达式，因此可做平移变换，将积分区间平移至[0,2]上来计算；分段函数的积分，若分段点在积分区间中，要插入分段点，分段做积分."
+      },
+      {
+        "id": "s2",
+        "text": "设 $x - 2n = t$ ，则 $x = t + 2n$ 。当 $x = 2n$ 时， $t = 0$ ；当 $x = 2n + 2$ 时， $t = 2$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} I _ {n} & = \\int_ {0} ^ {2} f (t) e ^ {- t - 2 n} d t = e ^ {- 2 n} \\int_ {0} ^ {2} f (t) e ^ {- t} d t = e ^ {- 2 n} \\left(\\int_ {0} ^ {1} x e ^ {- x} d x + \\int_ {1} ^ {2} (2 - x) e ^ {- x} d x\\right) \\\\ & = e ^ {- 2 n} \\left(- [ x e ^ {- x} ] _ {0} ^ {1} + \\int_ {0} ^ {1} e ^ {- x} d x - [ (2 - x) e ^ {- x} ] _ {0} ^ {1} - \\int_ {1} ^ {2} e ^ {- x} d x\\right) = e ^ {- 2 n} (1 - e ^ {- 1}) ^ {2}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} I _ {n} & = \\int_ {0} ^ {2} f (t) e ^ {- t - 2 n} d t = e ^ {- 2 n} \\int_ {0} ^ {2} f (t) e ^ {- t} d t = e ^ {- 2 n} \\left(\\int_ {0} ^ {1} x e ^ {- x} d x + \\int_ {1} ^ {2} (2 - x) e ^ {- x} d x\\right) \\\\ & = e ^ {- 2 n} \\left(- [ x e ^ {- x} ] _ {0} ^ {1} + \\int_ {0} ^ {1} e ^ {- x} d x - [ (2 - x) e ^ {- x} ] _ {0} ^ {1} - \\int_ {1} ^ {2} e ^ {- x} d x\\right) = e ^ {- 2 n} (1",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "\\begin{array}{r l} I _ {n} & = \\int_ {0} ^ {2} f (t) e ^ {- t - 2 n} d t = e ^ {- 2 n} \\int_ {0} ^ {2} f (t) e ^ {- t} d t = e ^ {- 2 n} \\left(\\int_ {0} ^ {1} x e ^ {- x} d x + \\int_ {1} ^ {2} (2 - x)"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例22",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 158,
+    "syllabus_note": "周期分段",
+    "commentary": "评注 （1）被积函数在积分区间内，除有限个第一类间断点外处处连续，定积分是存在的。（2）注意区别分段函数的不定积分与定积分的差异与联系（见3.1节例24和例25）。"
+  }
+}

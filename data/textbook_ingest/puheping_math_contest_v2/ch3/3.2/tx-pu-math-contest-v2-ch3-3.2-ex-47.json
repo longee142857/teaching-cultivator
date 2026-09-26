@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-47",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $I_{n} = \\int_{0}^{\\frac{\\pi}{4}}\\tan^{n}x\\mathrm{d}x$ ， $n$ 为大于1的正整数，证明 $\\frac{1}{2(n + 1)} < I_n < \\frac{1}{2(n - 1)}$",
+  "answer": "$$ \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n} \\mathrm{d} t < \\int_ {0} ^ {1} \\frac {t ^ {n}}{1 + t ^ {2}} \\mathrm{d} t < \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n - 1} \\mathrm{d} t. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 作积分变量代换 $t = \\tan x$ ，将被积函数化为有理函数形式，更便于被积函数的放大或缩小."
+      },
+      {
+        "id": "s2",
+        "text": "令 $t = \\tan x$ ，则 $I_{n} = \\int_{0}^{\\frac{\\pi}{4}}\\tan^{n}x\\mathrm{d}x = \\int_{0}^{1}\\frac{t^{n}}{1 + t^{2}}\\mathrm{d}t.$"
+      },
+      {
+        "id": "s3",
+        "text": "因为 $\\left(\\frac{t}{1 + t^2}\\right)' = \\frac{1 - t^2}{(1 + t^2)^2} > 0 (0 < t < 1)$ ，所以"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\frac {t}{1 + t ^ {2}} <   \\frac {1}{1 + 1 ^ {2}} = \\frac {1}{2}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "于是"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\frac {1}{2} \\int_ {0} ^ {1} t ^ {n} \\mathrm{d} t <   \\int_ {0} ^ {1} \\frac {t ^ {n}}{1 + t ^ {2}} \\mathrm{d} t <   \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n - 1} \\mathrm{d} t.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "即"
+      },
+      {
+        "id": "s8",
+        "text": "$$\n\\frac {1}{2 (n + 1)} <   I _ {n} <   \\frac {1}{2 n} <   \\frac {1}{2 (n - 1)}.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n} \\mathrm{d} t < \\int_ {0} ^ {1} \\frac {t ^ {n}}{1 + t ^ {2}} \\mathrm{d} t < \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n - 1} \\mathrm{d} t. $$",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$$ \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n} \\mathrm{d} t < \\int_ {0} ^ {1} \\frac {t ^ {n}}{1 + t ^ {2}} \\mathrm{d} t < \\frac {1}{2} \\int_ {0} ^ {1} t ^ {n - 1} \\mathrm{d} t. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例47",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 174,
+    "syllabus_note": "换元+估值",
+    "commentary": "评注 若积分不等式中含有参数（本例中的参数为 $n$ ），则当对被积函数做放大或缩小时一般应保留含有参数的部分。"
+  }
+}

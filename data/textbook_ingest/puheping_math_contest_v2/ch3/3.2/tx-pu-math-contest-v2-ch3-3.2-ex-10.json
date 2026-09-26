@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-10",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.eq",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 是正值连续函数，且\n\n$$\ng (x) = \\left\\{ \\begin{array}{l l} \\frac {\\int_ {0} ^ {x} t f (t) \\mathrm{d} t}{\\int_ {0} ^ {x} f (t) \\mathrm{d} t}, & x \\neq 0, \\\\ 0, & x = 0. \\end{array} \\right.\n$$\n\n求 $g'(x)$ ，并判断 $g'(x)$ 是否是连续函数.",
+  "answer": "$g'(x)$ 连续.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "变限积分求导",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 分段函数在分段点的导数要用定义做计算. $g'(x)$ 在 $x = 0$ 处的连续性需考察 $\\lim_{x\\to 0}g'(x) = g'(0)$ 是否成立."
+      },
+      {
+        "id": "s2",
+        "text": "当 $x \\neq 0$ 时， $g'(x) = \\frac{xf(x)\\int_0^x f(t)\\mathrm{d}t - f(x)\\int_0^x tf(t)\\mathrm{d}t}{\\left[\\int_0^x f(t)\\mathrm{d}t\\right]^2}$ ;"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l}g ^ {\\prime} (0)&= \\lim _ {x \\rightarrow 0} \\frac {g (x) - g (0)}{x - 0} = \\lim _ {x \\rightarrow 0} \\frac {\\int_ {0} ^ {x} t f (t) \\mathrm{d} t}{x \\int_ {0} ^ {x} f (t) \\mathrm{d} t} = \\lim _ {x \\rightarrow 0} \\frac {x f (x)}{x f (x) + \\int_ {0} ^ {x} f (t) \\mathrm{d} t}\\\\&= \\lim _ {x \\rightarrow 0} \\frac {x f (x)}{x f (x) + x f (\\xi_ {1})} = \\frac {1}{2} (0 <   \\xi_ {1} <   x).\\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "又"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} {\\underset {x \\to 0} {\\lim} g ^ {\\prime} (x) = \\underset {x \\to 0} {\\lim} \\frac {x f (x) \\int_ {0} ^ {x} f (t)   \\mathrm{d} t - f (x) \\int_ {0} ^ {x} t f (t)   \\mathrm{d} t}{\\left[ \\int_ {0} ^ {x} f (t)   \\mathrm{d} t \\right] ^ {2}}} \\\\ & {= \\underset {x \\to 0} {\\lim} \\frac {x ^ {2} f (x) f (\\xi_ {1}) - f (x) f (\\xi_ {2}) \\int_ {0} ^ {x} t \\mathrm{d} t}{x ^ {2} f ^ {2} (\\xi_ {1})} \\quad (\\xi_ {1}, \\xi_ {2} \\text {在} 0 \\text {与} x \\text {之间})} \\\\ & {= \\underset {x \\to 0} {\\lim} \\frac {x ^ {2} f (x) f (\\xi_ {1}) - \\frac {1}{2} x ^ {2} f (x) f (\\xi_ {2})}{x ^ {2} f ^ {2} (\\xi_ {1})} = \\frac {1}{2}.} \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以 $g'(x)$ 连续."
+      }
+    ],
+    "final_answer": "$g'(x)$ 连续.",
+    "techniques_used": [
+      "变限积分求导",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "换元定积分",
+      "expected": "$g'(x)$ 连续."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 152,
+    "syllabus_note": "变限积分定义的辅助函数"
+  }
+}

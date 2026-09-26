@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-68",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.area",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设曲线为 $f(x) = ax + b - \\ln x$ ，在[1,3)上 $f(x) \\geqslant 0$ ，求常数 $a, b$ ，使 $\\int_{1}^{3} f(x) \\, \\mathrm{d}x$ 最小.",
+  "answer": "）为最小.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f(x) \\geqslant 0$ ，则直线 $y = ax + b$ 位于曲线 $y = \\ln x$ 的上方，积分 $\\int_{1}^{3} f(x) \\, \\mathrm{d}x$ 是直线与曲线\n\n在区间[1,3]所夹的面积，当直线 $y = ax + b$ 为曲线 $y = \\ln x$ 的切线时，该面积为最小."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $f(x) \\geqslant 0$ ，则当直线 $y = ax + b$ 为曲线 $y = \\ln x$ 的切线时（如图3.4所示），积分 $\\int_{1}^{3} f(x) \\, \\mathrm{d}x$ （直线与曲线在区间[1,3]上所夹面积）为最小.\n\n图3.4"
+      },
+      {
+        "id": "s3",
+        "text": "设切点坐标为 $(x_0, \\ln x_0)$ ，则 $y = \\ln x$ 的切线方程为\n\n$$\ny = \\frac {1}{x _ {0}} (x - x _ {0}) + \\ln x _ {0},\n$$\n\n即有 $a = \\frac{1}{x_0}$ ， $b = \\ln x_0 - 1 = -(\\ln a + 1)$ .此时"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nS = \\int_ {1} ^ {3} f (x) d x = \\int_ {1} ^ {3} (a x + b - \\ln x) d x = 4 a - 2 (1 + \\ln a) - \\int_ {1} ^ {3} \\ln x d x.\n$$\n\n令 $S_{a}^{\\prime} = 4 - \\frac{2}{a} = 0\\Rightarrow a = \\frac{1}{2}$ ， $b = \\ln 2 - 1$ ，而 $S_{a}^{m} = \\frac{2}{a^{2}} >0$ ，所以 $S$ 取得最小值，即"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nS = \\int_ {1} ^ {3} f (x) \\mathrm{d} x = 2 - 4 \\ln 2 - 3 \\ln 3.\n$$"
+      }
+    ],
+    "final_answer": "）为最小.",
+    "techniques_used": [
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分区间与被积函数（上下曲线差）？",
+      "technique": "面积计算",
+      "expected": "由曲线交点确定区间，面积元为上下边界差。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求面积（或最值）结果是什么？",
+      "technique": "微元法",
+      "expected": "）为最小."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例68",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 189,
+    "syllabus_note": "面积最小",
+    "commentary": "评注 该题利用几何直观地将二元函数 $S(a, b)$ 在区域 $f(x) \\geqslant 0 (1 \\leqslant x \\leqslant 3)$ 上的最小值问题转化成了一元函数 $S(a)$ 在区间 $[1/3, 1]$ 上的最小值问题，使问题得到很好简化."
+  }
+}

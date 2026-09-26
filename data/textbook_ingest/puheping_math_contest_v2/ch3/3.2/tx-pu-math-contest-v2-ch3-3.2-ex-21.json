@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-21",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $y = f(x)$ 由方程 $(x^2 + y^2)^2 = (x^2 - y^2)(y > 0)$ 所确定，计算积分 $\\int_0^1 xy^2\\mathrm{d}x$",
+  "answer": "\\left\\{ \\begin{array}{l} x = \\sqrt {\\cos 2 \\theta} \\cos \\theta , \\\\ y = \\sqrt {\\cos 2 \\theta} \\sin \\theta . \\end{array} \\right.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 函数由隐函数方程确定，当隐函数不易显化时，最好是化为参数式函数再求积分。题设中的方程是双纽线，用极坐标表示较为简单，可借助直角坐标与极坐标的关系来得到参数方程。"
+      },
+      {
+        "id": "s2",
+        "text": "在极坐标下，方程 $(x^{2} + y^{2})^{2} = (x^{2} - y^{2})$ 化为 $\\rho^2 = \\cos 2\\theta$ ，则函数 $y = f(x)$ 的参数形式为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\left\\{ \\begin{array}{l} x = \\sqrt {\\cos 2 \\theta} \\cos \\theta , \\\\ y = \\sqrt {\\cos 2 \\theta} \\sin \\theta . \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\int_ {0} ^ {1} x y ^ {2} \\mathrm{d} x & = \\frac {1}{2} \\int_ {\\pi / 4} ^ {0} \\cos 2 \\theta \\sin^ {2} \\theta \\mathrm{d} (\\cos 2 \\theta \\cos^ {2} \\theta) \\\\ & = \\int_ {0} ^ {\\pi / 4} \\cos 2 \\theta \\sin^ {2} \\theta (\\sin 2 \\theta \\cos^ {2} \\theta + \\cos 2 \\theta \\cos \\theta \\sin \\theta) \\mathrm{d} \\theta \\\\ & = \\frac {1}{4} \\int_ {0} ^ {\\pi / 4} \\cos 2 \\theta \\sin^ {3} 2 \\theta \\mathrm{d} \\theta + \\frac {1}{4} \\int_ {0} ^ {\\pi / 4} \\cos^ {2} 2 \\theta (1 - \\cos 2 \\theta) \\sin 2 \\theta \\mathrm{d} \\theta \\\\ & = \\frac {1}{8} \\int_ {0} ^ {\\pi / 4} \\sin^ {3} 2 \\theta \\mathrm{d} \\sin 2 \\theta - \\frac {1}{8} \\int_ {0} ^ {\\pi / 4} (\\cos^ {2} 2 \\theta - \\cos^ {3} 2 \\theta) \\mathrm{d} \\cos 2 \\theta \\\\ & = \\frac {1}{8} \\left[ \\frac {1}{4} \\sin^ {4} 2 \\theta - \\left(\\frac {1}{3} \\cos^ {3} 2 \\theta - \\frac {1}{4} \\cos^ {4} 2 \\theta\\right) \\right] _ {0} ^ {\\pi / 4} = \\frac {1}{2 4}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\left\\{ \\begin{array}{l} x = \\sqrt {\\cos 2 \\theta} \\cos \\theta , \\\\ y = \\sqrt {\\cos 2 \\theta} \\sin \\theta . \\end{array} \\right.",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分换元时新上下限如何确定？对称换元是否可用？",
+      "technique": "换元定积分",
+      "expected": "换元同步改限，或用对称性简化。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "\\left\\{ \\begin{array}{l} x = \\sqrt {\\cos 2 \\theta} \\cos \\theta , \\\\ y = \\sqrt {\\cos 2 \\theta} \\sin \\theta . \\end{array} \\right."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例21*",
+    "quality_basis": "source_textbook_worked_example",
+    "starred": true,
+    "syllabus_note": "隐函数参数换元",
+    "commentary": "评注 由参数式函数 $\\left\\{ \\begin{array}{l} x = x(t) \\\\ y = y(t) \\end{array} \\right.$ 确定的积分 $\\int_{a}^{b} f(x, y) \\mathrm{d}x = \\int_{\\alpha}^{\\beta} f(x(t), y(t)) x'(t) \\mathrm{d}t$ ，其中 $x(t)$ 单调可导，且 $x(\\alpha) = a$ ， $x(\\beta) = b$ 。其本质仍是换元积分法。",
+    "page": 158
+  }
+}

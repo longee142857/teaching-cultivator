@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-14",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $\\left[0, \\frac{\\pi}{2}\\right]$ 上连续，求 $\\int_{0}^{\\frac{\\pi}{2}} \\frac{f(\\sin x)}{f(\\cos x) + f(\\sin x)} \\mathrm{d}x$ .",
+  "answer": "$$ I = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\sin x)}{f (\\cos x) + f (\\sin x)} d x + \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\cos x)}{f (\\cos x) + f (\\sin x)} d x \\right] = \\frac {\\pi}{4}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f(x)$ 是一个抽象函数的形式，因此没法直接计算积分，而 $\\sin x$ 与 $\\cos x$ 互为余函数，通过变量代换 $x = \\frac{\\pi}{2} - t$ 可以做到相互转换，但转换后被积函数的分母没变，从而积分就容易计算了."
+      },
+      {
+        "id": "s2",
+        "text": "因为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\sin x)}{f (\\cos x) + f (\\sin x)} d x \\stackrel {x = \\frac {\\pi}{2} - u} {=} - \\int_ {\\frac {\\pi}{2}} ^ {0} \\frac {f (\\cos u)}{f (\\cos u) + f (\\sin u)} d x = \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\cos x)}{f (\\cos x) + f (\\sin x)} d x,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nI = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\sin x)}{f (\\cos x) + f (\\sin x)} d x + \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\cos x)}{f (\\cos x) + f (\\sin x)} d x \\right] = \\frac {\\pi}{4}.\n$$"
+      }
+    ],
+    "final_answer": "$$ I = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\sin x)}{f (\\cos x) + f (\\sin x)} d x + \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\cos x)}{f (\\cos x) + f (\\sin x)} d x \\right] = \\frac {\\pi}{4}. $$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分换元时新上下限如何确定？对称换元是否可用？",
+      "technique": "换元定积分",
+      "expected": "换元同步改限，或用对称性简化。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$$ I = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\sin x)}{f (\\cos x) + f (\\sin x)} d x + \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {f (\\cos x)}{f (\\cos x) + f (\\sin x)} d x \\right] = \\frac {"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 154,
+    "syllabus_note": "对称换元",
+    "commentary": "评注 (1) 赋予 $f(x)$ 的具体形式可得到一些相关的积分结果. 如\n\n$$\n\\begin{array}{r l} & {\\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {\\mathrm{e} ^ {\\sin x}}{\\mathrm{e} ^ {\\sin x} + \\mathrm{e} ^ {\\cos x}} \\mathrm{d} x = \\frac {\\pi}{4}; \\quad \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {\\mathrm{d} x}{1 + (\\tan x) ^ {\\alpha}} = \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {(\\cos x) ^ {\\alpha}}{(\\cos x) ^ {\\alpha} + (\\sin x) ^ {\\alpha}} \\mathrm{d} x = \\frac {\\pi}{4};} \\\\ & {\\qquad \\int_ {0} ^ {+ \\infty} \\frac {\\mathrm{d} x}{(1 + x ^ {2}) (1 + x ^ {\\alpha})} \\stackrel {\\text {令} x = \\tan t} {=} \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {\\mathrm{d} t}{1 + (\\tan t) ^ {\\alpha}} = \\frac {\\pi}{4} \\text {等}.} \\end{array}\n$$\n\n(2) 该题的特点是, 被积函数的分母有两项, 分子是分母中的一项. 作变量代换使分子变为分母中的另一项, 而分母与积分区间均保持不变 (上、下限可能互换). 其一般情况为\n\n$$\n\\int_ {a} ^ {b} \\frac {f (x) \\mathrm{d} x}{f "
+  }
+}

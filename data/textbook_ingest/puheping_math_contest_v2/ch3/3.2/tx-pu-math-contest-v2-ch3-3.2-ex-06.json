@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-06",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.fund",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{x\\to 0}\\frac{\\int_0^x\\left[\\int_0^{u^2}\\arctan(1 + t)\\mathrm{d}t\\right]\\mathrm{d}u}{\\sin x\\int_0^1\\tan(xt)^2\\mathrm{d}t}.$",
+  "answer": "解 令 $v = xt$ ，则 $\\int_0^1 \\tan (xt)^2 \\, \\mathrm{d}t = \\frac{1}{x} \\int_0^x \\tan v^2 \\, \\mathrm{d}v$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "变限积分求导",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 极限属于 $\\frac{0}{0}$ 型，可用洛必达法则。为便于分母求导，需要作积分变量代换。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $v = xt$ ，则 $\\int_0^1 \\tan (xt)^2 \\, \\mathrm{d}t = \\frac{1}{x} \\int_0^x \\tan v^2 \\, \\mathrm{d}v$"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\text {原式} & = \\lim _ {x \\to 0} \\frac {\\int_ {0} ^ {x} \\left[ \\int_ {0} ^ {u ^ {2}} \\arctan (1 + t) \\mathrm{d} t \\right] \\mathrm{d} u}{\\frac {\\sin x}{x} \\int_ {0} ^ {x} \\tan v ^ {2} \\mathrm{d} v} = \\lim _ {x \\to 0} \\frac {\\int_ {0} ^ {x} \\left[ \\int_ {0} ^ {u ^ {2}} \\arctan (1 + t) \\mathrm{d} t \\right] \\mathrm{d} u}{\\int_ {0} ^ {x} \\tan v ^ {2} \\mathrm{d} v} \\\\ & = \\lim _ {x \\to 0} \\frac {\\int_ {0} ^ {x ^ {2}} \\arctan (1 + t) \\mathrm{d} t}{\\tan x ^ {2}} = \\lim _ {x \\to 0} \\frac {2 x \\arctan (1 + x ^ {2})}{2 x \\sec^ {2} x ^ {2}} = \\frac {\\pi}{4}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "解 令 $v = xt$ ，则 $\\int_0^1 \\tan (xt)^2 \\, \\mathrm{d}t = \\frac{1}{x} \\int_0^x \\tan v^2 \\, \\mathrm{d}v$",
+    "techniques_used": [
+      "变限积分求导",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "换元定积分",
+      "expected": "解 令 $v = xt$ ，则 $\\int_0^1 \\tan (xt)^2 \\, \\mathrm{d}t = \\frac{1}{x} \\int_0^x \\tan v^2 \\, \\mathrm{d}v$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 150,
+    "syllabus_note": "变限积分极限"
+  }
+}

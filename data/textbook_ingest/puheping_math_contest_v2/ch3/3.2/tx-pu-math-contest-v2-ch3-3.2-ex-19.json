@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-19",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_{-\\pi}^{\\pi} x \\sin^5 x \\arctan e^x \\mathrm{d}x$ .",
+  "answer": "解 记 $f(x) = x\\sin^5 x\\arctan e^x$ ，则",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 对称区间上的积分，被积函数不具奇偶性，可考虑用 $\\int_{-a}^{a} f(x) \\mathrm{d}x = \\int_{0}^{a} [f(x) + f(-x)] \\mathrm{d}x$ 来化简."
+      },
+      {
+        "id": "s2",
+        "text": "记 $f(x) = x\\sin^5 x\\arctan e^x$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{l} I = \\int_ {0} ^ {\\pi} [ f (x) + f (- x) ] \\mathrm{d} x = \\int_ {0} ^ {\\pi} (\\arctan e ^ {x} + \\arctan e ^ {- x}) x \\sin^ {5} x \\mathrm{d} x \\\\ = \\int_ {0} ^ {\\pi} \\frac {\\pi}{2} x \\sin^ {5} x \\mathrm{d} x = \\left(\\frac {\\pi}{2}\\right) ^ {2} \\int_ {0} ^ {\\pi} \\sin^ {5} x \\mathrm{d} x \\quad \\left(\\because \\arctan e ^ {x} + \\arctan e ^ {- x} = \\frac {\\pi}{2}\\right) \\\\ = 2 \\left(\\frac {\\pi}{2}\\right) ^ {2} \\int_ {0} ^ {\\frac {\\pi}{2}} \\sin^ {5} x \\mathrm{d} x = 2 \\left(\\frac {\\pi}{2}\\right) ^ {2} \\frac {2 \\cdot 4}{1 \\cdot 3 \\cdot 5} = \\frac {4 \\pi^ {2}}{1 5}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "解 记 $f(x) = x\\sin^5 x\\arctan e^x$ ，则",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "解 记 $f(x) = x\\sin^5 x\\arctan e^x$ ，则"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 157,
+    "syllabus_note": "奇偶对称",
+    "commentary": "评注（1）对称区间上的积分首先要考察被积函数（或其部分项）的奇偶性，对不具奇偶性的可考虑应用公式 $\\int_{-a}^{a}f(x)\\mathrm{d}x = \\int_0^a [f(x) + f(-x)]\\mathrm{d}x$ 来化简.\n\n(2) 题中计算用到了例 12 评注 (2) 中的积分公式以及下面的瓦里斯 (Wallis) 公式:\n\n$\\int_{0}^{\\frac{\\pi}{2}}\\sin^{n}x\\mathrm{d}x = \\int_{0}^{\\frac{\\pi}{2}}\\cos^{n}x\\mathrm{d}x = \\left\\{ \\begin{array}{ll}\\frac{(n - 1)!!}{n!!}\\cdot \\frac{\\pi}{2}, & n\\text{为偶数,}\\\\ \\frac{(n - 1)!!}{n!!}, & n\\text{为奇数.} \\end{array} \\right.$"
+  }
+}

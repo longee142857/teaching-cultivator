@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-25",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $\\int_0^{x^1 - 1}\\max \\{1, t^2\\} \\mathrm{d}t, x \\in (-\\infty, +\\infty)$ .",
+  "answer": "$$ \\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\left\\{ \\begin{array}{l l} - \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x < 0, \\\\ x ^ {3} - 1, & 0 \\leqslant x \\leqslant \\sqrt [ 3 ]{2}, \\\\ \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x > \\sqrt [ 3 ]{2}. \\end{array} \\right. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 有 $\\max \\{1, t^2\\} = \\begin{cases} 1, & |t| \\leqslant 1 \\\\ t^2, & |t| > 1 \\end{cases}$ ，这是分段函数的积分，要分别对 $|x^3 - 1| \\leqslant 1$ 与 $|x^3 - 1| > 1$ 的情况做讨论，确定被积函数式，再做积分.\n\n当 $|x^3 - 1| \\leqslant 1$ 时，即 $0 \\leqslant x \\leqslant \\sqrt[3]{2}$ ，"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\int_ {0} ^ {x ^ {3} - 1} d t = x ^ {3} - 1.\n$$\n\n当 $x^{3} - 1 > 1$ 时，即 $x > \\sqrt[3]{2}$\n\n$$\n\\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\int_ {0} ^ {1} \\max \\{1, t ^ {2} \\} d t + \\int_ {1} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = 1 + \\int_ {0} ^ {x ^ {3} - 1} t ^ {2} d t = \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "当 $x^{3} - 1 < 1$ 时，即 $x < 0$\n\n$$\n\\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\int_ {0} ^ {- 1} \\max \\{1, t ^ {2} \\} d t + \\int_ {1} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = - \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "综上\n\n$$\n\\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\left\\{ \\begin{array}{l l} - \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x <   0, \\\\ x ^ {3} - 1, & 0 \\leqslant x \\leqslant \\sqrt [ 3 ]{2}, \\\\ \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x > \\sqrt [ 3 ]{2}. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\left\\{ \\begin{array}{l l} - \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x < 0, \\\\ x ^ {3} - 1, & 0 \\leqslant x \\leqslant \\sqrt [ 3 ]{2}, \\\\ \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x > \\sqrt [ 3 ]{2}. \\end{array} \\right. $$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$$ \\int_ {0} ^ {x ^ {3} - 1} \\max \\{1, t ^ {2} \\} d t = \\left\\{ \\begin{array}{l l} - \\frac {2}{3} + \\frac {1}{3} (x ^ {3} - 1) ^ {3}, & x < 0, \\\\ x ^ {3} - 1, & 0 \\leqslant x \\leqslant \\sqrt [ 3 ]{2},"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例25",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 160,
+    "syllabus_note": "max 分段定积分",
+    "commentary": "评注 定积分的计算中常出现分段函数，除明显的分段形式外，我们常见的分段函数还有：绝对值函数、符号函数、取整函数、最值函数、极限形式的函数等。计算时要注意在积分区间中插入分段点，分段做积分。"
+  }
+}

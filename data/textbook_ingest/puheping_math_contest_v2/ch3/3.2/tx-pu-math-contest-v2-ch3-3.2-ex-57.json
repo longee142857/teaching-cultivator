@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-57",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上具有二阶连续导数，且 $f(0) = f(1) = 0$ ，在 $(0,1)$ 内 $f(x) \\neq 0$ 。证明 $\\int_{0}^{1} \\left| \\frac{f''(x)}{f(x)} \\right| \\mathrm{d}x > 4$ 。",
+  "answer": "$$ \\begin{array}{r l} & \\int_ {0} ^ {1} \\left| f ^ {\\prime \\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\int_ {\\alpha} ^ {\\beta} \\left| f ^ {\\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\left| \\int_ {\\alpha} ^ {\\beta} f ^ {\\prime \\prime} (x) \\mathrm{d} x \\right| \\\\ & = \\left| f ^ {\\prime} (\\beta) - f ^ {\\prime} (\\alpha) \\right| = \\frac {f (x _ {0})}{x _ {0} (1 - x _ {0})} \\geqslant 4 f (",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 令 $f(x_0) = \\max_{0 \\leqslant x \\leqslant 1} f(x)$ ，由题设条件易知 $|f(x_0)| > 0$ ，于是 $\\int_0^1 \\left| \\frac{f''(x)}{f(x)} \\right| \\, \\mathrm{d}x > \\frac{1}{|f(x_0)|} \\int_0^1 |f''(x)| \\, \\mathrm{d}x$ .\n\n只需证明 $\\frac{1}{|f(x_0)|}\\int_0^1 |f''(x)|\\mathrm{d}x > 4$"
+      },
+      {
+        "id": "s2",
+        "text": "如果 $\\int_0^1\\left|\\frac{f''(x)}{f(x)}\\right|\\mathrm{d}x$ 发散，则显然有 $\\int_0^1\\left|\\frac{f''(x)}{f(x)}\\right|\\mathrm{d}x\\geqslant 4$ ，以下设 $\\int_0^1\\left|\\frac{f''(x)}{f(x)}\\right|\\mathrm{d}x$ 收敛.\n\n因为 $(0,1)$ 内 $f(x) \\neq 0$ ，可设 $f(x) > 0$ 。由 $f(0) = f(1) = 0$ ，知 $\\exists x_0 \\in (0,1)$ ，使 $f(x_0) = \\max_{0 \\leqslant x \\leqslant 1} \\{f(x)\\}$ 。所以"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {1} \\left| \\frac {f ^ {\\prime \\prime} (x)}{f (x)} \\right| d x \\geqslant \\frac {1}{f \\left(x _ {0}\\right)} \\int_ {0} ^ {1} \\left| f ^ {\\prime \\prime} (x) \\right| d x.\\tag{①}\n$$\n\n在区间 $[0, x_0]$ 与 $[x_0, 1]$ 上分别用拉格朗日中值定理，有\n\n$$\nf ^ {\\prime} (\\alpha) = \\frac {f (x _ {0})}{x _ {0}}, \\quad f ^ {\\prime} (\\beta) = - \\frac {f (x _ {0})}{1 - x _ {0}} \\quad (0 <   \\alpha <   x _ {0} <   \\beta <   1).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以\n\n$$\n\\begin{array}{r l} & \\int_ {0} ^ {1} \\left| f ^ {\\prime \\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\int_ {\\alpha} ^ {\\beta} \\left| f ^ {\\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\left| \\int_ {\\alpha} ^ {\\beta} f ^ {\\prime \\prime} (x) \\mathrm{d} x \\right| \\\\ & = \\left| f ^ {\\prime} (\\beta) - f ^ {\\prime} (\\alpha) \\right| = \\frac {f (x _ {0})}{x _ {0} (1 - x _ {0})} \\geqslant 4 f (x _ {0}). \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即 $\\frac{1}{f(x_0)}\\int_0^1 |f''(x)|\\mathrm{d}x\\geqslant 4$ ，由①式得 $\\int_0^1 |\\frac{f''(x)}{f(x)}|\\mathrm{d}x > 4$"
+      }
+    ],
+    "final_answer": "$$ \\begin{array}{r l} & \\int_ {0} ^ {1} \\left| f ^ {\\prime \\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\int_ {\\alpha} ^ {\\beta} \\left| f ^ {\\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\left| \\int_ {\\alpha} ^ {\\beta} f ^ {\\prime \\prime} (x) \\mathrm{d} x \\right| \\\\ & = \\left| f ^ {\\prime} (\\beta) - f ^ {\\prime} (\\alpha) \\right| = \\frac {f (x _ {0})}{x _ {0} (1 - x _ {0})} \\geqslant 4 f (",
+    "techniques_used": [
+      "积分中值",
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "夹逼/估值",
+      "expected": "$$ \\begin{array}{r l} & \\int_ {0} ^ {1} \\left| f ^ {\\prime \\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\int_ {\\alpha} ^ {\\beta} \\left| f ^ {\\prime \\prime} (x) \\right| \\mathrm{d} x \\geqslant \\lef"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例57",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 180,
+    "syllabus_note": "积分不等式",
+    "commentary": "评注 由拉格朗日中值定理的几何意义（如图3.1所示）可知，证明中之所以选取函数的最大值点 $x_{0}$ ，是为了使 $\\left|f'(\\beta)-f'(\\alpha)\\right|$ 的值相对较大。"
+  }
+}
