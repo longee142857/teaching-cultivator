@@ -32,47 +32,34 @@ def test_scrub() -> None:
     from deliver.dsf_ocr import scrub_ocr_text
 
     check(scrub_ocr_text(CLEAN) == CLEAN, "clean latex passes through")
+    symbols = "2^{2N}\nN=6 dB 37.88\n1/\\sqrt{6}"
+    check(scrub_ocr_text(symbols) == symbols, "exponents, digits, radicals untouched")
     check(
         scrub_ocr_text(f"<<<OCR>>>\n{CLEAN}\n<<<END>>>") == CLEAN,
-        "marker-wrapped latex passes through",
+        "marker wrapper stripped when present",
     )
     noisy = (
-        "这是图片中的手写公式：\n\n"
+        "以下是识别结果：\n\n"
         "```latex\n"
-        r"\lim_{x\to 0}\frac{\sin x}{x}=1" "\n"
+        "2^{2N}\n"
         "```\n\n"
-        "分析：这是一个极限。\n"
-        "置信度：高\n"
-        "如有不清楚的地方请告诉我。\n"
+        "以上是识别结果。\n"
     )
-    check(
-        scrub_ocr_text(noisy) == r"\lim_{x\to 0}\frac{\sin x}{x}=1",
-        "chinese wrapper and fence are scrubbed",
-    )
-    marked_noise = (
-        "好的，我来转写：\n"
-        "<<<OCR>>>\n"
-        "x^{2}+y^{2}=1\n"
-        "<<<END>>>\n"
-        "希望有帮助！\n"
-    )
-    check(scrub_ocr_text(marked_noise) == "x^{2}+y^{2}=1", "chatter outside markers dropped")
+    check(scrub_ocr_text(noisy) == "2^{2N}", "one-line wrapper and fence stripped")
     page = (
         "以下是转写结果：\n\n"
         "这是极限存在的充要条件。\n\n"
         "$$L$$\n\n"
-        "以上证明了该极限为 1。\n\n"
-        "希望这能帮到你！\n"
+        "以上证明了该极限为 1。\n"
     )
     kept = scrub_ocr_text(page)
     check("这是极限存在的充要条件。" in kept, "real 这是 sentence kept")
     check("以上证明了该极限为 1。" in kept, "proof closing kept")
-    check("希望这能帮到你" not in kept, "closing chatter dropped")
-    check("以下是转写结果" not in kept, "preamble dropped")
-    think = f"<think>draft the latex</think>\n<<<OCR>>>\n{CLEAN}\n<<<END>>>"
+    check("以下是转写结果" not in kept, "preamble line dropped")
+    think = f"<think>draft the latex</think>\n{CLEAN}"
     check(scrub_ocr_text(think) == CLEAN, "think block dropped")
-    check(scrub_ocr_text("公式：$x^{2}$") == "$x^{2}$", "label prefix stripped")
-    check(scrub_ocr_text("这是图片中的手写内容：\n\n希望有帮助！") == "", "chatter-only is empty")
+    check(scrub_ocr_text("公式：$x^{2}$") == "公式：$x^{2}$", "math line is not rewritten")
+    check(scrub_ocr_text("以下是识别结果：\n以上是识别结果。") == "", "wrapper-only is empty")
     check(scrub_ocr_text("") == "", "empty scrub")
 
 
@@ -95,10 +82,15 @@ def test_ocr_image_mock() -> None:
         user = messages[1]["content"]
         check(isinstance(user, list) and user[0]["type"] == "text", "vision text part")
         check("LaTeX" in user[0]["text"], "formula mode prompt")
+        system = messages[0]["content"]
+        check("2^{2N}" in system and "2^N" in system, "prompt keeps full superscripts")
+        check("sqrt" in system, "prompt checks radical indices")
+        check("digit" in system.lower(), "prompt checks digits")
+        check("<<<OCR>>>" not in system, "prompt does not require marker wrappers")
         check(user[1]["image_url"]["url"].startswith("data:image/png;base64,"), "png data url")
 
     noisy = (
-        "这是手写内容的转写：\n\n```markdown\n"
+        "以下是识别结果：\n\n```markdown\n"
         "已知 $f(x)=x^2$。\n\n$$f'(x)=2x$$\n```\n\n以上是识别结果。\n"
     )
     with patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test-key"}, clear=False), \
@@ -107,7 +99,7 @@ def test_ocr_image_mock() -> None:
         check(out["ok"] is True, "noisy reply ok")
         check("已知 $f(x)=x^2$。" in out["text"], "page transcript kept")
         check("$$f'(x)=2x$$" in out["text"], "display math kept")
-        check("这是手写" not in out["text"] and "以上是识别结果" not in out["text"], "wrappers gone")
+        check("以下是识别结果" not in out["text"] and "以上是识别结果" not in out["text"], "wrappers gone")
         check("markdown" in mock.call_args.args[0][1]["content"][0]["text"], "document mode prompt")
 
     listed = {"choices": [{"message": {"content": [{"type": "text", "text": CLEAN}]}}]}

@@ -4,8 +4,11 @@
 SimpleTex mode names from the practice desk / exam page are only prompt hints:
 ``formula`` / ``latex`` / ``formula_*`` ask for LaTeX; ``document`` / ``page`` /
 ``general`` / empty ask for a markdown page transcript. Both still return the
-transcription as ``text``. The model is asked to emit only the transcript;
-``scrub_ocr_text`` strips preamble, fences, and closing chatter anyway.
+transcription as ``text``.
+
+The prompt asks the model to copy exponents, radical indices, and digits as
+written. ``scrub_ocr_text`` is a light safety net for an occasional fence or
+one-line wrapper; it does not rewrite math.
 """
 from __future__ import annotations
 
@@ -30,81 +33,44 @@ _FORMULA_MODES = frozenset({
 })
 
 _SYSTEM = (
-    "You are a handwriting OCR engine for exam answers.\n"
-    "Return only the transcription of marks visible in the image.\n"
-    "Preserve the writer's language. Do not translate, solve, correct, or complete anything.\n"
-    "No preamble, title, analysis, confidence, apology, or closing remark.\n"
-    "If a mark is illegible, write [?] there.\n"
-    "Put the transcript between these markers and write nothing outside them:\n"
-    "<<<OCR>>>\n"
-    "<transcript>\n"
-    "<<<END>>>"
+    "You transcribe handwritten exam answers. Output the transcription only.\n"
+    "Do not translate, solve, correct, simplify, or complete the handwriting.\n"
+    "Copy symbols exactly.\n"
+    "Preserve superscripts in full: 2^{2N} is not 2^N. Copy every character in an exponent.\n"
+    "Double-check every digit. Copy it as written; do not swap a similar digit.\n"
+    "Copy radical indices exactly: 1/\\sqrt{6} is not 1/\\sqrt{5}.\n"
+    "If a mark is illegible, write [?]."
 )
 
 _DOCUMENT_HINT = (
-    "This is a page or a mixed crop. Transcribe it as markdown. "
+    "Transcribe the page as markdown. "
     "Inline math in $...$, display math in $$...$$. "
-    "Keep the writer's line breaks and wording. "
-    "Do not add headings they did not write."
+    "Keep the writer's line breaks and wording."
 )
 
 _FORMULA_HINT = (
-    "This is a formula crop. Transcribe it as LaTeX only. "
-    "No sentences. Bare LaTeX or $$...$$ is fine."
+    "Transcribe this crop as LaTeX only. "
+    "No surrounding sentences. Bare LaTeX or $$...$$ is fine."
 )
 
+_THINK_RE = re.compile(r"<think>[\s\S]*?</think>", re.IGNORECASE)
 _MARK_RE = re.compile(
     r"<<<\s*OCR\s*>>>\s*(.*?)\s*<<<\s*END\s*>>>",
     re.DOTALL | re.IGNORECASE,
 )
-_THINK_RE = re.compile(r"<think>[\s\S]*?</think>", re.IGNORECASE)
-_FENCE_RE = re.compile(r"```[^\n`]*\n(.*?)```", re.DOTALL)
-_FENCE_LINE_RE = re.compile(r"```[A-Za-z0-9_+-]*")
-_LEAD_RE = re.compile(
+_WHOLE_FENCE_RE = re.compile(r"^```[^\n`]*\n(.*)\n```$", re.DOTALL)
+# Whole-line wrappers only. A line with a digit or math mark is left alone.
+_EDGE_RE = re.compile(
     r"^(?:"
-    r"(?:好的|好|当然|没问题|ok|okay|sure)[，,。.!！\s]*$"
-    r"|(?:以下是|下面是|如下是|这里是).{0,48}(?:转写|识别|内容|公式|文字|结果|transcript)"
-    r"|(?:这是|这张图|这张图片|图片中|图中|我看到).{0,40}(?:手写|转写|识别|内容|公式|文字|笔记)"
-    r"|(?:识别|转写|转录)(?:结果|内容|如下)?\s*[：:]"
-    r"|here(?:'s| is)(?: the)? (?:transcription|transcript|ocr|latex|text)\b"
-    r"|the (?:handwritten )?(?:transcription|transcript|content)(?: is)?\s*[：:]?"
-    r"|(?:transcription|transcript)\s*[：:]"
-    r"|公式如下"
-    r")",
+    r"```[A-Za-z0-9_+-]*"
+    r"|(?:好的|当然|ok|okay|sure)[，,。.!！\s]*"
+    r"|(?:以下是|下面是|这是).{0,32}(?:识别结果|转写结果|转写|识别)[：:。.!！\s]*"
+    r"|以上是识别结果[。.!！\s]*"
+    r"|(?:置信度|置信|confidence)\s*[：:]\s*\S{0,8}"
+    r")$",
     re.IGNORECASE,
 )
-_TAIL_RE = re.compile(
-    r"^(?:"
-    r"以上(?:是|为)?(?:全部)?(?:识别|转写|转录)?(?:结果|内容)?[。.!！\s]*$"
-    r"|以上就是.*"
-    r"|如有(?:不清晰|不清楚|看不清|问题|需要|遗漏).*"
-    r"|希望(?:这|对你|能帮|有帮助).*"
-    r"|(?:请)?告诉我.{0,24}(?:需要|帮助|修正|调整)"
-    r"|(?:识别|转写)完成.*"
-    r"|我(?:已经)?(?:帮你|为你)?(?:识别|转写).*"
-    r"|if you need\b.*"
-    r"|let me know\b.*"
-    r"|i hope this helps\b.*"
-    r")",
-    re.IGNORECASE,
-)
-_META_RE = re.compile(
-    r"^(?:\*\*)?(?:分析|解析|点评|总结|说明|备注|注|注释|置信度|置信|confidence)\s*[：:].*",
-    re.IGNORECASE,
-)
-_PAREN_META_RE = re.compile(
-    r"^[（(].*(?:模糊|不清|置信|仅供|参考|识别|转写|模型).*[）)]$"
-)
-_LABEL_ONLY_RE = re.compile(
-    r"^(?:转写|识别结果|识别内容|识别|转录|公式|内容|latex|transcription|transcript)"
-    r"(?:结果|内容|如下)?\s*[：:]\s*$",
-    re.IGNORECASE,
-)
-_LABEL_PREFIX_RE = re.compile(
-    r"^(?:转写|识别结果|识别内容|识别|转录|公式|内容|latex|transcription|transcript)"
-    r"(?:结果|内容|如下)?\s*[：:]\s*",
-    re.IGNORECASE,
-)
+_MATHISH_RE = re.compile(r"[$\\^_=√\d]")
 
 
 def is_configured() -> bool:
@@ -127,127 +93,49 @@ def normalize_mode(mode: str | None) -> str:
     return "document"
 
 
-def _plain(line: str) -> str:
-    s = line.strip()
-    s = re.sub(r"^>\s*", "", s)
-    return re.sub(r"^[*_]+|[*_]+$", "", s).strip()
-
-
-def _looks_like_math(s: str) -> bool:
-    if "$" in s or "\\" in s:
+def _edge_wrapper(line: str) -> bool:
+    s = line.strip().strip("*_")
+    if not s:
         return True
-    return bool(re.search(r"[=^_]", s) and re.search(r"[\dA-Za-z]", s))
+    if _MATHISH_RE.search(s):
+        return False
+    return bool(_EDGE_RE.match(s))
 
 
-def _is_chatter_line(line: str) -> bool:
-    plain = _plain(line)
-    if not plain:
-        return True
-    if _FENCE_LINE_RE.fullmatch(plain):
-        return True
-    if plain in {"---", "***", "——", "———"}:
-        return True
-    if _META_RE.match(plain) or _PAREN_META_RE.match(plain) or _LABEL_ONLY_RE.match(plain):
-        return True
-    if _TAIL_RE.match(plain):
-        return True
-    if _LEAD_RE.match(plain):
-        # A formula that merely shares a wrapper word stays in the transcript.
-        if _looks_like_math(plain) and not plain.endswith((":", "：")):
-            return False
-        return True
-    return False
-
-
-def _extract_markers(text: str) -> str | None:
-    m = _MARK_RE.search(text)
-    if not m:
-        return None
-    return m.group(1).strip()
-
-
-def _prefer_fenced_body(text: str) -> str:
-    matches = list(_FENCE_RE.finditer(text))
-    if not matches:
-        return text
-    if len(matches) == 1 and text.strip() == matches[0].group(0).strip():
-        return matches[0].group(1).strip()
-    bodies = [m.group(1).strip() for m in matches if m.group(1).strip()]
-    outside = text
-    for m in matches:
-        outside = outside.replace(m.group(0), "\n", 1)
-    outside_lines = [ln for ln in outside.split("\n") if ln.strip()]
-    if bodies and (not outside_lines or all(_is_chatter_line(ln) for ln in outside_lines)):
-        return "\n\n".join(bodies).strip()
-    if len(bodies) == 1 and outside.strip() == bodies[0]:
-        return bodies[0]
-    return _FENCE_RE.sub(lambda m: "\n" + m.group(1).strip() + "\n", text).strip()
-
-
-def _strip_edge_chatter(text: str) -> str:
+def _strip_edge_wrappers(text: str) -> str:
     lines = text.split("\n")
-    start, end = 0, len(lines)
-    while start < end and _is_chatter_line(lines[start]):
-        start += 1
-    while end > start and _is_chatter_line(lines[end - 1]):
-        end -= 1
-    kept = "\n".join(lines[start:end]).strip()
-    if kept:
-        return kept
-    mathish = []
-    for ln in lines:
-        plain = _plain(ln)
-        if plain and _looks_like_math(plain) and not _META_RE.match(plain):
-            mathish.append(plain)
-    return "\n".join(mathish).strip()
-
-
-def _strip_label_prefix(text: str) -> str:
-    lines = text.split("\n")
-    for i, ln in enumerate(lines):
-        if not ln.strip():
-            continue
-        plain = _plain(ln)
-        m = _LABEL_PREFIX_RE.match(plain)
-        if m and plain[m.end():].strip():
-            lines[i] = plain[m.end():].strip()
-        break
+    while lines and _edge_wrapper(lines[0]):
+        lines.pop(0)
+    while lines and _edge_wrapper(lines[-1]):
+        lines.pop()
     return "\n".join(lines).strip()
 
 
-def _unwrap_quotes(text: str) -> str:
-    s = text.strip()
-    pairs = (
-        ('"""', '"""'),
-        ("'''", "'''"),
-        ("「", "」"),
-        ("『", "』"),
-        ("“", "”"),
-    )
-    for a, b in pairs:
-        if len(s) > len(a) + len(b) and s.startswith(a) and s.endswith(b):
-            return s[len(a):-len(b)].strip()
-    return text
+def _unwrap_whole_fence(text: str) -> str:
+    m = _WHOLE_FENCE_RE.match(text.strip())
+    if not m:
+        return text
+    return m.group(1).strip()
 
 
 def scrub_ocr_text(raw: str) -> str:
-    """Drop wrapper commentary. Keep the handwritten transcript."""
+    """Drop an occasional fence or one-line wrapper. Do not rewrite math."""
     text = (raw or "").replace("\r\n", "\n").replace("\r", "\n")
     text = text.replace("\ufeff", "").replace("\u200b", "").strip()
     if not text:
         return ""
     text = _THINK_RE.sub("", text).strip()
-    marked = _extract_markers(text)
-    if marked is not None:
-        text = marked
-    text = _prefer_fenced_body(text)
-    text = _strip_edge_chatter(text)
-    text = _strip_label_prefix(text)
-    text = _unwrap_quotes(text)
-    text = _strip_edge_chatter(text)
+    marked = _MARK_RE.search(text)
+    if marked and marked.group(1).strip():
+        text = marked.group(1).strip()
+    for _ in range(3):
+        stripped = _strip_edge_wrappers(text)
+        unwrapped = _unwrap_whole_fence(stripped)
+        if unwrapped == text:
+            break
+        text = unwrapped
     lines = [ln.rstrip() for ln in text.split("\n")]
-    text = re.sub(r"\n{3,}", "\n\n", "\n".join(lines).strip())
-    return text.strip()
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(lines).strip())
 
 
 def _mime(filename: str, data: bytes) -> str:
