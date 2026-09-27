@@ -236,6 +236,7 @@
     submit: '提交答卷',
     submitting: '提交中…',
     submitted: '已提交',
+    submitConfirm: '确认提交答卷？提交后封存，只能看批改。',
     katexFail: '公式引擎 KaTeX 加载失败',
   };
   function tokenFromPath() {
@@ -564,7 +565,11 @@
       })
       .catch(function (e) {
         ocrBusy = false;
-        setOcrMsg("网络错误：" + (e && e.message ? e.message : "ocr_failed"), true);
+        var name = (e && e.name) || "";
+        setOcrMsg(
+          name === "SyntaxError" ? "识别结果无法读取，请稍后重试。" : "网络错误，识别未完成。",
+          true
+        );
         syncOcrButtons();
       });
   });
@@ -629,6 +634,9 @@
   }
 
   submitBtn.addEventListener("click", async function () {
+    if (submitBtn.disabled || document.body.classList.contains("is-sealed")) return;
+    if (!window.confirm(I18N.submitConfirm)) return;
+    if (submitBtn.disabled || document.body.classList.contains("is-sealed")) return;
     const answers = collectAnswers();
     submitBtn.disabled = true;
     submitBtn.textContent = I18N.submitting;
