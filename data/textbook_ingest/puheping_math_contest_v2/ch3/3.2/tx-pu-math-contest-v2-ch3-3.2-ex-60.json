@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-60",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明下列不等式.\n\n（1）设 $x \\in [0, \\pi]$ ， $t \\in [0, 1]$ ，则 $\\sin xt \\geqslant t \\sin x$ ；\n\n(2) 设 p > 0，则 $\\int_{0}^{\\frac{\\pi}{2}}(\\sin t)^{p} \\, dt \\geqslant \\frac{\\pi}{2(p+1)}$ ;\n\n(3) 设 $x \\geqslant 0, p > 0$ ，则 $\\int_{0}^{x}\\left|\\sin t\\right|^{p} dt \\geqslant \\frac{x\\left|\\sin x\\right|^{p}}{p+1}$ .",
+  "answer": "$$ \\int_ {0} ^ {x} | \\sin t | ^ {p} d t \\geqslant \\frac {k \\pi}{p + 1} + \\frac {\\nu | \\sin x | ^ {p}}{p + 1} \\geqslant \\frac {(k \\pi + \\nu) | \\sin x | ^ {p}}{p + 1} = \\frac {x | \\sin x | ^ {p}}{p + 1}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）中不等式只需证明 $f(t) = \\sin xt - t\\sin x \\geqslant 0$ 。这利用函数的凹凸性是容易解决的；以（1）中不等式为桥梁，（2）中不等式就容易证明了；注意到（3）中的被积函数 $|\\sin t|$ 以 $\\pi$ 为周期，为利用周期函数的积分性质及（1）（2）的结论，自然要将积分上限表示为 $x = k\\pi + v, k \\in \\mathbb{N}, v \\in [0, \\pi)$ 的形式。"
+      },
+      {
+        "id": "s2",
+        "text": "（1）对 $x \\in [0, \\pi]$ ，做函数 $f(t) = \\sin xt - t\\sin x, t \\in [0, 1]$ ，则 $f''(t) = -x^2\\sin xt \\leqslant 0$ ， $f(t)$ 在区间[0,1]中是上凸的。注意到 $f(0) = f(1) = 0$ ，则有\n\n$f(t) = f((1 - t)\\cdot 0 + t\\cdot 1)\\geqslant (1 - t)f(0) + tf(1) = 0$ ，即 $\\sin xt\\geqslant t\\sin x$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 因为 p > 0，令 $t = \\frac{\\pi}{2} u$ ，则\n\n$$\n\\int_ {0} ^ {\\frac {\\pi}{2}} (\\sin t) ^ {p} \\mathrm{d} t = \\frac {\\pi}{2} \\int_ {0} ^ {1} \\left(\\sin \\frac {\\pi}{2} u\\right) ^ {p} \\mathrm{d} u \\geqslant \\frac {\\pi}{2} \\int_ {0} ^ {1} \\left(u \\sin \\frac {\\pi}{2}\\right) ^ {p} \\mathrm{d} u = \\frac {\\pi}{2 (p + 1)}.\n$$\n\n（3）对任意 $x \\geqslant 0$ ，则存在 $k \\in \\mathbb{N}$ ，使得 $x = k\\pi + v, v \\in [0, \\pi)$ 。注意到 $\\left|\\sin x\\right|$ 以 $\\pi$ 为周期，则\n\n$$\n\\int_ {0} ^ {x} | \\sin t | ^ {p} d t = \\int_ {0} ^ {k \\pi} | \\sin t | ^ {p} d t + \\int_ {k \\pi} ^ {k \\pi + v} | \\sin t | ^ {p} d t = k \\int_ {0} ^ {\\pi} | \\sin t | ^ {p} d t + \\int_ {0} ^ {v} (\\sin t) ^ {p} d t.\n$$\n\n由于\n\n$$\n\\int_ {0} ^ {\\pi} | \\sin t | ^ {p} d t = 2 \\int_ {0} ^ {\\frac {\\pi}{2}} (\\sin t) ^ {p} d t > \\frac {\\pi}{p + 1},\n\n\\int_ {0} ^ {\\nu} (\\sin t) ^ {p} \\mathrm{d} t \\stackrel {t = \\nu u} {=} \\nu \\int_ {0} ^ {1} (\\sin \\nu u) ^ {p} \\mathrm{d} u \\geqslant \\nu \\int_ {0} ^ {1} (u \\sin \\nu) ^ {p} \\mathrm{d} u = \\frac {\\nu (\\sin \\nu) ^ {p}}{p + 1} = \\frac {\\nu | \\sin x | ^ {p}}{p + 1},\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {x} | \\sin t | ^ {p} d t \\geqslant \\frac {k \\pi}{p + 1} + \\frac {\\nu | \\sin x | ^ {p}}{p + 1} \\geqslant \\frac {(k \\pi + \\nu) | \\sin x | ^ {p}}{p + 1} = \\frac {x | \\sin x | ^ {p}}{p + 1}.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\int_ {0} ^ {x} | \\sin t | ^ {p} d t \\geqslant \\frac {k \\pi}{p + 1} + \\frac {\\nu | \\sin x | ^ {p}}{p + 1} \\geqslant \\frac {(k \\pi + \\nu) | \\sin x | ^ {p}}{p + 1} = \\frac {x | \\sin x | ^ {p}}{p + 1}. $$",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$$ \\int_ {0} ^ {x} | \\sin t | ^ {p} d t \\geqslant \\frac {k \\pi}{p + 1} + \\frac {\\nu | \\sin x | ^ {p}}{p + 1} \\geqslant \\frac {(k \\pi + \\nu) | \\sin x | ^ {p}}{p + 1} = \\frac {x | \\sin x | ^ {p}}{p + 1}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例60",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 183,
+    "syllabus_note": "不等式证明"
+  }
+}

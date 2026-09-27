@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-73",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.phys",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "半径为 $r$ 的球沉入水中, 球的上顶与水平面齐平. 球的密度与水相同, 现将球从水中取出, 需做多少功?",
+  "answer": "，因此功微元",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "物理量",
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是变力做功问题, 应先建立坐标系. 功微元可取为将厚度为 $dy$ 的薄圆片 (球切片的近似)\n\n提升 2r 高度所做的功.\n\n过球心作垂直剖面，取坐标系如图3.7所示。球面与剖面的交线方程为 $x^{2} + y^{2} = r^{2}$ 。水平面的直线方程为 $y = r$ ，将球从水中取出，上提高度为 $2r$ ，取 $y$ 为积分变量，任取小区间 $[y, y + dy] \\subseteq [-r, r]$ ，对应该小区间的球片重量的近似值为"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\mathrm{d} p = g \\mathrm{d} V = g \\pi x ^ {2} \\mathrm{d} y = g \\pi (r ^ {2} - y ^ {2}) \\mathrm{d} y.\n$$\n\n取水的密度为 1，g 为重力加速度。将其提高 2r，在水中的行程为 r-y，在水面上的行程为 $2r-(r-y)=r+y$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "由于水下行程不做功，因此功微元\n\n图3.7\n\n$$\n\\mathrm{d} w = (r + y) \\mathrm{d} p = g \\pi (r + y) \\left(r ^ {2} - y ^ {2}\\right) \\mathrm{d} y.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "将球从水中取出做功为\n\n$$\nw = \\int_ {- r} ^ {r} d w = \\int_ {- r} ^ {r} g \\pi (r + y) \\left(r ^ {2} - y ^ {2}\\right) d y = \\frac {4}{3} g \\pi r ^ {4}.\n$$"
+      }
+    ],
+    "final_answer": "，因此功微元",
+    "techniques_used": [
+      "物理量",
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "物理量（功/引力等）的微元如何建立？坐标系如何取？",
+      "technique": "物理量",
+      "expected": "取合适微元，写出力/位移等再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终物理量结果是什么？",
+      "technique": "面积计算",
+      "expected": "，因此功微元"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例73",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 192,
+    "syllabus_note": "变力做功",
+    "commentary": "评注 变力做功问题的关键是要正确建立功微元，功微元有两个要素：一是力，二是位移。该题所对应的力是球切片的重力。"
+  }
+}

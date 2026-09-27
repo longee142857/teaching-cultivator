@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-17",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $I = \\int_{0}^{\\pi /2}\\frac{\\sin x}{1 + \\tan x}\\mathrm{d}x$ 与 $J = \\int_0^{\\pi /2}\\frac{\\cos x}{1 + \\tan x}\\mathrm{d}x.$",
+  "answer": "$J = 1 - I = \\frac{1}{2\\sqrt{2}}\\ln \\frac{\\sqrt{2} + 1}{\\sqrt{2} - 1}.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 三角函数有理式的积分，作万能代换化为有理函数的积分总是可行的，但未必计算简单；将被积函数统一为 $\\sin x, \\cos x$ 的形式，更利于运算."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} & I = \\int_ {0} ^ {\\pi / 2} \\frac {\\cos x \\sin x}{\\cos x + \\sin x} \\mathrm{d} x = \\frac {1}{2} \\int_ {0} ^ {\\pi / 2} \\frac {(\\cos^ {2} x + \\sin^ {2} x + 2 \\cos x \\sin x) - 1}{\\cos x + \\sin x} \\mathrm{d} x \\\\ & = \\frac {1}{2} \\int_ {0} ^ {\\pi / 2} \\frac {(\\cos x + \\sin x) ^ {2} - 1}{\\cos x + \\sin x} \\mathrm{d} x = \\frac {1}{2} \\left[ \\int_ {0} ^ {\\pi / 2} (\\cos x + \\sin x) \\mathrm{d} x - \\int_ {0} ^ {\\pi / 2} \\frac {1}{\\cos x + \\sin x} \\mathrm{d} x \\right] \\\\ & = \\frac {1}{2} \\left[ 2 - \\frac {1}{\\sqrt {2}} \\int_ {0} ^ {\\pi / 2} \\frac {1}{\\sin (x + \\pi / 4)} \\mathrm{d} (x + \\pi / 4) \\right] = 1 - \\frac {1}{2 \\sqrt {2}} \\ln | \\csc (x + \\pi / 4) - \\cot (x + \\pi / 4) | _ {0} ^ {\\pi / 2} \\\\ & = 1 - \\frac {1}{2 \\sqrt {2}} \\ln \\frac {\\sqrt {2} + 1}{\\sqrt {2} - 1}. \\\\ & I + J = \\int_ {0} ^ {\\pi / 2} \\frac {\\cos x + \\sin x}{1 + \\tan x} \\mathrm{d} x = \\int_ {0} ^ {\\pi / 2} \\frac {\\cos x (1 + \\tan x)}{1 + \\tan x} \\mathrm{d} x = \\int_ {0} ^ {\\pi / 2} \\cos x   \\mathrm{d} x = 1, \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "又"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $J = 1 - I = \\frac{1}{2\\sqrt{2}}\\ln \\frac{\\sqrt{2} + 1}{\\sqrt{2} - 1}.$"
+      }
+    ],
+    "final_answer": "$J = 1 - I = \\frac{1}{2\\sqrt{2}}\\ln \\frac{\\sqrt{2} + 1}{\\sqrt{2} - 1}.$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用三角恒等、含参求导还是特殊代换？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "按被积结构选特殊技巧化为可积形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$J = 1 - I = \\frac{1}{2\\sqrt{2}}\\ln \\frac{\\sqrt{2} + 1}{\\sqrt{2} - 1}.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例17",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 155,
+    "syllabus_note": "三角有理式",
+    "commentary": "评注 该题也可以先计算 J，再由 J 来计算 I，读者可自行练习."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-23",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 上满足 $f(x) = f(x - \\pi) + \\sin x$ ，在 $[0, \\pi]$ 上 $f(x) = x$ ，计算 $\\int_{\\pi}^{3\\pi} f(x) \\, \\mathrm{d}x$",
+  "answer": "$$ \\int_ {\\pi} ^ {3 \\pi} f (x) \\mathrm{d} x = \\int_ {\\pi} ^ {2 \\pi} (x - \\pi + \\sin x) \\mathrm{d} x + \\int_ {2 \\pi} ^ {3 \\pi} (x - 2 \\pi) \\mathrm{d} x = \\pi^ {2} - 2. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于仅知道 $f(x)$ 在区间 $[0, \\pi]$ 上的表达式，所以需做换元积分，将积分区间平移至 $[0, \\pi]$ 区间计算；也可根据给定的函数关系式求出 $f(x)$ 在区间 $[\\pi, 3\\pi]$ 上的表达式，再做积分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 $\\int_{\\pi}^{3\\pi}f(x)\\mathrm{d}x = \\int_{\\pi}^{3\\pi}[f(x - \\pi) + \\sin x]\\mathrm{d}x = \\int_{\\pi}^{3\\pi}f(x - \\pi)\\mathrm{d}x\\xlongequal{x - \\pi = t}\\int_{0}^{2\\pi}f(t)\\mathrm{d}t$ $= \\int_0^\\pi f(t)\\mathrm{d}x + \\int_\\pi^{2\\pi}f(t)\\mathrm{d}x = \\int_0^\\pi t\\mathrm{d}x + \\int_\\pi^{2\\pi}[f(t - \\pi) + \\sin t]\\mathrm{d}t$ $= \\frac{\\pi^2}{2} -2 + \\int_{\\pi}^{2\\pi}f(t - \\pi)\\mathrm{d}t = \\frac{\\pi^2}{2} -2 + \\int_0^\\pi f(u)\\mathrm{d}u = \\pi^2 -2.$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 先求出 $f(x)$ 在区间 $[\\pi, 3\\pi]$ 上的表达式，再做积分.\n\n当 $x \\in [\\pi, 2\\pi]$ 时， $x - \\pi \\in [0, \\pi]$ ，有 $f(x) = (x - \\pi) + \\sin x$ ；\n\n当 $x \\in [2\\pi, 3\\pi]$ 时， $x - \\pi \\in [\\pi, 2\\pi]$ ，有 $f(x) = [(x - \\pi) - \\pi + \\sin (x - \\pi)] + \\sin x = x - 2\\pi$ 。即\n\n$$\nf (x) = \\left\\{ \\begin{array}{l l} x - \\pi + \\sin x, & x \\in [ \\pi , 2 \\pi ], \\\\ x - 2 \\pi , & x \\in [ 2 \\pi , 3 \\pi ]. \\end{array} \\right.\n$$\n\n所以\n\n$$\n\\int_ {\\pi} ^ {3 \\pi} f (x) \\mathrm{d} x = \\int_ {\\pi} ^ {2 \\pi} (x - \\pi + \\sin x) \\mathrm{d} x + \\int_ {2 \\pi} ^ {3 \\pi} (x - 2 \\pi) \\mathrm{d} x = \\pi^ {2} - 2.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3 易验证 $f(x)$ 是以 $2\\pi$ 为周期的函数，则\n\n$$\n\\int_ {\\pi} ^ {3 \\pi} f (x) \\mathrm{d} x = \\int_ {0} ^ {2 \\pi} f (x) \\mathrm{d} x = \\int_ {0} ^ {\\pi} f (x) \\mathrm{d} x + \\int_ {\\pi} ^ {2 \\pi} f (x) \\mathrm{d} x = \\pi^ {2} - 2.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\int_ {\\pi} ^ {3 \\pi} f (x) \\mathrm{d} x = \\int_ {\\pi} ^ {2 \\pi} (x - \\pi + \\sin x) \\mathrm{d} x + \\int_ {2 \\pi} ^ {3 \\pi} (x - 2 \\pi) \\mathrm{d} x = \\pi^ {2} - 2. $$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$$ \\int_ {\\pi} ^ {3 \\pi} f (x) \\mathrm{d} x = \\int_ {\\pi} ^ {2 \\pi} (x - \\pi + \\sin x) \\mathrm{d} x + \\int_ {2 \\pi} ^ {3 \\pi} (x - 2 \\pi) \\mathrm{d} x = \\pi^ {2} - 2. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例23",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 159,
+    "syllabus_note": "函数方程+定积分",
+    "commentary": "评注 若 $f(x)$ 以 $T$ 为周期，则 $\\int_{a}^{a + T} f(x) \\mathrm{d}x = \\int_{0}^{T} f(x) \\mathrm{d}x$ 。即“周期函数在任一周期区间上的积分值相等”。"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-09",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.fund",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x) \\in C[-1,1]$ ，求 $\\lim_{h \\to 0^+} \\int_{-1}^{1} \\frac{h}{h^2 + x^2} f(x) \\, dx$ .",
+  "answer": "不能直接将极限符号与积分号交换。关于极限符号与积分号的可交换性，有以下结论：",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "变限积分求导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f(x)$ 为抽象函数，无法计算积分，可考虑用积分中值定理去掉积分号再求极限。由于被积函数的极限与 $x$ 是否为0有很大的不同，所以需做一个小区间将0点隔离开来。\n\n$$\n\\text {解} \\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x = \\int_ {- 1} ^ {- \\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x + \\int_ {- \\sqrt {h}} ^ {\\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x + \\int_ {\\sqrt {h}} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x.\n$$\n\n由于 $f(x)\\in C[-1,1]$ ，当 $h > 0$ 时，利用积分第一中值定理，得\n\n$$\n\\begin{array}{r l} & {\\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x)   \\mathrm{d} x = f (\\xi_ {1}) \\int_ {- 1} ^ {- \\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x + f (\\xi_ {2}) \\int_ {- \\sqrt {h}} ^ {\\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x + f (\\xi_ {3}) \\int_ {\\sqrt {h}} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x} \\\\ & {\\qquad = f (\\xi_ {1}) \\arctan \\frac {x}{h} \\bigg | _ {- 1} ^ {- \\sqrt {h}} + f (\\xi_ {2}) \\arctan \\frac {x}{h} \\bigg | _ {- \\sqrt {h}} ^ {\\sqrt {h}} + f (\\xi_ {3}) \\arctan \\frac {x}{h} \\bigg | _ {\\sqrt {h}} ^ {1}} \\\\ & {\\qquad (\\text {其中} - 1 \\leqslant \\xi_ {1} \\leqslant - \\sqrt {h} \\leqslant \\xi_ {2} \\leqslant \\sqrt {h} \\leqslant \\xi_ {3} \\leqslant 1).} \\end{array}\n$$\n\n利用 $f(x)$ 在 $[-1, 1]$ 上的连续性与有界性，有\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {1}) \\arctan \\frac {x}{h} \\Bigg | _ {- 1} ^ {- \\sqrt {h}} = \\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {1}) \\left[ \\arctan \\frac {1}{h} - \\arctan \\frac {1}{\\sqrt {h}} \\right] = 0,\n\n\\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {3}) \\arctan"
+      },
+      {
+        "id": "s2",
+        "text": "分析 由于 $f(x)$ 为抽象函数，无法计算积分，可考虑用积分中值定理去掉积分号再求极限。由于被积函数的极限与 $x$ 是否为0有很大的不同，所以需做一个小区间将0点隔离开来。\n\n$$\n\\text {解} \\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x = \\int_ {- 1} ^ {- \\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x + \\int_ {- \\sqrt {h}} ^ {\\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x + \\int_ {\\sqrt {h}} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) \\mathrm{d} x.\n$$\n\n由于 $f(x)\\in C[-1,1]$ ，当 $h > 0$ 时，利用积分第一中值定理，得\n\n$$\n\\begin{array}{r l} & {\\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x)   \\mathrm{d} x = f (\\xi_ {1}) \\int_ {- 1} ^ {- \\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x + f (\\xi_ {2}) \\int_ {- \\sqrt {h}} ^ {\\sqrt {h}} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x + f (\\xi_ {3}) \\int_ {\\sqrt {h}} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}}   \\mathrm{d} x} \\\\ & {\\qquad = f (\\xi_ {1}) \\arctan \\frac {x}{h} \\bigg | _ {- 1} ^ {- \\sqrt {h}} + f (\\xi_ {2}) \\arctan \\frac {x}{h} \\bigg | _ {- \\sqrt {h}} ^ {\\sqrt {h}} + f (\\xi_ {3}) \\arctan \\frac {x}{h} \\bigg | _ {\\sqrt {h}} ^ {1}} \\\\ & {\\qquad (\\text {其中} - 1 \\leqslant \\xi_ {1} \\leqslant - \\sqrt {h} \\leqslant \\xi_ {2} \\leqslant \\sqrt {h} \\leqslant \\xi_ {3} \\leqslant 1).} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "利用 $f(x)$ 在 $[-1, 1]$ 上的连续性与有界性，有\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {1}) \\arctan \\frac {x}{h} \\Bigg | _ {- 1} ^ {- \\sqrt {h}} = \\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {1}) \\left[ \\arctan \\frac {1}{h} - \\arctan \\frac {1}{\\sqrt {h}} \\right] = 0,\n$$\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {3}) \\arctan \\frac {x}{h} \\Bigg | _ {\\sqrt {h}} ^ {1} = \\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {3}) \\left[ \\arctan \\frac {1}{h} - \\arctan \\frac {1}{\\sqrt {h}} \\right] = 0,\n$$\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {2}) \\arctan \\frac {x}{h} \\Bigg | _ {- \\sqrt {h}} ^ {\\sqrt {h}} = \\lim _ {h \\rightarrow 0 ^ {+}} f (\\xi_ {2}) 2 \\arctan \\frac {1}{\\sqrt {h}} = \\pi f (0).\n$$\n\n所以\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} \\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) d x = \\pi f (0).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "评注 要注意，该题的以下做法是错误的：\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} \\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) d x = \\int_ {- 1} ^ {1} \\lim _ {h \\rightarrow 0 ^ {+}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) d x = \\int_ {- 1} ^ {1} 0 d x = 0.\n$$\n\n原因是被积函数 $g(x, h) = \\frac{h}{h^2 + x^2} f(x)$ 在点 $(0, 0)$ 处不连续，所以不能直接将极限符号与积分号交换。关于极限符号与积分号的可交换性，有以下结论：\n\n定理 记 $D = [a, b] \\times [c, d]$ ，若 $f \\in C(D)$ ，则 $F(y) = \\int_{a}^{b} f(x, y) \\, \\mathrm{d}x$ 在 $[c, d]$ 上连续。因而\n\n$$\n\\lim _ {y \\rightarrow y _ {0}} \\int_ {a} ^ {b} f (x, y) d x = \\int_ {a} ^ {b} \\lim _ {y \\rightarrow y _ {0}} f (x, y) d x, \\quad \\forall y _ {0} \\in [ c, d ].\n$$"
+      }
+    ],
+    "final_answer": "不能直接将极限符号与积分号交换。关于极限符号与积分号的可交换性，有以下结论：",
+    "techniques_used": [
+      "积分中值",
+      "变限积分求导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "变限积分求导",
+      "expected": "不能直接将极限符号与积分号交换。关于极限符号与积分号的可交换性，有以下结论："
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 151,
+    "syllabus_note": "核函数极限+积分中值",
+    "commentary": "评注 要注意，该题的以下做法是错误的：\n\n$$\n\\lim _ {h \\rightarrow 0 ^ {+}} \\int_ {- 1} ^ {1} \\frac {h}{h ^ {2} + x ^ {2}} f (x) d x = \\int_ {- 1} ^ {1} \\lim _ {h \\rightarrow 0 ^ {+}} \\frac {h}{h ^ {2} + x ^ {2}} f (x) d x = \\int_ {- 1} ^ {1} 0 d x = 0.\n$$\n\n原因是被积函数 $g(x, h) = \\frac{h}{h^2 + x^2} f(x)$ 在点 $(0, 0)$ 处不连续，所以不能直接将极限符号与积分号交换。关于极限符号与积分号的可交换性，有以下结论：\n\n定理 记 $D = [a, b] \\times [c, d]$ ，若 $f \\in C(D)$ ，则 $F(y) = \\int_{a}^{b} f(x, y) \\, \\mathrm{d}x$ 在 $[c, d]$ 上连续。因而\n\n$$\n\\lim _ {y \\rightarrow y _ {0}} \\int_ {a} ^ {b} f (x, y) d x = \\int_ {a} ^ {b} \\lim _ {y \\rightarrow y _ {0}} f (x, y) d x, \\quad \\forall y _ {0} \\in [ c, d ].\n$$"
+  }
+}

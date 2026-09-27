@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-12",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x) \\in C[-\\pi, \\pi]$ ，且 $f(x) = \\frac{x}{1 + \\cos^2 x} + \\int_{-\\pi}^{\\pi} f(x) \\sin x \\mathrm{d}x$ ，求 $f(x)$ .",
+  "answer": "$$ f (x) = \\frac {x}{1 + \\cos^ {2} x} + \\frac {\\pi^ {2}}{2}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需算出 $f(x)$ 表达式中的常数 $\\int_{-\\pi}^{\\pi} f(x) \\sin x \\, \\mathrm{d}x$ 。因而在函数表达式两边乘以 $\\sin x$ 后，在 $[- \\pi, \\pi]$ 上积分即可求得。"
+      },
+      {
+        "id": "s2",
+        "text": "记 $\\int_{-\\pi}^{\\pi} f(x) \\sin x \\, \\mathrm{d}x = l$ ，将 $f(x) = \\frac{x}{1 + \\cos^2 x} + l$ 两边乘以 $\\sin x$ 后，在 $[- \\pi, \\pi]$ 上积分，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\int_ {- \\pi} ^ {\\pi} f (x) \\sin x \\mathrm{d} x & = \\int_ {- \\pi} ^ {\\pi} \\frac {x \\sin x}{1 + \\cos^ {2} x} \\mathrm{d} x + \\int_ {- \\pi} ^ {\\pi} l \\cdot \\sin x \\mathrm{d} x = 2 \\int_ {0} ^ {\\pi} \\frac {x \\sin x}{1 + \\cos^ {2} x} \\mathrm{d} x + 0 \\\\ & = 2 \\cdot \\frac {\\pi}{2} \\int_ {0} ^ {\\pi} \\frac {\\sin x}{1 + \\cos^ {2} x} \\mathrm{d} x = - \\pi \\arctan (\\cos x) \\big | _ {0} ^ {\\pi} = \\frac {\\pi^ {2}}{2}. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "故"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nf (x) = \\frac {x}{1 + \\cos^ {2} x} + \\frac {\\pi^ {2}}{2}.\n$$"
+      }
+    ],
+    "final_answer": "$$ f (x) = \\frac {x}{1 + \\cos^ {2} x} + \\frac {\\pi^ {2}}{2}. $$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$$ f (x) = \\frac {x}{1 + \\cos^ {2} x} + \\frac {\\pi^ {2}}{2}. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 153,
+    "syllabus_note": "积分方程中的常数项",
+    "commentary": "评注 （1）需确定区间或区域上的积分（如定积分、重积分、线面积分等）都是一个常数，明确这一点有助于问题的解决；\n\n(2) 题中计算用到了积分公式: $\\int_{0}^{\\pi} x f(\\sin x) \\mathrm{d} x = \\frac{\\pi}{2} \\int_{0}^{\\pi} f(\\sin x) \\mathrm{d} x$ ."
+  }
+}

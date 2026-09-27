@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-71",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.volume",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求由曲线 $y = x^2$ 与直线 $y = mx (m > 0)$ 在第一象限内所围成的图形绕该直线旋转所成立体的体积.",
+  "answer": "为 $\\pi \\rho^2$ ，沿旋转轴给截面一个厚度 $d\\boldsymbol{l}$ ， $d\\boldsymbol{l}$ 在 $x$ 轴上的投影为 $d\\boldsymbol{x}$ ，则 $d\\boldsymbol{l} = \\sqrt{1 + m^2} d\\boldsymbol{x}$ 。于是体积微元为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积计算",
+    "体积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 做坐标旋转，以直线 $y = mx$ 为新坐标系横轴，再计算旋转体体积；不做坐标旋转，可用微元法求得体积微元，再积分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 做坐标旋转，使新坐标系中 $Ox'$ 轴与直线 $y = mx$ 重合，旋转角度为 $\\varphi$ （如图3.5所示），所以\n\n$$\n\\tan \\varphi = \\frac {y}{x} = m \\Rightarrow \\cos \\varphi = \\frac {1}{\\sqrt {1 + m ^ {2}}}, \\quad \\sin \\varphi = \\frac {m}{\\sqrt {1 + m ^ {2}}}.\n$$\n\n由旋转公式，得\n\n$$\n\\binom {x ^ {\\prime}} {y ^ {\\prime}} = \\left( \\begin{array}{c c} \\cos \\varphi & \\sin \\varphi \\\\ - \\sin \\varphi & \\cos \\varphi \\end{array} \\right) \\binom {x} {y} \\Rightarrow \\left\\{ \\begin{array}{l} x ^ {\\prime} = x \\frac {1}{\\sqrt {1 + m ^ {2}}} + y \\frac {m}{\\sqrt {1 + m ^ {2}}}, \\\\ y ^ {\\prime} = - x \\frac {m}{\\sqrt {1 + m ^ {2}}} + y \\frac {1}{\\sqrt {1 + m ^ {2}}}. \\end{array} \\right.\n$$\n\n图3.5\n\n体积微元\n\n$$\n\\mathrm{d} V = \\pi y ^ {\\prime 2} \\mathrm{d} x ^ {\\prime} = \\pi \\left(y \\frac {1}{\\sqrt {1 + m ^ {2}}} - x \\frac {m}{\\sqrt {1 + m ^ {2}}}\\right) ^ {2} \\mathrm{d} \\left(x \\frac {1}{\\sqrt {1 + m ^ {2}}} + y \\frac {m}{\\sqrt {1 + m ^ {2}}}\\right),\n$$\n\n由 $y = x^{2}$ ，得\n\n$$\n\\mathrm{d} V = \\frac {\\pi}{(1 + m ^ {2}) ^ {3 / 2}} (x ^ {2} - m x) ^ {2} (1 + 2 m x) \\mathrm{d} x.\n$$\n\n所以\n\n$$\nV = \\frac {\\pi}{(1 + m ^ {2}) ^ {3 / 2}} \\int_ {0} ^ {m} (x ^ {2} - m x) ^ {2} (1 + 2 m x) d x = \\frac {\\pi m ^ {5}}{3 0 \\sqrt {1 + m ^ {2}}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 在曲线上取一点 $P(x,y)$ ，该点到旋转轴的距离为\n\n$$\n\\rho = \\frac {\\left| y - m x \\right|}{\\sqrt {1 + m ^ {2}}} = \\frac {\\left| x ^ {2} - m x \\right|}{\\sqrt {1 + m ^ {2}}}.\n$$\n\n过该点垂直于旋转轴的截面面积为 $\\pi \\rho^2$ ，沿旋转轴给截面一个厚度 $d\\boldsymbol{l}$ ， $d\\boldsymbol{l}$ 在 $x$ 轴上的投影为 $d\\boldsymbol{x}$ ，则 $d\\boldsymbol{l} = \\sqrt{1 + m^2} d\\boldsymbol{x}$ 。于是体积微元为\n\n$$\n\\mathrm{d} V = \\pi \\rho^ {2} \\mathrm{d} l = \\frac {\\pi (x ^ {2} - m x) ^ {2}}{\\sqrt {1 + m ^ {2}}} \\mathrm{d} x,\n$$\n\n于是\n\n$$\nV = \\frac {\\pi}{\\sqrt {1 + m ^ {2}}} \\int_ {0} ^ {m} (x ^ {2} - m x) ^ {2} d x = \\frac {\\pi m ^ {5}}{3 0 \\sqrt {1 + m ^ {2}}}.\n$$"
+      }
+    ],
+    "final_answer": "为 $\\pi \\rho^2$ ，沿旋转轴给截面一个厚度 $d\\boldsymbol{l}$ ， $d\\boldsymbol{l}$ 在 $x$ 轴上的投影为 $d\\boldsymbol{x}$ ，则 $d\\boldsymbol{l} = \\sqrt{1 + m^2} d\\boldsymbol{x}$ 。于是体积微元为",
+    "techniques_used": [
+      "面积计算",
+      "体积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "旋转轴与截面如何选取？体积微元是圆盘、壳体还是定理法？",
+      "technique": "体积计算",
+      "expected": "按旋转轴选取适当截面，写出体积微元再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求体积是什么？",
+      "technique": "体积计算",
+      "expected": "为 $\\pi \\rho^2$ ，沿旋转轴给截面一个厚度 $d\\boldsymbol{l}$ ， $d\\boldsymbol{l}$ 在 $x$ 轴上的投影为 $d\\boldsymbol{x}$ ，则 $d\\boldsymbol{l} = \\sqrt{1 + m^2} d\\boldsymbol{x}$ 。于是体积微元为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例71*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 191,
+    "starred": true,
+    "syllabus_note": "绕斜线旋转体积",
+    "commentary": "评注 由两种方法可看出，体积微元选取方式不同，积分的难易程度也不一样，这在三重积分部分尤为明显。读者可参见5.2节中的相关例子。"
+  }
+}

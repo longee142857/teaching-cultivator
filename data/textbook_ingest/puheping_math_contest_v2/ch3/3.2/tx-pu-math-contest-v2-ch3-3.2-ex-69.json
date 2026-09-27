@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-69",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.volume",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "点 $A(1,0,1)$ 与点 $B(0,1,0)$ 所成的线段 $AB$ 绕 $z$ 轴旋转一周得一旋转曲面 $S$ ，求由 $S$ 及平面 $z = 0, z = 1$ 所围成立体的体积.",
+  "answer": "$A(z)$ 是圆面积，圆心为 $N$ ，半径",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积计算",
+    "体积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 过区间[0,1]内任一点 $z$ 作 $z$ 轴的垂平面，只要能算出该平面截立体的面积 $A(z)$ ，可得所求体积为 $V = \\int_{0}^{1} A(z) \\mathrm{d}z$ ."
+      },
+      {
+        "id": "s2",
+        "text": "直线 $AB$ 的方程为 $\\frac{x}{-1} = \\frac{y - 1}{1} = \\frac{z}{-1}$ ，即 $\\left\\{ \\begin{array}{l} x = z \\\\ y = 1 - z \\end{array} \\right.$ ."
+      },
+      {
+        "id": "s3",
+        "text": "任取[0,1]上一点 $z$ ，过它作垂直于 $z$ 轴的平面，此平面截旋转体得一截面，设此平面与线段 $AB$ 的交点为 $M(z,1 - z,z)$ ，与 $z$ 轴的交点则是 $N(0,0,z)$ ，截面面积 $A(z)$ 是圆面积，圆心为 $N$ ，半径"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nr = \\left| M N \\right| = \\sqrt {z ^ {2} + (1 - z) ^ {2}} ,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "则"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{c} A (z) = \\pi r ^ {2} = \\pi [ z ^ {2} + (1 - z) ^ {2} ], \\\\ V = \\int_ {0} ^ {1} A (z) \\mathrm{d} z = \\int_ {0} ^ {1} \\pi [ z ^ {2} + (1 - z) ^ {2} ] \\mathrm{d} z = \\frac {2}{3} \\pi . \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$A(z)$ 是圆面积，圆心为 $N$ ，半径",
+    "techniques_used": [
+      "面积计算",
+      "体积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "旋转轴与截面如何选取？体积微元是圆盘、壳体还是定理法？",
+      "technique": "体积计算",
+      "expected": "按旋转轴选取适当截面，写出体积微元再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求体积是什么？",
+      "technique": "体积计算",
+      "expected": "$A(z)$ 是圆面积，圆心为 $N$ ，半径"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例69",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 190,
+    "syllabus_note": "旋转体体积",
+    "commentary": "评注（1）该题也可先求出旋转曲面的方程（单叶双曲面），再利用三重积分计算曲面与两平面 $z = 0, z = 1$ 所围成立体的体积，但计算会略困难一些.\n\n(2) 一直线绕固定轴旋转, 当动直线与旋转轴共面时, 旋转曲面是圆柱面或圆锥面; 当动直线与旋转轴异面时, 旋转曲面是单叶双曲面."
+  }
+}

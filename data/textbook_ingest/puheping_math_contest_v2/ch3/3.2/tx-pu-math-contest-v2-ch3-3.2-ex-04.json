@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-04",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.fund",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $F(x) = -\\frac{1}{2} (1 + \\mathrm{e}^{-1}) + \\int_{-1}^{1}|x - t|\\mathrm{e}^{-t^2}\\mathrm{d}t$ ，判断函数 $F(x)$ 在区间 $(-1,1)$ 内有几个零点.",
+  "answer": "函数 $F(x)$ 在区间 $(0,1)$ 内有且仅有一个零点；又 $F(x)$ 为偶函数，所以 $F(x)$ 在区间 $(-1,0)$ 内同样有且仅有一个零点。于是知函数 $F(x)$ 在区间 $(-1,1)$ 内有且仅有两个零点。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇偶对称",
+    "变限积分求导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 用介值定理判断函数零点的存在性，用单调性判断零点的个数。为判断函数值与导数的符号，需将积分化简。为此，需将被积函数的分段点 $t = x$ 插入积分区间做分段积分。"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} F (x) & = - \\frac {1}{2} (1 + e ^ {- 1}) + \\int_ {- 1} ^ {x} (x - t) e ^ {- t ^ {2}} d t + \\int_ {x} ^ {1} (t - x) e ^ {- t ^ {2}} d t \\\\ & = - \\frac {1}{2} (1 + e ^ {- 1}) + x \\int_ {- 1} ^ {x} e ^ {- t ^ {2}} d t - \\int_ {- 1} ^ {x} t e ^ {- t ^ {2}} d t + \\int_ {x} ^ {1} t e ^ {- t ^ {2}} d t - x \\int_ {x} ^ {1} t e ^ {- t ^ {2}} d t \\\\ & = - \\frac {1}{2} - \\frac {3}{2} e ^ {- 1} + e ^ {- x ^ {2}} + x \\int_ {- 1} ^ {0} e ^ {- t ^ {2}} d t + x \\int_ {1} ^ {0} e ^ {- t ^ {2}} d t + 2 x \\int_ {0} ^ {x} e ^ {- t ^ {2}} d t \\\\ & = - \\frac {1}{2} - \\frac {3}{2} e ^ {- 1} + e ^ {- x ^ {2}} + 2 x \\int_ {0} ^ {x} e ^ {- t ^ {2}} d t. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $\\mathbf{e}^{-x^2}$ 是偶函数，所以 $\\int_0^x\\mathrm{e}^{-t^2}\\mathrm{d}t$ 是奇函数， $2x\\int_0^x\\mathrm{e}^{-t^2}\\mathrm{d}t$ 是偶函数，于是知 $F(x)$ 为偶函数"
+      },
+      {
+        "id": "s4",
+        "text": "又注意到： $F(0)=\\frac{1}{2}-\\frac{3}{2}e^{-1}=\\frac{e-3}{2e}<0$ ，"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nF (1) = - \\left(\\frac {1}{2} + \\frac {1}{2 e}\\right) + 2 \\int_ {0} ^ {t} e ^ {- t ^ {2}} d t > - \\left(\\frac {1}{2} + \\frac {1}{2 e}\\right) + 2 \\int_ {0} ^ {t} e ^ {- t} d t = \\frac {3}{2} - \\frac {5}{2 e} > 0."
+      },
+      {
+        "id": "s6",
+        "text": "F ^ {\\prime} (x) = - 2 x \\mathrm{e} ^ {- x ^ {2}} + 2 x \\mathrm{e} ^ {- x ^ {2}} + 2 \\int_ {0} ^ {x} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t = 2 \\int_ {0} ^ {x} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t > 0 (\\text {当} x > 0 \\text {时}).\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "因此，函数 $F(x)$ 在区间 $(0,1)$ 内有且仅有一个零点；又 $F(x)$ 为偶函数，所以 $F(x)$ 在区间 $(-1,0)$ 内同样有且仅有一个零点。于是知函数 $F(x)$ 在区间 $(-1,1)$ 内有且仅有两个零点。"
+      }
+    ],
+    "final_answer": "函数 $F(x)$ 在区间 $(0,1)$ 内有且仅有一个零点；又 $F(x)$ 为偶函数，所以 $F(x)$ 在区间 $(-1,0)$ 内同样有且仅有一个零点。于是知函数 $F(x)$ 在区间 $(-1,1)$ 内有且仅有两个零点。",
+    "techniques_used": [
+      "奇偶对称",
+      "变限积分求导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "变限积分求导",
+      "expected": "函数 $F(x)$ 在区间 $(0,1)$ 内有且仅有一个零点；又 $F(x)$ 为偶函数，所以 $F(x)$ 在区间 $(-1,0)$ 内同样有且仅有一个零点。于是知函数 $F(x)$ 在区间 $(-1,1)$ 内有且仅有两个零点。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 149,
+    "syllabus_note": "变限积分求导找零点"
+  }
+}

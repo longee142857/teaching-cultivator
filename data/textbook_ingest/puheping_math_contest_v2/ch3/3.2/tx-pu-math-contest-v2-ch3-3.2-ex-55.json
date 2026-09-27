@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-55",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在[0,1]上有连续导数，且满足 $f(0) = 0$ ， $0 < f'(x) \\leqslant 1$ ，证明：\n\n$$\n\\left(\\int_ {0} ^ {1} f (x) \\mathrm{d} x\\right) ^ {2} \\geqslant \\int_ {0} ^ {1} [ f (x) ] ^ {3} \\mathrm{d} x,\n$$\n\n并给出一个出现等式的例子.",
+  "answer": "$$ \\begin{array}{r l} & {\\int_ {0} ^ {1} (f (x)) ^ {3} \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {x} 2 f (y) \\mathrm{d} y = \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {1} f (y) \\mathrm{d} y (\\text {二重积分的对称性})} \\\\ & {\\qquad = \\left(\\int_ {0} ^ {1} f (x) \\mathrm{d} x\\right) ^ {2}.} \\end{array} $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "换元定积分",
+    "奇偶对称",
+    "积分中值",
+    "夹逼/估值",
+    "积分不等式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将积分上限 1 换为参数引入辅助函数，将不等式转化为函数不等式，再用微分学的方法证明；还可以用其他多种方法."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为 $0 < f'(x) \\leqslant 1$ ， $f(0) = 0$ ，则 $f(x) > f(0) = 0$ 。\n\n令 $F(t) = \\left(\\int_0^t f(x)\\mathrm{d}x\\right)^2 -\\int_0^t f^3 (x)\\mathrm{d}x$ ， $t\\in [0,1]$ .则 $F(0) = 0$ ，且\n\n$$\nF ^ {\\prime} (t) = f (t) \\left(2 \\int_ {0} ^ {t} f (x) \\mathrm{d} x - [ f (t) ] ^ {2}\\right) \\triangleq f (t) G (t),\n$$\n\n其中 $G(t) = 2\\int_{0}^{t}f(x)\\mathrm{d}x - \\left[f(t)\\right]^{2}$ ，则 $G(0) = 0$ 和 $G^{\\prime}(t) = 2f(t)[1 - f^{\\prime}(t)]\\geqslant 0$ ，因此 $G(t)\\geqslant 0$ .于是 $F^{\\prime}(t) = f(t)G(t)\\geqslant 0$ ，所以 $F(t)\\geqslant 0$ ， $F(1)\\geqslant 0$ ，所以原不等式成立.\n\n仅当对一切 $t, f(t)G(t) = F'(t) = 0$ 时，等式成为可能。由此推出：对某个 $k$ ，在 $[0, k]$ 上 $f(t) = 0$ 且在 $(k, 1)$ 内 $f(t) > 0$ ，同时 $G'(t) = 0$ ，然后在 $(k, 1)$ 上，有 $f'(t) = 1$ 。这仅当 $k = 0$ 或 $k = 1$ 才行，否则 $f'(k)$ 不存在，所以出现等式的唯一的答案是 $f(x) = x$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 设 $F(x) = \\left[\\int_0^x f(t)\\mathrm{d}t\\right]^2$ ， $G(x) = \\int_0^x f^3 (t)\\mathrm{d}t$ ，只需证明 $\\frac{F(1)}{G(1)}\\geqslant 1$\n\n显然，在区间 $[0,1]$ 上， $F(x)$ 和 $G(x)$ 满足柯西中值定理的条件，且 $F(0) = G(0) = 0$ ，故对任意 $x \\in [0,1]$ ，存在一点 $\\xi \\in (0,x)$ ，使\n\n$$\n\\begin{array}{r l} \\frac {F (x)}{G (x)} & = \\frac {F (x) - F (0)}{G (x) - G (0)} = \\frac {F ^ {\\prime} (\\xi)}{G ^ {\\prime} (\\xi)} = \\frac {2 f (\\xi) \\int_ {0} ^ {\\xi} f (t) \\mathrm{d} t}{f ^ {3} (\\xi)} = \\frac {2 \\int_ {0} ^ {\\xi} f (t) \\mathrm{d} t}{f ^ {2} (\\xi)} \\\\ & = \\frac {2 \\int_ {0} ^ {\\xi} f (t) \\mathrm{d} t - 2 \\int_ {0} ^ {0} f (t) \\mathrm{d} t}{f ^ {2} (\\xi) - f ^ {2} (0)} = \\frac {2 f (\\eta)}{2 f (\\eta) f ^ {\\prime} (\\eta)} = \\frac {1}{f ^ {\\prime} (\\eta)} \\geqslant 1 \\quad (\\eta \\in (0, \\xi)). \\end{array}\n$$\n\n上式的倒数第2个等式是对函数 $\\int_0^x f(t)\\mathrm{d}t$ 和 $f^{2}(x)$ 在区间 $[0,\\xi ]$ 上用柯西中值定理所得.\n\n于是，对任意 $x \\in [0,1]$ ， $\\frac{F(x)}{G(x)} \\geqslant 1$ ， $\\frac{F(1)}{G(1)} \\geqslant 1$ 。"
+      },
+      {
+        "id": "s4",
+        "text": "方法3 设 $f(1) = c$ ，由题设推出 $f$ 有反函数 $g$ ，且在 $0 \\leqslant y \\leqslant c$ 上有 $g'(y) = \\frac{1}{f'(x)} \\geqslant 1$ .\n\n记 $A = \\left(\\int_0^1 f(x)\\mathrm{d}x\\right)^2$ ， $B = \\int_0^1 [f(x)]^3\\mathrm{d}x$ ．做积分换元 $x = g(y)$ ，有\n\n$$\n\\begin{array}{r l} & {A = \\left(\\int_ {0} ^ {c} y g ^ {\\prime} (y) \\mathrm{d} y\\right) ^ {2} = \\int_ {0} ^ {c} \\int_ {0} ^ {c} y g ^ {\\prime} (y) z g ^ {\\prime} (z) \\mathrm{d} z \\mathrm{d} y} \\\\ & {\\qquad = 2 \\int_ {0} ^ {c} \\mathrm{d} z \\int_ {0} ^ {z} y g ^ {\\prime} (y) z g ^ {\\prime} (z) \\mathrm{d} y (\\text {被积函数与积分区域关于} y, z \\text {对称}).} \\end{array}\n$$\n\n由于 $g'(y) \\geqslant 1$ ，则\n\n$$\nA \\geqslant \\int_ {0} ^ {c} z g ^ {\\prime} (z) \\left(\\int_ {0} ^ {z} 2 y \\mathrm{d} y\\right) \\mathrm{d} z = \\int_ {0} ^ {c} z ^ {3} g ^ {\\prime} (z) \\mathrm{d} z = B.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "方法4\n\n$$\n\\int_ {0} ^ {1} [ f (x) ] ^ {3} \\mathrm{d} x = \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {x} 2 f (y) f ^ {\\prime} (y) \\mathrm{d} y.\n$$\n\n因为 $0 < f'(x) \\leqslant 1$ ， $f(0) = 0$ ，则 $f(x) > f(0) = 0$ 。所以\n\n$$\n\\begin{array}{r l} & {\\int_ {0} ^ {1} (f (x)) ^ {3} \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {x} 2 f (y) \\mathrm{d} y = \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {1} f (y) \\mathrm{d} y (\\text {二重积分的对称性})} \\\\ & {\\qquad = \\left(\\int_ {0} ^ {1} f (x) \\mathrm{d} x\\right) ^ {2}.} \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$$ \\begin{array}{r l} & {\\int_ {0} ^ {1} (f (x)) ^ {3} \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {x} 2 f (y) \\mathrm{d} y = \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {1} f (y) \\mathrm{d} y (\\text {二重积分的对称性})} \\\\ & {\\qquad = \\left(\\int_ {0} ^ {1} f (x) \\mathrm{d} x\\right) ^ {2}.} \\end{array} $$",
+    "techniques_used": [
+      "换元定积分",
+      "奇偶对称",
+      "积分中值",
+      "夹逼/估值",
+      "积分不等式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "奇偶对称",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "奇偶对称",
+      "expected": "$$ \\begin{array}{r l} & {\\int_ {0} ^ {1} (f (x)) ^ {3} \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {x} 2 f (y) \\mathrm{d} y = \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\int_ {0} ^ {"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例55",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 179,
+    "syllabus_note": "积分不等式",
+    "commentary": "评注（1）二重积分的对称性见5.1节例4评注（2）.\n\n(2) 从证明过程可看出，该题的积分区间可换为任意有限形式 $[a, b]$ ，只需 $f(a) = 0$ 即可。"
+  }
+}

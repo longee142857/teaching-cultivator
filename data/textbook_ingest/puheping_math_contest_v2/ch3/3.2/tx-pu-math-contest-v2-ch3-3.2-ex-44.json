@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-44",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x) \\in C^{(2)}[a, b]$ ，证明 $\\exists \\xi \\in (a, b)$ ，使\n\n$$\n\\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2 4} f ^ {\\prime \\prime} (\\xi) (b - a) ^ {3}.\n$$",
+  "answer": "$$ \\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2 4} f ^ {\\prime \\prime} (\\xi) (b - a) ^ {3}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由等式右边的形式可看出应将 $f(x)$ 在点 $x_0 = \\frac{a + b}{2}$ 处展开为一阶泰勒公式，再做积分即可.\n\n将 $f(x)$ 在点 $x_0 = \\frac{a + b}{2}$ 处展开为一阶泰勒公式.\n\n$$\nf (x) = f \\left(\\frac {a + b}{2}\\right) + f ^ {\\prime} \\left(\\frac {a + b}{2}\\right) \\left(x - \\frac {a + b}{2}\\right) + \\frac {1}{2 !} f ^ {\\prime \\prime} (\\eta) \\left(x - \\frac {a + b}{2}\\right) ^ {2}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "(其中 $\\eta$ 在x与 $\\frac{a+b}{2}$ 之间).\n\n积分得\n\n$$\n\\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2} \\int_ {a} ^ {b} f ^ {\\prime \\prime} (\\eta) \\left(x - \\frac {a + b}{2}\\right) ^ {2} \\mathrm{d} x.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由积分第一中值定理，知 $\\exists \\xi \\in (a,b)$ ，使\n\n$$\n\\int_ {a} ^ {b} f ^ {\\prime \\prime} (\\eta) \\left(x - \\frac {a + b}{2}\\right) ^ {2} d x = f ^ {\\prime \\prime} (\\xi) \\int_ {a} ^ {b} \\left(x - \\frac {a + b}{2}\\right) ^ {2} d x = f ^ {\\prime \\prime} (\\xi) \\frac {1}{1 2} (b - a) ^ {3}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以\n\n$$\n\\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2 4} f ^ {\\prime \\prime} (\\xi) (b - a) ^ {3}.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2 4} f ^ {\\prime \\prime} (\\xi) (b - a) ^ {3}. $$",
+    "techniques_used": [
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$$ \\int_ {a} ^ {b} f (x) \\mathrm{d} x = f \\left(\\frac {a + b}{2}\\right) (b - a) + \\frac {1}{2 4} f ^ {\\prime \\prime} (\\xi) (b - a) ^ {3}. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例44*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 172,
+    "starred": true,
+    "syllabus_note": "中点公式余项",
+    "commentary": "评注 当所证明的等式的一边为积分形式，另一边为导数形式时，可将被积函数在对应点（由导数形式端确定对应点）用泰勒公式展开，再做积分，并对泰勒公式余项做适当的处理（用介值定理或积分中值定理）."
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-51",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 C 是在区间 $0 \\leqslant x \\leqslant 1$ 上的所有实值连续可微函数的集合，且 $f(0) = 0$ 和 $f(1) = 1$ 。求出最大实数 u，对于 C 中的所有 f 满足 $u \\leqslant \\int_{0}^{1} |f'(x) - f(x)| \\, dx$ 。",
+  "answer": "$u = \\frac{1}{\\mathbf{e}}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $f'(x) - f(x) = [f(x)e^{-x}]'e^x$ ，所以只需找到函数 $\\left| [f(x)e^{-x}]'e^x \\right|$ 在区间[0,1]上的积分值的最大下界。显然 $\\left| [f(x)e^{-x}]'e^x \\right| \\geqslant [f(x)e^{-x}]'$ ，两端积分问题就容易解决了。\n\n下面证明满足题目要求的 $u = 1 / e$\n\n因为 $f^{\\prime}(x) - f(x) = [f(x)\\mathrm{e}^{-x}]^{\\prime}\\mathrm{e}^{x}$ ，对于 $x\\geqslant 0$ ，有 $\\mathbf{e}^x\\geqslant 1$ ，所以"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\int_ {0} ^ {1} \\left| f ^ {\\prime} (x) - f (x) \\right| \\mathrm{d} x = \\int_ {0} ^ {1} \\left| \\left[ f (x) \\mathrm{e} ^ {- x} \\right] ^ {\\prime} \\mathrm{e} ^ {x} \\right| \\mathrm{d} x > \\int_ {0} ^ {1} \\left[ f (x) \\mathrm{e} ^ {- x} \\right] ^ {\\prime} \\mathrm{d} x = \\left[ f (x) \\mathrm{e} ^ {- x} \\right] _ {0} ^ {1} = \\frac {1}{\\mathrm{e}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "为了看出 $\\frac{1}{\\mathbf{e}}$ 是一个最大的下界，构造函数\n\n$$\nf _ {a} (x) = \\left\\{ \\begin{array}{l l} \\frac {\\mathrm{e} ^ {a - 1}}{a} x, & 0 \\leqslant x <   a, \\\\ \\mathrm{e} ^ {x - 1}, & a \\leqslant x \\leqslant 1. \\end{array} . \\right.\n$$\n\n令 $m = \\mathrm{e}^{a - 1} / a$ ，则"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\begin{array}{l}\\int_ {0} ^ {1} \\left| f _ {a} ^ {\\prime} (x) - f _ {a} (x) \\right| \\mathrm{d} x = \\int_ {0} ^ {a} | m - m x | \\mathrm{d} x + \\int_ {a} ^ {1} \\left| e ^ {x - 1} - e ^ {x - 1} \\right| \\mathrm{d} x\\\\= \\int_ {0} ^ {a} | m - m x | \\mathrm{d} x = m \\left(a - \\frac {a ^ {2}}{2}\\right) = e ^ {a - 1} \\left(1 - \\frac {a}{2}\\right)\\rightarrow \\frac {1}{e} (a \\rightarrow 0).\\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "这说明凡是大于 $\\frac{1}{\\mathbf{e}}$ 的数都不可能是所给积分的下界. 所以 $u = \\frac{1}{\\mathbf{e}}$ ."
+      }
+    ],
+    "final_answer": "$u = \\frac{1}{\\mathbf{e}}$ .",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$u = \\frac{1}{\\mathbf{e}}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例51*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 175,
+    "starred": true,
+    "syllabus_note": "变分型不等式",
+    "commentary": "评注 函数 $f_{a}(x)$ 的由来: 取 $f(x) = k\\mathrm{e}^{x}$ , 显然 $\\int_0^1 |f'(x) - f(x)|\\mathrm{d}x = 0$ , 积分值最小; 由条件 $f(1) = 1$ , 知 $k = \\mathrm{e}^{-1}$ , 即 $f(x) = \\mathrm{e}^{x - 1}$ , 但 $f(0) = \\mathrm{e}^{-1} \\neq 0$ , 为此取 $a \\in (0,1)$ , 作两点 $(0,0),(a,f(a))$ 的连线 $y = \\frac{\\mathrm{e}^{a - 1}}{a} x$ 来替代区间 $[0,a]$ 上的 $f(x)$ , 于是就得到 $f_{a}(x)$ ."
+  }
+}

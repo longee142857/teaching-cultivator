@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-28",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_0^{\\frac{\\pi}{2}}\\cos^n x\\sin nx\\mathrm{d}x$ （ $n$ 为自然数）.",
+  "answer": "见题解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部定积分",
+    "牛顿-莱布尼茨"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数中含有因子 $\\cos^n x$ ，为了得到递推公式，需要对该因子降次，因此想到三角函数的积化和差公式。"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} I _ {n} & = \\frac {1}{2} \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos^ {n - 1} x \\left[ \\sin (n - 1) x + \\sin (n + 1) x \\right] \\mathrm{d} x \\\\ & = \\frac {1}{2} I _ {n - 1} + \\frac {1}{2} \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos^ {n - 1} x (\\sin n x \\cos x + \\cos n x \\sin x) \\mathrm{d} x \\\\ & = \\frac {1}{2} (I _ {n - 1} + I _ {n}) - \\frac {1}{2 n} \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos n x \\mathrm{d} (\\cos^ {n} x) = \\frac {1}{2 n} + \\frac {1}{2} I _ {n - 1} \\quad (\\text {分部积分}) \\\\ & = \\frac {1}{2 n} + \\frac {1}{2} \\left(\\frac {1}{2 (n - 1)} + \\frac {1}{2} I _ {n - 2}\\right) = \\frac {1}{2 n} + \\frac {1}{2 ^ {2} (n - 1)} + \\frac {1}{2 ^ {3} (n - 2)} + \\dots + \\frac {1}{2 ^ {n - 1} \\cdot 2} + \\frac {1}{2 ^ {n - 1}} I _ {1} \\\\ & = \\frac {1}{2 n} + \\frac {1}{2 ^ {2} (n - 1)} + \\frac {1}{2 ^ {3} (n - 2)} + \\dots + \\frac {1}{2 ^ {n - 1} \\cdot 2} + \\frac {1}{2 ^ {n}} \\quad \\left(I _ {1} = \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos x \\sin x \\mathrm{d} x = \\frac {1}{2}\\right). \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "见题解",
+    "techniques_used": [
+      "分部定积分",
+      "牛顿-莱布尼茨"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分分部时如何选 u 与 dv？是否建立递推？",
+      "technique": "分部定积分",
+      "expected": "按类型选 u/dv，边界项与递推处理定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或递推结果）是什么？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "见题解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例28",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 161,
+    "syllabus_note": "分部/递推",
+    "commentary": "评注 该递推公式也可做分部积分 $I_{n} = -\\frac{1}{n}\\int_{0}^{\\pi /2}\\cos^{n}x\\mathrm{d}\\cos nx$ 得到."
+  }
+}

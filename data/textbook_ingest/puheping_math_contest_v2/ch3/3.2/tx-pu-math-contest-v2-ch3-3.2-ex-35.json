@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-35",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,1]$ 上连续可导， $f(0) = f(1) = 0$ ，且满足 $\\int_0^1 [f'(x)]^2 \\mathrm{d}x - 8\\int_0^1 f(x) \\mathrm{d}x + \\frac{4}{3} = 0$ ，求 $f(x)$ .",
+  "answer": "必有 $f'(x) + 4x - 2 \\equiv 0$ 。积分得 $f(x) = 2x - 2x^2 + C$ ，由 $f(0) = 0$ ，得 $C = 0$ 。因此 $f(x) = 2x - 2x^2$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "定积分性质",
+    "积分中值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由 $f(0) = f(1) = 0$ ，知 $\\int_0^1 f(x)\\mathrm{d}x = -\\int_0^1 xf'(x)\\mathrm{d}x, \\int_0^1 f'(x)\\mathrm{d}x = 0.$ 从而题设条件可转化为 $\\int_0^1 [f'(x)]^2\\mathrm{d}x + 2\\int_0^1 (4x - k)f'(x)\\mathrm{d}x + \\frac{4}{3} = 0.$ 只需确定 $k$ 的值，使 $\\int_0^1 (4x - k)^2\\mathrm{d}x = \\frac{4}{3}$ ，就有 $\\int_0^1 [f'(x) + 4x - k]^2\\mathrm{d}x = 0\\Leftrightarrow f'(x) + 4x - k = 0.$ 问题就解决了."
+      },
+      {
+        "id": "s2",
+        "text": "因为 $f(0) = f(1) = 0$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\int_ {0} ^ {1} x f ^ {\\prime} (x) \\mathrm{d} x, \\quad \\int_ {0} ^ {1} f ^ {\\prime} (x) \\mathrm{d} x = 0.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "又 $\\int_0^1 (4x - 2)^2\\mathrm{d}x = \\frac{4}{3}$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\int_ {0} ^ {1} [ f ^ {\\prime} (x) + 4 x - 2 ] ^ {2} \\mathrm{d} x & = \\int_ {0} ^ {1} [ f ^ {\\prime 2} (x) + 2 (4 x - 2) f ^ {\\prime} (x) + (4 x - 2) ^ {2} ] \\mathrm{d} x \\\\ & = \\int_ {0} ^ {1} [ f ^ {\\prime} (x) ] ^ {2} \\mathrm{d} x + 8 \\int_ {0} ^ {1} x f ^ {\\prime} (x) \\mathrm{d} x - 4 \\int_ {0} ^ {1} f ^ {\\prime} (x) \\mathrm{d} x + \\int_ {0} ^ {1} (4 x - 2) ^ {2} \\mathrm{d} x \\\\ & = \\int_ {0} ^ {1} [ f ^ {\\prime} (x) ] ^ {2} \\mathrm{d} x - 8 \\int_ {0} ^ {1} f (x) \\mathrm{d} x + \\frac {4}{3} = 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "因为 $f'(x) + 4x - 2$ 在[0,1]上连续，故必有 $f'(x) + 4x - 2 \\equiv 0$ 。积分得 $f(x) = 2x - 2x^2 + C$ ，由 $f(0) = 0$ ，得 $C = 0$ 。因此 $f(x) = 2x - 2x^2$ 。"
+      }
+    ],
+    "final_answer": "必有 $f'(x) + 4x - 2 \\equiv 0$ 。积分得 $f(x) = 2x - 2x^2 + C$ ，由 $f(0) = 0$ ，得 $C = 0$ 。因此 $f(x) = 2x - 2x^2$ 。",
+    "techniques_used": [
+      "定积分性质",
+      "积分中值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "定积分性质",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分中值",
+      "expected": "必有 $f'(x) + 4x - 2 \\equiv 0$ 。积分得 $f(x) = 2x - 2x^2 + C$ ，由 $f(0) = 0$ ，得 $C = 0$ 。因此 $f(x) = 2x - 2x^2$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例35",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 166,
+    "syllabus_note": "积分条件确定函数"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-29",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_{0}^{1}\\sin\\left(\\ln\\frac{1}{x}\\right)\\frac{x^{b}-x^{a}}{\\ln x}\\mathrm{d}x (b>a>0)$ .",
+  "answer": "$$ \\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {x ^ {b} - x ^ {a}}{\\ln x} d x = F (b) = \\arctan (b + 1) - \\arctan (a + 1). $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里的 $a, b$ 是任意常数，用前面所讲的积分法计算很困难。这里有两种处理方法：一是将被积函数表示成 $[a, b]$ 区间上的一个定积分，则原积分就是一个二次积分，交换二次积分次序就能算出所求的积分；二是将 $a$ 或 $b$ 视为参数，将积分看成参数的函数，对参数求导后算出积分，再对求导的参数积分即可。"
+      },
+      {
+        "id": "s2",
+        "text": "因为当 $b > a > 0$ 时， $\\lim_{x\\to 0^{+}}\\sin \\left(\\ln \\frac{1}{x}\\right)\\frac{x^b - x^a}{\\ln x} = 0$ ，所以积分不是反常积分."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 因为 $\\frac{x^b - x^a}{\\ln x} = \\int_a^b x^y\\mathrm{d}y$ ，则\n\n$$\n\\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {\\dot {x} ^ {b} - x ^ {a}}{\\ln x} d x = \\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) d x \\int_ {a} ^ {b} x ^ {y} d y = \\int_ {a} ^ {b} d y \\int_ {0} ^ {1} x ^ {y} \\sin \\left(\\ln \\frac {1}{x}\\right) d x.\n$$\n\n而\n\n$$\n\\begin{array}{r l} \\int_ {0} ^ {1} x ^ {y} \\sin \\left(\\ln \\frac {1}{x}\\right) \\mathrm{d} x & = \\frac {1}{y + 1} x ^ {y + 1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\Bigg | _ {0} ^ {1} + \\frac {1}{y + 1} \\int_ {0} ^ {1} x ^ {y} \\cos \\left(\\ln \\frac {1}{x}\\right) \\mathrm{d} x \\\\ & = \\frac {1}{y + 1} \\int_ {0} ^ {1} x ^ {y} \\cos \\left(\\ln \\frac {1}{x}\\right) \\mathrm{d} x \\\\ & = \\frac {1}{(y + 1) ^ {2}} x ^ {y + 1} \\cos \\left(\\ln \\frac {1}{x}\\right) \\Bigg | _ {0} ^ {1} - \\frac {1}{(y + 1) ^ {2}} \\int_ {0} ^ {1} x ^ {y} \\sin \\left(\\ln \\frac {1}{x}\\right) \\mathrm{d} x \\\\ & = \\frac {1}{(y + 1) ^ {2}} - \\frac {1}{(y + 1) ^ {2}} \\int_ {0} ^ {1} x ^ {y} \\sin \\left(\\ln \\frac {1}{x}\\right) \\mathrm{d} x, \\end{array}\n$$\n\n于是\n\n$$\n\\int_ {0} ^ {1} x ^ {y} \\sin \\left(\\ln \\frac {1}{x}\\right) d x = \\frac {1}{1 + (y + 1) ^ {2}}.\\tag{①}\n$$\n\n所以\n\n$$\n\\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {x ^ {b} - x ^ {a}}{\\ln x} d x = \\int_ {a} ^ {b} \\frac {1}{1 + (y + 1) ^ {2}} d y = \\arctan (b + 1) - \\arctan (a + 1).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 记 $F(t) = \\int_0^1\\sin \\left(\\ln \\frac{1}{x}\\right)\\frac{x^t - x^a}{\\ln x}\\mathrm{d}x$ ，则\n\n$$\nF ^ {\\prime} (t) = \\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\cdot x ^ {t} \\mathrm{d} x = \\frac {1}{1 + (t + 1) ^ {2}} \\quad (\\textcircled {1} \\text {式结论}).\n$$\n\n积分得 $F(t) = \\arctan (t + 1) + C$\n\n由 $F(a) = 0$ ，得 $C = -\\arctan (a + 1)$ ，所以\n\n$$\n\\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {x ^ {b} - x ^ {a}}{\\ln x} d x = F (b) = \\arctan (b + 1) - \\arctan (a + 1).\n$$"
+      }
+    ],
+    "final_answer": "$$ \\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {x ^ {b} - x ^ {a}}{\\ln x} d x = F (b) = \\arctan (b + 1) - \\arctan (a + 1). $$",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用三角恒等、含参求导还是特殊代换？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "按被积结构选特殊技巧化为可积形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "$$ \\int_ {0} ^ {1} \\sin \\left(\\ln \\frac {1}{x}\\right) \\frac {x ^ {b} - x ^ {a}}{\\ln x} d x = F (b) = \\arctan (b + 1) - \\arctan (a + 1). $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例29*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 162,
+    "starred": true,
+    "syllabus_note": "含参积分表示",
+    "commentary": "评注（1）方法1的一般情况：若积分 $I = \\int_{a}^{b} g(x) [f(x, \\beta) - f(x, a)] \\, dx$ 不易计算，则可将积分转化为二次积分 $I = \\int_{a}^{b} \\, dx \\int_{\\alpha}^{\\beta} g(x) f_y(x, y) \\, dy$ ，再交换积分顺序来计算.\n\n(2) 方法 2 中用到了 “含参变量积分的求导公式”，见 3.2 节例 1 评注."
+  }
+}

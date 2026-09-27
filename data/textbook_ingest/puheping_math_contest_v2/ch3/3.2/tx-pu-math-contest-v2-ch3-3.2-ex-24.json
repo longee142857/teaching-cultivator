@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-24",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.special",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_{e^{-2\\pi x}}^{1}\\left|\\left[\\cos \\left(\\ln \\frac{1}{x}\\right)\\right]^{\\prime}\\right|\\ln \\frac{1}{x} dx$ （ $n$ 为正整数）.",
+  "answer": "解 令 $u = \\ln \\frac{1}{x}$ ，则 $x = \\mathrm{e}^{-u}$ ， $\\mathrm{d}x = -\\mathrm{e}^{-u}\\mathrm{d}u$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 根据被积函数的特点，适合选 $\\ln \\frac{1}{x}$ 为积分变量；绝对值函数是分段函数，需要将分段点插入积分区间，去掉绝对值符号做计算."
+      },
+      {
+        "id": "s2",
+        "text": "令 $u = \\ln \\frac{1}{x}$ ，则 $x = \\mathrm{e}^{-u}$ ， $\\mathrm{d}x = -\\mathrm{e}^{-u}\\mathrm{d}u$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{l} I = \\int_ {2 n \\pi} ^ {0} \\left| \\frac {\\mathrm{d} \\cos u}{\\mathrm{d} u} \\cdot \\frac {\\mathrm{d} u}{\\mathrm{d} x} \\right| u \\mathrm{e} ^ {- u} \\mathrm{d} u = \\int_ {0} ^ {2 n \\pi} \\left| \\mathrm{e} ^ {u} \\cdot \\sin u \\right| u \\mathrm{e} ^ {- u} \\mathrm{d} u = \\int_ {0} ^ {2 n \\pi} | \\sin u | u \\mathrm{d} u \\\\ = \\sum_ {k = 1} ^ {2 n} \\int_ {(k - 1) \\pi} ^ {k \\pi} (- 1) ^ {k - 1} u \\sin u \\mathrm{d} u = \\sum_ {k = 1} ^ {2 n} (- 1) ^ {k - 1} (- u \\cos u + \\sin u) | _ {(k - 1) \\pi} ^ {k \\pi} \\\\ = \\sum_ {k = 1} ^ {2 n} (- 1) ^ {k - 1} [ - k \\pi (- 1) ^ {k} + (k - 1) \\pi (- 1) ^ {k - 1}) ] = \\sum_ {k = 1} ^ {2 n} (2 k - 1) \\pi = 4 n ^ {2} \\pi . \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "解 令 $u = \\ln \\frac{1}{x}$ ，则 $x = \\mathrm{e}^{-u}$ ， $\\mathrm{d}x = -\\mathrm{e}^{-u}\\mathrm{d}u$ 。",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜用三角恒等、含参求导还是特殊代换？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "按被积结构选特殊技巧化为可积形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "解 令 $u = \\ln \\frac{1}{x}$ ，则 $x = \\mathrm{e}^{-u}$ ， $\\mathrm{d}x = -\\mathrm{e}^{-u}\\mathrm{d}u$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例24",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 159,
+    "syllabus_note": "绝对值/分段",
+    "commentary": "评注 用换元积分法计算 $\\int_0^{2n\\pi}|\\sin u|u\\mathrm{d}u$ 会简单些：\n\n令 $u = 2n\\pi - t$ ，则\n\n$$\n\\int_ {0} ^ {2 n \\pi} | \\sin u | u d u = - \\int_ {2 n \\pi} ^ {0} (2 n \\pi - t) | \\sin u | d t = 2 n \\pi \\int_ {0} ^ {2 n \\pi} | \\sin t | d t - \\int_ {0} ^ {2 n \\pi} t | \\sin t | d t.\n$$\n\n移项，合并得\n\n$$\n\\int_ {0} ^ {2 \\pi \\pi} | \\sin u | u d u = n \\pi \\int_ {0} ^ {2 \\pi \\pi} | \\sin t | d t = 2 n ^ {2} \\pi \\int_ {0} ^ {\\pi} | \\sin t | d t = 4 n ^ {2} \\pi .\n$$"
+  }
+}

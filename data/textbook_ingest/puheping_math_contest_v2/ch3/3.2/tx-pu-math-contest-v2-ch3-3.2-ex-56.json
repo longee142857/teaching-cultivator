@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-56",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x), g(x)$ 是 $[0,1] \\to [0,1]$ 的连续函数，且 $f(x)$ 单调递增，证明：\n\n$$\n\\int_ {0} ^ {1} f (g (x)) \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x + \\int_ {0} ^ {1} g (x) \\mathrm{d} x \\cdot\n$$",
+  "answer": "所证不等式.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）令 $F(x) = f(x) - x$ ，则问题转化为证明 $\\int_0^1 [F(g(x)) - F(x)]\\mathrm{d}x\\leqslant \\int_0^1 x\\mathrm{d}x = \\frac{1}{2}$ . 这只需证明 $\\max_{0\\leqslant x\\leqslant 1}F(x) - \\int_0^1 F(x)\\mathrm{d}x\\leqslant \\frac{1}{2}$ ，即 $\\int_0^1 F(x)\\mathrm{d}x\\geqslant \\max_{0\\leqslant x\\leqslant 1}F(x) - \\frac{1}{2}$ .\n\n（2）由积分中值定理 $\\int_0^1 [f(g(x)) - g(x)]\\mathrm{d}x = f(g(\\xi)) - g(\\xi)$ ，只需证明 $\\forall t\\in (0,1)$ ，有\n\n$$\nf (t) - t \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x \\cdot\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $F(x) = f(x) - x$ ，记 $\\max_{0 \\leqslant x \\leqslant 1} F(x) = F(x_0) = a$ 。由于 $0 \\leqslant f(x) \\leqslant 1$ ，则 $-x \\leqslant F(x) \\leqslant 1 - x$ ，所以 $a \\leqslant 1 - x_0$ 。\n\n因为 $f(x)$ 单调递增，当 $x \\in [x_0, 1]$ 时， $f(x) \\geqslant f(x_0)$ ，即 $F(x) + x \\geqslant F(x_0) + x_0 = a + x_0$ 。所以\n\n$$\n\\begin{array}{r l} \\int_ {0} ^ {1} F (x) \\mathrm{d} x & = \\int_ {0} ^ {x _ {0}} F (x) \\mathrm{d} x + \\int_ {x _ {0}} ^ {1} F (x) \\mathrm{d} x \\geqslant \\int_ {0} ^ {x _ {0}} (- x) \\mathrm{d} x + \\int_ {x _ {0}} ^ {1} (a + x _ {0} - x) \\mathrm{d} x \\\\ & = a - \\frac {1}{2} + x _ {0} (1 - a - x _ {0}) \\geqslant a - \\frac {1}{2} = \\max _ {0 \\leqslant x \\leqslant 1} F (x) - \\frac {1}{2} \\\\ & \\geqslant \\int_ {0} ^ {1} F (g (x)) \\mathrm{d} x - \\frac {1}{2} = \\int_ {0} ^ {1} f (g (x)) \\mathrm{d} x - \\int_ {0} ^ {1} g (x) \\mathrm{d} x - \\frac {1}{2}. \\end{array}\n$$\n\n将 $F(x) = f(x) - x$ 代入左端积分式，即得所证不等式."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 $\\int_0^1 f(g(x))\\mathrm{d}x - \\int_0^1 g(x)\\mathrm{d}x = \\int_0^1 [f(g(x)) - g(x)]\\mathrm{d}x = f(g(\\xi)) - g(\\xi)(0 <   \\xi <  1).$\n\n记 $g(\\xi) = t$ ，因为 $0 \\leqslant f(x) \\leqslant 1$ ， $0 \\leqslant g(x) \\leqslant 1$ ，且 $f(x)$ 单调递增，则有\n\n$$\n\\begin{array}{l} \\int_ {0} ^ {1} f (g (x)) \\mathrm{d} x - \\int_ {0} ^ {1} g (x) \\mathrm{d} x = f (t) - t \\leqslant f (t) (1 - t) \\\\ = \\int_ {t} ^ {1} f (t) \\mathrm{d} x \\leqslant \\int_ {t} ^ {1} f (x) \\mathrm{d} x \\leqslant \\int_ {0} ^ {1} f (x) \\mathrm{d} x. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "所证不等式.",
+    "techniques_used": [
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "所证不等式."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例56",
+    "quality_basis": "source_textbook_worked_example",
+    "syllabus_note": "重排/单调",
+    "page": 180
+  }
+}

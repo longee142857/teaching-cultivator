@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-13",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.parts",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知 $f(x)$ 是微分方程 $xf'(x) - f(x) = \\sqrt{2x - x^2}$ 满足初始条件 $f(1) = 0$ 的特解，求 $\\int_0^1 f(x)\\mathrm{d}x$",
+  "answer": "$$ \\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {2 x - x ^ {2}} \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {1 - (x - 1) ^ {2}} \\mathrm{d} x = - \\frac {\\pi}{8}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部定积分",
+    "面积计算",
+    "牛顿-莱布尼茨"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 先求出 $f(x)$ 再积分，这是基本思路，但求 $f(x)$ 需解微分方程，比较麻烦。若利用所给条件做分部积分就容易计算了。\n\n$$\n\\text {解} \\quad \\int_ {0} ^ {1} f (x)   \\mathrm{d} x = x f (x) \\Big | _ {0} ^ {1} - \\int_ {0} ^ {1} x f ^ {\\prime} (x)   \\mathrm{d} x = - \\int_ {0} ^ {1} \\left[ f (x) + \\sqrt {2 x - x ^ {2}} \\right]   \\mathrm{d} x ,\n$$\n\n于是\n\n$$\n\\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {2 x - x ^ {2}} \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {1 - (x - 1) ^ {2}} \\mathrm{d} x = - \\frac {\\pi}{8}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 先求出 $f(x)$ 再积分，这是基本思路，但求 $f(x)$ 需解微分方程，比较麻烦。若利用所给条件做分部积分就容易计算了。"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\text {解} \\quad \\int_ {0} ^ {1} f (x)   \\mathrm{d} x = x f (x) \\Big | _ {0} ^ {1} - \\int_ {0} ^ {1} x f ^ {\\prime} (x)   \\mathrm{d} x = - \\int_ {0} ^ {1} \\left[ f (x) + \\sqrt {2 x - x ^ {2}} \\right]   \\mathrm{d} x ,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "于是"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {2 x - x ^ {2}} \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {1 - (x - 1) ^ {2}} \\mathrm{d} x = - \\frac {\\pi}{8}.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "评注 注意等式 $\\int_0^1\\sqrt{1 - (x - 1)^2} dx = \\frac{\\pi}{4}$ 的左端是单位圆 $(x - 1)^2 +y^2 = 1$ 四分之一的面积."
+      }
+    ],
+    "final_answer": "$$ \\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {2 x - x ^ {2}} \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {1 - (x - 1) ^ {2}} \\mathrm{d} x = - \\frac {\\pi}{8}. $$",
+    "techniques_used": [
+      "分部定积分",
+      "面积计算",
+      "牛顿-莱布尼茨"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分分部时如何选 u 与 dv？是否建立递推？",
+      "technique": "分部定积分",
+      "expected": "按类型选 u/dv，边界项与递推处理定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或递推结果）是什么？",
+      "technique": "面积计算",
+      "expected": "$$ \\int_ {0} ^ {1} f (x) \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {2 x - x ^ {2}} \\mathrm{d} x = - \\frac {1}{2} \\int_ {0} ^ {1} \\sqrt {1 - (x - 1) ^ {2}} \\mathrm{d} x = - \\frac {\\pi}{8}. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例13",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 153,
+    "syllabus_note": "微分方程特解再定积分",
+    "commentary": "评注 注意等式 $\\int_0^1\\sqrt{1 - (x - 1)^2} dx = \\frac{\\pi}{4}$ 的左端是单位圆 $(x - 1)^2 +y^2 = 1$ 四分之一的面积."
+  }
+}

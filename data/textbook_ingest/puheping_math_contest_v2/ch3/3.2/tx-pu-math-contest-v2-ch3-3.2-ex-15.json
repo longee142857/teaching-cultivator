@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-15",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_0^{\\frac{\\pi}{4}}\\frac{1 - \\sin 2x}{1 + \\sin 2x}\\mathrm{d}x.$",
+  "answer": "I = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)}{1 + \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\cos 2 x}{1 + \\cos 2 x} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {\\sin^ {2} x}{\\cos^ {2} x} d x",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 作变量代换 $x = \\frac{\\pi}{4} - t$ ，可保持积分区间 $\\left[0, \\frac{\\pi}{4}\\right]$ 不变，将被积函数化为余弦形式，再用半角公式化简积分；也可直接用半角公式来化简积分."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $x = \\frac{\\pi}{4} - t$ ，则\n\n$$\nI = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)}{1 + \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\cos 2 x}{1 + \\cos 2 x} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {\\sin^ {2} x}{\\cos^ {2} x} d x\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} & = \\int_ {0} ^ {\\frac {\\pi}{4}} (\\sec^ {2} x - 1) \\mathrm{d} x = (\\tan x - x) \\Big | _ {0} ^ {\\frac {\\pi}{4}} = 1 - \\frac {\\pi}{4}. \\\\ & I = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {(\\sin x - \\cos x) ^ {2}}{(\\sin x + \\cos x) ^ {2}} \\mathrm{d} x = \\int_ {0} ^ {\\frac {\\pi}{4}} (\\sin x - \\cos x) \\mathrm{d} \\left(\\frac {1}{\\sin x + \\cos x}\\right) \\\\ & = \\frac {\\sin x - \\cos x}{\\sin x + \\cos x} \\Big | _ {0} ^ {\\frac {\\pi}{4}} - \\int_ {0} ^ {\\frac {\\pi}{4}} \\mathrm{d} x = 1 - \\frac {\\pi}{4}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "I = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)}{1 + \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\cos 2 x}{1 + \\cos 2 x} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {\\sin^ {2} x}{\\cos^ {2} x} d x",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分换元时新上下限如何确定？对称换元是否可用？",
+      "technique": "换元定积分",
+      "expected": "换元同步改限，或用对称性简化。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "I = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)}{1 + \\sin 2 \\left(\\frac {\\pi}{4} - x\\right)} d x = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {1 - \\cos 2 x}{1 + \\cos 2 x} d "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 154,
+    "syllabus_note": "对称换元",
+    "commentary": "评注 方法1中的代换比较常见（它特别适用于三角函数式的积分），其一般形式为\n\n$$\n\\int_ {0} ^ {a} f (x) \\mathrm{d} x \\stackrel {x = a - t} {=} \\int_ {0} ^ {a} f (a - t) \\mathrm{d} t.\n$$\n\n由此还可得到较常用的积分公式： $\\int_0^a f(x)\\mathrm{d}x = \\frac{1}{2}\\int_0^a [f(x) + f(a - x)]\\mathrm{d}x.$"
+  }
+}

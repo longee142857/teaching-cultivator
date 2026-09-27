@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-58",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f''(x) \\in C[a, b]$ ，且 $f(a) = f(b) = 0$ ，证明 $\\left|\\int_{a}^{b} f(x) \\mathrm{d}x\\right| \\leqslant \\frac{(b - a)^3}{12} \\max_{a \\leqslant x \\leqslant b} |f''(x)|$ .\n\n图3.1",
+  "answer": "$$ \\left| \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\right| \\leqslant \\frac {1}{4} \\int_ {a} ^ {b} \\left| f ^ {\\prime \\prime} (\\xi) \\right| (x - a) ^ {2} \\mathrm{d} x",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部定积分",
+    "夹逼/估值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $f''(x) \\in C[a, b]$ ，知 $\\max_{a \\leqslant x \\leqslant b} |f''(x)|$ 存在。涉及函数的二阶导数，容易想到用泰勒公式将函数放大来得到积分不等式。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 由泰勒公式\n\n$$\nf (t) = f (x) + f ^ {\\prime} (x) (t - x) + \\frac {f ^ {\\prime \\prime} (\\xi)}{2 !} (t - x) ^ {2} \\quad \\left(t, x \\in [ a, b ], \\xi \\text {介于} t \\text {与} x \\text {之间}\\right).\n$$\n\n所以\n\n$$\n\\begin{array}{c} 0 = f (a) = f (x) + f ^ {\\prime} (x) (a - x) + \\frac {f ^ {\\prime \\prime} (\\xi)}{2 !} (a - x) ^ {2}, \\\\ f (x) = f ^ {\\prime} (x) (x - a) - \\frac {f ^ {\\prime \\prime} (\\xi)}{2 !} (a - x) ^ {2}. \\\\ \\int_ {a} ^ {b} f (x) \\mathrm{d} x = \\int_ {a} ^ {b} f ^ {\\prime} (x) (x - a) \\mathrm{d} x - \\int_ {a} ^ {b} \\frac {f ^ {\\prime \\prime} (\\xi)}{2 !} (x - a) ^ {2} \\mathrm{d} x \\\\ = f (x) (x - a) \\Big | _ {a} ^ {b} - \\int_ {a} ^ {b} f (x) \\mathrm{d} x - \\frac {1}{2} \\int_ {a} ^ {b} f ^ {\\prime \\prime} (\\xi) (x - a) ^ {2} \\mathrm{d} x. \\end{array}\n$$\n\n所以\n\n$$\n\\int_ {a} ^ {b} f (x) \\mathrm{d} x = - \\frac {1}{4} \\int_ {a} ^ {b} f ^ {\\prime \\prime} (\\xi) (x - a) ^ {2} \\mathrm{d} x.\n$$\n\n于是\n\n$$\n\\left| \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\right| \\leqslant \\frac {1}{4} \\int_ {a} ^ {b} \\left| f ^ {\\prime \\prime} (\\xi) \\right| (x - a) ^ {2} \\mathrm{d} x\n\n\\leqslant \\frac {1}{4} \\max _ {a \\leqslant x \\leqslant b} | f ^ {\\prime \\prime} (x) | \\int_ {a} ^ {b} (x - a) ^ {2} d x = \\frac {(b - a) ^ {3}}{1 2} \\max _ {a \\leqslant x \\leqslant b} | f ^ {\\prime \\prime} (x) |.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 为了将 $f''(x)$ 引入积分式中，可考虑用分部积分\n\n$$\n\\begin{array}{r l} & {\\frac {1}{2} \\int_ {a} ^ {b} f ^ {\\prime \\prime} (x) (x - a) (x - b) \\mathrm{d} x = \\frac {1}{2} \\int_ {a} ^ {b} (x - a) (x - b) \\mathrm{d} f ^ {\\prime} (\\dot {x})} \\\\ & {\\quad = \\frac {1}{2} (x - a) (x - b) \\left. f ^ {\\prime} (x) \\right| _ {a} ^ {b} - \\frac {1}{2} \\int_ {a} ^ {b} f ^ {\\prime} (x) (2 x - a - b) \\mathrm{d} x} \\\\ & {\\quad = - \\frac {1}{2} \\int_ {a} ^ {b} (2 x - a - b) \\mathrm{d} f (x) = - \\frac {1}{2} f (x) (2 x - a - b) \\Big | _ {a} ^ {b} + \\frac {1}{2} \\int_ {a} ^ {b} f (x) 2 \\mathrm{d} x} \\\\ & {\\quad = \\int_ {a} ^ {b} f (x) \\mathrm{d} x.} \\end{array}\n$$\n\n所以\n\n$$\n\\begin{array}{r l} \\left| \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\right| & = \\left| \\frac {1}{2} \\int_ {a} ^ {b} f ^ {\\prime \\prime} (x) (x - a) (x - b) \\mathrm{d} x \\right| \\leqslant \\frac {1}{2} \\int_ {a} ^ {b} | f ^ {\\prime \\prime} (x) (x - a) (x - b) | \\mathrm{d} x \\\\ & \\leqslant \\frac {1}{2} \\max _ {a \\leqslant x \\leqslant b} | f ^ {\\prime \\prime} (x) | \\int_ {a} ^ {b} (x - a) (b - x) \\mathrm{d} x = \\frac {(b - a) ^ {3}}{1 2} \\max _ {a \\leqslant x \\leqslant b} | f ^ {\\prime \\prime} (x) |. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$$ \\left| \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\right| \\leqslant \\frac {1}{4} \\int_ {a} ^ {b} \\left| f ^ {\\prime \\prime} (\\xi) \\right| (x - a) ^ {2} \\mathrm{d} x",
+    "techniques_used": [
+      "分部定积分",
+      "夹逼/估值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "夹逼/估值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "夹逼/估值",
+      "expected": "$$ \\left| \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\right| \\leqslant \\frac {1}{4} \\int_ {a} ^ {b} \\left| f ^ {\\prime \\prime} (\\xi) \\right| (x - a) ^ {2} \\mathrm{d} x"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例58",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 181,
+    "syllabus_note": "Taylor 余项估值",
+    "commentary": "评注 当被积函数为抽象形式，且知道其（一、二阶）导数单侧或双侧有界时，可用微分中值定理或泰勒公式将函数放大或缩小来得到积分不等式."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-67",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.area",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求曲线 $\\left|\\ln x\\right| + \\left|\\ln y\\right| = 1$ 所围成平面图形的面积.",
+  "answer": "面积为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将曲线方程化简（去掉绝对值），画草图，用定积分或二重积分计算面积."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 曲线方程去掉绝对值后为\n\n$$\n\\left\\{ \\begin{array}{l} x y = \\mathrm{e}, x \\geqslant 1, y \\geqslant 1, \\\\ y = \\mathrm{ex}, 0 <   x <   1, y \\geqslant 1, \\\\ y = \\frac {x}{\\mathrm{e}}, x \\geqslant 1, 0 <   y <   1, \\\\ x y = \\frac {x}{\\mathrm{e}}, 0 <   x <   1, 0 <   y <   1. \\end{array} \\right.\n$$\n\n对应图形如图 3.3 所示. 所求面积为\n\n$$\nA = \\int_ {\\frac {1}{e}} ^ {1} \\left(e x - \\frac {1}{e x}\\right) d x + \\int_ {1} ^ {e} \\left(\\frac {e}{x} - \\frac {x}{e}\\right) d x = e - \\frac {1}{e}.\n$$\n\n图3.3"
+      },
+      {
+        "id": "s3",
+        "text": "方法 2 利用极坐标计算.\n\n直线 $y = \\frac{x}{\\mathrm{e}}$ 与 $y = \\mathrm{ex}(x > 0)$ 的极坐标方程为 $\\varphi = \\arctan \\frac{1}{\\mathrm{e}}$ ， $\\varphi = \\arctan \\mathrm{e}$ .\n\n曲线 $xy = \\frac{1}{\\mathbf{e}}$ 与 $xy = \\mathbf{e}(x > 0)$ 的极坐标方程为 $\\rho^2 = \\frac{2}{\\mathbf{e}\\sin 2\\varphi},\\quad \\rho^2 = \\frac{2\\mathbf{e}}{\\sin 2\\varphi}.$\n\n所求面积为\n\n$$\nA = \\frac {1}{2} \\int_ {\\arctan \\frac {1}{e}} ^ {\\arctan e} \\left(\\frac {2 e}{\\sin 2 \\varphi} - \\frac {2}{e \\sin 2 \\varphi}\\right) d \\theta = \\left(e - \\frac {1}{e}\\right) \\cdot \\frac {1}{2} \\ln \\tan \\varphi \\Bigg | _ {\\arctan \\frac {1}{e}} ^ {\\arctan e} = e - \\frac {1}{e}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3 令 $\\ln x = u$ ， $\\ln y = v$ ，则 $x = \\mathbf{e}^u$ ， $y = \\mathbf{e}^\\nu$ ， $\\frac{\\partial(x,y)}{\\partial(u,v)} = \\left| \\begin{array}{cc}\\mathbf{e}^u & 0\\\\ 0 & \\mathbf{e}^\\nu \\end{array} \\right| = \\mathbf{e}^u\\mathbf{e}^\\nu .$\n\n曲线所围成的区域为 $D: |u| + |v| \\leqslant 1$ 。故\n\n$$\nA = \\iint_ {D} \\left| \\frac {\\partial (x , y)}{\\partial (u , v)} \\right| d u d v = \\int_ {- 1} ^ {0} e ^ {u} d u \\int_ {- u - 1} ^ {u + 1} e ^ {v} d v + \\int_ {0} ^ {1} e ^ {u} d u \\int_ {u - 1} ^ {1 - u} e ^ {v} d v = e - \\frac {1}{e}.\n$$"
+      }
+    ],
+    "final_answer": "面积为",
+    "techniques_used": [
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分区间与被积函数（上下曲线差）？",
+      "technique": "面积计算",
+      "expected": "由曲线交点确定区间，面积元为上下边界差。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求面积（或最值）结果是什么？",
+      "technique": "微元法",
+      "expected": "面积为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例67",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 189,
+    "syllabus_note": "平面图形面积",
+    "commentary": "评注 当平面图形由过原点的直线（或以原点为中心的圆周）与其他曲线所围成时，宜选用极坐标计算."
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-41",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[a, b]$ 上连续，且 $\\int_{a}^{b} f(x) \\mathrm{d}x = \\int_{a}^{b} x f(x) \\mathrm{d}x = \\int_{a}^{b} x^{2} f(x) \\mathrm{d}x = 0$ 。证明 $f(x)$ 在 $(a, b)$ 内至少有3个零点。",
+  "answer": "$f(x)$ 在区间 $(a, b)$ 内至少有3个零点.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分部定积分",
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 判断函数的零点，常用介值定理或罗尔定理. 若用罗尔定理，需考察 $f(x)$ 原函数的零点."
+      },
+      {
+        "id": "s2",
+        "text": "如果 $f(x)$ 在 $[a, b]$ 的某个区间上恒为零，则结论成立。排除这种情况进行以下讨论。"
+      },
+      {
+        "id": "s3",
+        "text": "方法1 因为 $f(x)$ 在 $[a, b]$ 上连续，令 $F(x) = \\int_{a}^{x} f(t) \\, \\mathrm{d}t$ ，则 $F(a) = F(b) = 0$ ，且 $F'(x) = f(x)$ ，应用积分中值定理， $\\exists c \\in (a, b)$ ，使得\n\n$$\n\\int_ {a} ^ {b} x f (x) \\mathrm{d} x = x F (x) \\big | _ {a} ^ {b} - \\int_ {a} ^ {b} F (x) \\mathrm{d} x = - F (c) (b - a) = 0,\n$$\n\n所以 $F(c) = 0$ ，对 $F(x)$ 在 $[a,c]$ 与 $[c,b]$ 上分别应用罗尔定理， $\\exists c_1\\in (a,c)$ ， $\\exists c_2\\in (c,b)$ ，使得\n\n$$\nF ^ {\\prime} (c _ {1}) = f (c _ {1}) = 0, \\quad F ^ {\\prime} (c _ {2}) = f (c _ {2}) = 0,\n$$\n\n则 $f(x)$ 在 $(a,b)$ 内至少有两个零点 $c_{1}, c_{2} (a < c_{1} < c_{2} < b)$ .\n\n下证 $f(x)$ 在 $(a, b)$ 内至少还有另外的零点。否则， $f(x)$ 在3个区间 $(a, c_1), (c_1, c_2), (c_2, b)$ 内恒不为零，且依次符号相异（因为 $F(c) = F(b) = 0$ ）。\n\n构造多项式\n\n$$\np (x) = \\left(x - c _ {1}\\right) \\left(x - c _ {2}\\right),\n$$\n\n则在 $(a,b)$ 内除 $c_{1}, c_{2}$ 外，恒有 $p(x)f(x) > 0$ 或 $p(x)f(x) < 0$ ，因此 $\\int_{a}^{b} p(x)f(x) \\mathrm{d}x \\neq 0$\n\n将 $p(x)$ 展开，设 $p(x) = x^{2} + b_{1}x + b_{2}$ ，于是\n\n$$\n\\int_ {a} ^ {b} p (x) f (x) \\mathrm{d} x = \\int_ {a} ^ {b} \\left(x ^ {2} + b _ {1} x + b _ {2}\\right) f (x) \\mathrm{d} x = 0.\n$$\n\n矛盾. 所以 $f(x)$ 在 $(a, b)$ 内至少有 3 个零点."
+      },
+      {
+        "id": "s4",
+        "text": "方法2 令 $F(x) = \\int_{a}^{x} f(t) \\mathrm{d}t, G(x) = \\int_{a}^{x} F(t) \\mathrm{d}t,$ 则 $F(a) = F(b) = 0, G(a) = 0$ 。应用分部积分，有\n\n$$\n0 = \\int_ {a} ^ {b} x f (x) \\mathrm{d} x = x F (x) \\Big | _ {a} ^ {b} - \\int_ {a} ^ {b} F (x) \\mathrm{d} x = - \\int_ {a} ^ {b} F (x) \\mathrm{d} x,\\tag{①}\n$$\n\n从而 $G(b) = 0$\n\n再做分部积分，有\n\n$$\n\\begin{array}{r l} & {0 = \\int_ {a} ^ {b} x ^ {2} f (x)   \\mathrm{d} x = x ^ {2}   F (x) \\Big | _ {a} ^ {b} - 2 \\int_ {a} ^ {b} x F (x)   \\mathrm{d} x = - 2 x G (x) \\Big | _ {a} ^ {b} + 2 \\int_ {a} ^ {b} G (x)   \\mathrm{d} x} \\\\ & {\\qquad = 2 \\int_ {a} ^ {b} G (x)   \\mathrm{d} x = 2 (b - a) G (c)    (a <   c <   b    ,    \\text {积分中值定理})    .} \\end{array}\n$$\n\n即有\n\n$$\nG (c) = \\int_ {a} ^ {c} F (t) d t = 0.\\tag{②}\n$$\n\n再由①式可得\n\n$$\n\\int_ {c} ^ {b} F (t) \\mathrm{d} t = 0.\\tag{③}\n$$\n\n对②，③式，用积分中值定理，知存在 $\\xi_1\\in (a,c)$ ， $\\xi_{2}\\in (c,b)$ ，使得 $F(\\xi_1) = F(\\xi_2) = 0$ ，由罗尔定理，知 $f(x)$ 在 $(a,\\xi_1),(\\xi_1,\\xi_2),(\\xi_2,b)$ 内各至少有一个零点."
+      },
+      {
+        "id": "s5",
+        "text": "方法3 受方法1的启发，可对 $f(x)$ 直接用介值定理.\n\n若 $f(x)$ 在 $(a,b)$ 内最多只有两个零点 $x = c_{1}, x = c_{2}$ ，则 $f(x)$ 在区间 $(a,c_1),(c_1,c_2),(c_2,b)$ 内恒不为零，构造多项式\n\n$$\np (x) = \\left(x - c _ {1}\\right) \\left(x - c _ {2}\\right),\n$$\n\n则在区间 $(a,b)$ 内除 $c_{1}, c_{2}$ 外，恒有 $p(x)f(x) > 0$ 或 $p(x)f(x) < 0$ ，因此 $\\int_{a}^{b} p(x)f(x) \\mathrm{d}x \\neq 0$ ：\n\n将 $p(x)$ 展开，设 $p(x) = x^{2} + b_{1}x + b_{2}$ ，于是\n\n$$\n\\int_ {a} ^ {b} p (x) f (x) \\mathrm{d} x = \\int_ {a} ^ {b} \\left(x ^ {2} + b _ {1} x + b _ {2}\\right) f (x) \\mathrm{d} x = 0.\n$$\n\n矛盾，所以 $f(x)$ 在区间 $(a, b)$ 内至少有3个零点."
+      }
+    ],
+    "final_answer": "$f(x)$ 在区间 $(a, b)$ 内至少有3个零点.",
+    "techniques_used": [
+      "分部定积分",
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分中值",
+      "expected": "$f(x)$ 在区间 $(a, b)$ 内至少有3个零点."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例41",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 170,
+    "syllabus_note": "矩条件+零点",
+    "commentary": "评注 该题的结论可做如下推广：设 $f(x) \\in C[a, b]$ ，如果对 $k = 0, 1, 2, \\cdots n$ ，总有 $\\int_{a}^{b} x^{k} f(x) \\mathrm{d}x = 0$ ，则 $f(x)$ 在 $(a, b)$ 内至少有 $n + 1$ 个零点."
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-38",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, +\\infty)$ 上具有连续导数，且 $|f(x)| \\leqslant 1$ ， $f'(x) > 0$ ， $x \\in (-\\infty, +\\infty)$ . 证明对于 $0 < \\alpha < \\beta$ ，有 $\\lim_{n \\to \\infty} \\int_{\\alpha}^{\\beta} f'\\left(nx - \\frac{1}{x}\\right) \\mathrm{d}x = 0$ .",
+  "answer": "$\\lim_{n\\to \\infty}\\int_{\\alpha}^{\\beta}f'\\left(nx - \\frac{1}{x}\\right)\\mathrm{d}x = 0.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为积分无法算出，若积分式适当放大后仍趋于0，问题就解决了. 为化简被积函数，可作变量代换 $y = x - \\frac{1}{nx}$ ，其目的是要将 $f'$ 通过积分转化为 $f$ 来讨论."
+      },
+      {
+        "id": "s2",
+        "text": "令 $y = x - \\frac{1}{nx}$ ，则 $y' = 1 + \\frac{1}{nx^2} > 0$ ，故函数 $y(x)$ 在 $[\\alpha, \\beta]$ 上严格单调递增。记 $y(x)$ 的反函数为 $x(y)$ ，则 $x(y)$ 定义在 $\\left[\\alpha - \\frac{1}{n\\alpha}, \\beta - \\frac{1}{n\\beta}\\right]$ 上，且 $x'(y) = \\frac{1}{y'(x)} = \\frac{1}{1 + \\frac{1}{nx^2}} > 0$ 。于是"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {\\alpha} ^ {\\beta} f ^ {\\prime} \\left(n x - \\frac {1}{x}\\right) d x = \\int_ {\\alpha - \\frac {1}{n \\alpha}} ^ {\\beta - \\frac {1}{n \\beta}} f ^ {\\prime} (n y) x ^ {\\prime} (y) d y.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由积分中值定理， $\\exists \\xi_{n}\\in \\left[\\alpha -\\frac{1}{n\\alpha},\\beta -\\frac{1}{n\\beta}\\right]$ ，使得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\int_ {\\alpha - \\frac {1}{n \\alpha}} ^ {\\beta - \\frac {1}{n \\beta}} f ^ {\\prime} (n y) x ^ {\\prime} (y) d y = x ^ {\\prime} (\\xi_ {n}) \\int_ {\\alpha - \\frac {1}{n \\alpha}} ^ {\\beta - \\frac {1}{n \\beta}} f ^ {\\prime} (n y) d y = \\frac {x ^ {\\prime} (\\xi_ {n})}{n} \\left[ f \\left(n \\beta - \\frac {1}{\\beta}\\right) - f \\left(n \\alpha - \\frac {1}{\\alpha}\\right) \\right],\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "因此"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\left| \\int_ {\\alpha} ^ {\\beta} f ^ {\\prime} \\left(n x - \\frac {1}{x}\\right) d x \\right| \\leqslant \\frac {\\left| x ^ {\\prime} \\left(\\xi_ {n}\\right) \\right|}{n} \\left| f \\left(n \\beta - \\frac {1}{\\beta}\\right) - f \\left(n \\alpha - \\frac {1}{\\alpha}\\right) \\right| \\leqslant \\frac {2 \\left| x ^ {\\prime} \\left(\\xi_ {n}\\right) \\right|}{n}.\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "注意到 $0 < x'(\\xi_n) = \\frac{1}{1 + \\frac{1}{n\\xi_n^2}} < 1$ ，则 $\\left|\\int_{\\alpha}^{\\beta}f'\\left(nx - \\frac{1}{x}\\right)\\mathrm{d}x\\right| \\leqslant \\frac{2}{n}$ ，所以 $\\lim_{n\\to \\infty}\\int_{\\alpha}^{\\beta}f'\\left(nx - \\frac{1}{x}\\right)\\mathrm{d}x = 0.$"
+      }
+    ],
+    "final_answer": "$\\lim_{n\\to \\infty}\\int_{\\alpha}^{\\beta}f'\\left(nx - \\frac{1}{x}\\right)\\mathrm{d}x = 0.$",
+    "techniques_used": [
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$\\lim_{n\\to \\infty}\\int_{\\alpha}^{\\beta}f'\\left(nx - \\frac{1}{x}\\right)\\mathrm{d}x = 0.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例38*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 168,
+    "starred": true,
+    "syllabus_note": "积分不等式等式型"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-02",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.varlim.eq",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 上连续，如果 $f(x)$ 为单调递增的奇函数，且 $F(x) = \\int_{0}^{x} (2t - x)f(x - t)dt$ ，试讨论 $F(x)$ 的奇偶性与单调性.",
+  "answer": "$F(x)$ 是单调递减函数.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇偶对称",
+    "变限积分求导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 考虑先换元，使被积函数中不含有变量 x，再讨论函数的奇偶性与单调性.\n\n令 $x - t = u$ ，则\n\n$$\nF (x) = \\int_ {x} ^ {0} (2 x - 2 u - x) f (u) d (- u) = x \\int_ {0} ^ {x} f (u) d u - 2 \\int_ {0} ^ {x} u f (u) d u.\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "$f(x)$ 是奇函数，则\n\n$$\n\\begin{array}{r l} F (- x) & = - x \\int_ {0} ^ {- x} f (u)   \\mathrm{d} u - 2 \\int_ {0} ^ {- x} u f (u)   \\mathrm{d} u \\stackrel {\\text {令} u = - t} {=} x \\int_ {0} ^ {x} f (- t)   \\mathrm{d} t - 2 \\int_ {0} ^ {x} t f (- t)   \\mathrm{d} t \\\\ & = - x \\int_ {0} ^ {x} f (t)   \\mathrm{d} t + 2 \\int_ {0} ^ {x} t f (t)   \\mathrm{d} t = - F (x). \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "$F(x)$ 也是奇函数.\n\n又\n\n$$\n\\begin{array}{r l} F ^ {\\prime} (x) & = \\int_ {0} ^ {x} f (u) \\mathrm{d} u + x f (x) - 2 x f (x) = \\int_ {0} ^ {x} f (u) \\mathrm{d} u - x f (x) \\\\ & = x f (\\xi) - x f (x) <   0 \\quad (x > 0, 0 <   \\xi <   x). \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $F(x)$ 是单调递减函数."
+      }
+    ],
+    "final_answer": "$F(x)$ 是单调递减函数.",
+    "techniques_used": [
+      "奇偶对称",
+      "变限积分求导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "变限积分如何求导？上下限与被积函数含参时公式如何写？",
+      "technique": "变限积分求导",
+      "expected": "用变限积分求导（莱布尼茨）公式，必要时先换元再求导。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终要求的积分值、极限或性质结论是什么？",
+      "technique": "变限积分求导",
+      "expected": "$F(x)$ 是单调递减函数."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 148,
+    "syllabus_note": "变限积分奇偶/单调性",
+    "commentary": "评注 $\\Phi (x) = \\int_{a}^{x}f(t)\\mathrm{d}t$ 与 $f(t)$ 的奇偶性关系如下：\n\n(1) 若 $f(x)$ 为奇函数，则 $\\Phi(x)$ 为偶函数 ( $f(x)$ 的全体原函数均为偶函数);\n\n(2) 若函数 $f(x)$ 为偶函数，则 $\\Phi(x)$ 为奇函数的充分必要条件为 $\\Phi(0)=0$ ，即 $\\int_{0}^{a}f(t)\\mathrm{d}t=0$ .\n\n根据这两条性质，本题中函数 $F(x)$ 的奇偶性也可直接由①式看出."
+  }
+}

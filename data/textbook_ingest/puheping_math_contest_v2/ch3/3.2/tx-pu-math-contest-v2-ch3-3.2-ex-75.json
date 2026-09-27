@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-75",
+  "subject": "math",
+  "l2": "变限积分与积分应用",
+  "l3_id": "math.calc.app.phys",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知有两根均匀的竿子，每根的质量为 m，长度为 2a，相互平行，相距为 b 并且其中心连线与它们垂直，试计算相互引力，并考虑 a 为零的情形.",
+  "answer": "当 $a$ 为零时，其引力即为两质点的引力。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇偶对称",
+    "物理量",
+    "面积计算",
+    "微元法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将其中一根竿子的长度细分，取其一小段（视为质点），先求得另一根竿子对该质点的引力，即为引力微元，再对引力微元沿整根竿子做积分就得到所求的引力（注意：力的累加要按同向分量进行）.\n\n设其中一根竿子位于 $x$ 轴上的 $[0, 2a]$ 区间，另一根竿子位于其上方，两端点分别为 $(0, b)$ 、 $(2a, b)$ （如图3.8所示）。由对称性知两竿的引力一定沿两竿中心连线，即为垂直分力，而水平分力为零。\n\n在上方竿子的点 $P(h, b)$ 处取长度为 $\\mathrm{d}h$ 的一小段，在下方竿子的点 $Q(x, 0)$ 处取长度为 $\\mathrm{d}x$ 的一小段。令 $\\alpha, \\beta, \\theta$ 是如图3.8所示标记的角度，则这两小段细竿（视为质点）的引力大小为 $G\\frac{m}{2a}\\mathrm{d}h \\cdot \\frac{m}{2a}\\mathrm{d}x \\cdot \\frac{\\sin^2\\theta}{b^2}$ ，其垂直分量为 $G\\frac{m}{2a}\\mathrm{d}h \\cdot \\frac{m}{2a}\\mathrm{d}x \\cdot \\frac{\\sin^2\\theta}{b^2}\\sin\\theta$ （ $G$ 是引力常数）。因此下方细竿对位于点 $P$ 处长度为 $\\mathrm{d}h$ 的一小段竿引力的垂直分量为"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nf _ {y} = \\frac {G m ^ {2}}{4 a ^ {2} b ^ {2}} \\mathrm{d} h \\int_ {0} ^ {2 a} \\sin^ {3} \\theta \\mathrm{d} x.\n$$\n\n$x$ 与 $\\theta$ 的关系为 $x + b\\cot \\theta = h$ 。如果将积分变量换为 $\\theta$ ，则有 $\\mathrm{d}x = \\frac{b}{\\sin^2\\theta}\\mathrm{d}\\theta$ ，故\n\n$$\n\\begin{array}{r l} f _ {y} & = \\frac {G m ^ {2}}{4 a ^ {2} b} \\mathrm{d} h \\int_ {\\alpha} ^ {\\beta} \\sin \\theta \\mathrm{d} \\theta = \\frac {G m ^ {2}}{4 a ^ {2} b} \\mathrm{d} h \\cdot (\\cos \\alpha - \\cos \\beta) \\\\ & = \\frac {G m ^ {2}}{4 a ^ {2} b} \\left[ \\frac {h}{\\sqrt {h ^ {2} + b ^ {2}}} - \\frac {h - 2 a}{\\sqrt {(h - 2 a) ^ {2} + b ^ {2}}} \\right] \\mathrm{d} h. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "两竿之间的引力的垂直分量为\n\n图3.8\n\n$$\n\\begin{array}{r l} F _ {y} & = \\frac {G m ^ {2}}{4 a ^ {2} b} \\int_ {0} ^ {2 a} \\left[ \\frac {h}{\\sqrt {h ^ {2} + b ^ {2}}} - \\frac {h - 2 a}{\\sqrt {(h - 2 a) ^ {2} + b ^ {2}}} \\right] d h \\\\ & = \\frac {G m ^ {2}}{4 a ^ {2} b} \\left[ \\sqrt {h ^ {2} + b ^ {2}} - \\sqrt {(h - 2 a) ^ {2} + b ^ {2}} \\right] _ {0} ^ {2 a} = \\frac {G m ^ {2}}{2 a ^ {2} b} \\left(\\sqrt {4 a ^ {2} + b ^ {2}} - b\\right). \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "这也就是两竿的相互引力，其方向沿两竿中心连线.\n\n取 $a \\to 0$ ，有 $F_y \\to \\frac{Gm^2}{b^2}$ 。所以，当 $a$ 为零时，其引力即为两质点的引力。"
+      }
+    ],
+    "final_answer": "当 $a$ 为零时，其引力即为两质点的引力。",
+    "techniques_used": [
+      "奇偶对称",
+      "物理量",
+      "面积计算",
+      "微元法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "物理量（功/引力等）的微元如何建立？坐标系如何取？",
+      "technique": "物理量",
+      "expected": "取合适微元，写出力/位移等再积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终物理量结果是什么？",
+      "technique": "物理量",
+      "expected": "当 $a$ 为零时，其引力即为两质点的引力。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例75*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 194,
+    "starred": true,
+    "syllabus_note": "引力"
+  }
+}

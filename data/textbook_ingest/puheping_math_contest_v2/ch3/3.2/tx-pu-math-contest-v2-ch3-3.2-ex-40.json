@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-40",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "$f(x) \\in C[-a, a](a > 0)$ ，且 $f'(0) \\neq 0$ .\n\n（1）证明 $\\forall x\\in (0,a)$ ， $\\theta \\in (0,1)$ ，等式 $\\int_0^x f(t)\\mathrm{d}t + \\int_0^{-x}f(t)\\mathrm{d}t = x[f(\\theta x) - f(-\\theta x)]$ 成立.\n\n(2) 求极限 $\\lim_{x\\to0^{+}}\\theta$ .",
+  "answer": "$\\lim_{x\\to 0^{+}}\\theta = \\frac{1}{2}.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）中所证等式的右边含有中值 $\\theta$ ，可对左边函数用微分（或积分）中值定理；（2）中的极限可利用（1）中的等式来计算."
+      },
+      {
+        "id": "s2",
+        "text": "令 $F(x) = \\int_{0}^{x} f(t) \\mathrm{d}t + \\int_{0}^{-x} f(t) \\mathrm{d}t, x \\in (0, a)$ . 由微分中值定理得\n\n$$\nF (x) - F (0) = F ^ {\\prime} (\\theta x) (x - 0), \\quad \\theta \\in (0, 1),\n$$\n\n因 $F(0) = 0$ ，则\n\n$$\n\\int_ {0} ^ {x} f (t) \\mathrm{d} t + \\int_ {0} ^ {- x} f (t) \\mathrm{d} t = x [ f (\\theta x) - f (- \\theta x) ].\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 由上式变形得\n\n$$\n\\frac {\\int_ {0} ^ {x} f (t) \\mathrm{d} t + \\int_ {0} ^ {- x} f (t) \\mathrm{d} t}{2 x ^ {2}} = \\frac {f (\\theta x) - f (- \\theta x)}{2 x \\theta} \\theta .\n$$\n\n两边取极限 $x \\to 0^{+}$ ，有\n\n$$\n\\text {左} = \\lim _ {x \\to 0 ^ {+}} \\frac {f (x) - f (- x)}{4 x} = \\frac {1}{2} f ^ {\\prime} (0), \\text {右} = f ^ {\\prime} (0) \\lim _ {x \\to 0 ^ {+}} \\theta .\n$$\n\n因为 $f^{\\prime}(0)\\neq 0$ ，所以 $\\lim_{x\\to 0^{+}}\\theta = \\frac{1}{2}.$"
+      }
+    ],
+    "final_answer": "$\\lim_{x\\to 0^{+}}\\theta = \\frac{1}{2}.$",
+    "techniques_used": [
+      "积分中值",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "定积分性质",
+      "expected": "$\\lim_{x\\to 0^{+}}\\theta = \\frac{1}{2}.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例40",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 169,
+    "syllabus_note": "积分恒等式",
+    "commentary": "评注 由于（1）中等式的左边 $\\int_0^x f(t)\\mathrm{d}t + \\int_0^{-x}f(t)\\mathrm{d}t = \\int_0^x [f(t) - f(-t)]\\mathrm{d}t$ ，所以也可由积分中值定理来得到所证的等式."
+  }
+}

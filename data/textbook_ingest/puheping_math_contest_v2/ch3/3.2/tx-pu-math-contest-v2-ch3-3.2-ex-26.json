@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-26",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_0^1\\left|x - \\frac{1}{2}\\right|^5 x^n (1 - x)^n\\mathrm{d}x$ （ $n$ 为正整数）.",
+  "answer": "见题解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $x = \\frac{1}{2}$ 是绝对值函数的分段点，可插入分段点分段积分。但 $x = \\frac{1}{2}$ 又是积分区间的中点，作变量代换 $x - \\frac{1}{2} = t$ ，化为对称区间上的积分更好，同时被积函数也化简了。"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} & I \\xlongequal {x = t + \\frac {1}{2}} \\int_ {- \\frac {1}{2}} ^ {\\frac {1}{2}} | t | ^ {5} \\left(t + \\frac {1}{2}\\right) ^ {n} \\left(\\frac {1}{2} - t\\right) ^ {n} \\mathrm{d} t = (- 1) ^ {n} \\int_ {- \\frac {1}{2}} ^ {\\frac {1}{2}} | t | ^ {5} \\left(t ^ {2} - \\frac {1}{4}\\right) ^ {n} \\mathrm{d} t \\\\ & = (- 1) ^ {n} 2 \\int_ {0} ^ {\\frac {1}{2}} t ^ {5} \\left(t ^ {2} - \\frac {1}{4}\\right) ^ {n} \\mathrm{d} t \\xlongequal {t ^ {2} = u + 1 / 4} (- 1) ^ {n} \\int_ {- \\frac {1}{4}} ^ {0} \\left(u + \\frac {1}{4}\\right) ^ {2} u ^ {n} \\mathrm{d} t \\\\ & = (- 1) ^ {n} \\int_ {- \\frac {1}{4}} ^ {0} \\left(u ^ {n + 2} + \\frac {1}{2} u ^ {n + 1} + \\frac {1}{1 6} u ^ {n}\\right) \\mathrm{d} t \\\\ & = (- 1) ^ {n} \\left(\\frac {1}{n + 3} u ^ {n + 3} + \\frac {1}{2 (n + 2)} u ^ {n + 2} + \\frac {1}{1 6 (n + 1)} u ^ {n + 1}\\right) \\Bigg | _ {- \\frac {1}{4}} ^ {0} \\\\ & = \\frac {2}{(n + 1) (n + 2) (n + 3)} \\left(\\frac {1}{4}\\right) ^ {n + 3}. \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "见题解",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "牛顿-莱布尼茨",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "见题解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例26",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 160,
+    "syllabus_note": "绝对值分段"
+  }
+}

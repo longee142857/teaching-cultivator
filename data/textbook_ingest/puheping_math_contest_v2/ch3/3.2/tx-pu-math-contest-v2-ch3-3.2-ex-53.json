@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-53",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[a, b]$ 上连续且单调递增，证明 $\\int_{a}^{b} x f(x) \\mathrm{d}x \\geqslant \\frac{a + b}{2} \\int_{a}^{b} f(x) \\mathrm{d}x$ .",
+  "answer": "分式，可得 $\\int_{a}^{b}xf(x)\\mathrm{d}x\\geqslant \\frac{a + b}{2}\\int_{a}^{b}f(x)\\mathrm{d}x.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分中值",
+    "夹逼/估值",
+    "面积计算",
+    "定积分性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 移项，将参数 $b$ 或 $a$ 作为自变量引入辅助函数，利用函数的单调性就可证明不等式，还可利用积分的单调性，以及积分中值定理等方法来证明."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 构造辅助函数，令\n\n$$\nF (x) = \\int_ {a} ^ {x} t f (t) \\mathrm{d} t - \\frac {a + x}{2} \\int_ {a} ^ {x} f (t) \\mathrm{d} t, \\quad x \\in [ a, b ].\n$$\n\n显然 $F(a) = 0$ ，且\n\n$$\n\\begin{array}{r l} F ^ {\\prime} (x) & = x f (x) - \\frac {1}{2} \\int_ {a} ^ {x} f (t) \\mathrm{d} t - \\frac {a + x}{2} f (x) \\\\ & = \\frac {x - a}{2} f (x) - \\frac {1}{2} \\int_ {a} ^ {x} f (t) \\mathrm{d} t = \\frac {1}{2} \\int_ {a} ^ {x} [ f (x) - f (t) ] \\mathrm{d} t \\geqslant 0, \\end{array}\n$$\n\n即 $F(x)$ 单调递增. 所以 $F(x) \\geqslant 0$ ，从而 $F(b) \\geqslant 0$ ，即\n\n$$\n\\int_ {a} ^ {b} x f (x) \\mathrm{d} x \\geqslant \\frac {a + b}{2} \\int_ {a} ^ {b} f (x) \\mathrm{d} x.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 利用定积分的单调性（不等式性质）.\n\n由于 $f(x)$ 在 $[a, b]$ 上单调递增，则有\n\n$$\n\\left(x - \\frac {a + b}{2}\\right) \\left[ f (x) - f \\left(\\frac {a + b}{2}\\right) \\right] \\geqslant 0, \\quad \\int_ {a} ^ {b} \\left(x - \\frac {a + b}{2}\\right) \\left[ f (x) - f \\left(\\frac {a + b}{2}\\right) \\right] d x \\geqslant 0.\n$$\n\n又\n\n$$\n\\int_ {a} ^ {b} \\left(x - \\frac {a + b}{2}\\right) f \\left(\\frac {a + b}{2}\\right) d x \\stackrel {t = x - (a + b) / 2} {=} f \\left(\\frac {a + b}{2}\\right) \\int_ {\\frac {b - a}{2}} ^ {\\frac {b - a}{2}} t d t = 0,\n$$\n\n代入上面积分式，可得 $\\int_{a}^{b}xf(x)\\mathrm{d}x\\geqslant \\frac{a + b}{2}\\int_{a}^{b}f(x)\\mathrm{d}x.$"
+      },
+      {
+        "id": "s4",
+        "text": "方法 3 利用积分第一中值定理.\n\n$$\n\\begin{array}{l} \\int_ {a} ^ {b} \\left(x - \\frac {a + b}{2}\\right) f (x) \\mathrm{d} x = \\int_ {a} ^ {\\frac {a + b}{2}} \\left(x - \\frac {a + b}{2}\\right) f (x) \\mathrm{d} x + \\int_ {\\frac {a + b}{2}} ^ {b} \\left(x - \\frac {a + b}{2}\\right) f (x) \\mathrm{d} x \\\\ = f (\\xi_ {1}) \\int_ {a} ^ {\\frac {a + b}{2}} \\left(x - \\frac {a + b}{2}\\right) \\mathrm{d} x + f (\\xi_ {2}) \\int_ {\\frac {a + b}{2}} ^ {b} \\left(x - \\frac {a + b}{2}\\right) \\mathrm{d} x = [ f (\\xi_ {2}) - f (\\xi_ {1}) ] \\frac {(b - a) ^ {2}}{8}. \\end{array}\n$$\n\n其中 $0 < \\xi_{1} < \\frac{a + b}{2} < \\xi_{2} < b$ 。因为 $f(x)$ 单调递增，所以上式右端非负，故\n\n$$\n\\int_ {a} ^ {b} \\left(x - \\frac {a + b}{2}\\right) f (x) d x \\geqslant 0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "方法 4 利用二重积分的单调性.\n\n由 $f(x)$ 单调递增，知 $\\forall x, y \\in [a, b]$ ，有\n\n$$\n(x - y) [ f (x) - f (y) ] \\geqslant 0.\n$$\n\n做二重积分，得\n\n$$\n\\int_ {a} ^ {b} \\int_ {a} ^ {b} (x - y) [ f (x) - f (y) ] d x d y \\geqslant 0.\n$$\n\n左端的二重积分为\n\n$$\n\\begin{array}{r l} I & = (b - a) \\int_ {a} ^ {b} x f (x) \\mathrm{d} x - \\frac {b ^ {2} - a ^ {2}}{2} \\int_ {a} ^ {b} f (x) \\mathrm{d} x + (b - a) \\int_ {a} ^ {b} y f (y) \\mathrm{d} y - \\frac {b ^ {2} - a ^ {2}}{2} \\int_ {a} ^ {b} f (y) \\mathrm{d} y \\\\ & = 2 (b - a) \\int_ {a} ^ {b} x f (x) \\mathrm{d} x - (b ^ {2} - a ^ {2}) \\int_ {a} ^ {b} f (x) \\mathrm{d} x. \\end{array}\n$$\n\n所以\n\n$$\n\\int_ {a} ^ {b} x f (x) \\mathrm{d} x \\geqslant \\frac {a + b}{2} \\int_ {a} ^ {b} f (x) \\mathrm{d} x.\n$$"
+      }
+    ],
+    "final_answer": "分式，可得 $\\int_{a}^{b}xf(x)\\mathrm{d}x\\geqslant \\frac{a + b}{2}\\int_{a}^{b}f(x)\\mathrm{d}x.$",
+    "techniques_used": [
+      "积分中值",
+      "夹逼/估值",
+      "面积计算",
+      "定积分性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "主要用到定积分的哪条性质（对称、中值、可加、估值）？",
+      "technique": "积分中值",
+      "expected": "选定关键性质或估值手段建立证明/计算。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "夹逼/估值",
+      "expected": "分式，可得 $\\int_{a}^{b}xf(x)\\mathrm{d}x\\geqslant \\frac{a + b}{2}\\int_{a}^{b}f(x)\\mathrm{d}x.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例53",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 177,
+    "syllabus_note": "切比雪夫型",
+    "commentary": "评注（1）若不等式的两边含有同一参数（或常数），将该参数（或常数）作为自变量引入辅助函数，再用微分学的方法寻求不等式的证明，会使问题更容易处理.\n\n（2）积分中值定理建立了函数值与定积分的关系，为我们用积分形式研究函数或用函数研究定积分提供了方便；积分中值定理常用来消除定积分号，使问题得到简化。方法3中将积分区间对分的目的是使函数 $x-\\frac{a+b}{2}$ 在对应的积分区间内保持符号，使之满足积分第一中值定理的条件。\n\n(3) 利用二重积分来解决定积分的问题也是较常见的方法.\n\n(4) 本题的几何意义：若曲线 $y = f(x)$ 单调递增，则曲边梯形 $\\{(x, y) | a \\leqslant x \\leqslant b, 0 \\leqslant y \\leqslant f(x)\\}$ 的形心一定落在直线 $x = \\frac{a + b}{2}$ 的右边."
+  }
+}

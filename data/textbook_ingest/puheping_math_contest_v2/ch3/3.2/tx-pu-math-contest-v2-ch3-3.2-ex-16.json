@@ -1,0 +1,65 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.2-ex-16",
+  "subject": "math",
+  "l2": "一元积分学（计算）",
+  "l3_id": "math.calc.int.sub",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_0^1\\frac{\\arcsin\\sqrt{x}}{\\sqrt{1 - x(1 - x)}}\\mathrm{d}x.$",
+  "answer": "见题解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "牛顿-莱布尼茨",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 容易想到作变量代换 $t = \\arcsin \\sqrt{x}$ ，但计算却较困难；若用上题评注中给出的积分公式就比较简单了."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} & {I = \\frac {1}{2} \\int_ {0} ^ {1} \\frac {\\arcsin \\sqrt {x} + \\arcsin \\sqrt {1 - x}}{\\sqrt {1 - x (1 - x)}} \\mathrm{d} x} \\\\ & {\\quad = \\frac {\\pi}{4} \\int_ {0} ^ {1} \\frac {1}{\\sqrt {1 - x (1 - x)}} \\mathrm{d} x \\quad \\left(\\because \\arcsin t + \\arcsin \\sqrt {1 - t ^ {2}} = \\frac {\\pi}{2}, \\text {这里} t = \\sqrt {x}\\right)} \\\\ & {\\quad = \\frac {\\pi}{4} \\int_ {0} ^ {1} \\frac {1}{\\sqrt {\\frac {3}{4} + \\left(x - \\frac {1}{2}\\right) ^ {2}}} \\mathrm{d} x = \\frac {\\pi}{4} \\ln \\left(\\left(x - \\frac {1}{2}\\right) + \\sqrt {\\frac {3}{4} + \\left(x - \\frac {1}{2}\\right) ^ {2}}\\right) \\Bigg | _ {0} ^ {1} = \\frac {\\pi}{4} \\ln 3.} \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "见题解",
+    "techniques_used": [
+      "牛顿-莱布尼茨",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "定积分换元时新上下限如何确定？对称换元是否可用？",
+      "technique": "换元定积分",
+      "expected": "换元同步改限，或用对称性简化。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值是什么？",
+      "technique": "换元定积分",
+      "expected": "见题解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.2",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 155,
+    "syllabus_note": "换元定积分"
+  }
+}
