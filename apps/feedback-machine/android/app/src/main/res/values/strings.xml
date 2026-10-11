@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">反馈出题机</string>
+    <string name="title_activity_main">反馈出题机</string>
+    <string name="package_name">icu.longee.feedback</string>
+    <string name="custom_url_scheme">icu.longee.feedback</string>
+</resources>
