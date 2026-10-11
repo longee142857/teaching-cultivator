@@ -7,6 +7,7 @@ if [[ -f scripts/android-env.sh ]]; then
   source scripts/android-env.sh
 fi
 npm ci
+bash scripts/copy-capacitor-runtime.sh
 npx cap sync android
 cd android
 chmod +x gradlew 2>/dev/null || true

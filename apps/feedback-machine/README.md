@@ -28,7 +28,11 @@
 2. 无未答题时：`GET /api/v1/practice/item?learner=&kind=math|comm|review` — 与 teaching-shell 的 `pickSlotFromBank` 相同，从题库 `ready` 抽题（`fromBank`）。
 3. `POST /api/v1/practice/submit` — 批改反馈；大题可能异步，壳会轮询 `GET /item` 直至 `result` 就绪。
 
-公网练习台需配置 `PRACTICE_API_TOKEN`；若浏览器/WebView 跨域，服务端还需 `PRACTICE_CORS_ORIGIN` 包含 Capacitor 来源（常见为 `https://localhost`）。
+公网练习台需配置 `PRACTICE_API_TOKEN`。
+
+### 网络：为何用 CapacitorHttp
+
+Capacitor WebView 的页面 Origin 为 `https://localhost`，对 `practice.longee.icu` 的 `fetch` 会触发浏览器 CORS（练习台未开 `Access-Control-Allow-Origin` 时直接失败）。**APK 内** `www/js/api.js` 在原生壳上优先走 `Capacitor.Plugins.CapacitorHttp`（原生 HTTP，不经 WebView CORS）；仅浏览器静态预览或 `cap run` 的 web 平台才回退 `fetch`。因此**不必**为 App 单独改 VPS `PRACTICE_CORS_ORIGIN`。
 
 ## 本地打开 Web（不打包）
 
@@ -59,6 +63,7 @@ source scripts/android-env.sh
 ```bash
 cd apps/feedback-machine
 npm ci
+bash scripts/copy-capacitor-runtime.sh   # www/js/capacitor.js（CapacitorHttp 桥）
 npx cap sync android
 cd android
 ./gradlew assembleDebug

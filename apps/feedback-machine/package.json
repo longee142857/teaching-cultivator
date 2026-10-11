@@ -6,7 +6,7 @@
   "scripts": {
     "sync": "npx cap sync android",
     "open:android": "npx cap open android",
-    "build:web": "node scripts/copy-www.js",
+    "build:web": "bash scripts/copy-capacitor-runtime.sh",
     "build:apk": "bash scripts/build-debug-apk.sh"
   },
   "capacitor": {
