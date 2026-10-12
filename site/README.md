@@ -6,18 +6,16 @@
 
 ## 启用 GitHub Pages
 
-仓库 → **Settings** → **Pages** → **Build and deployment** → **Deploy from a branch**：
+**Deploy from a branch** 只能选文件夹 `/` 或 `/docs`，不能发布 `/site`。本仓库用 **GitHub Actions** 发布 `site/`。
 
-| 项 | 值 |
-|----|----|
-| Branch | `master` |
-| Folder | `/site` |
+1. 仓库 → **Settings** → **Pages** → **Build and deployment** → **Source** 选 **GitHub Actions**。
+2. [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) 在推送到 `master`（`site/**` 或该工作流有变更）时部署；也可在 Actions 里手动运行。
 
-保存后，站点地址形如：
+站点地址：
 
 `https://longee142857.github.io/teaching-cultivator/`
 
-本目录已放 `.nojekyll`，避免 Jekyll 改写静态文件。无需构建，也不需要 Actions。
+`site/` 里已有 `.nojekyll`。页面是纯静态 HTML/CSS/JS，没有构建步骤。
 
 ## 本地预览
 
@@ -41,6 +39,9 @@ python3 -m http.server 4173 --directory site
 
 ## Enable GitHub Pages
 
-Repo → **Settings** → **Pages** → **Deploy from a branch** → branch **`master`**, folder **`/site`**.
+**Deploy from a branch** only accepts folder `/` or `/docs`, so it cannot publish `/site`. This repo uses **GitHub Actions** to publish `site/`.
 
-The published URL looks like `https://longee142857.github.io/teaching-cultivator/`. `.nojekyll` is included so Pages serves the files as-is. There is no build step.
+1. Repo → **Settings** → **Pages** → **Build and deployment** → set **Source** to **GitHub Actions**.
+2. [`.github/workflows/pages.yml`](../.github/workflows/pages.yml) deploys on push to `master` when `site/**` or that workflow changes. You can also run it from the Actions tab.
+
+The published URL is `https://longee142857.github.io/teaching-cultivator/`. `.nojekyll` is already in `site/`. The site is plain HTML/CSS/JS; there is no build step.
