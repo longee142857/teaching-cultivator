@@ -30,7 +30,7 @@
 2. 空槽补题：`GET /api/v1/practice/item?learner=&kind=math|review`。**空的通信槽不请求 `kind=comm`**（通信 ready 库存很薄）。
 3. `POST /api/v1/practice/submit` — 批改反馈。结果若已就绪，立刻 `busy=false` 并画到反馈页（不再停在「提交中」）。仍在批改则轮询 `GET /item`。
 4. `POST /api/v1/tutor/chat` — 「不懂，问讲师」/「发给老师讨论」，`Accept: text/event-stream`。浏览器边收边画；原生 CapacitorHttp 等整段结束后按 SSE 事件回放。未接线时 501，文案与练习台一致。
-5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`、`GET/POST /api/v1/notes`。能力页用练习台同一份脑图，经壳代发 `practice/params` 和 `capability/events`。
+5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`、`GET/POST /api/v1/notes`。
 
 公网练习台需配置 `PRACTICE_API_TOKEN`。
 
@@ -106,7 +106,6 @@ npx cap open android    # 打开 Android Studio（若已安装）
 
 - 今日三槽（数学 / 通信 / 复习）、翻页、历史未答
 - 周卷列表和试卷页、资料库（放入并查看手写图）
-- 能力页：`www/brain/`，练习台同一份脑图；接口带上壳里的 Token，走 CapacitorHttp
 - 拍照或选图 OCR、「题质量差」
 - 讲师走 SSE。原生壳等整段响应后再按事件打字；最近会话留在本机
 - 复习题进入「下一题」。空的复习槽按 `kind=review` 补题
