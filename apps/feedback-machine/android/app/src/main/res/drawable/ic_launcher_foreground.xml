@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Black summation, kept inside the 66dp adaptive safe circle. -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M38.00,80.55 L38.00,77.49 L55.03,52.61 L38.44,30.57 L38.44,27.45 L68.22,27.45 L68.22,31.85 L45.46,31.85 L60.93,52.50 L44.79,76.15 L70.00,76.15 L70.00,80.55 Z" />
+</vector>
