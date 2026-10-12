@@ -7,6 +7,7 @@ android {
         applicationId "icu.longee.feedback"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // Shell compares this versionCode with version.json. Bump it for each published APK.
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

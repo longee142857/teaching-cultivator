@@ -30,8 +30,43 @@
 | 练习台 Base URL | 默认 `https://practice.longee.icu`。出题、批改、讲题都打这里 |
 | Practice API Token | 与 VPS `PRACTICE_API_TOKEN` 一致。错了会提示 **Token 无效（401）**，不会当成网络中断 |
 | Learner Id | 默认 `04022300566420984205`。请求带 `X-Learner-Id` |
+| 更新清单地址 | 可留空。留空时固定检查 `https://practice.longee.icu/app/feedback-machine/version.json` |
 
 **勿将真实密钥提交 git。**
+
+## 应用更新
+
+启动时静默拉一次更新清单，失败不打断做题。设置页显示当前 `versionName` / `versionCode`，并有「检查更新」。远端 `versionCode` 更大，或本机低于 `minVersionCode` 时，提示「有新版本」，用系统浏览器打开 `apkUrl` 下载。`package` 不是 `icu.longee.feedback` 的清单会忽略。
+
+默认地址（已挂在练习台，CORS `*`，CapacitorHttp 从 `https://localhost` 可拉，不带练习台 Token）：
+
+`https://practice.longee.icu/app/feedback-machine/version.json`
+
+当前 APK 直链：`https://practice.longee.icu/app/feedback-machine/feedback-machine-debug.apk`
+
+| 字段 | 说明 |
+|------|------|
+| `package` | 应用包名，须为 `icu.longee.feedback` |
+| `versionCode` | 整数。大于本机 versionCode 才提示更新 |
+| `versionName` | 展示用，例如 `1.0` |
+| `apkUrl` | APK 的 https 直链 |
+| `apkMd5` | 设置页展示，下载仍直接打开 `apkUrl` |
+| `releaseNotes` | 设置页里的短说明 |
+| `minVersionCode` | 本机低于此值时也提示更新 |
+
+```json
+{
+  "package": "icu.longee.feedback",
+  "versionCode": 1,
+  "versionName": "1.0",
+  "apkUrl": "https://practice.longee.icu/app/feedback-machine/feedback-machine-debug.apk",
+  "apkMd5": "27cff87ca90b1ceca9edd1cad6720b59",
+  "releaseNotes": "#53 练习台/工作室 + ∑图标",
+  "minVersionCode": 1
+}
+```
+
+本机版本优先读 Capacitor `App.getInfo()`（`build` 是 versionCode，`version` 是 versionName）。浏览器预览没有该插件时，回退 gradle 里的 `1` / `1.0`。发布新包时把 gradle 的 `versionCode` 加一，并改这份 `version.json`。依赖 `@capacitor/app`，打包前 `npm ci` 然后 `npx cap sync android`。
 
 ## API 假设（「再出一题」）
 

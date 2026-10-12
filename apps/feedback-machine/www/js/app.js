@@ -39,7 +39,18 @@
     ocrBusy: false,
     ocrMsg: "",
     ocrMode: "document",
-    theme: themeSaved
+    theme: themeSaved,
+    update: {
+      phase: "idle",
+      localCode: FqmConfig.APP_VERSION_CODE,
+      localName: FqmConfig.APP_VERSION_NAME,
+      remoteCode: null,
+      remoteName: "",
+      apkUrl: "",
+      notes: "",
+      apkMd5: "",
+      message: ""
+    }
   };
   var ocrPayload = null;
   var streamTimer = null;
@@ -47,6 +58,7 @@
   var SCREEN_ORDER = { today: 0, practice: 1, feedback: 2, done: 3 };
   var flipOverride = null;
   var flipGen = 0;
+  var updateGen = 0;
   var flipBusy = false;
   var lastPaintScreen = "";
   var swipeBound = false;
@@ -272,6 +284,105 @@
     );
   }
 
+  function readLocalVersion() {
+    var fallback = {
+      versionCode: FqmConfig.APP_VERSION_CODE,
+      versionName: FqmConfig.APP_VERSION_NAME
+    };
+    try {
+      var cap = window.Capacitor;
+      var appPlugin = cap && cap.Plugins && cap.Plugins.App;
+      if (!appPlugin || typeof appPlugin.getInfo !== "function") return Promise.resolve(fallback);
+      return Promise.resolve(appPlugin.getInfo()).then(function (info) {
+        var code = parseInt(info && info.build, 10);
+        return {
+          versionCode: isFinite(code) ? code : fallback.versionCode,
+          versionName: info && info.version ? String(info.version) : fallback.versionName
+        };
+      }).catch(function () {
+        return fallback;
+      });
+    } catch (e) {
+      return Promise.resolve(fallback);
+    }
+  }
+
+  function manifestUrlNow() {
+    var partial = {
+      practiceBaseUrl: cfg.practiceBaseUrl,
+      updateManifestUrl: cfg.updateManifestUrl
+    };
+    var form = document.getElementById("settings-form");
+    if (form && form.practiceBase && String(form.practiceBase.value || "").trim()) {
+      partial.practiceBaseUrl = String(form.practiceBase.value).trim();
+    }
+    if (form && form.updateManifest) {
+      partial.updateManifestUrl = String(form.updateManifest.value || "").trim();
+    }
+    return FqmConfig.updateManifestUrl(partial);
+  }
+
+  function openApk(url) {
+    var target = FqmConfig.safeHttpUrl(url);
+    if (!target) return;
+    try {
+      var cap = window.Capacitor;
+      var browser = cap && cap.Plugins && cap.Plugins.Browser;
+      if (browser && typeof browser.open === "function") {
+        browser.open({ url: target });
+        return;
+      }
+    } catch (e) {}
+    try {
+      if (window.open) window.open(target, "_blank", "noopener");
+    } catch (e2) {}
+  }
+
+  function checkForUpdate(opts) {
+    opts = opts || {};
+    var gen = ++updateGen;
+    try {
+      if (!opts.silent) {
+        state.update.phase = "checking";
+        state.update.message = "正在检查…";
+        if (state.screen === "settings") render();
+      }
+      return readLocalVersion().then(function (local) {
+        state.update.localCode = local.versionCode;
+        state.update.localName = local.versionName;
+        if (!FqmApi || typeof FqmApi.getAbsolute !== "function") {
+          if (!opts.silent) {
+            state.update.phase = "error";
+            state.update.message = "检查失败，不影响做题";
+            if (state.screen === "settings") render();
+          }
+          return;
+        }
+        return FqmApi.getAbsolute(manifestUrlNow()).then(function (body) {
+          if (gen !== updateGen) return;
+          var verdict = FqmConfig.interpretUpdate(local.versionCode, body);
+          state.update.phase = verdict.phase;
+          state.update.message = verdict.message;
+          state.update.apkUrl = verdict.apkUrl || "";
+          state.update.notes = verdict.notes || "";
+          state.update.apkMd5 = verdict.apkMd5 || "";
+          state.update.remoteName = verdict.remoteName || "";
+          state.update.remoteCode = verdict.remoteCode;
+          if (verdict.phase === "available") showToast(verdict.message);
+          else if (!opts.silent && verdict.phase === "current") showToast(verdict.message);
+          if (state.screen === "settings") render();
+        });
+      }).catch(function () {
+        if (gen !== updateGen) return;
+        state.update.phase = "error";
+        state.update.message = "检查失败，不影响做题";
+        if (state.screen === "settings") render();
+      });
+    } catch (e) {
+      return Promise.resolve();
+    }
+  }
+
   function showToast(msg) {
     if (!el.toast) return;
     el.toast.textContent = msg;
@@ -473,7 +584,8 @@
       deepseekBaseUrl: form.deepseekBase.value.trim(),
       practiceBaseUrl: form.practiceBase.value.trim() || FqmConfig.DEFAULTS.practiceBaseUrl,
       practiceToken: form.practiceToken.value.trim(),
-      learnerId: form.learnerId.value.trim() || FqmConfig.DEFAULTS.learnerId
+      learnerId: form.learnerId.value.trim() || FqmConfig.DEFAULTS.learnerId,
+      updateManifestUrl: form.updateManifest ? form.updateManifest.value.trim() : ""
     });
     showToast("已保存到本机");
     if (FqmConfig.isConfigured(cfg)) loadBootstrapThenPick();
@@ -1227,7 +1339,27 @@
         "每次请求都会带上，练习台按这个编号取题和记掌握度。",
         '<input name="learnerId" required autocomplete="off" value="' + esc(cfg.learnerId) + '"/>'
       ) +
-      '<div class="btn-row"><button type="submit" class="btn primary">保存并连接</button></div></form></section>'
+      field(
+        "更新清单地址",
+        "留空则检查 https://practice.longee.icu/app/feedback-machine/version.json。一般不用改。",
+        '<input id="update-manifest-url" name="updateManifest" type="url" placeholder="https://practice.longee.icu/app/feedback-machine/version.json" value="' + esc(cfg.updateManifestUrl || "") + '"/>'
+      ) +
+      '<div class="btn-row"><button type="submit" class="btn primary">保存并连接</button></div></form>' +
+      '<div class="stack"><h2>更新</h2><p class="meta">当前版本 ' +
+      esc(state.update.localName || FqmConfig.APP_VERSION_NAME) +
+      "（versionCode " +
+      esc(String(state.update.localCode)) +
+      "）</p>" +
+      (state.update.message ? '<p class="hint" role="status">' + esc(state.update.message) + "</p>" : '<p class="field-help">启动时会静默检查一次。失败不影响做题。</p>') +
+      (state.update.notes ? '<p class="calm-note">' + esc(state.update.notes) + "</p>" : "") +
+      (state.update.apkMd5 ? '<p class="meta">MD5 ' + esc(state.update.apkMd5) + "</p>" : "") +
+      '<div class="btn-row"><button type="button" class="btn" id="btn-check-update"' +
+      (state.update.phase === "checking" ? " disabled" : "") +
+      ">检查更新</button>" +
+      (state.update.phase === "available" && state.update.apkUrl
+        ? '<button type="button" class="btn primary" id="btn-open-apk">下载新版本</button>'
+        : "") +
+      "</div></div></section>"
     );
   }
 
@@ -1658,6 +1790,10 @@
         saveSettings(form);
       };
     }
+    var checkUpdate = document.getElementById("btn-check-update");
+    if (checkUpdate) checkUpdate.onclick = function () { checkForUpdate({ silent: false }); };
+    var openUpdate = document.getElementById("btn-open-apk");
+    if (openUpdate) openUpdate.onclick = function () { openApk(state.update.apkUrl); };
     var submit = document.getElementById("btn-submit");
     if (submit) submit.onclick = submitAnswer;
     var next = document.getElementById("btn-next");
@@ -1913,6 +2049,7 @@
         }
       });
     }
+    checkForUpdate({ silent: true });
     if (!FqmConfig.isConfigured(cfg)) {
       state.screen = "settings";
       state.error = "首次使用请填写练习台 Token 与学员编号。DeepSeek Key 现在不用填。";
