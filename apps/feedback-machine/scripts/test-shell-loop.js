@@ -134,6 +134,19 @@ assert(api.indexOf("/api/v1/practice/report-poor") >= 0, "poor-item uses the pra
 assert(api.indexOf("/api/v1/exam/papers") >= 0, "exam list uses the practice route");
 assert(api.indexOf("/api/v1/notes") >= 0, "notes use the practice route");
 assert(read("www/css/app.css").indexOf("visibility: hidden") >= 0, "idle toast cannot cover the tab bar");
+assert(/SWIPE_THRESHOLD\s*=\s*56/.test(app), "swipe threshold matches the desk");
+assert(app.indexOf("function bindSwipe") >= 0, "pointer swipe is bound");
+assert(app.indexOf("flip-sheet") >= 0, "pages ride a flip sheet");
+assert(app.indexOf('data-theme-pick="desk"') >= 0, "desk theme can be selected");
+assert(app.indexOf('data-theme-pick="studio"') >= 0, "studio theme can be selected");
+var deskCss = read("www/css/theme-desk.css");
+var studioCss = read("www/css/theme-studio.css");
+assert(deskCss.indexOf("--card-tilt: -0.15deg") >= 0, "desk cards keep the shell tilt");
+assert(deskCss.indexOf("--swipe-drag: 18") >= 0, "desk drag distance matches the shell");
+assert(deskCss.indexOf("--flip-enter-x: 10%") >= 0, "desk enter slide matches the shell");
+assert(studioCss.indexOf('html[data-theme="studio"]') >= 0, "studio theme is selectable");
+assert(studioCss.indexOf("--swipe-drag: 34") >= 0, "studio drag is a larger gesture");
+assert(studioCss.indexOf("--card-tilt: -1.15deg") >= 0, "studio cards tilt more than the desk");
 assert(read("www/js/app.js").indexOf("题质量差") >= 0, "poor-item entry is on the desk");
 assert(read("www/js/app.js").indexOf("brain/index.html") >= 0, "capability page is the vendored brain");
 
@@ -335,7 +348,9 @@ function runDom() {
 
   return flush().then(function () {
     var today = byId.root._html;
+    assert(today.indexOf("flip-sheet") >= 0, "today is painted on a flip sheet");
     assert(today.indexOf("今日练习") >= 0, "boot lands on the three-slot overview");
+    assert(byId["btn-theme-desk"] && byId["btn-theme-studio"], "header can switch desk and studio");
     assert(today.indexOf("导数") >= 0 && today.indexOf("复习") >= 0, "math and review slots are both listed");
     assert(byId["btn-start"], "today has a start control");
     byId["btn-start"].onclick();

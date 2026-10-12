@@ -1,0 +1,188 @@
+/* 工作室：同一条作答路径上的对照画法。冷底、硬边套印、更大的翻页和批改章。 */
+html[data-theme="studio"] {
+  --bg: #d5e2ea;
+  --surface: #fff8ee;
+  --fg: #141c28;
+  --muted: rgba(20, 28, 40, 0.64);
+  --border: #141c28;
+  --accent: #e23b2f;
+  --ink: #141c28;
+  --ok: #0e7a45;
+  --bad: #e23b2f;
+  --warn: #c47d12;
+  --on-accent: #fff8ee;
+  --soft-ok: #d7f3e4;
+  --soft-bad: #f8d6d2;
+  --hover: rgba(20, 28, 40, 0.06);
+  --radius: 0px;
+  --shadow: 6px 6px 0 #141c28;
+  --card-bg: #fff8ee;
+  --card-border: 2px solid #141c28;
+  --card-radius: 0;
+  --card-shadow: 6px 6px 0 #141c28;
+  --card-tilt: -1.15deg;
+  --card-tilt-alt: 0.95deg;
+  --btn-radius: 0;
+  --btn-bg: #fff8ee;
+  --btn-fg: var(--fg);
+  --btn-border: 2px solid #141c28;
+  --btn-shadow: 3px 3px 0 #141c28;
+  --btn-primary-bg: #e23b2f;
+  --btn-primary-fg: #fff8ee;
+  --btn-primary-border: 2px solid #141c28;
+  --btn-primary-shadow: 4px 4px 0 #141c28;
+  --btn-primary-shadow-press: 0 0 0 #141c28;
+  --btn-press-x: 4px;
+  --btn-press-y: 4px;
+  --btn-press-scale: 0.98;
+  --btn-track: 0.14em;
+  --btn-hover-filter: saturate(1.12);
+  --pill-radius: 0;
+  --chip-radius: 0;
+  --badge-radius: 0;
+  --slot-border: 2px solid #141c28;
+  --slot-bg: transparent;
+  --slot-radius: 0;
+  --slot-shadow: 3px 3px 0 #141c28;
+  --hint-radius: 0;
+  --fold-radius: 0;
+  --result-radius: 0;
+  --input-radius: 0;
+  --stat-radius: 0;
+  --dot: 9px;
+  --dot-radius: 0;
+  --dot-border: 2px solid #141c28;
+  --dot-bg: transparent;
+  --dot-on: #e23b2f;
+  --dot-on-border: #141c28;
+  --dot-scale: 1;
+  --header-bg: #fff8ee;
+  --header-border: 2px solid #141c28;
+  --header-blur: 0px;
+  --chrome-bg: #d5e2ea;
+  --chrome-border: 2px solid #141c28;
+  --dock-bg: #fff8ee;
+  --dock-border: 2px solid #141c28;
+  --tab-bg: #fff8ee;
+  --tab-border: 2px solid #141c28;
+  --tab-active: #e23b2f;
+  --rule-opacity: 0;
+  --paper-noise: 0;
+  --field-rule: 2px solid #141c28;
+  --flip-origin: 50% 100%;
+  --flip-dur: 0.48s;
+  --flip-fade: 0.28s;
+  --flip-ease: cubic-bezier(0.16, 1.15, 0.3, 1);
+  --flip-enter-x: 28%;
+  --flip-enter-x-neg: -28%;
+  --flip-enter-rot: 3.2deg;
+  --flip-enter-rot-neg: -3.2deg;
+  --flip-enter-scale: 0.9;
+  --swipe-drag: 34;
+  --swipe-scale: 0.045;
+  --swipe-fade: 0.32;
+  --swipe-tilt: 2.4;
+  --result-size: 40px;
+  --bubble-radius: 0;
+  --bubble-user-bg: #141c28;
+  --bubble-user-fg: #fff8ee;
+  --bubble-user-border: 2px solid #141c28;
+  --bubble-user-shadow: 4px 4px 0 #e23b2f;
+  --bubble-tutor-bg: #fff8ee;
+  --bubble-tutor-fg: #141c28;
+  --bubble-tutor-border: 2px solid #141c28;
+  --bubble-tutor-radius: 0;
+  --bubble-tutor-shadow: 4px 4px 0 #141c28;
+  --bubble-tutor-pad: 10px 12px;
+  --toggle-on-bg: #e23b2f;
+  --toggle-on-fg: #fff8ee;
+  --bg-image:
+    radial-gradient(circle at 12% -10%, rgba(226, 59, 47, 0.22), transparent 46%),
+    repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(20, 28, 40, 0.045) 19px);
+  --toast-bg: #141c28;
+  --toast-radius: 0;
+  --rule-wave: none;
+  --theme-color: #d5e2ea;
+}
+
+html[data-theme="studio"] .stack > .card:first-child,
+html[data-theme="studio"] .desk-split > .card:first-child {
+  box-shadow: 6px 6px 0 #141c28, 12px 12px 0 #c5d5e0, 14px 14px 0 #141c28;
+}
+
+html[data-theme="studio"] .card:nth-child(3n) {
+  transform: rotate(0.65deg);
+}
+
+html[data-theme="studio"] .result-banner {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--ink);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+html[data-theme="studio"] .result-banner.ok {
+  background: #d7f3e4;
+  border-color: #0e7a45;
+  box-shadow: 5px 5px 0 #0e7a45;
+}
+
+html[data-theme="studio"] .result-banner.bad {
+  background: #f8d6d2;
+  border-color: #e23b2f;
+  box-shadow: 5px 5px 0 #e23b2f;
+}
+
+html[data-theme="studio"] .result-banner.warn {
+  background: #f8e7c8;
+  border-color: #c47d12;
+  box-shadow: 5px 5px 0 #c47d12;
+}
+
+html[data-theme="studio"] .result-mark {
+  letter-spacing: 0.14em;
+}
+
+html[data-theme="studio"] .btn.primary {
+  font-family: var(--font-mono);
+}
+
+html[data-theme="studio"] .page-dot.is-on {
+  transform: rotate(45deg);
+}
+
+html[data-theme="studio"] .flip-hint {
+  color: var(--accent);
+  letter-spacing: 0.16em;
+}
+
+html[data-theme="studio"] .hint,
+html[data-theme="studio"] .fold,
+html[data-theme="studio"] .math-block,
+html[data-theme="studio"] .stat,
+html[data-theme="studio"] .form input,
+html[data-theme="studio"] textarea.answer,
+html[data-theme="studio"] textarea.composer,
+html[data-theme="studio"] .page-nav,
+html[data-theme="studio"] .tutor-chip {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--ink);
+}
+
+html[data-theme="studio"] .progress-track {
+  height: 8px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: transparent;
+}
+
+html[data-theme="studio"] .progress-fill {
+  background: var(--accent);
+}
+
+@media (max-width: 767.98px) {
+  html[data-theme="studio"] .app-header .flip-hint {
+    display: block;
+  }
+}
