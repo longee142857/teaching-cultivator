@@ -1,0 +1,43 @@
+name: feedback-machine debug APK
+
+on:
+  push:
+    paths:
+      - "apps/feedback-machine/**"
+      - ".github/workflows/feedback-machine-apk.yml"
+  pull_request:
+    paths:
+      - "apps/feedback-machine/**"
+      - ".github/workflows/feedback-machine-apk.yml"
+  workflow_dispatch:
+
+jobs:
+  assemble-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/feedback-machine/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Android SDK
+        run: bash apps/feedback-machine/scripts/install-android-sdk.sh
+      - name: Assemble debug APK
+        run: |
+          source apps/feedback-machine/scripts/android-env.sh
+          bash apps/feedback-machine/scripts/build-debug-apk.sh
+      # build-debug-apk.sh runs copy-capacitor-runtime.sh before cap sync.
+      # The APK is a CI artifact only — do not commit artifacts/*.apk.
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: feedback-machine-debug-apk
+          path: |
+            apps/feedback-machine/artifacts/feedback-machine-debug.apk
+            apps/feedback-machine/android/app/build/outputs/apk/debug/app-debug.apk

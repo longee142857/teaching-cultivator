@@ -1,0 +1,12 @@
+{
+  "appId": "icu.longee.feedback",
+  "appName": "反馈出题机",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

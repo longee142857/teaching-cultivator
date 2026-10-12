@@ -12,6 +12,13 @@ __pycache__/
 *.log
 .DS_Store
 
+# Feedback machine (Capacitor)
+apps/feedback-machine/node_modules/
+apps/feedback-machine/android/.gradle/
+apps/feedback-machine/android/app/build/
+apps/feedback-machine/android/build/
+apps/feedback-machine/android/local.properties
+
 # Runtime learner / session state (keep syllabus seeds tracked)
 data/answer-log.jsonl
 data/chat_id.json
