@@ -134,8 +134,90 @@ assert(api.indexOf("/api/v1/practice/report-poor") >= 0, "poor-item uses the pra
 assert(api.indexOf("/api/v1/exam/papers") >= 0, "exam list uses the practice route");
 assert(api.indexOf("/api/v1/notes") >= 0, "notes use the practice route");
 assert(read("www/css/app.css").indexOf("visibility: hidden") >= 0, "idle toast cannot cover the tab bar");
+assert(/SWIPE_THRESHOLD\s*=\s*56/.test(app), "swipe threshold matches the desk");
+assert(app.indexOf("function bindSwipe") >= 0, "pointer swipe is bound");
+assert(app.indexOf("flip-sheet") >= 0, "pages ride a flip sheet");
+assert(app.indexOf('data-theme-pick="desk"') >= 0, "desk theme can be selected");
+assert(app.indexOf('data-theme-pick="studio"') >= 0, "studio theme can be selected");
+var deskCss = read("www/css/theme-desk.css");
+var studioCss = read("www/css/theme-studio.css");
+assert(deskCss.indexOf("--card-tilt: -0.15deg") >= 0, "desk cards keep the shell tilt");
+assert(deskCss.indexOf("--swipe-drag: 18") >= 0, "desk drag distance matches the shell");
+assert(deskCss.indexOf("--flip-enter-x: 10%") >= 0, "desk enter slide matches the shell");
+assert(studioCss.indexOf('html[data-theme="studio"]') >= 0, "studio theme is selectable");
+assert(studioCss.indexOf("--swipe-drag: 34") >= 0, "studio drag is a larger gesture");
+assert(studioCss.indexOf("--card-tilt: -1.15deg") >= 0, "studio cards tilt more than the desk");
 assert(read("www/js/app.js").indexOf("题质量差") >= 0, "poor-item entry is on the desk");
 assert(read("www/js/app.js").indexOf("brain/index.html") >= 0, "capability page is the vendored brain");
+assert(app.indexOf("检查更新") >= 0 && app.indexOf("btn-check-update") >= 0, "settings can check for an update");
+assert(app.indexOf("checkForUpdate({ silent: true })") >= 0, "startup checks for an update without blocking");
+assert(app.indexOf("btn-open-apk") >= 0 && app.indexOf("下载新版本") >= 0, "a newer build offers the apk link");
+assert(read("www/js/config.js").indexOf("有新版本") >= 0, "update copy says a new version is available");
+assert(api.indexOf("function getAbsolute") >= 0, "version manifest uses the shared HTTP helper");
+
+vm.runInContext(read("www/js/config.js"), context, { filename: "config.js" });
+var cfgApi = context.FqmConfig;
+assert(
+  cfgApi.DEFAULT_UPDATE_URL === "https://practice.longee.icu/app/feedback-machine/version.json",
+  "default manifest is the deployed version.json"
+);
+assert(
+  cfgApi.updateManifestUrl({ practiceBaseUrl: "https://example.test", updateManifestUrl: "" }) ===
+    "https://practice.longee.icu/app/feedback-machine/version.json",
+  "version check does not follow a guessed path off the practice base"
+);
+assert(
+  cfgApi.updateManifestUrl({ updateManifestUrl: "https://example.com/version.json" }) ===
+    "https://example.com/version.json",
+  "settings can override the version manifest URL"
+);
+var liveApk = "https://practice.longee.icu/app/feedback-machine/feedback-machine-debug.apk";
+var newer = cfgApi.interpretUpdate(1, {
+  okHttp: true,
+  package: "icu.longee.feedback",
+  versionCode: 2,
+  versionName: "1.1",
+  apkUrl: liveApk,
+  apkMd5: "abc",
+  releaseNotes: "修复",
+  minVersionCode: 1
+});
+assert(newer.phase === "available" && newer.message.indexOf("有新版本") >= 0 && newer.apkUrl === liveApk, "higher versionCode offers apkUrl");
+assert(newer.notes === "修复" && newer.apkMd5 === "abc", "releaseNotes and apkMd5 are kept");
+assert(cfgApi.interpretUpdate(1, { okHttp: true, package: "icu.longee.feedback", versionCode: 1, versionName: "1.0", apkUrl: liveApk, minVersionCode: 1 }).phase === "current", "same versionCode is current");
+assert(cfgApi.interpretUpdate(1, { okHttp: true, package: "icu.longee.feedback", versionCode: 1, apkUrl: liveApk, minVersionCode: 2 }).phase === "available", "below minVersionCode still prompts");
+assert(cfgApi.interpretUpdate(1, { okHttp: true, package: "other.app", versionCode: 9, apkUrl: liveApk }).phase === "error", "other packages are ignored");
+assert(cfgApi.interpretUpdate(1, { okHttp: false, versionCode: 9, apkUrl: liveApk }).phase === "error", "failed manifest does not look like an update");
+assert(cfgApi.interpretUpdate(1, { okHttp: true, versionCode: 3, apkUrl: "javascript:alert(1)" }).apkUrl === "", "apk link must be http(s)");
+
+var httpCtx = {
+  Promise: Promise,
+  fetch: function () { throw new Error("browser fetch should not run when CapacitorHttp exists"); }
+};
+httpCtx.window = httpCtx;
+httpCtx.globalThis = httpCtx;
+httpCtx.Capacitor = {
+  isNativePlatform: function () { return true; },
+  Plugins: {
+    CapacitorHttp: {
+      request: function (req) {
+        httpCtx.last = req;
+        return Promise.resolve({ status: 200, data: { versionCode: 2, versionName: "1.1", apkUrl: "https://practice.longee.icu/a.apk" } });
+      }
+    }
+  }
+};
+vm.createContext(httpCtx);
+vm.runInContext(read("www/js/api.js"), httpCtx, { filename: "api.js" });
+var manifestBody = null;
+httpCtx.FqmApi.getAbsolute("https://practice.longee.icu/app/feedback-machine/version.json").then(function (body) {
+  manifestBody = body;
+});
+setTimeout(function () {
+  assert(httpCtx.last && httpCtx.last.url.indexOf("/app/feedback-machine/version.json") >= 0, "manifest URL is requested as-is");
+  assert(!httpCtx.last.headers.Authorization && !httpCtx.last.headers["X-Practice-Token"], "version manifest is fetched without the practice token");
+  assert(manifestBody && manifestBody.versionCode === 2 && manifestBody.okHttp === true, "manifest JSON comes back through CapacitorHttp");
+}, 0);
 
 var html = read("www/index.html");
 assert(html.indexOf("vendor/katex/katex.min.js") >= 0, "KaTeX is vendored");
@@ -335,7 +417,9 @@ function runDom() {
 
   return flush().then(function () {
     var today = byId.root._html;
+    assert(today.indexOf("flip-sheet") >= 0, "today is painted on a flip sheet");
     assert(today.indexOf("今日练习") >= 0, "boot lands on the three-slot overview");
+    assert(byId["btn-theme-desk"] && byId["btn-theme-studio"], "header can switch desk and studio");
     assert(today.indexOf("导数") >= 0 && today.indexOf("复习") >= 0, "math and review slots are both listed");
     assert(byId["btn-start"], "today has a start control");
     byId["btn-start"].onclick();
