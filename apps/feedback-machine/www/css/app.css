@@ -391,10 +391,12 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
 
 .tabbar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   border-top: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   padding: 4px 0 calc(6px + var(--safe-b));
+  position: relative;
+  z-index: 20;
 }
 
 .tab-btn {
@@ -403,7 +405,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
   background: transparent;
   min-height: 48px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 550;
 }
 
@@ -417,16 +419,130 @@ code {
 #toast {
   position: fixed;
   left: 50%;
-  bottom: calc(76px + var(--safe-b));
-  transform: translateX(-50%) translateY(140%);
+  bottom: calc(12px + var(--safe-b));
+  transform: translateX(-50%) translateY(16px);
   background: rgba(43, 33, 24, 0.92);
   color: var(--on-accent);
   padding: 10px 16px;
   border-radius: 999px;
   font-size: 14px;
-  transition: transform 0.25s ease;
-  z-index: 99;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  z-index: 30;
   max-width: calc(100% - 32px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
-#toast.is-on { transform: translateX(-50%) translateY(0); }
+#toast.is-on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(0);
+}
+
+.page-chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.page-chrome[hidden] { display: none; }
+.page-nav {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+.page-dots { display: flex; gap: 6px; flex: 1; justify-content: center; }
+.page-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  border: 0;
+  background: rgba(43, 33, 24, 0.25);
+  padding: 0;
+}
+.page-dot.is-on { background: var(--accent); }
+.page-index { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+.tutor-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tutor-strip[hidden] { display: none; }
+.tutor-chip {
+  appearance: none;
+  flex: 0 0 auto;
+  max-width: 68vw;
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 2px;
+  padding: 6px 10px;
+}
+.tutor-chip.is-active { border-color: var(--accent); }
+.tutor-chip .tc-title { display: block; font-size: 12px; font-weight: 550; }
+.tutor-chip .tc-sub { display: block; font-size: 10px; color: var(--muted); }
+
+.slot-row, .backlog-item, .note-row {
+  text-align: left;
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 2px;
+  padding: 10px 12px;
+}
+.slot-row.is-done { opacity: 0.7; }
+.slot-title, .bi-title { font-weight: 550; font-size: 14px; }
+.slot-meta, .bi-meta, .slot-status { font-size: 12px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; }
+.stat .n { font-family: var(--font-display); font-size: 22px; }
+
+.ocr-actions, .notes-layout { display: grid; gap: 8px; }
+.ocr-actions { grid-template-columns: 1fr 1fr; }
+.ocr-mode.is-on { border-color: var(--accent); color: var(--accent); }
+.ocr-preview img, .notes-view img { width: 100%; height: auto; display: block; background: #fff; }
+.exam-embed { width: 100%; height: 68vh; border: 1px solid var(--border); background: var(--bg); }
+.exam-pick { display: flex; gap: 8px; overflow-x: auto; }
+.exam-pick .btn { width: auto; flex: 0 0 auto; }
+
+.brain-host {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
+  flex-direction: column;
+}
+body.is-brain .brain-host { display: flex; }
+.brain-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(8px + var(--safe-t)) 12px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.brain-host iframe { flex: 1; width: 100%; border: 0; background: var(--bg); }
+.stream-cursor {
+  display: inline-block;
+  width: 0.5em;
+  border-right: 2px solid var(--accent);
+  margin-left: 1px;
+}
+.icon-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 18px;
+}

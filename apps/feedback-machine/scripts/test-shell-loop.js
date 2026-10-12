@@ -57,23 +57,36 @@ assert(katexOnly.indexOf("data-tex=") >= 0, "bare katex field becomes a math blo
 var delimited = math.renderStemHtml({ stem: "见 $x$", katex: "x+1" });
 assert(delimited.indexOf("data-tex=") === -1, "delimited stem does not duplicate katex field");
 
-assert(loop.bankKind("comm") === "math", "comm lastKind must not refill comm");
-assert(loop.bankKind("review") === "math", "review lastKind stays off the default refill");
+assert(loop.bankKind("comm") === null, "empty comm slot does not refill the thin bank");
+assert(loop.bankKind("review") === "review", "review slot refills as review");
 assert(loop.bankKind("") === "math", "empty kind defaults to math");
 assert(loop.bankKind("math") === "math", "math stays math");
 assert(loop.rememberKind("math", "comm") === "math", "opening a comm item must not retarget the bank");
+assert(loop.rememberKind("math", "review") === "review", "review item is remembered");
 
-var picked = loop.pickNextLocal(
+var queued = loop.pickNextLocal(
   [
     { id: "c1", kind: "comm", answered: false },
-    { id: "m1", kind: "math", answered: false }
+    { id: "m1", kind: "math", answered: false },
+    { id: "r1", kind: "review", answered: false }
   ],
   null
 );
-assert(picked && picked.id === "m1", "default next skips comm inventory");
+assert(queued && queued.id === "c1", "already pushed comm stays in the today queue");
+var reviewNext = loop.pickNextLocal(
+  [
+    { id: "m1", kind: "math", answered: true },
+    { id: "r1", kind: "review", answered: false }
+  ],
+  "m1"
+);
+assert(reviewNext && reviewNext.id === "r1", "default next reaches the review slot");
+
+var sse = loop.parseSse('event: delta\ndata: {"text":"你"}\n\nevent: done\ndata: {"reply":"你好"}\n\n');
+assert(sse && sse.length === 2 && sse[0].data.text === "你" && sse[1].data.reply === "你好", "SSE deltas parse");
 assert(
-  loop.pickNextLocal([{ id: "c1", kind: "comm", answered: false }], "other") === null,
-  "comm-only list does not become the next question"
+  loop.listTutorSessions([{ id: "general-1", title: "新对话" }], { "m1": [] }, [{ id: "m1", subject: "高等数学", title: "导数" }]).length >= 2,
+  "recent sessions include general and item threads"
 );
 
 var state = { items: [{ id: "m1", kind: "math", answered: false }], current: null };
@@ -108,14 +121,21 @@ assert(loop.tutorReplyText({ httpStatus: 200, reply: "看这一步" }, "x") === 
 var app = read("www/js/app.js");
 assert(/route === "feedback"[\s\S]{0,220}state\.busy = false[\s\S]{0,120}render\(/.test(app), "success path sets busy=false and render()");
 assert(/if \(state\.screen === "feedback"\) return;/.test(app), "finally still skips an already painted feedback screen");
-assert(/bankKind\(state\.lastKind\)/.test(app), "next question and refill go through bankKind");
+assert(/FqmLoop\.bankKind\(/.test(app), "empty-slot refill goes through bankKind");
 assert(app.indexOf("不懂，问讲师") >= 0, "tutor entry uses the desk label");
 assert(app.indexOf("/api/v1/tutor/chat") === -1, "tutor URL stays in api.js");
 
 var api = read("www/js/api.js");
 assert(api.indexOf("CapacitorHttp") >= 0 && api.indexOf("isNativePlatform") >= 0, "native transport stays CapacitorHttp");
 assert(api.indexOf('"/api/v1/tutor/chat"') >= 0, "tutor uses the practice tutor route");
-assert(api.indexOf("text/event-stream") === -1, "shell asks for JSON tutor replies");
+assert(api.indexOf("text/event-stream") >= 0, "tutor asks for the desk SSE stream");
+assert(api.indexOf("/api/v1/practice/ocr") >= 0, "ocr uses the practice route");
+assert(api.indexOf("/api/v1/practice/report-poor") >= 0, "poor-item uses the practice route");
+assert(api.indexOf("/api/v1/exam/papers") >= 0, "exam list uses the practice route");
+assert(api.indexOf("/api/v1/notes") >= 0, "notes use the practice route");
+assert(read("www/css/app.css").indexOf("visibility: hidden") >= 0, "idle toast cannot cover the tab bar");
+assert(read("www/js/app.js").indexOf("题质量差") >= 0, "poor-item entry is on the desk");
+assert(read("www/js/app.js").indexOf("brain/index.html") >= 0, "capability page is the vendored brain");
 
 var html = read("www/index.html");
 assert(html.indexOf("vendor/katex/katex.min.js") >= 0, "KaTeX is vendored");
@@ -238,6 +258,14 @@ function runDom() {
             subject: "高等数学",
             kp: "导数",
             answered: false
+          }, {
+            id: "r1",
+            kind: "review",
+            title: "复习题",
+            stem: "复习 $a+b$",
+            subject: "复习",
+            kp: "回顾",
+            answered: false
           }],
           slots: [],
           weakHint: ""
@@ -306,10 +334,15 @@ function runDom() {
   }
 
   return flush().then(function () {
+    var today = byId.root._html;
+    assert(today.indexOf("今日练习") >= 0, "boot lands on the three-slot overview");
+    assert(today.indexOf("导数") >= 0 && today.indexOf("复习") >= 0, "math and review slots are both listed");
+    assert(byId["btn-start"], "today has a start control");
+    byId["btn-start"].onclick();
     var root = byId.root._html;
-    assert(root.indexOf("导数") >= 0, "boot renders the math stem");
     assert(root.indexOf("katex") >= 0, "stem $...$ is painted with vendored KaTeX");
     assert(root.indexOf("不懂，问讲师") >= 0, "desk tutor entry is on the question");
+    assert(root.indexOf("题质量差") >= 0, "poor-item entry is on the question");
     var ta = byId["answer-input"];
     assert(ta, "answer box exists");
     ta.value = "2x";
@@ -317,7 +350,7 @@ function runDom() {
     byId["btn-submit"].onclick();
     return flush();
   }).then(function () {
-    assert(byId.dock._html.indexOf("再出一题") >= 0, "immediate submit lands on feedback");
+    assert(byId.dock._html.indexOf("下一题") >= 0, "immediate submit lands on feedback with the next control");
     assert(byId.dock._html.indexOf("提交中") === -1, "submit button is not stuck on 提交中");
     assert(byId.root._html.indexOf("通过") >= 0, "feedback banner is visible");
     assert(byId.root._html.indexOf("katex") >= 0, "feedback comment renders math");
@@ -338,8 +371,8 @@ function runDom() {
     byId["btn-next"].onclick();
     return flush();
   }).then(function () {
-    assert(calls.length >= 1 && calls[0].kind === "math", "再出一题 requests kind=math");
-    assert(byId.root._html.indexOf("积分") >= 0, "next question replaces feedback");
+    assert(calls.length === 0, "next unanswered review does not refill the bank");
+    assert(byId.root._html.indexOf("复习题") >= 0, "next question is the review slot");
   });
 }
 
