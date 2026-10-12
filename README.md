@@ -6,6 +6,12 @@ Primary channel: **DingTalk Stream** (WeCom retained as optional fallback).
 
 This repository is intended as a **readable, runnable reference** of a vertical system that already survived real daily use — not a minimal chatbot demo.
 
+## Public showcase
+
+Bilingual static site in [`site/`](site/): Practice desk (warm paper) and Studio (cool ground, hard edges, crimson). Placeholder stems only — no learner records.
+
+GitHub Pages: branch `master`, folder `/site`. Steps are in [`site/README.md`](site/README.md).
+
 ## What it does
 
 | Capability | Behavior |

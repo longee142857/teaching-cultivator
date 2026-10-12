@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>样式 · 练习台与工作室</title>
+  <meta name="description" content="练习台（暖纸色）与工作室（冷地面、硬边、绯红）的 CSS 示意屏，可并排或单屏切换。不是学员截图。" />
+  <meta name="theme-color" content="#F4EDE0" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script src="js/boot.js"></script>
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body data-page="gallery" data-title="title.gallery" data-desc="desc.gallery">
+  <a class="skip" href="#content" data-i18n="skip">跳到正文</a>
+  <header class="site-head">
+    <div class="wrap head-inner">
+      <a class="brand" href="index.html">
+        <span class="seal" aria-hidden="true">培</span>
+        <span>
+          <span class="brand-name" data-i18n="brand">考研培养</span>
+          <span class="brand-sub">teaching-cultivator</span>
+        </span>
+      </a>
+      <nav class="site-nav" data-i18n-aria="aria.nav" aria-label="页面">
+        <a href="index.html" data-nav="home" data-i18n="nav.home">首页</a>
+        <a href="product.html" data-nav="product" data-i18n="nav.product">产品</a>
+        <a href="gallery.html" data-nav="gallery" data-i18n="nav.gallery">样式</a>
+        <a href="how.html" data-nav="how" data-i18n="nav.how">如何工作</a>
+        <a href="contact.html" data-nav="contact" data-i18n="nav.contact">联系</a>
+      </nav>
+      <div class="tools">
+        <div class="seg" role="group" data-i18n-aria="aria.lang" aria-label="语言">
+          <button type="button" data-lang="zh">中文</button>
+          <button type="button" data-lang="en">English</button>
+        </div>
+        <div class="seg" role="group" data-i18n-aria="aria.style" aria-label="样式">
+          <button type="button" data-set-style="desk" data-i18n="style.desk">练习台</button>
+          <button type="button" data-set-style="studio" data-i18n="style.studio">工作室</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main id="content">
+    <div class="wrap">
+      <header class="page-intro">
+        <p class="eyebrow" data-i18n="gal.eyebrow">样式</p>
+        <h1 data-i18n="gal.h1">暖纸色，或冷地面。</h1>
+        <p class="lede" data-i18n="gal.lede">练习台是暖纸色：宣纸底、衬线标题、青灰强调、轻微纸纹。工作室是冷色地面、直角、绯红标记。屏幕都是 CSS 示意，不是学员截图。</p>
+        <p class="fine" data-i18n="gal.help">页眉的「练习台 / 工作室」会换整页皮肤。下面两块示意屏各用各的颜色。选「单屏」时，放大当前这种。</p>
+      </header>
+      <div class="gallery-tools">
+        <div class="seg" role="group" data-i18n-aria="aria.style" aria-label="样式">
+          <button type="button" data-set-style="desk" data-i18n="style.desk">练习台</button>
+          <button type="button" data-set-style="studio" data-i18n="style.studio">工作室</button>
+        </div>
+        <div class="seg" role="group" data-i18n-aria="aria.layout" aria-label="示意屏排列">
+          <button type="button" data-layout="pair" data-i18n="gal.pair">并排</button>
+          <button type="button" data-layout="focus" data-i18n="gal.focus">单屏</button>
+        </div>
+      </div>
+      <div class="screen-tabs" role="tablist" data-i18n-aria="aria.screens" aria-label="示意屏">
+        <button type="button" role="tab" data-screen="queue" data-i18n="gal.queue">今日队列</button>
+        <button type="button" role="tab" data-screen="answer" data-i18n="gal.answer">作答</button>
+        <button type="button" role="tab" data-screen="feedback" data-i18n="gal.feedback">反馈</button>
+        <button type="button" role="tab" data-screen="tutor" data-i18n="gal.tutor">讲师</button>
+        <button type="button" role="tab" data-screen="notice" data-i18n="gal.notice">通知</button>
+        <button type="button" role="tab" data-screen="shell" data-i18n="gal.shell">外壳</button>
+      </div>
+      <noscript>
+        <p class="callout block">请开启 JavaScript 以切换示意屏。Enable JavaScript to switch the mock screens.</p>
+      </noscript>
+      <div id="gallery-stage" class="gallery-stage" data-layout="pair" data-screen="queue"></div>
+    </div>
+  </main>
+  <footer class="site-foot">
+    <p data-i18n="foot.note">公开示意站。没有学员姓名、编号、令牌或会话。</p>
+    <p class="foot-links">
+      <a href="https://github.com/longee142857/teaching-cultivator" target="_blank" rel="noopener noreferrer" data-i18n="foot.repo">仓库</a>
+      <a href="contact.html" data-i18n="nav.contact">联系</a>
+    </p>
+  </footer>
+  <div id="demo-toast" class="toast" role="status" hidden></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/gallery.js"></script>
+</body>
+</html>
