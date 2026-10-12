@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-14",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 是 $[0, +\\infty)$ 上非负可导函数， $f(0) = 0$ ， $f'(x) \\leqslant \\frac{1}{2}$ 。假设 $\\int_0^{+\\infty} f(x) \\mathrm{d}x$ 收敛，证明对任意 $\\alpha > 1$ ， $\\int_0^{+\\infty} f^\\alpha(x) \\mathrm{d}x$ 也收敛，并且\n\n$$\n\\int_ {0} ^ {+ \\infty} f ^ {\\alpha} (x) \\mathrm{d} x \\leqslant \\left(\\int_ {0} ^ {+ \\infty} f (x) \\mathrm{d} x\\right) ^ {\\beta}, \\quad \\beta = \\frac {\\alpha + 1}{2}.\n$$",
+  "answer": "收敛，令 $t\\to +\\infty$ ，即得证.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "单调函数渐近",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明对 $\\forall t > 0$ ，有 $\\int_0^t f^\\alpha (x)\\mathrm{d}x\\leqslant \\left(\\int_0^t f(x)\\mathrm{d}x\\right)^\\beta$ 。可考虑用函数的单调性来证明。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $g(t) = \\left(\\int_0^t f(x)\\mathrm{d}x\\right)^{\\beta} - \\int_0^t f^\\alpha (x)\\mathrm{d}x$ ，则 $g(t)$ 可导，且"
+      },
+      {
+        "id": "s3",
+        "text": "$$\ng ^ {\\prime} (t) = f (t) \\left[ \\beta \\left(\\int_ {0} ^ {t} f (x) \\mathrm{d} x\\right) ^ {\\beta - 1} - f ^ {\\alpha - 1} (t) \\right] = f (t) \\left[ \\left(\\beta^ {\\frac {1}{\\beta - 1}} \\int_ {0} ^ {t} f (x) \\mathrm{d} x\\right) ^ {\\beta - 1} - f ^ {2 (\\beta - 1)} (t) \\right].\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "令 $h(t) = \\beta^{\\frac{1}{\\beta - 1}}\\int_0^t f(x)\\mathrm{d}x - f^2 (t)$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nh ^ {\\prime} (t) = f (t) [ \\beta^ {\\frac {1}{\\beta - 1}} - 2 f ^ {\\prime} (t) ].\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "由于 $\\beta > 1$ ， $f'(t) \\leqslant \\frac{1}{2}$ ，则 $h'(t) \\geqslant 0$ ，这说明 $h(t)$ 单调递增。又 $h(0) = 0$ ，得 $h(t) \\geqslant 0$ ，因而 $g'(t) \\geqslant 0$ 。再由 $g(0) = 0$ ，可得 $g(t) \\geqslant 0$ ，即"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\int_ {0} ^ {t} f ^ {\\alpha} (x) \\mathrm{d} x \\leqslant \\left(\\int_ {0} ^ {t} f (x) \\mathrm{d} x\\right) ^ {\\beta}.\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "由于 $\\int_0^{+\\infty}f(x)\\mathrm{d}x$ 收敛，令 $t\\to +\\infty$ ，即得证."
+      }
+    ],
+    "final_answer": "收敛，令 $t\\to +\\infty$ ，即得证.",
+    "techniques_used": [
+      "单调函数渐近",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用反常积分定义/有界单调/估值建立收敛或不等式？",
+      "technique": "单调函数渐近",
+      "expected": "由部分积分有界单调或估值推出收敛/不等式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "换元定积分",
+      "expected": "收敛，令 $t\\to +\\infty$ ，即得证."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 208,
+    "syllabus_note": "收敛蕴含高次幂积分收敛"
+  }
+}

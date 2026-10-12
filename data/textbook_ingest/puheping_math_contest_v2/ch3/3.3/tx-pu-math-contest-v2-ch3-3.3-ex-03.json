@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-03",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算反常积分 $\\int_{1}^{+\\infty} \\frac{(x)}{x^3} \\mathrm{d}x$ ，这里 $(x)$ 表示 $x$ 的小数部分.",
+  "answer": "\\int_ {1} ^ {+ \\infty} \\frac {(x)}{x ^ {3}} d x = \\lim _ {b \\rightarrow + \\infty} \\int_ {1} ^ {b} \\frac {(x)}{x ^ {3}} d x = \\frac {1}{2} - \\frac {1}{2} \\sum_ {k = 2} ^ {\\infty} \\frac {1}{k ^ {2}} = 1 - \\frac {\\pi^ {2}}{1 2}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "级数展开/求和",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 当 $x > 1$ 时，显然 $(x) = x - [x]$ ，所有自然数点都是函数的分段点，计算积分要插入分段点，分段积分."
+      },
+      {
+        "id": "s2",
+        "text": "对 $\\forall b > 1$ ，记 $[b] = n$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\int_ {1} ^ {b} \\frac {(x)}{x ^ {3}} \\mathrm{d} x & = \\left[ \\int_ {1} ^ {n} \\frac {(x)}{x ^ {3}} \\mathrm{d} x + \\int_ {n} ^ {b} \\frac {(x)}{x ^ {3}} \\mathrm{d} x \\right] = \\sum_ {k = 1} ^ {n - 1} \\int_ {k} ^ {k + 1} \\frac {x - k}{x ^ {3}} \\mathrm{d} x + \\int_ {n} ^ {b} \\frac {x - n}{x ^ {3}} \\mathrm{d} x \\\\ & = \\sum_ {k = 1} ^ {n - 1} \\left[ \\left(\\frac {1}{k} - \\frac {1}{k + 1}\\right) - \\frac {k}{2} \\left(\\frac {1}{k ^ {2}} - \\frac {1}{(k + 1) ^ {2}}\\right) \\right] + \\left(\\frac {1}{n} - \\frac {1}{b}\\right) - \\frac {n}{2} \\left(\\frac {1}{n ^ {2}} - \\frac {1}{b ^ {2}}\\right) \\\\ & = \\sum_ {k = 1} ^ {n - 1} \\left[ \\frac {1}{2} \\left(\\frac {1}{k} - \\frac {1}{k + 1}\\right) - \\frac {1}{2} \\frac {1}{(k + 1) ^ {2}} \\right] + \\left(\\frac {1}{n} - \\frac {1}{b}\\right) - \\frac {1}{2} \\left(\\frac {1}{n} - \\frac {n}{b ^ {2}}\\right) \\\\ & = \\frac {1}{2} \\left(1 - \\frac {1}{n}\\right) - \\frac {1}{2} \\sum_ {k = 2} ^ {n} \\frac {1}{k ^ {2}} + \\left(\\frac {1}{n} - \\frac {1}{b}\\right) - \\frac {1}{2} \\left(\\frac {1}{n} - \\frac {n}{b ^ {2}}\\right). \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "注意当 $b \\to +\\infty$ 时，有 $n \\to +\\infty$ ，且 $\\lim_{b \\to +\\infty} \\frac{n}{b^2} = 0$ ， $\\sum_{k=1}^{\\infty} \\frac{1}{k^2} = \\frac{\\pi^2}{6}$ ，得到"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\int_ {1} ^ {+ \\infty} \\frac {(x)}{x ^ {3}} d x = \\lim _ {b \\rightarrow + \\infty} \\int_ {1} ^ {b} \\frac {(x)}{x ^ {3}} d x = \\frac {1}{2} - \\frac {1}{2} \\sum_ {k = 2} ^ {\\infty} \\frac {1}{k ^ {2}} = 1 - \\frac {\\pi^ {2}}{1 2}.\n$$"
+      }
+    ],
+    "final_answer": "\\int_ {1} ^ {+ \\infty} \\frac {(x)}{x ^ {3}} d x = \\lim _ {b \\rightarrow + \\infty} \\int_ {1} ^ {b} \\frac {(x)}{x ^ {3}} d x = \\frac {1}{2} - \\frac {1}{2} \\sum_ {k = 2} ^ {\\infty} \\frac {1}{k ^ {2}} = 1 - \\frac {\\pi^ {2}}{1 2}.",
+    "techniques_used": [
+      "级数展开/求和",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用换元、分部还是瑕点拆分来计算反常积分？",
+      "technique": "换元定积分",
+      "expected": "选定换元/分部/拆分后化为可求极限的定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或面积）是什么？",
+      "technique": "换元定积分",
+      "expected": "\\int_ {1} ^ {+ \\infty} \\frac {(x)}{x ^ {3}} d x = \\lim _ {b \\rightarrow + \\infty} \\int_ {1} ^ {b} \\frac {(x)}{x ^ {3}} d x = \\frac {1}{2} - \\frac {1}{2} \\sum_ {k = 2} ^ {\\infty} \\frac {1}{k ^ {2}} = 1"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例3*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 202,
+    "starred": true,
+    "syllabus_note": "小数部分分段求和"
+  }
+}

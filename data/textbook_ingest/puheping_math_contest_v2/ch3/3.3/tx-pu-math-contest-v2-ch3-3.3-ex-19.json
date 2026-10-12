@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-19",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 是定义在 R 上且以 T > 0 为周期的连续函数，证明：\n\n$$\n\\lim _ {n \\rightarrow \\infty} n \\int_ {n} ^ {+ \\infty} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x = \\frac {1}{T} \\int_ {0} ^ {T} f (x) \\mathrm{d} x.\n$$",
+  "answer": "收敛，所以 $\\int_{n}^{+\\infty} \\frac{f(x)}{x^2} \\mathrm{d}x$ 是绝对收敛的. 因而",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "绝对收敛判别",
+    "夹逼/估值",
+    "周期函数",
+    "级数展开/求和",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 从左、右两端的积分形式来看，左端被积函数的分母不能保留，并且积分区间要用 $f(x)$ 的周期来分段。为了将左端被积函数的分母移出积分号，只能将分母在每个周期段做放大与缩小，求极限时利用夹逼原理来得到等式。\n\n因为 $f(x)$ 是连续的周期函数，故必有最大与最小值. 记 $M = \\max_{0 \\leqslant x \\leqslant T} |f(x)|$ ，则有 $\\left|\\frac{f(x)}{x^2}\\right| \\leqslant \\frac{M}{x^2}$ . 由于积分 $\\int_{n}^{+\\infty} \\frac{1}{x^2} \\mathrm{d}x$ 收敛，所以 $\\int_{n}^{+\\infty} \\frac{f(x)}{x^2} \\mathrm{d}x$ 是绝对收敛的. 因而\n\n$$\nn \\int_ {n} ^ {+ \\infty} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x = \\lim _ {m \\rightarrow \\infty} n \\int_ {n} ^ {n + m T} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x = \\lim _ {m \\rightarrow \\infty} n \\sum_ {k = 0} ^ {m - 1} \\int_ {n + k T} ^ {n + (k + 1) T} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x (m \\in \\mathbb {N}).\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "不妨设 $f(x)$ 非负，否则可用 $f(x) + M$ 去替换. 因为\n\n$$\nn \\sum_ {k = 0} ^ {m - 1} \\frac {1}{(n + (k + 1) T) ^ {2}} \\int_ {0} ^ {T} f (x) d x \\leqslant n \\sum_ {k = 0} ^ {m - 1} \\int_ {n + k T} ^ {n + (k + 1) T} \\frac {f (x)}{x ^ {2}} d x \\leqslant n \\sum_ {k = 0} ^ {m - 1} \\frac {1}{(n + k T) ^ {2}} \\int_ {0} ^ {T} f (x) d x,\\tag{②}\n$$\n\n而\n\n$$\n\\begin{array}{r l} n \\sum_ {k = 0} ^ {m - 1} \\frac {1}{(n + (k + 1) T) ^ {2}} & = n \\sum_ {k = 1} ^ {m} \\frac {1}{(n + k T) ^ {2}} > n \\sum_ {k = 1} ^ {m} \\int_ {k} ^ {k + 1} \\frac {\\mathrm{d} x}{(n + x T) ^ {2}} \\\\ & = n \\int_ {1} ^ {m + 1} \\frac {\\mathrm{d} x}{(n + x T) ^ {2}} = \\frac {n}{T} \\left(\\frac {1}{n + T} - \\frac {1}{n + (m + 1) T}\\right), \\end{array}\\tag{③}"
+      },
+      {
+        "id": "s3",
+        "text": "n \\sum_ {k = 0} ^ {m - 1} \\frac {1}{(n + k T) ^ {2}} <   \\frac {1}{n} + n \\sum_ {k = 1} ^ {m} \\int_ {k - 1} ^ {k} \\frac {\\mathrm{d} x}{(n + x T) ^ {2}} = \\frac {1}{n} + n \\int_ {0} ^ {m} \\frac {\\mathrm{d} x}{(n + x T) ^ {2}} = \\frac {1}{n} + \\frac {n}{T} \\left(\\frac {1}{n} - \\frac {1}{n + m T}\\right).\\tag{④}\n$$\n\n将③，④式代入②式得\n\n$$\n\\frac {n}{T} \\left(\\frac {1}{n + T} - \\frac {1}{n + (m + 1) T}\\right) \\int_ {0} ^ {T} f (x) d x \\leqslant n \\sum_ {k = 0} ^ {m - 1} \\int_ {n + k T} ^ {n + (k + 1) T} \\frac {f (x)}{x ^ {2}} d x \\leqslant \\left[ \\frac {1}{n} + \\frac {n}{T} \\left(\\frac {1}{n} - \\frac {1}{n + m T}\\right) \\right] \\int_ {0} ^ {T} f (x) d x.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "取 $m \\to \\infty$ ，并由①式得\n\n$$\n\\frac {n}{T (n + T)} \\int_ {0} ^ {T} f (x) \\mathrm{d} x \\leqslant n \\int_ {n} ^ {+ \\infty} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x \\leqslant \\left(\\frac {1}{n} + \\frac {1}{T}\\right) \\int_ {0} ^ {T} f (x) \\mathrm{d} x,\n$$\n\n再取 $n \\to \\infty$ ，利用夹逼原理得\n\n$$\n\\lim _ {n \\rightarrow \\infty} n \\int_ {n} ^ {+ \\infty} \\frac {f (x)}{x ^ {2}} \\mathrm{d} x = \\frac {1}{T} \\int_ {0} ^ {T} f (x) \\mathrm{d} x.\n$$"
+      }
+    ],
+    "final_answer": "收敛，所以 $\\int_{n}^{+\\infty} \\frac{f(x)}{x^2} \\mathrm{d}x$ 是绝对收敛的. 因而",
+    "techniques_used": [
+      "绝对收敛判别",
+      "夹逼/估值",
+      "周期函数",
+      "级数展开/求和",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用反常积分定义/有界单调/估值建立收敛或不等式？",
+      "technique": "夹逼/估值",
+      "expected": "由部分积分有界单调或估值推出收敛/不等式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "夹逼/估值",
+      "expected": "收敛，所以 $\\int_{n}^{+\\infty} \\frac{f(x)}{x^2} \\mathrm{d}x$ 是绝对收敛的. 因而"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例19*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 210,
+    "starred": true,
+    "syllabus_note": "周期函数无穷积分极限/夹逼",
+    "commentary": "评注（1）题解中处理 $f(x)$ 非负的方法值得借鉴.\n\n(2) 注意周期函数的积分性质: $\\int_{a}^{a + T} f(x) \\mathrm{d}x = \\int_{0}^{T} f(x) \\mathrm{d}x$ .\n\n(3) 该题结论也可改写为： $\\lim_{n\\to \\infty}\\int_{1}^{+\\infty}\\frac{f(nx)}{x^2}\\mathrm{d}x = \\frac{1}{T}\\int_0^T f(x)\\mathrm{d}x.$"
+  }
+}

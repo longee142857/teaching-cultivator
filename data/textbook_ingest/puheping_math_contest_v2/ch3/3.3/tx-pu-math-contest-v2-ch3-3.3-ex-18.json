@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-18",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.limit",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "函数 $f(x)$ 在 $x \\geqslant 0$ 时非负且有一阶导数， $|f'(x)| \\leqslant 2$ ，又知 $\\int_{0}^{+\\infty} f(x) \\, \\mathrm{d}x$ 收敛，由此可否得到结论 $\\lim_{x \\to +\\infty} f(x) = 0$ ？说明理由.",
+  "answer": "收敛原理， $\\forall \\varepsilon >0$ ， $\\exists X > 0$ ，当 $X$ 足够大时，有 $\\left|\\int_{\\frac{",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "柯西收敛准则",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $|f'(x)| \\leqslant 2$ ，这就限制了曲线 $y = f(x)$ 的升降斜率。由 $\\int_{0}^{+\\infty} f(x) \\, \\mathrm{d}x$ 收敛，知 $\\lim_{a \\to +\\infty} \\int_{a}^{+\\infty} f(x) \\, \\mathrm{d}x = 0$ 。如果对充分大的 $a$ ， $f(x)$ 在 $[N, N+1] \\subset (a, +\\infty)$ 上的最大值能受到 $\\int_{a}^{+\\infty} f(x) \\, \\mathrm{d}x$ 的控制，则必有 $\\lim_{x \\to +\\infty} f(x) = 0$ 。为了利用导数有界，自然会想到使用拉格朗日公式来做函数的估计。\n\n对任意自然数 $N$ ，设 $x_{N}$ 是 $f(x)$ 在区间 $[N, N + 1]$ 上的最大值点。由于 $|f'(x)| \\leqslant 2$ ，则在区间 $\\left[x_{N}, x_{N} + \\frac{1}{2} f(x_{N})\\right]$ 上，利用拉格朗日公式有"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nf (x) = f \\left(x _ {N}\\right) + f ^ {\\prime} (\\xi) \\left(x - x _ {N}\\right) \\geqslant f \\left(x _ {N}\\right) - 2 \\left(x - x _ {N}\\right).\n$$\n\n积分得\n\n$$\n\\begin{array}{r l} & {\\int_ {x _ {N}} ^ {x _ {N} + \\frac {1}{2} f (x _ {N})} f (x) \\mathrm{d} x \\geqslant \\int_ {x _ {N}} ^ {x _ {N} + \\frac {1}{2} f (x _ {N})} [ f (x _ {N}) - 2 (x - x _ {N}) ] \\mathrm{d} x = \\frac {1}{4} f ^ {2} (x _ {N})} \\\\ & {\\qquad \\Rightarrow f ^ {2} (x _ {N}) \\leqslant 4 \\int_ {x _ {N}} ^ {x _ {N} + \\frac {1}{2} f (x _ {N})} f (x) \\mathrm{d} x \\leqslant 4 \\int_ {x _ {N}} ^ {+ \\infty} f (x) \\mathrm{d} x.} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $\\int_0^{+\\infty}f(x)\\mathrm{d}x$ 收敛，所以 $\\int_{x_N}^{+\\infty}f(x)\\mathrm{d}x\\to 0(N\\to \\infty)$ ，由上式得 $\\lim_{N\\to \\infty}f(x_N) = 0$ ，所以 $\\lim_{x\\to +\\infty}f(x) = 0$ 评注（1）若该题去掉条件 $|f'(x)|\\leqslant 2$ ，则结论不一定成立．例如：\n\n$$\nf (x) = \\left\\{ \\begin{array}{l l} 1, & x = n + \\frac {1}{2}, \\\\ 0, & x = n + \\frac {1}{2} \\pm \\frac {1}{n ^ {2}}, \\\\ 1 - n ^ {2} \\left| x - \\left(n + \\frac {1}{2}\\right) \\right|, & n + \\frac {1}{2} - \\frac {1}{n ^ {2}} \\leqslant x \\leqslant n + \\frac {1}{2} + \\frac {1}{n ^ {2}}, \\\\ 0, & \\text {其余地方.} \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "显然 $f(x)$ 在 $x \\geqslant 0$ 非负，且 $\\int_0^{+\\infty} f(x) \\, \\mathrm{d}x$ 收敛，但 $\\lim_{x \\to +\\infty} f(x) \\neq 0$ （极限不存在）.\n\n事实上，即使 $f(x)$ 无穷阶可导，由 $\\int_0^{+\\infty}f(x)\\mathrm{d}x$ 收敛也得不到 $\\lim_{x\\to +\\infty}f(x) = 0$ （见8.2节例15）.(2)请思考，以下做法是否正确：\n\n由柯西收敛原理， $\\forall \\varepsilon >0$ ， $\\exists X > 0$ ，当 $X$ 足够大时，有 $\\left|\\int_{\\frac{X}{2}}^{X}f(x)\\mathrm{d}x\\right| <   \\varepsilon$ ：利用积分中值定理，\n\n$$\n\\left| f (\\xi) \\frac {X}{2} \\right| <   \\varepsilon \\left(\\frac {X}{2} <   \\xi <   X\\right) \\Rightarrow \\lim _ {x \\rightarrow + \\infty} f (\\xi) \\frac {X}{2} = 0 \\Rightarrow \\lim _ {x \\rightarrow + \\infty} f (x) = 0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "答案：以上做法不正确，错在最后一步。原因是：由 $\\lim_{X\\to +\\infty}f(\\xi)\\frac{X}{2} = 0$ ，可得 $\\lim_{X\\to +\\infty}f(\\xi) = 0$ ，虽然当 $X\\to +\\infty$ 时，有 $\\xi \\rightarrow +\\infty$ ，但 $\\xi$ 不一定是连续地趋于 $+\\infty$ ，因而得不到 $\\lim_{X\\to +\\infty}f(x) = 0$ 。"
+      }
+    ],
+    "final_answer": "收敛原理， $\\forall \\varepsilon >0$ ， $\\exists X > 0$ ，当 $X$ 足够大时，有 $\\left|\\int_{\\frac{",
+    "techniques_used": [
+      "柯西收敛准则",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "由反常积分收敛如何推出渐近/极限结论（柯西准则、单调、导数界）？",
+      "technique": "柯西收敛准则",
+      "expected": "用柯西准则/单调性/导数界控制局部积分得到极限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极限或渐近结论是什么？",
+      "technique": "换元定积分",
+      "expected": "收敛原理， $\\forall \\varepsilon >0$ ， $\\exists X > 0$ ，当 $X$ 足够大时，有 $\\left|\\int_{\\frac{"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例18*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 210,
+    "starred": true,
+    "syllabus_note": "收敛+导数有界⇒lim f=0"
+  }
+}

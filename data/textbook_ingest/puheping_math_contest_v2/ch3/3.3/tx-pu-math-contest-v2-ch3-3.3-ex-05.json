@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-05",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $I = \\int_{0}^{\\frac{\\pi}{2}}\\sqrt{\\tan x}\\mathrm{d}x$",
+  "answer": "收敛的，故积分 $\\int_0^{\\frac{\\pi}{2}}\\sqrt{\\tan x}\\mathrm{d}x$ 收敛. 令 $x = \\frac{\\pi}{2}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "瑕点拆分",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $x = \\frac{\\pi}{2}$ 是积分的瑕点，容易判定积分是收敛的。直接积分有困难，利用 $\\int_0^{\\frac{\\pi}{2}}\\sqrt{\\tan x} \\, \\mathrm{d}x = \\int_0^{\\frac{\\pi}{2}}\\sqrt{\\cot x} \\, \\mathrm{d}x$ ，计算就容易了。"
+      },
+      {
+        "id": "s2",
+        "text": "$x = \\frac{\\pi}{2}$ 是积分的瑕点. 由于"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\lim _ {x \\rightarrow \\frac {\\pi}{2} ^ {-}} (\\pi / 2 - x) ^ {1 / 2} \\sqrt {\\tan x} = \\left(\\lim _ {x \\rightarrow \\frac {\\pi}{2} ^ {-}} \\frac {\\pi / 2 - x}{\\cot x}\\right) ^ {1 / 2} = \\left(\\lim _ {x \\rightarrow \\frac {\\pi}{2} ^ {-}} \\frac {1}{\\csc^ {2} x}\\right) ^ {1 / 2} = 1,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "而积分 $\\int_0^{\\frac{\\pi}{2}}\\frac{1}{\\sqrt{\\pi / 2 - x}}\\mathrm{d}x$ 是收敛的，故积分 $\\int_0^{\\frac{\\pi}{2}}\\sqrt{\\tan x}\\mathrm{d}x$ 收敛. 令 $x = \\frac{\\pi}{2} - t$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nI = - \\int_ {\\frac {\\pi}{2}} ^ {0} \\sqrt {\\cot t} d t = \\int_ {0} ^ {\\frac {\\pi}{2}} \\sqrt {\\cot x} d x.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\begin{array}{l} I = \\frac {1}{2} \\int_ {0} ^ {\\frac {\\pi}{2}} \\left(\\sqrt {\\tan x} + \\sqrt {\\cot x}\\right) d x = \\frac {1}{2} \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {\\tan x + 1}{\\sqrt {\\tan x}} d x \\xlongequal {u = \\sqrt {\\tan x}} \\int_ {0} ^ {+ \\infty} \\frac {u ^ {2} + 1}{1 + u ^ {4}} d u \\\\ = \\int_ {0} ^ {+ \\infty} \\frac {1 + 1 / u ^ {2}}{1 / u ^ {2} + u ^ {2}} d u = \\int_ {0} ^ {+ \\infty} \\frac {d (u - 1 / u)}{(u - 1 / u) ^ {2} + 2} = \\frac {1}{\\sqrt {2}} \\arctan \\left(\\frac {u - 1 / u}{\\sqrt {2}}\\right) \\Bigg | _ {0} ^ {+ \\infty} = \\frac {\\pi}{\\sqrt {2}}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "收敛的，故积分 $\\int_0^{\\frac{\\pi}{2}}\\sqrt{\\tan x}\\mathrm{d}x$ 收敛. 令 $x = \\frac{\\pi}{2}",
+    "techniques_used": [
+      "瑕点拆分",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用换元、分部还是瑕点拆分来计算反常积分？",
+      "technique": "瑕点拆分",
+      "expected": "选定换元/分部/拆分后化为可求极限的定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或面积）是什么？",
+      "technique": "换元定积分",
+      "expected": "收敛的，故积分 $\\int_0^{\\frac{\\pi}{2}}\\sqrt{\\tan x}\\mathrm{d}x$ 收敛. 令 $x = \\frac{\\pi}{2}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 203,
+    "syllabus_note": "瑕点收敛检验+对称换元",
+    "commentary": "评注（1）先检验积分的收敛性是必要的，因为两个发散的积分不能做和运算。该题所用的方法抽象出来就是积分公式： $\\int_0^a f(x)\\mathrm{d}x = \\frac{1}{2}\\int_0^a [f(x) + f(a - x)]\\mathrm{d}x$\n\n(2) 由于反常积分是定积分的极限，因此在积分的性质与计算方法上两者有诸多共同点，也有一些不同的地方，读者要善于总结，明了它们的异同，以及产生这些异同的原因。清楚这些对我们求解反常积分的相关问题会有很好的帮助。"
+  }
+}

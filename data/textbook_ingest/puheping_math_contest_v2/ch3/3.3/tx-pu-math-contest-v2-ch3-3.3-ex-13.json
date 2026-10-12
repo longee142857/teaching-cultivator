@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-13",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.abs",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明反常积分 $\\int_{0}^{+\\infty} \\frac{\\sin x}{x} \\, \\mathrm{d}x$ 不是绝对收敛的.",
+  "answer": "绝对收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "绝对收敛判别",
+    "级数展开/求和",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 记 $a_{n} = \\int_{m\\pi}^{(n + 1)\\pi}\\frac{|\\sin x|}{x}\\mathrm{d}x$ ，只需证明 $\\sum_{n = 0}^{\\infty}a_n$ 发散；也可考虑反证法."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 记 $a_{n} = \\int_{n\\pi}^{(n + 1)\\pi}\\frac{|\\sin x|}{x}\\mathrm{d}x$ 。如果 $\\int_0^{+\\infty}\\left|\\frac{\\sin x}{x}\\right|\\mathrm{d}x$ 收敛，则有 $\\int_0^{+\\infty}\\left|\\frac{\\sin x}{x}\\right|\\mathrm{d}x = \\sum_{n=0}^{\\infty}a_n$ 。因为\n\n$$\na _ {n} \\geqslant \\frac {1}{(n + 1) \\pi} \\int_ {n \\pi} ^ {(n + 1) \\pi} | \\sin x | d x = \\frac {1}{(n + 1) \\pi} \\int_ {0} ^ {\\pi} \\sin x d x = \\frac {2}{(n + 1) \\pi},\n$$\n\n而 $\\sum_{n=0}^{\\infty} \\frac{2}{(n+1)\\pi}$ 发散，故 $\\sum_{n=0}^{\\infty} a_n$ 发散，所以 $\\int_0^{+\\infty} \\frac{\\sin x}{x} \\, \\mathrm{d}x$ 不是绝对收敛的."
+      },
+      {
+        "id": "s3",
+        "text": "方法2（反证法）当 $x > 0$ 时，有 $0 \\leqslant \\frac{\\sin^2 x}{x} \\leqslant \\left|\\frac{\\sin x}{x}\\right|$ . 若 $\\int_0^{+\\infty} \\left|\\frac{\\sin x}{x}\\right| \\mathrm{d}x$ 收敛，则 $\\int_0^{+\\infty} \\frac{\\sin^2 x}{x} \\mathrm{d}x$ 也收敛.\n\n又\n\n$$\n0 \\leqslant \\int_ {\\frac {\\pi}{2}} ^ {+ \\infty} \\frac {\\cos^ {2} x}{x} d x = \\int_ {0} ^ {+ \\infty} \\frac {\\sin^ {2} x}{x + \\frac {\\pi}{2}} d x \\leqslant \\int_ {0} ^ {+ \\infty} \\frac {\\sin^ {2} x}{x} d x,\n$$\n\n故 $\\int_{\\frac{\\pi}{2}}^{+\\infty}\\frac{\\cos^2x}{x} dx$ 也收敛.但\n\n$$\n\\int_ {\\frac {\\pi}{2}} ^ {+ \\infty} \\frac {\\cos^ {2} x}{x} \\mathrm{d} x + \\int_ {\\frac {\\pi}{2}} ^ {+ \\infty} \\frac {\\sin^ {2} x}{x} \\mathrm{d} x = \\int_ {\\frac {\\pi}{2}} ^ {+ \\infty} \\frac {1}{x} \\mathrm{d} x = + \\infty , \\text {矛盾.}\n$$\n\n所以 $\\int_0^{+\\infty}\\frac{\\sin x}{x}\\mathrm{d}x$ 不绝对收敛."
+      }
+    ],
+    "final_answer": "绝对收敛.",
+    "techniques_used": [
+      "绝对收敛判别",
+      "级数展开/求和",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何把绝对收敛性化为级数/分段积分来判别？",
+      "technique": "绝对收敛判别",
+      "expected": "在每个 [nπ,(n+1)π] 上估值，比较调和型级数或反证。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于绝对收敛的结论是什么？",
+      "technique": "级数展开/求和",
+      "expected": "绝对收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例13*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 207,
+    "starred": true,
+    "syllabus_note": "证明非绝对收敛（sinx/x）",
+    "commentary": "评注 反常积分与无穷级数在基本性质与审敛方法上有很多类似之处, 请读者注意对比、总结. 同时两者之间又有密切的联系, 常常借助其中一个去研究另一个."
+  }
+}
