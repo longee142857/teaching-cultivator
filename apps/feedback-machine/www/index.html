@@ -14,9 +14,18 @@
   <body>
     <div class="app" id="app">
       <header class="app-header" id="header"></header>
+      <div class="page-chrome" id="page-chrome" hidden></div>
+      <nav class="tutor-strip" id="tutor-strip" hidden></nav>
       <main class="content" id="root" aria-live="polite"></main>
       <footer class="dock" id="dock"></footer>
       <nav class="tabbar" id="tabbar" aria-label="底部导航"></nav>
+    </div>
+    <div class="brain-host" id="brain-host" hidden>
+      <div class="brain-bar">
+        <button type="button" class="text-link" id="btn-brain-back">返回练习</button>
+        <span>能力</span>
+      </div>
+      <iframe id="brain-frame" title="能力" src="about:blank"></iframe>
     </div>
     <div id="toast" role="status"></div>
     <script src="vendor/katex/katex.min.js"></script>

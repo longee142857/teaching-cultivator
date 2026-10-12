@@ -19,32 +19,99 @@
   }
 
   /**
-   * Bank refill and「再出一题」stay on math.
-   * comm stock is thin; review is not the recording/default path either.
-   * A stored lastKind of comm/review must not win.
+   * Empty-slot bank refill.
+   * math is the generic default. review is a real slot and may refill.
+   * An empty comm slot must not call kind=comm.
    */
-  function bankKind(lastKind) {
-    if (lastKind === "math") return "math";
+  function bankKind(kind) {
+    if (kind === "comm") return null;
+    if (kind === "review") return "review";
     return "math";
   }
 
   function rememberKind(lastKind, itemKind) {
-    if (itemKind === "math") return "math";
-    return bankKind(lastKind);
+    if (itemKind === "math" || itemKind === "review") return itemKind;
+    if (lastKind === "review") return "review";
+    return "math";
   }
 
-  /** Next local item for the default loop: unanswered math only (missing kind counts). */
+  /** Next unanswered item in list order, including review and already-pushed comm. */
   function pickNextLocal(items, currentId) {
     var list = items || [];
-    var i, it;
-    for (i = 0; i < list.length; i++) {
-      it = list[i];
-      if (!it || it.answered) continue;
-      if (it.kind && it.kind !== "math") continue;
-      if (currentId && it.id === currentId) continue;
-      return it;
+    var start = 0;
+    var i;
+    if (currentId) {
+      for (i = 0; i < list.length; i++) {
+        if (list[i] && list[i].id === currentId) {
+          start = i + 1;
+          break;
+        }
+      }
+    }
+    for (i = start; i < list.length; i++) {
+      if (list[i] && !list[i].answered) return list[i];
+    }
+    if (!currentId) return null;
+    for (i = 0; i < start - 1; i++) {
+      if (list[i] && !list[i].answered) return list[i];
     }
     return null;
+  }
+
+  function parseSse(text) {
+    var src = String(text || "");
+    if (src.indexOf("data:") < 0) return null;
+    var events = [];
+    var evt = "";
+    var dataLines = [];
+    function flush() {
+      if (!dataLines.length) {
+        evt = "";
+        return;
+      }
+      var payload = dataLines.join("\n");
+      dataLines = [];
+      var data;
+      try {
+        data = JSON.parse(payload);
+      } catch (e) {
+        data = { text: payload };
+      }
+      events.push({ event: evt || "message", data: data });
+      evt = "";
+    }
+    src.split(/\r?\n/).forEach(function (line) {
+      if (!line.trim()) {
+        flush();
+        return;
+      }
+      if (line.indexOf("event:") === 0) evt = line.slice(6).trim();
+      else if (line.indexOf("data:") === 0) dataLines.push(line.slice(5).replace(/^ /, ""));
+    });
+    flush();
+    return events.length ? events : null;
+  }
+
+  function listTutorSessions(recents, threads, items) {
+    var seen = {};
+    var out = [];
+    function add(id, title) {
+      id = String(id || "");
+      if (!id || seen[id]) return;
+      seen[id] = true;
+      out.push({ id: id, title: title || id, general: isGeneralThread(id) });
+    }
+    (recents || []).forEach(function (r) {
+      if (r && r.id) add(r.id, r.title);
+    });
+    Object.keys(threads || {}).forEach(function (id) {
+      add(id, isGeneralThread(id) ? "新对话" : id);
+    });
+    (items || []).forEach(function (it) {
+      if (!it || !it.id) return;
+      add(it.id, (it.subject ? it.subject + " · " : "") + (it.title || it.id));
+    });
+    return out;
   }
 
   function gradeStillRunning(data) {
@@ -131,6 +198,8 @@
     bankKind: bankKind,
     rememberKind: rememberKind,
     pickNextLocal: pickNextLocal,
+    parseSse: parseSse,
+    listTutorSessions: listTutorSessions,
     gradeStillRunning: gradeStillRunning,
     resultReady: resultReady,
     applyImmediateSubmit: applyImmediateSubmit,

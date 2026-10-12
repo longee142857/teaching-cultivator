@@ -40,8 +40,11 @@
 
   function normalizeHttpResult(status, data) {
     var j = data;
-    if (typeof j === "string") j = parseBody(j);
-    else if (j == null) j = null;
+    if (typeof j === "string") {
+      var t = j.trim();
+      if (t.charAt(0) === "{" || t.charAt(0) === "[") j = parseBody(t);
+      else j = j;
+    } else if (j == null) j = null;
     var okHttp = status >= 200 && status < 300;
     return { okHttp: okHttp, status: status, body: j };
   }
@@ -156,14 +159,138 @@
     }).then(withMeta);
   }
 
-  /** JSON tutor chat (practice desk contract). Native HTTP does not stream SSE. */
-  function tutorChat(cfg, payload) {
-    return request(cfg, "/api/v1/tutor/chat", {
+  /**
+   * Tutor chat. Accept includes text/event-stream so practice_web proxies SSE.
+   * CapacitorHttp returns the finished body (no chunk callback); the shell replays
+   * those events as the typing stream. Browser fetch reads the stream live.
+   */
+  function tutorChat(cfg, payload, onEvent) {
+    var fullUrl = url(cfg, "/api/v1/tutor/chat");
+    var reqOpts = {
       method: "POST",
-      headers: {
+      headers: headers(cfg, {
         "Content-Type": "application/json",
-        Accept: "application/json"
-      },
+        Accept: "text/event-stream, application/json"
+      }),
+      body: JSON.stringify(payload || {})
+    };
+    var http = capacitorHttpPlugin();
+    var pending = http
+      ? requestViaCapacitor(http, fullUrl, reqOpts)
+      : requestViaFetchStream(fullUrl, reqOpts, onEvent);
+    return pending.then(function (p) {
+      if (p && p.streamed) return p;
+      if (p && typeof p.body === "string") {
+        return { httpStatus: p.status, okHttp: p.okHttp, sseText: p.body };
+      }
+      return withMeta(p);
+    });
+  }
+
+  function requestViaFetchStream(fullUrl, opts, onEvent) {
+    var init = {
+      method: opts.method || "GET",
+      headers: opts.headers || {}
+    };
+    if (opts.body !== undefined) init.body = opts.body;
+    return fetch(fullUrl, init).then(function (r) {
+      var ct = (r.headers && r.headers.get && r.headers.get("content-type")) || "";
+      if (ct.indexOf("text/event-stream") >= 0 && r.body && r.body.getReader) {
+        return readSse(r, onEvent).then(function (events) {
+          return { okHttp: r.ok, status: r.status, streamed: true, sse: true, events: events };
+        });
+      }
+      return r.text().then(function (t) {
+        return { okHttp: r.ok, status: r.status, body: parseBody(t) };
+      });
+    });
+  }
+
+  function readSse(response, onEvent) {
+    var reader = response.body.getReader();
+    var decoder = new TextDecoder();
+    var buf = "";
+    var events = [];
+    var evt = "";
+    function handleLine(line) {
+      line = String(line || "").replace(/\r$/, "");
+      if (line.indexOf("event:") === 0) {
+        evt = line.slice(6).trim();
+        return;
+      }
+      if (line.indexOf("data:") !== 0) {
+        if (!line.trim()) evt = "";
+        return;
+      }
+      var payload = line.slice(5).trim();
+      if (!payload) return;
+      var data;
+      try {
+        data = JSON.parse(payload);
+      } catch (e) {
+        data = { text: payload };
+      }
+      var ev = { event: evt || "message", data: data };
+      events.push(ev);
+      evt = "";
+      if (onEvent) onEvent(ev);
+    }
+    function pump() {
+      return reader.read().then(function (step) {
+        if (step.done) {
+          if (buf) handleLine(buf);
+          return events;
+        }
+        buf += decoder.decode(step.value, { stream: true });
+        var idx;
+        while ((idx = buf.indexOf("\n")) >= 0) {
+          handleLine(buf.slice(0, idx));
+          buf = buf.slice(idx + 1);
+        }
+        return pump();
+      });
+    }
+    return pump();
+  }
+
+  function ocr(cfg, payload) {
+    return request(cfg, "/api/v1/practice/ocr", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {})
+    }).then(withMeta);
+  }
+
+  function reportPoor(cfg, payload) {
+    return request(cfg, "/api/v1/practice/report-poor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {})
+    }).then(withMeta);
+  }
+
+  function examPapers(cfg) {
+    return request(cfg, "/api/v1/exam/papers").then(withMeta);
+  }
+
+  function notes(cfg) {
+    return request(cfg, "/api/v1/notes?learner=" + encodeURIComponent(cfg.learnerId)).then(withMeta);
+  }
+
+  function noteItem(cfg, id) {
+    return request(
+      cfg,
+      "/api/v1/notes/item?learner=" +
+        encodeURIComponent(cfg.learnerId) +
+        "&id=" +
+        encodeURIComponent(id)
+    ).then(withMeta);
+  }
+
+  function saveNote(cfg, payload) {
+    return request(cfg, "/api/v1/notes?learner=" + encodeURIComponent(cfg.learnerId), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {})
     }).then(withMeta);
   }
@@ -173,6 +300,12 @@
     getItem: getItem,
     submit: submit,
     tutorChat: tutorChat,
+    ocr: ocr,
+    reportPoor: reportPoor,
+    examPapers: examPapers,
+    notes: notes,
+    noteItem: noteItem,
+    saveNote: saveNote,
     request: request,
     /** @internal smoke / diagnostics */
     transport: function () {
