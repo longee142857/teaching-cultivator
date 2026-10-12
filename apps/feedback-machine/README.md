@@ -66,7 +66,7 @@
 }
 ```
 
-本机版本优先读 Capacitor `App.getInfo()`（`build` 是 versionCode，`version` 是 versionName）。浏览器预览没有该插件时，回退 gradle 里的 `1` / `1.0`。发布新包时把 gradle 的 `versionCode` 加一，并改这份 `version.json`。依赖 `@capacitor/app`，打包前 `npm ci` 然后 `npx cap sync android`。
+本机版本优先读 Capacitor `App.getInfo()`（`build` 是 versionCode，`version` 是 versionName）。浏览器预览没有该插件时，回退 gradle 里的 `2` / `1.0.1`。发布新包时把 gradle 的 `versionCode` 加一，并改这份 `version.json`。依赖 `@capacitor/app`，打包前 `npm ci` 然后 `npx cap sync android`。
 
 ## API 假设（「再出一题」）
 

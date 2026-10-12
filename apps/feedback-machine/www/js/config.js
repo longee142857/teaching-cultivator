@@ -13,8 +13,8 @@
   };
 
   /** Fallback when Capacitor App.getInfo is unavailable. Keep equal to android/app/build.gradle. */
-  var APP_VERSION_CODE = 1;
-  var APP_VERSION_NAME = "1.0";
+  var APP_VERSION_CODE = 2;
+  var APP_VERSION_NAME = "1.0.1";
   var APP_PACKAGE = "icu.longee.feedback";
   var DEFAULT_UPDATE_URL = "https://practice.longee.icu/app/feedback-machine/version.json";
 
