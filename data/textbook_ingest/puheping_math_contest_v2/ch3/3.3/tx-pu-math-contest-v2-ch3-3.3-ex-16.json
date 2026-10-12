@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-16",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x) > 0$ ，在 $(- \\infty, + \\infty)$ 内连续，且对任意 $t$ ，有 $\\int_{-\\infty}^{+\\infty} e^{-|t - x|} f(x) dx \\leqslant 1$ ，证明对任意 $a$ 和 $b (a < b)$ ，有 $\\int_{a}^{b} f(x) dx \\leqslant \\frac{b - a}{2} + 1$ .",
+  "answer": "$$ \\begin{array}{r l} \\int_ {a} ^ {b} f (x) \\mathrm{d} x & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | b - x |} \\mathrm{d} x \\\\ & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {- \\infty} ^ {+ \\infty} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {- \\infty} ^ {+",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "换元定积分",
+    "瑕点拆分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为 $e^{-|t - x|}f(x) > 0$ ，所以 $\\forall a, b (a < b)$ ，有 $\\int_{a}^{b} e^{-|t - x|} f(x) dx \\leqslant \\int_{-\\infty}^{+\\infty} e^{-|t - x|} f(x) dx \\leqslant 1$ ，该式两边对 $t$ 在 $[a, b]$ 上积分，可将 $e^{-|t - x|}$ 的积分算出来而得到关于 $\\int_{a}^{b} f(x) dx$ 的不等式."
+      },
+      {
+        "id": "s2",
+        "text": "令 $F(t) = \\int_{a}^{b}\\mathrm{e}^{-|t - x|}f(x)\\mathrm{d}x$ ，由已知条件，易知 $F(t)$ 在 $(-\\infty , + \\infty)$ 上连续，且 $F(t)\\leqslant 1$ ，则 $\\int_{a}^{b}F(t)\\mathrm{d}x\\leqslant b - a$ ，而"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\int_ {a} ^ {b} F (t) \\mathrm{d} t & = \\int_ {a} ^ {b} f (x) \\mathrm{d} x \\int_ {a} ^ {b} \\mathrm{e} ^ {- | t - x |} \\mathrm{d} t = \\int_ {a} ^ {b} f (x) (2 - \\mathrm{e} ^ {a - x} - \\mathrm{e} ^ {x - b}) \\mathrm{d} x \\\\ & = 2 \\int_ {a} ^ {b} f (x) \\mathrm{d} x - \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {a - x} \\mathrm{d} x - \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {x - b} \\mathrm{d} x. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\int_ {a} ^ {b} f (x) \\mathrm{d} x & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | b - x |} \\mathrm{d} x \\\\ & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {- \\infty} ^ {+ \\infty} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {- \\infty} ^ {+ \\infty} f (x) \\mathrm{e} ^ {- | b - x |} \\mathrm{d} x \\leqslant \\frac {b - a}{2} + 1. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$$ \\begin{array}{r l} \\int_ {a} ^ {b} f (x) \\mathrm{d} x & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | b - x |} \\mathrm{d} x \\\\ & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {- \\infty} ^ {+ \\infty} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {- \\infty} ^ {+",
+    "techniques_used": [
+      "换元定积分",
+      "瑕点拆分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用反常积分定义/有界单调/估值建立收敛或不等式？",
+      "technique": "瑕点拆分",
+      "expected": "由部分积分有界单调或估值推出收敛/不等式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "瑕点拆分",
+      "expected": "$$ \\begin{array}{r l} \\int_ {a} ^ {b} f (x) \\mathrm{d} x & \\leqslant \\frac {b - a}{2} + \\frac {1}{2} \\int_ {a} ^ {b} f (x) \\mathrm{e} ^ {- | a - x |} \\mathrm{d} x + \\frac {1}{2} \\int_ {a} ^ {b} f (x) "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 209,
+    "syllabus_note": "核型反常积分条件推有限区间不等式"
+  }
+}

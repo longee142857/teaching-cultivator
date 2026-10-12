@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-10",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compare",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "判断反常积分 $\\int_0^1\\frac{\\sqrt[m]{\\ln^2(1 - x)}}{\\sqrt[n]{x}}\\mathrm{d}x$ 的敛散性.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "换元定积分",
+    "瑕点拆分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $x = 0$ 与 $x = 1$ 是积分的瑕点，可插入分点 $x = \\frac{1}{2}$ ，分别讨论两个积分的敛散性."
+      },
+      {
+        "id": "s2",
+        "text": "被积函数在 $x = 0$ 与 $x = 1$ 处无界."
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {1} \\frac {\\sqrt [ m ]{\\ln^ {2} (1 - x)}}{\\sqrt [ n ]{x}} d x = \\int_ {0} ^ {\\frac {1}{2}} \\frac {\\sqrt [ m ]{\\ln^ {2} (1 - x)}}{\\sqrt [ n ]{x}} d x + \\int_ {\\frac {1}{2}} ^ {1} \\frac {\\sqrt [ m ]{\\ln^ {2} (1 - x)}}{\\sqrt [ n ]{x}} d x.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "在第1个积分中 $\\sqrt[m]{\\ln^2(1 - x)}\\sim x^{\\frac{2}{m}}(x\\to 0^{+})$ ，则 $\\int_0^{\\frac{1}{2}}\\frac{\\sqrt[m]{\\ln^2(1 - x)}}{\\sqrt[n]{x}}\\mathrm{d}x$ 与 $\\int_0^{\\frac{1}{2}}\\frac{x^{\\frac{2}{m}}}{\\sqrt[n]{x}}\\mathrm{d}x = \\int_0^{\\frac{1}{2}}\\frac{\\mathrm{d}x}{x^{\\frac{1}{n} -\\frac{2}{m}}}$ 同敛散.由于 $m,n$ 是大于1的自然数，总有 $\\frac{1}{n} -\\frac{2}{m} <  1$ ，所以积分 $\\int_0^{\\frac{1}{2}}\\frac{\\mathrm{d}x}{x^n - \\frac{2}{m}}$ 收敛，从而 $\\int_0^{\\frac{1}{2}}\\frac{\\sqrt[m]{\\ln^2(1 - x)}}{\\sqrt[n]{x}}\\mathrm{d}x$ 收敛"
+      },
+      {
+        "id": "s5",
+        "text": "对第2个积分，因为"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\lim _ {x \\rightarrow 1 ^ {-}} \\frac {\\sqrt [ m ]{\\ln^ {2} (1 - x)}}{\\sqrt [ n ]{x}} / \\frac {1}{\\sqrt {1 - x}} = \\lim _ {x \\rightarrow 1 ^ {-}} \\sqrt {1 - x} \\ln^ {\\frac {2}{m}} (1 - x) = 0,\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "且反常积分 $\\int_{\\frac{1}{2}}^{1}\\frac{\\mathrm{d}x}{\\sqrt{1 - x}}$ 收敛，所以 $\\int_{\\frac{1}{2}}^{1}\\frac{\\sqrt[m]{\\ln^2(1 - x)}}{\\sqrt[n]{x}}\\mathrm{d}x$ 收敛."
+      },
+      {
+        "id": "s8",
+        "text": "综上所述，无论 $m, n$ 取何正整数，反常积分 $\\int_0^1 \\frac{\\sqrt[m]{\\ln^2(1 - x)}}{\\sqrt[n]{x}} \\mathrm{d}x$ 均收敛."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "换元定积分",
+      "瑕点拆分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "瑕点/无穷端如何拆分？比较对象选 p 积分还是极限比较？",
+      "technique": "瑕点拆分",
+      "expected": "按瑕点拆分段，用极限比较或 p 积分判敛散。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终敛散性结论是什么？",
+      "technique": "瑕点拆分",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 205,
+    "syllabus_note": "双瑕点+极限比较审敛"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-09",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compare",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "讨论积分 $\\int_0^{\\frac{\\pi}{2}}\\frac{\\mathrm{d}x}{\\sin^p x\\cos^q x} (p > 0,q > 0)$ 的敛散性.",
+  "answer": "收敛，其他情况均发散.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "p积分",
+    "瑕点拆分",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是无界函数的积分， $x = 0$ ， $x = \\frac{\\pi}{2}$ 都是积分的瑕点，需要在积分区间中插入分点将积分化为两项，再分别讨论两个积分的敛散性."
+      },
+      {
+        "id": "s2",
+        "text": "$x = 0$ ， $x = \\frac{\\pi}{2}$ 都是积分的瑕点，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {\\mathrm{d} x}{\\sin^ {p} x \\cos^ {q} x} = \\int_ {0} ^ {\\frac {\\pi}{4}} \\frac {\\mathrm{d} x}{\\sin^ {p} x \\cos^ {q} x} + \\int_ {\\frac {\\pi}{4}} ^ {\\frac {\\pi}{2}} \\frac {\\mathrm{d} x}{\\sin^ {p} x \\cos^ {q} x}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "因为 $\\lim_{x\\to 0^{+}}x^{p}\\frac{1}{\\sin^{p}x\\cos^{q}x} = 1\\neq 0$ ，而 $\\int_0^{\\frac{\\pi}{4}}\\frac{\\mathrm{d}x}{x^p}$ 当 $0 < p < 1$ 时收敛，当 $p\\geqslant 1$ 时发散．所以积分 $\\int_0^{\\frac{\\pi}{4}}\\frac{\\mathrm{d}x}{\\sin^p x\\cos^q x}$ 当 $0 < p < 1$ 时收敛，当 $p\\geqslant 1$ 时发散."
+      },
+      {
+        "id": "s5",
+        "text": "又 $\\lim_{x\\to \\frac{\\pi}{2}^{-}}\\left(\\frac{\\pi}{2} -x\\right)^q\\frac{1}{\\sin^p x\\cos^q x} = 1$ ，且 $\\int_{\\frac{\\pi}{4}}^{\\frac{\\pi}{2}}\\frac{\\mathrm{d}x}{\\left(\\frac{\\pi}{2} - x\\right)^q}$ 当 $0 < q < 1$ 时收敛，当 $q\\geqslant 1$ 时发散.所以积分 $\\int_{\\frac{\\pi}{4}}^{\\frac{\\pi}{2}}\\frac{\\mathrm{d}x}{\\sin^p x\\cos^q x}$ 当 $0 < q < 1$ 时收敛，当 $q\\geqslant 1$ 时发散.."
+      },
+      {
+        "id": "s6",
+        "text": "综上，当0<p<1，0<q<1时原积分收敛，其他情况均发散."
+      }
+    ],
+    "final_answer": "收敛，其他情况均发散.",
+    "techniques_used": [
+      "p积分",
+      "瑕点拆分",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "瑕点/无穷端如何拆分？比较对象选 p 积分还是极限比较？",
+      "technique": "p积分",
+      "expected": "按瑕点拆分段，用极限比较或 p 积分判敛散。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终敛散性结论是什么？",
+      "technique": "瑕点拆分",
+      "expected": "收敛，其他情况均发散."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 204,
+    "syllabus_note": "双瑕点拆分+极限比较/p积分",
+    "commentary": "评注（1）判断反常积分的敛散性首先需要确定积分的类型。对无界函数的积分，要找出积分的瑕点，并用瑕点分割积分区间做分段积分（每项积分只能有一个瑕点），再逐项讨论各积分的敛散性。\n\n(2) 反常积分的比较审敛法（下面仅给出无穷区间的情况，无界函数积分有类似的结论）：\n\n比较准则I：设函数 $f(x)$ ， $g(x)$ 在区间 $[a, + \\infty)$ 上连续，且 $0\\leqslant f(x)\\leqslant g(x)$ （ $a\\leqslant x <   + \\infty$ ），则\n\n① 当 $\\int_{a}^{+\\infty} g(x) \\mathrm{d}x$ 收敛时， $\\int_{a}^{+\\infty} f(x) \\mathrm{d}x$ 收敛；\n\n② 当 $\\int_{a}^{+\\infty} f(x) \\mathrm{d}x$ 发散时， $\\int_{a}^{+\\infty} g(x) \\mathrm{d}x$ 发散.\n\n比较准则 II: 设函数 $f(x)$ 、 $g(x) \\in C[a, +\\infty)$ ，且 $g(x) > 0$ ， $\\lim_{x \\to +\\infty} \\frac{f(x)}{g(x)} = \\lambda$ （有限或 $\\infty$ ），则\n\n① 当 $\\lambda \\neq 0$ 时， $\\int_{a}^{+\\infty} f(x) \\mathrm{d}x$ 与 $\\int_{a}^{+\\infty} g(x) \\mathrm{d}x$ 有相同的敛散性；\n\n② 当 $\\lambda = 0$ 时，若 $\\int_{a}^{+\\infty} g(x) \\mathrm{d}x$ 收敛，则 $\\int_{a}^{+\\infty} f(x) \\mathrm{d}x$ 也收敛；\n\n③ 当 $\\lambda ="
+  }
+}

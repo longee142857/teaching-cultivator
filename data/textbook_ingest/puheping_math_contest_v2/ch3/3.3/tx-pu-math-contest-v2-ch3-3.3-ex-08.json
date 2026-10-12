@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-08",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_{0}^{+\\infty} \\frac{\\mathrm{d}x}{x^3 (\\mathrm{e}^{\\pi/x} - 1)}$ .",
+  "answer": "见题解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "级数展开/求和",
+    "换元定积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 容易判断积分是收敛的，直接积分有困难，可将含指数函数的分式做泰勒展开，再做积分.为了消除分母中的幂函数，可先作倒代换 $x = 1 / u$ ："
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{l} I = - \\int_ {0} ^ {+ \\infty} \\frac {\\mathrm{d} \\left(\\frac {1}{x}\\right)}{x \\left(\\mathrm{e} ^ {\\pi / x} - 1\\right)} = \\int_ {0} ^ {+ \\infty} \\frac {u \\mathrm{d} u}{\\mathrm{e} ^ {\\pi u} - 1} = \\int_ {0} ^ {+ \\infty} \\frac {u \\mathrm{e} ^ {- \\pi u}}{1 - \\mathrm{e} ^ {- \\pi u}} \\mathrm{d} u = \\int_ {0} ^ {+ \\infty} u \\sum_ {n = 0} ^ {\\infty} \\mathrm{e} ^ {- (n + 1) \\pi u} \\mathrm{d} u \\\\ = \\sum_ {n = 0} ^ {\\infty} \\int_ {0} ^ {+ \\infty} u \\mathrm{e} ^ {- (n + 1) \\pi u} \\mathrm{d} u = \\sum_ {n = 0} ^ {\\infty} \\frac {- 1}{(n + 1) \\pi} \\int_ {0} ^ {+ \\infty} u \\mathrm{de} ^ {- (n + 1) \\pi u} \\\\ = \\sum_ {n = 0} ^ {\\infty} \\frac {- 1}{(n + 1) ^ {2} \\pi^ {2}} \\mathrm{e} ^ {- (n + 1) \\pi u} \\Big | _ {0} ^ {+ \\infty} = \\frac {1}{\\pi^ {2}}. \\sum_ {n = 0} ^ {\\infty} \\frac {1}{(n + 1) ^ {2}} = \\frac {1}{6}. \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "见题解",
+    "techniques_used": [
+      "级数展开/求和",
+      "换元定积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用换元、分部还是瑕点拆分来计算反常积分？",
+      "technique": "换元定积分",
+      "expected": "选定换元/分部/拆分后化为可求极限的定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或面积）是什么？",
+      "technique": "换元定积分",
+      "expected": "见题解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例8*",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 204,
+    "starred": true,
+    "syllabus_note": "倒代换+几何级数展开",
+    "commentary": "评注 （1）该题的求解过程有一点小瑕疵，也就是积分号与级数和号做交换是有条件的，但题解中并未进行相应交代。高数竞赛题解中偶尔会出现这种情况。\n\n(2) 最后一个等式用到了结论 $\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}$ ."
+  }
+}

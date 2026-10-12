@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch3-3.3-ex-01",
+  "subject": "math",
+  "l2": "反常积分",
+  "l3_id": "math.calc.improp.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\int_0^{+\\infty}\\frac{x\\mathrm{e}^{-x}}{(1 + \\mathrm{e}^{-x})^2}\\mathrm{d}x.$",
+  "answer": "解 设 $\\mathbf{e}^x = t$ ，则 $x = \\ln t$ ， $\\mathrm{d}x = \\frac{\\mathrm{d}t}{t}$ 。当 $x = 0$ 时， $t = 1$ ；当 $x \\to +\\infty$ 时， $t \\to +\\infty$ 。于是",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "换元定积分",
+    "瑕点拆分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该积分计算需做分部积分. 先作变量代换 $e^x = t$ ，可使积分形式简洁些."
+      },
+      {
+        "id": "s2",
+        "text": "设 $\\mathbf{e}^x = t$ ，则 $x = \\ln t$ ， $\\mathrm{d}x = \\frac{\\mathrm{d}t}{t}$ 。当 $x = 0$ 时， $t = 1$ ；当 $x \\to +\\infty$ 时， $t \\to +\\infty$ 。于是"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\text {原式} & = \\int_ {0} ^ {+ \\infty} \\frac {x e ^ {x}}{(1 + e ^ {x}) ^ {2}} d x = \\int_ {1} ^ {+ \\infty} \\frac {t \\ln t}{(1 + t) ^ {2}} \\cdot \\frac {d t}{t} = \\lim _ {b \\to + \\infty} \\int_ {1} ^ {b} \\frac {\\ln t}{(1 + t) ^ {2}} d t \\\\ & = - \\lim _ {b \\to + \\infty} \\int_ {1} ^ {b} \\ln t d \\left(\\frac {1}{1 + t}\\right) = - \\lim _ {b \\to + \\infty} \\left[ \\frac {\\ln t}{1 + t} \\Big | _ {1} ^ {b} - \\int_ {1} ^ {b} \\frac {d t}{t (1 + t)} \\right] \\\\ & = \\lim _ {b \\to + \\infty} \\int_ {1} ^ {b} \\left(\\frac {1}{t} - \\frac {1}{t + 1}\\right) d t = \\lim _ {b \\to + \\infty} \\left[ \\ln \\frac {b}{1 + b} - \\ln \\frac {1}{2} \\right] = \\ln 2. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "解 设 $\\mathbf{e}^x = t$ ，则 $x = \\ln t$ ， $\\mathrm{d}x = \\frac{\\mathrm{d}t}{t}$ 。当 $x = 0$ 时， $t = 1$ ；当 $x \\to +\\infty$ 时， $t \\to +\\infty$ 。于是",
+    "techniques_used": [
+      "换元定积分",
+      "瑕点拆分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用换元、分部还是瑕点拆分来计算反常积分？",
+      "technique": "换元定积分",
+      "expected": "选定换元/分部/拆分后化为可求极限的定积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分值（或面积）是什么？",
+      "technique": "瑕点拆分",
+      "expected": "解 设 $\\mathbf{e}^x = t$ ，则 $x = \\ln t$ ， $\\mathrm{d}x = \\frac{\\mathrm{d}t}{t}$ 。当 $x = 0$ 时， $t = 1$ ；当 $x \\to +\\infty$ 时， $t \\to +\\infty$ 。于是"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第3章 一元函数积分学",
+    "section": "3.3",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "page": 201,
+    "syllabus_note": "换元+分部求无穷积分",
+    "commentary": "评注 为书写方便，在反常积分的计算中常常保留原积分限而略去极限符号."
+  }
+}
