@@ -137,6 +137,23 @@ def main() -> None:
     readme = open(os.path.join(SITE, "README.md"), encoding="utf-8").read()
     if "/site" not in readme or "master" not in readme:
         fail("Pages instructions incomplete")
+    root_readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+    if "Dual subjects" in root_readme or "communications-style" in root_readme:
+        fail("root README still locks the second subject")
+    if "configurable" not in root_readme.lower() or "example" not in root_readme.lower():
+        fail("root README missing configurable example framing")
+    locked = (
+        "数学与通信",
+        "math and communications",
+        "Math and communications",
+        "两条练习线",
+        "Two tracks",
+        "communications track",
+    )
+    joined = all_text + "\n" + root_readme
+    for phrase in locked:
+        if phrase in joined:
+            fail("locked subject phrase %s" % phrase)
     if _fails:
         print("%s failure(s)" % _fails)
         sys.exit(1)

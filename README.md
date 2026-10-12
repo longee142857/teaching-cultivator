@@ -17,7 +17,7 @@ GitHub Pages publishes `site/` with Actions (branch deploy only allows `/` or `/
 | Capability | Behavior |
 |------------|----------|
 | Cultivate loop | assess → decide → generate → quality gate → deliver → record |
-| Dual subjects | Graduate math track + communications-style professional track |
+| Subjects | Configurable: math plus one or more other subjects. Math + communications is only the demo/example pairing. |
 | Mastery | Bayesian-style write-back + syllabus weights + recent-pick rotation |
 | Evidence gate | Retrieval miss can **refuse to author** (`RAG_STRICT=1` by default) |
 | Agent tools | New item / grade / solution / difficulty / weak-point notes / exams |
