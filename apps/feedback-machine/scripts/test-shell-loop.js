@@ -135,7 +135,8 @@ assert(api.indexOf("/api/v1/exam/papers") >= 0, "exam list uses the practice rou
 assert(api.indexOf("/api/v1/notes") >= 0, "notes use the practice route");
 assert(read("www/css/app.css").indexOf("visibility: hidden") >= 0, "idle toast cannot cover the tab bar");
 assert(read("www/js/app.js").indexOf("题质量差") >= 0, "poor-item entry is on the desk");
-assert(read("www/js/app.js").indexOf("brain/index.html") >= 0, "capability page is the vendored brain");
+assert(read("www/js/app.js").indexOf("brain/index.html") < 0, "capability page is not in the shell");
+assert(read("www/js/app.js").indexOf("能力") < 0, "capability tab is removed");
 
 var html = read("www/index.html");
 assert(html.indexOf("vendor/katex/katex.min.js") >= 0, "KaTeX is vendored");

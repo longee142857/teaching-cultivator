@@ -42,8 +42,7 @@
     tabs: document.getElementById("tabbar"),
     toast: document.getElementById("toast"),
     chrome: document.getElementById("page-chrome"),
-    strip: document.getElementById("tutor-strip"),
-    brain: document.getElementById("brain-host")
+    strip: document.getElementById("tutor-strip")
   };
 
   function esc(s) {
@@ -798,15 +797,6 @@
       });
   }
 
-  function openBrain() {
-    state.screen = "brain";
-    render();
-    var frame = document.getElementById("brain-frame");
-    if (!frame) return;
-    var src = "brain/index.html?embed=1&tab=events&learner=" + encodeURIComponent(cfg.learnerId || "");
-    if (frame.getAttribute("src") !== src) frame.src = src;
-  }
-
   function mountMath() {
     if (!el.root || !window.katex) return;
     el.root.querySelectorAll("[data-tex]").forEach(function (node) {
@@ -878,8 +868,7 @@
       done: "今日已完成",
       settings: "设置",
       exam: "周卷",
-      notes: "资料库",
-      brain: "能力"
+      notes: "资料库"
     };
     return (
       '<div class="brand-row"><span class="brand">反馈出题机</span><div class="meta">' +
@@ -966,7 +955,7 @@
       ) +
       field(
         "练习台地址",
-        "作答、批改、讲题、周卷、资料和能力都请求这个地址。",
+        "作答、批改、讲题、周卷和资料都请求这个地址。",
         '<input name="practiceBase" type="url" required value="' + esc(cfg.practiceBaseUrl) + '"/>'
       ) +
       field(
@@ -1289,16 +1278,13 @@
       tab("practice", "练习", practiceOn) +
       tab("exam", "周卷", state.screen === "exam") +
       tab("notes", "资料", state.screen === "notes") +
-      tab("tutor", "讲师", state.screen === "tutor") +
-      tab("brain", "能力", state.screen === "brain")
+      tab("tutor", "讲师", state.screen === "tutor")
     );
   }
 
   function render() {
     var onPractice = state.screen === "today" || state.screen === "practice" || state.screen === "feedback" || state.screen === "done";
     document.body.classList.toggle("is-tutor", state.screen === "tutor");
-    document.body.classList.toggle("is-brain", state.screen === "brain");
-    if (el.brain) el.brain.hidden = state.screen !== "brain";
     el.header.innerHTML = renderHeader();
     if (el.chrome) {
       el.chrome.hidden = !onPractice;
@@ -1353,8 +1339,6 @@
     if (stripNew) stripNew.onclick = startBlankTutor;
     var back = document.getElementById("btn-tutor-back");
     if (back) back.onclick = backFromTutor;
-    var brainBack = document.getElementById("btn-brain-back");
-    if (brainBack) brainBack.onclick = function () { state.screen = "today"; render(); };
     var prev = document.getElementById("page-prev");
     if (prev) prev.onclick = function () {
       if (state.screen !== "today") {
@@ -1473,7 +1457,6 @@
           state.screen = "notes";
           render();
         } else if (id === "tutor") askTutor();
-        else if (id === "brain") openBrain();
         else {
           state.screen = "today";
           render();
@@ -1497,15 +1480,6 @@
   }
 
   function boot() {
-    if (window.addEventListener) {
-      window.addEventListener("message", function (ev) {
-        var data = ev && ev.data;
-        if (data && data.type === "cap-embed-exit") {
-          state.screen = "today";
-          render();
-        }
-      });
-    }
     if (!FqmConfig.isConfigured(cfg)) {
       state.screen = "settings";
       state.error = "首次使用请填写练习台 Token 与学员编号。DeepSeek Key 现在不用填。";

@@ -391,7 +391,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
 
 .tabbar {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-top: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   padding: 4px 0 calc(6px + var(--safe-b));
@@ -514,24 +514,6 @@ code {
 .exam-pick { display: flex; gap: 8px; overflow-x: auto; }
 .exam-pick .btn { width: auto; flex: 0 0 auto; }
 
-.brain-host {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: var(--bg);
-  flex-direction: column;
-}
-body.is-brain .brain-host { display: flex; }
-.brain-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: calc(8px + var(--safe-t)) 12px 8px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.brain-host iframe { flex: 1; width: 100%; border: 0; background: var(--bg); }
 .stream-cursor {
   display: inline-block;
   width: 0.5em;
