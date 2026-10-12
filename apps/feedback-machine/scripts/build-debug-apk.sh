@@ -18,4 +18,5 @@ if [[ -f "$APK" ]]; then
   cp -f "$APK" "$ROOT/artifacts/feedback-machine-debug.apk"
   echo "Built: $ROOT/android/$APK"
   echo "Copied: $ROOT/artifacts/feedback-machine-debug.apk"
+  echo "Local copy only. Do not commit the APK; CI uploads it as an artifact."
 fi

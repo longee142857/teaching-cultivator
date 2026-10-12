@@ -1,6 +1,8 @@
 # 反馈出题机（Android · Capacitor）
 
-自用 **答一题 → 看反馈 → 再出一题** 壳，对接现有练习台 `GET/POST /api/v1/practice/*`（与 `web/static/teaching-shell.html` 同源契约）。钉钉日推与 VPS 调度**不改动**。
+自用 **答一题 → 看反馈 → 再出一题** 壳，对接现有练习台 `GET/POST /api/v1/practice/*` 与 `POST /api/v1/tutor/chat`（与 `web/static/teaching-shell.html` 同源契约）。钉钉日推与 VPS 调度**不改动**。
+
+视觉与主路径对齐练习台：纸色底、题干卡片、批改条、折叠讲解、「不懂，问讲师」。公式使用仓内 `web/static/katex` 的同一份 KaTeX（拷到 `www/vendor/katex`），不走 jsDelivr。
 
 ## 包信息
 
@@ -14,19 +16,20 @@
 
 | 字段 | 说明 |
 |------|------|
-| DeepSeek API Key | 可选，预留本机 OCR/直连；当前批改仍走练习台 API |
-| DeepSeek Base URL | 可选 |
-| 练习台 Base URL | 默认 `https://practice.longee.icu` |
-| Practice API Token | 与 VPS `PRACTICE_API_TOKEN` 一致 |
-| Learner Id | 默认 `04022300566420984205` |
+| DeepSeek API Key | **当前未使用**。只存在本机；批改仍走练习台，填了也不会拿去打分 |
+| DeepSeek Base URL | **当前未使用**，预留 |
+| 练习台 Base URL | 默认 `https://practice.longee.icu`。出题、批改、讲题都打这里 |
+| Practice API Token | 与 VPS `PRACTICE_API_TOKEN` 一致。错了会提示 **Token 无效（401）**，不会当成网络中断 |
+| Learner Id | 默认 `04022300566420984205`。请求带 `X-Learner-Id` |
 
 **勿将真实密钥提交 git。**
 
 ## API 假设（「再出一题」）
 
-1. `GET /api/v1/practice/bootstrap?learner=` — 今日推送队列里未答的题优先。
-2. 无未答题时：`GET /api/v1/practice/item?learner=&kind=math|comm|review` — 与 teaching-shell 的 `pickSlotFromBank` 相同，从题库 `ready` 抽题（`fromBank`）。
-3. `POST /api/v1/practice/submit` — 批改反馈；大题可能异步，壳会轮询 `GET /item` 直至 `result` 就绪。
+1. `GET /api/v1/practice/bootstrap?learner=` — 今日队列里未答的 **数学** 题优先。
+2. 没有可做的数学题时：`GET /api/v1/practice/item?learner=&kind=math` — 与 teaching-shell 的 `pickSlotFromBank` 相同，从题库 `ready` 抽题（`fromBank`）。**「再出一题」和空槽补题固定 `kind=math`**，不因当前题是通信/复习就把 `lastKind` 改过去（通信 ready 库存很薄，这条路径不补通信）。
+3. `POST /api/v1/practice/submit` — 批改反馈。结果若已就绪，立刻 `busy=false` 并画到反馈页（不再停在「提交中」）。仍在批改则轮询 `GET /item`。
+4. `POST /api/v1/tutor/chat` — 练习台上的「不懂，问讲师」/「发给老师讨论」。壳要 JSON（`Accept: application/json`），因为 CapacitorHttp 不能消费 SSE。未接线时服务端 501，文案与练习台一致。
 
 公网练习台需配置 `PRACTICE_API_TOKEN`。
 
@@ -77,13 +80,11 @@ npm ci
 npm run build:apk
 ```
 
-**Debug APK 路径：**
+**Debug APK 路径（本地或 CI，不入库）：**
 
 `apps/feedback-machine/android/app/build/outputs/apk/debug/app-debug.apk`
 
-复制到 artifacts（可选）：
-
-`apps/feedback-machine/artifacts/feedback-machine-debug.apk`
+脚本会再复制一份到 `apps/feedback-machine/artifacts/`，该目录已 gitignore。安装包以 GitHub Actions artifact `feedback-machine-debug-apk` 为准，不要把 APK 提交进 git。
 
 ### 安装到手机（侧载）
 
@@ -100,12 +101,27 @@ npx cap sync android    # 拷贝 www → android/app/src/main/assets
 npx cap open android    # 打开 Android Studio（若已安装）
 ```
 
+## 与练习台仍有的差距
+
+- 无今日三槽总览、左右翻页、历史未答列表
+- 无周卷、资料库、能力页、手写拍照 OCR、「题质量差」
+- 讲师是整段 JSON 回复，没有练习台的 SSE 打字流，也没有最近会话条
+- 默认回路只抽数学；通信/复习未答不会被「再出一题」抽走
+- DeepSeek 字段只保存，不发起请求
+
+## 壳逻辑自测
+
+```bash
+cd apps/feedback-machine
+npm test
+```
+
 ## 本期不做
 
 - FCM 推送、应用商店上架、正式签名
 - 多人登录、卸钉钉
 - Android Keystore 存密钥（文档跟进；当前 localStorage）
-- 本机 DeepSeek OCR 接线（设置项已预留）
+- 本机 DeepSeek OCR 接线（设置项标明未使用）
 
 ## 与主仓关系
 

@@ -115,13 +115,26 @@
     return requestViaFetch(fullUrl, reqOpts);
   }
 
+  function withMeta(p) {
+    var body = p && p.body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      body = {
+        ok: false,
+        error: p && p.okHttp ? "empty" : "http_" + ((p && p.status) || 0)
+      };
+    } else {
+      body = Object.assign({}, body);
+    }
+    body.httpStatus = p ? p.status : 0;
+    body.okHttp = !!(p && p.okHttp);
+    return body;
+  }
+
   function bootstrap(cfg, day) {
     var q =
       "/api/v1/practice/bootstrap?learner=" + encodeURIComponent(cfg.learnerId);
     if (day) q += "&day=" + encodeURIComponent(day);
-    return request(cfg, q).then(function (p) {
-      return p.body;
-    });
+    return request(cfg, q).then(withMeta);
   }
 
   function getItem(cfg, params) {
@@ -132,9 +145,7 @@
       q += "&push=" + encodeURIComponent(String(params.push));
     }
     if (params.kind) q += "&kind=" + encodeURIComponent(params.kind);
-    return request(cfg, q).then(function (p) {
-      return p.body;
-    });
+    return request(cfg, q).then(withMeta);
   }
 
   function submit(cfg, payload) {
@@ -142,15 +153,26 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
-    }).then(function (p) {
-      return Object.assign({ httpStatus: p.status, okHttp: p.okHttp }, p.body || {});
-    });
+    }).then(withMeta);
+  }
+
+  /** JSON tutor chat (practice desk contract). Native HTTP does not stream SSE. */
+  function tutorChat(cfg, payload) {
+    return request(cfg, "/api/v1/tutor/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload || {})
+    }).then(withMeta);
   }
 
   global.FqmApi = {
     bootstrap: bootstrap,
     getItem: getItem,
     submit: submit,
+    tutorChat: tutorChat,
     request: request,
     /** @internal smoke / diagnostics */
     transport: function () {

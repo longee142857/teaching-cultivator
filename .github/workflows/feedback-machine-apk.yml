@@ -32,7 +32,8 @@ jobs:
         run: |
           source apps/feedback-machine/scripts/android-env.sh
           bash apps/feedback-machine/scripts/build-debug-apk.sh
-      # build-debug-apk.sh runs copy-capacitor-runtime.sh before cap sync
+      # build-debug-apk.sh runs copy-capacitor-runtime.sh before cap sync.
+      # The APK is a CI artifact only — do not commit artifacts/*.apk.
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
