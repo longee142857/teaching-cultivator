@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-17",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.const2",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设二阶常系数非齐次线性方程为 $y'' + py' + qy = f(x)$ ，其中 $p, q$ 为常数。其对应的齐次方程的特征根分别为 $r_1, r_2$ 。证明该方程的通解为\n\n$$\ny = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right) \\mathrm{d} x + C _ {2}\\right).\n$$",
+  "answer": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "常系数线性",
+    "证明技巧",
+    "可降阶",
+    "齐次降阶"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由特征根可确定方程中的系数 $p$ 与 $q$ . 为得到积分形式的解, 需要作变量代换将二阶微分方程降阶为一阶方程, 再积分求解.\n\n因 $r_1 + r_2 = -p, r_1 \\cdot r_2 = q$ ，所以原方程可化为\n\n$$\n(y ^ {\\prime} - r _ {1} y) ^ {\\prime} - r _ {2} (y ^ {\\prime} - r _ {1} y) = f (x).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "令 $u=y'-r_{1}y$ ，则方程变为一阶线性方程\n\n$$\nu ^ {\\prime} - r _ {2} u = f (x).\n$$\n\n通解为\n\n$$\nu = \\mathrm{e} ^ {r _ {2} x} \\left(\\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right),\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即\n\n$$\ny ^ {\\prime} - r _ {1} y = \\mathrm{e} ^ {r _ {2} x} \\left(\\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "再解此一阶线性方程得\n\n$$\ny = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right) \\mathrm{d} x + C _ {2}\\right).\n$$"
+      }
+    ],
+    "final_answer": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _",
+    "techniques_used": [
+      "常系数线性",
+      "证明技巧",
+      "可降阶",
+      "齐次降阶"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是二阶常系数线性方程吗？特征根与齐次通解是什么？非齐次特解如何设？",
+      "technique": "常系数线性",
+      "expected": "写出特征方程，求齐次通解；按自由项设特解或用已知特解组合。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "证明技巧",
+      "expected": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例17",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 372,
+    "syllabus_note": "常系数非齐次通解公式证明"
+  }
+}
