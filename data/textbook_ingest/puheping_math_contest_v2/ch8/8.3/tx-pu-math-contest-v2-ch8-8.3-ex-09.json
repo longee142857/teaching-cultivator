@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-09",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.sum",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $F(x)$ 是函数 $f(x)$ 的一个原函数，且 $F(0) = 1$ ， $F(x)f(x) = \\cos 2x$ ， $a_n = \\int_0^{n\\pi} |f(x)| \\, \\mathrm{d}x$ ( $n = 1, 2, \\cdots$ )。求幂级数 $\\sum_{n=2}^{\\infty} \\frac{a_n}{n^2 - 1} x^n$ 的收敛域与和函数。",
+  "answer": "收敛域为[-1,1).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "级数求和",
+    "积分技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 计算积分得到 $a_{n}$ 的表达式，再讨论收敛域与和函数.\n\n$F^{\\prime}(x) = f(x), F(x)F^{\\prime}(x) = \\cos 2x, \\int F(x)F^{\\prime}(x)\\mathrm{d}x = \\int \\cos 2x\\mathrm{d}x, F^{2}(x) = \\sin 2x + C$ ，由 $F(0) = 1$ 知 $C = 1$ ， $F(x) = \\sqrt{1 + \\sin 2x} = |\\cos x + \\sin x|$ .\n\n$$\n| f (x) | = \\frac {| \\cos 2 x |}{| F (x) |} = \\frac {| \\cos^ {2} x - \\sin^ {2} x |}{| \\cos x + \\sin x |} = | \\cos x - \\sin x |,"
+      },
+      {
+        "id": "s2",
+        "text": "\\int_ {0} ^ {\\pi} | f (x) | \\mathrm{d} x = \\int_ {0} ^ {\\frac {\\pi}{4}} (\\cos x - \\sin x) \\mathrm{d} x + \\int_ {\\frac {\\pi}{4}} ^ {\\pi} (\\sin x - \\cos x) \\mathrm{d} x = 2 \\sqrt {2}.\n$$\n\n因为 $|f(x)|$ 的周期为 $\\pi$ ，则\n\n$$\na _ {n} = \\int_ {0} ^ {n \\pi} | f (x) | d x = n \\int_ {0} ^ {\\pi} | f (x) | d x = 2 n \\sqrt {2}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "于是， $\\sum_{n = 2}^{\\infty}\\frac{a_n}{n^2 - 1} x^n = 2\\sqrt{2}\\sum_{n = 2}^{\\infty}\\frac{n}{n^2 - 1} x^n$ ，其收敛域为[-1,1).\n\n当 $x \\neq 0$ 时，有\n\n$$\nS (x) = \\sum_ {n = 2} ^ {\\infty} \\frac {a _ {n}}{n ^ {2} - 1} x ^ {n} = \\sqrt {2} \\sum_ {n = 2} ^ {\\infty} \\left(\\frac {1}{n - 1} + \\frac {1}{n + 1}\\right) x ^ {n} = \\sqrt {2} \\left(x \\sum_ {n = 1} ^ {\\infty} \\frac {x ^ {n}}{n} + \\frac {1}{x} \\sum_ {n = 3} ^ {\\infty} \\frac {x ^ {n}}{n}\\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "且 $S(0) = 0$ ，又因为 $\\sum_{n=1}^{\\infty} \\frac{x^n}{n} = -\\ln (1 - x)$ ， $-1 \\leqslant x < 1$ ，故当 $x \\neq 0$ 时，\n\n$$\nS (x) = \\sqrt {2} \\left[ - x \\ln (1 - x) + \\frac {1}{x} \\left(- \\ln (1 - x) - x - \\frac {x ^ {2}}{2}\\right) \\right] = - \\sqrt {2} \\left(\\frac {1 + x ^ {2}}{x} \\ln (1 - x) + 1 + \\frac {x}{2}\\right).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以\n\n$$\nS (x) = \\left\\{ \\begin{array}{l l} - \\sqrt {2} \\left(\\frac {1 + x ^ {2}}{x} \\ln (1 - x) + 1 + \\frac {x}{2}\\right), & - 1 \\leqslant x <   1, \\\\ 0, & x = 0. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "收敛域为[-1,1).",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "级数求和",
+      "积分技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "级数求和",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "级数求和",
+      "expected": "收敛域为[-1,1)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 429,
+    "syllabus_note": "积分系数幂级数收敛域与和函数"
+  }
+}

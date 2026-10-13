@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-03",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.radius",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $b_{n}=\\ln(1+1^{2})+\\ln(1+2^{2})+\\cdots+\\ln(1+n^{2})$ ，求幂级数 $\\sum_{n=1}^{\\infty}\\frac{x^{n}}{b_{n}}$ 的收敛域.",
+  "answer": "发散。所以，幂级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{b_n}$ 的收敛域为 $[-1,1)$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "积分技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 求幂级数的收敛域，常用比值法或根值法求收敛半径，再判断端点的敛散性."
+      },
+      {
+        "id": "s2",
+        "text": "当 $n > 2$ 时， $1 < b_{n} < n \\ln (1 + n^{2}) < n^{3}$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n1 <   \\sqrt [ n ]{b _ {n}} <   (\\sqrt [ n ]{n}) ^ {3} \\rightarrow 1 (n \\rightarrow \\infty).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\lim_{n\\to \\infty}\\sqrt[n]{b_n} = 1$ ，级数收敛半径 $R = 1$"
+      },
+      {
+        "id": "s5",
+        "text": "当 $x = -1$ 时，级数为 $\\sum_{n=1}^{\\infty} \\frac{(-1)^n}{b_n}$ 。由于 $\\frac{1}{b_n}$ 单调递减并趋于 0，因此级数是收敛的交错级数；"
+      },
+      {
+        "id": "s6",
+        "text": "当 $x = 1$ 时，级数为 $\\sum_{n=1}^{\\infty} \\frac{1}{b_n}$ 。由于 $b_n < n \\ln(1 + n^2) < n \\ln[(2n)^2] < 2n \\ln(2n)$ ，即有 $\\frac{1}{b_n} > \\frac{1}{2n \\ln(2n)}$ 。由于 $\\int_2^{+\\infty} \\frac{dx}{x \\ln x} = \\ln(\\ln x) \\big|_2^{+\\infty} = +\\infty$ ，积分发散，由积分判别法知级数 $\\sum_{n=1}^{\\infty} \\frac{1}{2n \\ln(2n)}$ 发散，所以 $\\sum_{n=1}^{\\infty} \\frac{1}{b_n}$ 发散。所以，幂级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{b_n}$ 的收敛域为 $[-1,1)$ 。"
+      }
+    ],
+    "final_answer": "发散。所以，幂级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{b_n}$ 的收敛域为 $[-1,1)$ 。",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "积分技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求收敛半径？端点如何判定？",
+      "technique": "收敛半径与收敛域",
+      "expected": "用比值/根值/比较求半径，再检验端点得收敛域。"
+    },
+    {
+      "id": "c2",
+      "prompt": "收敛域（或半径）结论是什么？",
+      "technique": "积分技巧",
+      "expected": "发散。所以，幂级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{b_n}$ 的收敛域为 $[-1,1)$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 426,
+    "syllabus_note": "幂级数收敛域（比值/根值）",
+    "commentary": "评注 (1) 对幂级数 $\\sum_{n=1}^{\\infty} a_n x^n$ ，若 $a_n$ 是由 $n$ 的对数函数、幂函数构成的分式，则级数的收敛半径通常为 1.\n\n(2) 积分判别法：设 $\\sum_{n=1}^{\\infty} u_n$ 是一正项级数。若存在 $f(x) \\geqslant 0 (1 \\leqslant x < +\\infty)$ ，使得 $f(n) = u_n$ ，则级数 $\\sum_{n=1}^{\\infty} u_n$ 与反常积分 $\\int_{1}^{+\\infty} f(x) \\, \\mathrm{d}x$ 具有相同的敛散性。"
+  }
+}

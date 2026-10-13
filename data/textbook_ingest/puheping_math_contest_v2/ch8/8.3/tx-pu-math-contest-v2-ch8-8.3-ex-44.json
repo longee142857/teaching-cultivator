@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-44",
+  "subject": "math",
+  "l2": "傅里叶级数",
+  "l3_id": "math.calc.fourier.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $[0,2\\pi]$ 上连续且分段光滑，且有 $\\int_{0}^{2\\pi} f(x) \\mathrm{d}x = 0$ ，证明维尔丁格（Wirtinger）不等式 $\\int_{0}^{2\\pi} [f(x)]^{2} \\mathrm{d}x \\leqslant \\int_{0}^{2\\pi} [f'(x)]^{2} \\mathrm{d}x$ ，当且仅当 $f(x) = a \\cos x + b \\sin x$ 时等式成立.",
+  "answer": "$f(x) = a \\cos x + b \\sin x$ 时等式成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "傅里叶展开",
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里涉及平方积分的大小，而傅里叶级数中的巴塞瓦（Parseval）恒等式就是建立了函数的平方积分与级数的关系，因此积分的大小关系就转化为对应级数和的大小关系.\n\n考虑 $f(x)$ 在区间 $[0,2\\pi]$ 上的傅里叶级数\n\n$$\nf (x) = \\frac {a _ {0}}{2} + \\sum_ {n = 1} ^ {\\infty} \\left(a _ {n} \\cos n x + b _ {n} \\sin n x\\right),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\int_0^{2\\pi}f(x)\\mathrm{d}x = 0$ ，则有 $a_0 = 0$ .对上式求导得\n\n$$\nf ^ {\\prime} (x) = \\sum_ {n = 1} ^ {\\infty} \\left(- n a _ {n} \\sin n x + n b _ {n} \\cos n x\\right).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由 Parseval 恒等式可得\n\n$$\n\\int_ {0} ^ {2 \\pi} [ f (x) ] ^ {2} d x = \\pi \\sum_ {n = 1} ^ {\\infty} \\left(a _ {n} ^ {2} + b _ {n} ^ {2}\\right), \\quad \\int_ {0} ^ {2 \\pi} \\left[ f ^ {\\prime} (x) \\right] ^ {2} d x = \\pi \\sum_ {n = 1} ^ {\\infty} \\left(n ^ {2} a _ {n} ^ {2} + n ^ {2} b _ {n} ^ {2}\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以\n\n$$\n\\int_ {0} ^ {2 \\pi} [ f (x) ] ^ {2} d x \\leqslant \\int_ {0} ^ {2 \\pi} [ f ^ {\\prime} (x) ] ^ {2} d x.\n$$\n\n当且仅当 $a_{n} = b_{n} = 0 (n > 1)$ ，即 $f(x) = a \\cos x + b \\sin x$ 时等式成立."
+      }
+    ],
+    "final_answer": "$f(x) = a \\cos x + b \\sin x$ 时等式成立.",
+    "techniques_used": [
+      "傅里叶展开",
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何选取周期/奇偶延拓并计算傅里叶系数？",
+      "technique": "傅里叶展开",
+      "expected": "确定周期与奇偶性，按公式求 a_n、b_n 或写出展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "傅里叶级数或相关结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$f(x) = a \\cos x + b \\sin x$ 时等式成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例44*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 456,
+    "starred": true,
+    "syllabus_note": "Wirtinger 不等式*",
+    "commentary": "评注（1）傅里叶级数的逐项可积、逐项可微性：\n\n定理 若 $f(x)$ 在区间 $[- \\pi, \\pi]$ 上分段连续，则 $f(x)$ 的傅里叶级数在该区间上可以数逐项积分；若 $f(x)$ 在区间 $[- \\pi, \\pi]$ 上连续且分段光滑，且 $f(-\\pi) = f(\\pi)$ ，则 $f'(x)$ 的傅里叶级数可以由 $f(x)$ 的傅里叶级数逐项求导而得到。\n\n(2) Parseval 恒等式:\n\n设 $f(x)$ 是 $[0,2\\pi]$ 上的分段连续函数，且 $f(x) \\sim \\frac{a_0}{2} + \\sum_{n=1}^{\\infty} (a_n \\cos nx + b_n \\sin nx)$ ，则有\n\n$$\n\\frac {1}{\\pi} \\int_ {0} ^ {2 \\pi} [ f (x) ] ^ {2} d x = \\frac {a _ {0} ^ {2}}{2} + \\sum_ {n = 1} ^ {\\infty} \\left(a _ {n} ^ {2} + b _ {n} ^ {2}\\right).\n$$"
+  }
+}

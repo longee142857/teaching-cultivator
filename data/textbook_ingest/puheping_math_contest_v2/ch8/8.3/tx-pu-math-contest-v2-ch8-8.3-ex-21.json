@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-21",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x) = \\sum_{n=1}^{\\infty} \\frac{\\cos nx}{\\sqrt{n^3 + n}}$ ， $F(x)$ 是 $f(x)$ 的一个原函数， $F(0) = 0$ ，证明：\n\n$$\n\\frac {\\sqrt {2}}{2} - \\frac {1}{1 5} <   F \\left(\\frac {\\pi}{2}\\right) <   \\frac {\\sqrt {2}}{2}.\n$$",
+  "answer": "得证",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "逐项微积分",
+    "一致收敛判别",
+    "证明技巧",
+    "积分技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要求得 $F(x)$ 的表达式，需对 $f(x)$ 积分，积分号与级数和号可交换的一个充分条件是级数在积分区间上一致收敛。易发现 $F\\left(\\frac{\\pi}{2}\\right)$ 的表达式是一个交错级数，可用莱布尼兹收敛定理估计其大小。解 因为 $\\left|\\frac{\\cos nx}{\\sqrt{n^3 + n}}\\right| \\leqslant \\frac{1}{\\sqrt{n^3 + n}}$ ，而 $\\sum_{n=1}^{\\infty} \\frac{1}{\\sqrt{n^3 + n}}$ 收敛，所以 $\\sum_{n=1}^{\\infty} \\frac{\\cos nx}{\\sqrt{n^3 + n}}$ 在 $(- \\infty, + \\infty)$ 内一致收敛。逐项积分得\n\n$$\nF (x) = \\int_ {0} ^ {x} f (t) \\mathrm{d} t = \\sum_ {n = 1} ^ {\\infty} \\frac {\\sin n x}{n \\sqrt {n ^ {3} + n}}, F \\left(\\frac {\\pi}{2}\\right) = \\sum_ {k = 1} ^ {\\infty} \\frac {(- 1) ^ {k - 1}}{(2 k - 1) \\sqrt {(2 k - 1) ^ {3} + (2 k - 1)}}.\n$$\n\n由交错级数的莱布尼兹准则知\n\n$F\\left(\\frac{\\pi}{2}\\right) < a_{1} = \\frac{1}{\\sqrt{2}}$ ，余项 $|R_{2}| < a_{2} = \\frac{1}{3\\sqrt{30}}$ ，即 $\\left|F\\left(\\frac{\\pi}{2}\\right) - \\frac{1}{\\sqrt{2}}\\right| < \\frac{1}{3\\sqrt{30}}$ .\n\n所以\n\n$$\n\\frac {1}{\\sqrt {2}} > F \\left(\\frac {\\pi}{2}\\right) > \\frac {1}{\\sqrt {2}} - \\frac {1}{3 \\sqrt {3 0}} > \\frac {\\sqrt {2}}{2} - \\frac {1}{1 5}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 要求得 $F(x)$ 的表达式，需对 $f(x)$ 积分，积分号与级数和号可交换的一个充分条件是级数在积分区间上一致收敛。易发现 $F\\left(\\frac{\\pi}{2}\\right)$ 的表达式是一个交错级数，可用莱布尼兹收敛定理估计其大小。解 因为 $\\left|\\frac{\\cos nx}{\\sqrt{n^3 + n}}\\right| \\leqslant \\frac{1}{\\sqrt{n^3 + n}}$ ，而 $\\sum_{n=1}^{\\infty} \\frac{1}{\\sqrt{n^3 + n}}$ 收敛，所以 $\\sum_{n=1}^{\\infty} \\frac{\\cos nx}{\\sqrt{n^3 + n}}$ 在 $(- \\infty, + \\infty)$ 内一致收敛。逐项积分得\n\n$$\nF (x) = \\int_ {0} ^ {x} f (t) \\mathrm{d} t = \\sum_ {n = 1} ^ {\\infty} \\frac {\\sin n x}{n \\sqrt {n ^ {3} + n}}, F \\left(\\frac {\\pi}{2}\\right) = \\sum_ {k = 1} ^ {\\infty} \\frac {(- 1) ^ {k - 1}}{(2 k - 1) \\sqrt {(2 k - 1) ^ {3} + (2 k - 1)}}.\n$$\n\n由交错级数的莱布尼兹准则知\n\n$F\\left(\\frac{\\pi}{2}\\right) < a_{1} = \\frac{1}{\\sqrt{2}}$ ，余项 $|R_{2}| < a_{2} = \\frac{1}{3\\sqrt{30}}$ ，即 $\\left|F\\left(\\frac{\\pi}{2}\\right) - \\frac{1}{\\sqrt{2}}\\right| < \\frac{1}{3\\sqrt{30}}$ .\n\n所以\n\n$$\n\\frac {1}{\\sqrt {2}} > F \\left(\\frac {\\pi}{2}\\right) > \\frac {1}{\\sqrt {2}} - \\frac {1}{3 \\sqrt {3 0}} > \\frac {\\sqrt {2}}{2} - \\frac {1}{1 5}.\n$$\n\n评注 （1）函数项级数一致收敛的 M 判别法（Weierstrass 准则）：\n\n设 $\\sum_{n=1}^{\\infty} M_n$ 是一个收敛的正项级数，若在区间 $I$ 上恒有 $|u_n(x)| \\leqslant M_n (n = 1, 2, \\cdots)$ ，则级数 $\\sum_{n=1}^{\\infty} u_n(x)$ 在 $I$ 上一致收敛."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 一致收敛级数的分析性质.\n\n① 连续性：设 $u_{n}(x) \\in C(I)$ ( $n \\in \\mathbb{N}_{+}$ )，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上一致收敛，则 $S(x) \\in C(I)$ .\n\n② 可积性：设 $u_{n}(x) \\in C(I) (n \\in \\mathbb{N}_{+})$ ，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上一致收敛，则 $S(x)$ 在 $I$ 上逐项可积。即有 $\\int_{x_0}^{x} S(t) \\, \\mathrm{d}t = \\sum_{n=1}^{\\infty} \\int_{x_0}^{x} u_n(t) \\, \\mathrm{d}t$ （ $x_0, x \\in I$ ).\n\n③ 可导性：设 $u_{n}(x) \\in C^{(1)}(I)(n \\in \\mathbb{N}_{+})$ ，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上收敛， $\\sum_{n=1}^{\\infty} u_{n}'(x)$ 在 $I$ 上一致收敛，则 $S(x)$ 逐项可导。即有 $S'(x) = \\sum_{n=1}^{\\infty} u_{n}'(x)$ 。\n\n（3）由于幂级数在其收敛域内的任一闭子区间上均一致收敛（称为内闭一致收敛），所以（2）中的3条性质对幂级数都成立."
+      }
+    ],
+    "final_answer": "得证",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "逐项微积分",
+      "一致收敛判别",
+      "证明技巧",
+      "积分技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "逐项微积分",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "逐项微积分",
+      "expected": "得证"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例21*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 440,
+    "starred": true,
+    "syllabus_note": "函数项级数原函数不等式*",
+    "commentary": "评注 （1）函数项级数一致收敛的 M 判别法（Weierstrass 准则）：\n\n设 $\\sum_{n=1}^{\\infty} M_n$ 是一个收敛的正项级数，若在区间 $I$ 上恒有 $|u_n(x)| \\leqslant M_n (n = 1, 2, \\cdots)$ ，则级数 $\\sum_{n=1}^{\\infty} u_n(x)$ 在 $I$ 上一致收敛.\n\n(2) 一致收敛级数的分析性质.\n\n① 连续性：设 $u_{n}(x) \\in C(I)$ ( $n \\in \\mathbb{N}_{+}$ )，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上一致收敛，则 $S(x) \\in C(I)$ .\n\n② 可积性：设 $u_{n}(x) \\in C(I) (n \\in \\mathbb{N}_{+})$ ，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上一致收敛，则 $S(x)$ 在 $I$ 上逐项可积。即有 $\\int_{x_0}^{x} S(t) \\, \\mathrm{d}t = \\sum_{n=1}^{\\infty} \\int_{x_0}^{x} u_n(t) \\, \\mathrm{d}t$ （ $x_0, x \\in I$ ).\n\n③ 可导性：设 $u_{n}(x) \\in C^{(1)}(I)(n \\in \\mathbb{N}_{+})$ ，若 $S(x) = \\sum_{n=1}^{\\infty} u_{n}(x)$ 在 $I$ 上收敛， $\\sum_{n=1}^{\\infty} u_{n}'(x)$ 在 $I$ 上一致收敛，则 $S(x)$ 逐项可导。即有 $S'(x) = \\sum_{n=1}^{\\infty} u_{n}'(x)$ 。\n\n（3）由于幂级数在其收敛"
+  }
+}

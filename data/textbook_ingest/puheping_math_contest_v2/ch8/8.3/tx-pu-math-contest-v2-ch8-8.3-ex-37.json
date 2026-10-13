@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-37",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.expand",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x) = \\sum_{n=0}^{\\infty} a_n x^n (a_0 = 1)$ , $\\frac{f'(x)}{f(x)}$ 展开成 $x$ 的幂级数的所有系数的绝对值均不大于2. 证明 $|a_n| \\leqslant n + 1$ .",
+  "answer": "收敛定理是傅里叶级数部分的基本定理，它揭示了怎样的函数能展开为傅里叶级数，以及傅里叶级数的收敛情况。学习这部分内容，应掌握任意周期（特别是以 $2\\pi$ 为周期）",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "幂级数展开",
+    "傅里叶展开",
+    "阿贝尔/狄利克雷",
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 首先要建立 $f(x)$ 或 $f'(x)$ 与 $\\frac{f'(x)}{f(x)}$ 的联系, 才能找到其展开式系数之间的关系. 有了这种关系才能由已知条件来完成结论证明. 函数之间的关系是显然的: $f'(x) = f(x) \\frac{f'(x)}{f(x)}$ .\n\n记 $\\frac{f'(x)}{f(x)} = \\sum_{n=0}^{\\infty} b_n x^n, -|b_n| \\leqslant 2.$ 由于 $f'(x) = f(x) \\frac{f'(x)}{f(x)}$ ，即"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\sum_ {n = 1} ^ {\\infty} n a _ {n} x ^ {n - 1} = \\sum_ {n = 0} ^ {\\infty} a _ {n} x ^ {n} \\cdot \\sum_ {n = 0} ^ {\\infty} b _ {n} x ^ {n} = \\sum_ {n = 0} ^ {\\infty} (a _ {0} b _ {n} + a _ {1} b _ {n - 1} + \\dots + a _ {n} b _ {0}) x ^ {n},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "则有\n\n$$\nn a _ {n} = a _ {0} b _ {n} + a _ {1} b _ {n - 1} + \\dots + a _ {n} b _ {0} \\quad (n = 1, 2, \\dots).\n$$\n\n假定 $|a_{n}|\\leqslant n+1$ 不是对所有n成立，而k是使得 $|a_{k}|>k+1$ 的最小自然数，由于\n\n$$\nk a _ {k} = a _ {0} b _ {k - 1} + a _ {1} b _ {k - 2} + \\dots + a _ {k - 1} b _ {0},\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "而 $|b_{n}|\\leqslant2,\\quad a_{0}=1$ ，则\n\n$$\n\\left| k a _ {k} \\right| \\leqslant 2 (1 + \\left| a _ {1} \\right| + \\dots + \\left| a _ {k - 1} \\right|) \\leqslant 2 (1 + 2 + \\dots + k) = k (k + 1).\n$$\n\n由此得到 $|a_{k}| \\leqslant k + 1$ 。这与 $|a_{k}| > k + 1$ 矛盾。所以对一切自然 $n$ 都有 $|a_{n}| \\leqslant n + 1$ 。"
+      },
+      {
+        "id": "s5",
+        "text": "## 3. 傅里叶级数\n\n狄利克雷收敛定理是傅里叶级数部分的基本定理，它揭示了怎样的函数能展开为傅里叶级数，以及傅里叶级数的收敛情况。学习这部分内容，应掌握任意周期（特别是以 $2\\pi$ 为周期）函数的傅里叶展开，以及定义在有限区间上函数的傅里叶展开与正、余弦级数展开。\n\n函数 $f(x)$ 的傅里叶级数逐项可积的条件是： $f(x)$ 在一个周期区间上分段连续；逐项可微的条件是：在一个周期区间上 $f(x)$ 连续，端点值相等， $f'(x)$ 分段连续."
+      }
+    ],
+    "final_answer": "收敛定理是傅里叶级数部分的基本定理，它揭示了怎样的函数能展开为傅里叶级数，以及傅里叶级数的收敛情况。学习这部分内容，应掌握任意周期（特别是以 $2\\pi$ 为周期）",
+    "techniques_used": [
+      "幂级数展开",
+      "傅里叶展开",
+      "阿贝尔/狄利克雷",
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "选用直接泰勒还是间接展开（运算/代换）？",
+      "technique": "幂级数展开",
+      "expected": "选取已知展开式，经乘除、代换或微积分得到目标展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "展开式或最终结论是什么？",
+      "technique": "傅里叶展开",
+      "expected": "收敛定理是傅里叶级数部分的基本定理，它揭示了怎样的函数能展开为傅里叶级数，以及傅里叶级数的收敛情况。学习这部分内容，应掌握任意周期（特别是以 $2\\pi$ 为周期）"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例37",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 451,
+    "syllabus_note": "对数导数系数界"
+  }
+}
