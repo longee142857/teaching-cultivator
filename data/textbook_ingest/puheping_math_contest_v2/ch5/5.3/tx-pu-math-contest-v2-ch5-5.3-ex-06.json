@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-06",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设曲面 $\\Sigma: |x| + |y| + |z| = 1$ ，计算 $\\oiint_{\\Sigma} [\\tan(xy) + |y|] \\, \\mathrm{d}S$ .",
+  "answer": "S = \\frac {1}{3} \\oiint_ {\\Sigma} (| x | + | y | + | z |) d S \\\\ & = \\frac {1}{3} \\oiint_ {\\Sigma} d S = \\frac {1}{3} \\time",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "弧长元",
+    "面积元/投影",
+    "对称性",
+    "参数化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $\\Sigma$ 是分块光滑曲面，若要分块积分比较麻烦，计算中可利用曲面的对称性与被积函数的奇偶性来化简运算."
+      },
+      {
+        "id": "s2",
+        "text": "曲面关于平面 $x = 0$ 对称，所以 $\\oiint_{\\Sigma} \\tan(xy) \\, \\mathrm{d}S = 0$ ."
+      },
+      {
+        "id": "s3",
+        "text": "曲面关于 $x, y, z$ 轮换对称，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\oiint_ {\\Sigma} | x | \\mathrm{d} S = \\oiint_ {\\Sigma} | y | \\mathrm{d} S = \\oiint_ {\\Sigma} | z | \\mathrm{d} S,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{r l} \\oiint_ {\\Sigma} [ \\tan (x y) + | y | ] d S & = \\oiint_ {\\Sigma} | y | d S = \\frac {1}{3} \\oiint_ {\\Sigma} (| x | + | y | + | z |) d S \\\\ & = \\frac {1}{3} \\oiint_ {\\Sigma} d S = \\frac {1}{3} \\times 8 \\times \\frac {\\sqrt {3}}{2} = \\frac {4}{3} \\sqrt {3}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "S = \\frac {1}{3} \\oiint_ {\\Sigma} (| x | + | y | + | z |) d S \\\\ & = \\frac {1}{3} \\oiint_ {\\Sigma} d S = \\frac {1}{3} \\time",
+    "techniques_used": [
+      "弧长元",
+      "面积元/投影",
+      "对称性",
+      "参数化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "面积元/投影",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "面积元/投影",
+      "expected": "S = \\frac {1}{3} \\oiint_ {\\Sigma} (| x | + | y | + | z |) d S \\\\ & = \\frac {1}{3} \\oiint_ {\\Sigma} d S = \\frac {1}{3} \\time"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 304,
+    "syllabus_note": "八面体表面对称积分",
+    "commentary": "评注 $\\oiint_{\\Sigma} \\mathrm{d}S$ 是曲面 $\\Sigma$ 的面积，它是平面 $x + y + z = 1$ 在第一卦限中对应三角形面积的8倍."
+  }
+}

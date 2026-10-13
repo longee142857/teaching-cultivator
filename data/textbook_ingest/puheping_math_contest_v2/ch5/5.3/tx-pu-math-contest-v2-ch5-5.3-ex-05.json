@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-05",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设双纽线 $L: (x^2 + y^2)^2 = a^2(x^2 - y^2)$ ，将其右支绕 $x$ 轴旋转一周生成的曲面记为 $S$ .\n\n(1) 计算曲线积分 $\\oint_{L}\\frac{|x|(x^{2}-y^{2})}{x^{2}+y^{2}}ds$ ;\n\n(2) 求 S 的面积;\n\n(3) 计算曲面积分 $\\iint_{S} x^{2} \\, dS.$",
+  "answer": "S = 2\\pi y\\mathrm{d}s$ ，则",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "弧长元",
+    "面积元/投影",
+    "极坐标",
+    "对称性",
+    "旋转曲面"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为双纽线方程用极坐标表示更为简便，所以曲线积分宜用极坐标计算；由于 $S$ 是旋转曲面，在求曲面面积与曲面积分时，其面积微元宜用弧长元绕 $x$ 轴旋转一周来生成.\n\n令 $x = \\rho \\cos \\varphi, y = \\rho \\sin \\varphi$ ，则双纽线方程为 $\\rho^2 = a^2 \\cos 2\\varphi$ ，它在第一象限的部分为\n\n$$\nL _ {1}: \\rho = a \\sqrt {\\cos 2 \\varphi} \\quad \\left(0 \\leqslant \\theta \\leqslant \\frac {\\pi}{4}\\right).\n$$\n\n因为 $\\rho\\rho' = -a^{2}\\sin2\\varphi$ ，所以弧长元"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\mathrm{d} s = \\sqrt {\\rho^ {2} + \\rho^ {\\prime 2}} \\mathrm{d} \\varphi = \\sqrt {\\rho^ {2} + \\frac {1}{\\rho^ {2}} a ^ {4} \\sin^ {2} 2 \\varphi} \\mathrm{d} \\varphi = \\frac {a ^ {2}}{\\rho} \\mathrm{d} \\varphi .\n$$\n\n（1）利用曲线方程及曲线的对称性，可得\n\n$$\n\\begin{array}{l} \\oint_ {L} \\frac {| x | (x ^ {2} - y ^ {2})}{x ^ {2} + y ^ {2}} d s = \\frac {4}{a ^ {2}} \\int_ {L _ {1}} x (x ^ {2} + y ^ {2}) d s = \\frac {4}{a ^ {2}} \\int_ {0} ^ {\\dot {\\pi} / 4} \\rho^ {3} \\cos \\varphi \\cdot \\frac {a ^ {2}}{\\rho} d \\varphi \\\\ = 4 \\int_ {0} ^ {\\pi / 4} a ^ {2} \\cos 2 \\varphi \\cos \\varphi d \\varphi = 2 a ^ {2} \\int_ {0} ^ {\\pi / 4} (\\cos 3 \\varphi + \\cos \\varphi) d \\varphi = \\frac {4}{3} \\sqrt {2} a ^ {2}. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "（2）将 $S$ 的面积记为 $A$ ，由旋转曲面面积公式，有\n\n$$\nA = 2 \\pi \\int_ {L _ {1}} y d s = 2 \\pi \\int_ {0} ^ {\\pi / 4} \\rho \\sin \\varphi \\cdot \\frac {a ^ {2}}{\\rho} d \\varphi = 2 \\pi a ^ {2} \\int_ {0} ^ {\\frac {\\pi}{4}} \\sin \\varphi d \\varphi = \\pi a ^ {2} (2 - \\sqrt {2}).\n$$\n\n（3）取面积微元 $\\mathrm{d}S = 2\\pi y\\mathrm{d}s$ ，则\n\n$$\n\\begin{array}{r l} \\iint_ {S} x ^ {2} \\mathrm{d} S & = 2 \\pi \\int_ {L _ {1}} x ^ {2} y \\mathrm{d} s = 2 \\pi \\int_ {0} ^ {\\frac {\\pi}{4}} \\rho^ {3} \\cos^ {2} \\varphi \\sin \\varphi \\cdot \\frac {a ^ {2}}{\\rho} \\mathrm{d} \\varphi \\\\ & = 2 \\pi a ^ {4} \\int_ {0} ^ {\\frac {\\pi}{4}} \\cos 2 \\varphi \\cos^ {2} \\varphi \\sin \\varphi \\mathrm{d} \\varphi \\\\ & = 2 \\pi a ^ {4} \\int_ {0} ^ {\\frac {\\pi}{4}} (1 - 2 \\cos^ {2} \\varphi) \\cos^ {2} \\varphi \\mathrm{d} \\cos \\varphi \\\\ & = 2 \\pi a ^ {4} \\left[ - \\frac {2}{5} \\cos^ {5} \\varphi + \\frac {1}{3} \\cos^ {3} \\varphi \\right] _ {0} ^ {\\frac {\\pi}{4}} = \\frac {\\pi}{1 5} a ^ {4} (2 + \\sqrt {2}). \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "S = 2\\pi y\\mathrm{d}s$ ，则",
+    "techniques_used": [
+      "弧长元",
+      "面积元/投影",
+      "极坐标",
+      "对称性",
+      "旋转曲面"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "面积元/投影",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "面积元/投影",
+      "expected": "S = 2\\pi y\\mathrm{d}s$ ，则"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 303,
+    "syllabus_note": "双纽线旋转曲面+曲线积分",
+    "commentary": "评注 该题的一般情形：平面曲线 $y = f(x) (a \\leqslant x \\leqslant b)$ 绕 $x$ 轴旋转，取旋转曲面 $S$ 的面积微元 $\\mathrm{d}S = 2\\pi |f(x)|\\mathrm{d}s$ ，其中 $\\mathrm{d}s = \\sqrt{1 + [f'(x)]^2}\\mathrm{d}x$ 是弧长元。则曲面积分\n\n$$\n\\iint_ {S} F (x, y) \\mathrm{d} S = 2 \\pi \\int_ {a} ^ {b} F [ x, f (x) ] | f (x) | \\sqrt {1 + \\left[ f ^ {\\prime} (x) \\right] ^ {2}} \\mathrm{d} x.\n$$\n\n通常情况下这比用二重积分来计算曲面积分要简单。但是当被积函数中含有变量 $z$ 时，就不能这样做了。"
+  }
+}

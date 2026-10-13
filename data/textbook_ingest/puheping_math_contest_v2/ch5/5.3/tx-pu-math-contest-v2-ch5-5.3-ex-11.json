@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-11",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $P$ 是椭球面 $S: x^2 + y^2 + z^2 - yz = 1$ 上的动点，若 $S$ 在点 $P$ 处的切平面与 $xOy$ 面垂直，求点 $P$ 的轨迹 $C$ ，并计算曲面积分 $I = \\iint_{\\Sigma} \\frac{(x + \\sqrt{3}) |y - 2z|}{\\sqrt{4 + y^2 + z^2 - 4yz}} \\mathrm{d}S$ ，其中 $\\Sigma$ 是椭球面 $S$ 位于曲线 $C$ 上方的部分.",
+  "answer": "I = \\iint_ {\\Sigma} \\frac {(x + \\sqrt {3}) | y - 2 z |}{\\sqrt {4 + y ^ {2} + z ^ {2} - 4 y z}} d S = \\iint_ {D _ {x y}} (x",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "弧长元",
+    "面积元/投影",
+    "积分估值",
+    "参数化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 曲线 $C$ 在曲面 $S$ 上，所以只要算出曲面 $S$ 的切平面与 $xOy$ 面垂直所满足的等式即可，该等式与 $S$ 的方程联立就是曲线 $C$ 的方程。由于 $S$ 的方程是隐函数形式，因此计算 $\\mathrm{d}S$ 时要用到隐函数方程求偏导数。\n\n令 $P$ 的坐标为 $(x, y, z)$ ，由 $S: x^2 + y^2 + z^2 - yz = 1$ ，得 $S$ 在点 $P$ 处的切平面的法向量为\n\n$$\n\\boldsymbol {n} = (2 x, 2 y - z, 2 z - y).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因为 $S$ 在点 $P$ 处的切平面与 $xOy$ 面垂直，所以有 $y = 2z$ ，注意到 $P \\in S$ ，所以点 $P$ 的轨迹方程为\n\n$$\nC: \\left\\{ \\begin{array}{l} x ^ {2} + y ^ {2} + z ^ {2} - y z = 1, \\\\ y = 2 z. \\end{array} \\right.\n$$\n\n将 $\\Sigma$ 向 $xOy$ 面投影，其投影区域为 $D_{xy}: x^2 + \\frac{3y^2}{4} \\leqslant 1$ ."
+      },
+      {
+        "id": "s3",
+        "text": "$x^{2} + y^{2} + z^{2} - yz = 1$ 两边对 $x$ 求导，得\n\n$$\n2 x + 2 z \\frac {\\partial z}{\\partial x} - y \\frac {\\partial z}{\\partial x} = 0 \\Rightarrow \\frac {\\partial z}{\\partial x} = \\frac {2 x}{y - 2 z},\n$$\n\n$x^{2} + y^{2} + z^{2} - yz = 1$ 两边对 $y$ 求导，得"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n2 y + 2 z \\frac {\\partial z}{\\partial y} - z - y \\frac {\\partial z}{\\partial y} = 0 \\Rightarrow \\frac {\\partial z}{\\partial y} = \\frac {z - 2 y}{y - 2 z},\n\n\\mathrm{d} S = \\sqrt {1 + \\left(\\frac {\\partial z}{\\partial x}\\right) ^ {2} + \\left(\\frac {\\partial z}{\\partial y}\\right) ^ {2}} \\mathrm{d} x \\mathrm{d} y = \\frac {\\sqrt {4 + y ^ {2} + z ^ {2} - 4 y z}}{| y - 2 z |} \\mathrm{d} x \\mathrm{d} y,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以\n\n$$\nI = \\iint_ {\\Sigma} \\frac {(x + \\sqrt {3}) | y - 2 z |}{\\sqrt {4 + y ^ {2} + z ^ {2} - 4 y z}} d S = \\iint_ {D _ {x y}} (x + \\sqrt {3}) d x d y = \\sqrt {3} \\iint_ {D _ {x y}} d x d y = \\sqrt {3} \\cdot \\pi \\cdot 1 \\cdot \\frac {2}{\\sqrt {3}} = 2 \\pi .\n$$"
+      }
+    ],
+    "final_answer": "I = \\iint_ {\\Sigma} \\frac {(x + \\sqrt {3}) | y - 2 z |}{\\sqrt {4 + y ^ {2} + z ^ {2} - 4 y z}} d S = \\iint_ {D _ {x y}} (x",
+    "techniques_used": [
+      "弧长元",
+      "面积元/投影",
+      "积分估值",
+      "参数化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "面积元/投影",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "面积元/投影",
+      "expected": "I = \\iint_ {\\Sigma} \\frac {(x + \\sqrt {3}) | y - 2 z |}{\\sqrt {4 + y ^ {2} + z ^ {2} - 4 y z}} d S = \\iint_ {D _ {x y}} (x"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 307,
+    "syllabus_note": "切平面垂直轨迹+曲面积分"
+  }
+}
