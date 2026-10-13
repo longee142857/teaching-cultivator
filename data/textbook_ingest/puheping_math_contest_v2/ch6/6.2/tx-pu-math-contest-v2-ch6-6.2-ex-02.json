@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-02",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.stokes.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $\\iint_{\\Sigma} \\mathrm{rot}F \\cdot \\mathrm{d}S$ ，其中 $F = (x - z, x^3 + yz, -3xy^2)$ ， $\\Sigma$ 是锥面 $z = 2 - \\sqrt{x^2 + y^2}$ 在 $xOy$ 平面上方的部分，取上侧。",
+  "answer": "$12\\pi$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "高斯公式",
+    "斯托克斯公式",
+    "补面",
+    "化为第一型"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于旋度场是无源场，即有 $\\operatorname{div}(\\operatorname{rot} F) = 0$ ，所以积分与曲面无关（只与曲面的边界曲线有关），从而可选择较简单的曲面；也可以通过添加辅助平面 $z = 0$ ，再用高斯公式计算；利用斯托格斯公式计算也是容易想到的."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 改变积分曲面，把沿锥面的积分化为沿平面的积分.\n\n由于 $\\operatorname{div}(\\operatorname{rot} F) = 0$ ，所以积分与曲面无关（只与曲面的边界曲线有关），取 $\\Sigma_1: z = 0 (x^2 + y^2 \\leqslant 4)$ 上侧，则有\n\n$$\n\\begin{array}{r l} \\iint_ {\\Sigma} \\operatorname{rot} F \\cdot \\mathrm{d} S & = \\iint_ {\\Sigma_ {1}} \\operatorname{rot} F \\cdot \\mathrm{d} S = \\iint_ {\\Sigma_ {1}} \\left| \\begin{array}{c c c} i & j & k \\\\ \\frac {\\partial}{\\partial x} & \\frac {\\partial}{\\partial y} & \\frac {\\partial}{\\partial z} \\\\ x - z & x ^ {3} + y z & - 3 x y ^ {2} \\end{array} \\right| \\cdot \\mathrm{d} S \\\\ & = \\iint_ {\\Sigma_ {1}} (- 6 x y - y) \\mathrm{d} y \\mathrm{d} z + (3 y ^ {2} - 1) \\mathrm{d} z \\mathrm{d} x + 3 x ^ {2} \\mathrm{d} x \\mathrm{d} y \\end{array}\n\n= 3 \\iint_ {x ^ {2} + y ^ {2} \\leqslant 4} x ^ {2} d x d y = 1 2 \\pi .\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法 2 利用高斯公式.\n\n添加辅助平面 $\\Sigma_{2}: z = 0 (x^{2} + y^{2} \\leqslant 4)$ 并取下侧，记 $\\Sigma^{+}\\Sigma_{2}$ 所围成的立体为 $\\Omega$ ，由高斯公式有\n\n$$\n\\iint_ {\\Sigma + \\Sigma_ {2}} \\operatorname{rot} \\boldsymbol {F} \\cdot \\mathrm{d} \\boldsymbol {S} = - \\iiint_ {\\Omega} \\operatorname{div} (\\operatorname{rot} \\boldsymbol {F}) \\mathrm{d} V = - \\iiint_ {\\Omega} 0 \\mathrm{d} V = 0,\n$$\n\n所以\n\n$$\n\\iint_ {\\Sigma} \\mathrm{rot} F \\cdot \\mathrm{d} S = - \\iint_ {\\Sigma_ {2}} \\mathrm{rot} F \\cdot \\mathrm{d} S = 1 2 \\pi \\quad (\\text {具体计算同方法} 1).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法 3 利用斯托克斯公式把曲面积分化为曲线积分.\n\n记 $\\Sigma$ 与 $xOy$ 平面的交线（即 $\\Sigma$ 的边界）为 $L$ ，则 $L: \\left\\{ \\begin{array}{l} x^2 + y^2 = 4 \\\\ z = 0 \\end{array} \\right.$ ，取逆时针方向，由斯托克斯公式\n\n$$\n\\begin{array}{r l} \\iint_ {\\Sigma} \\mathrm{rot} \\boldsymbol {F} \\cdot \\mathrm{d} \\boldsymbol {S} & = \\oint_ {L} \\boldsymbol {F} \\cdot \\mathrm{d} s = \\oint_ {L} (x - z, x ^ {3} + y z, - 3 x y ^ {2}) \\cdot (\\mathrm{d} x, \\mathrm{d} y, \\mathrm{d} z) \\\\ & = \\oint_ {L} (x - z) \\mathrm{d} x + (x ^ {3} + y z) \\mathrm{d} y - 3 x y ^ {2} \\mathrm{d} z. \\end{array}\n$$\n\n由于在曲线 $L$ 上，有 $z = 0$ ， $\\mathrm{dz} = 0$ ，所以\n\n$$\n\\iint_ {\\Sigma} \\mathrm{rot} F \\cdot \\mathrm{d} S = \\oint_ {L} x \\mathrm{d} x + x ^ {3} \\mathrm{d} y \\stackrel {\\text {格林公式}} {=} 3 \\iint_ {x ^ {2} + y ^ {2} \\leqslant 4} x ^ {2} \\mathrm{d} x \\mathrm{d} y = 1 2 \\pi .\n$$"
+      }
+    ],
+    "final_answer": "$12\\pi$",
+    "techniques_used": [
+      "高斯公式",
+      "斯托克斯公式",
+      "补面",
+      "化为第一型"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用斯托克斯公式（或旋度场无源性质）化简曲面积分？边界定向如何取？",
+      "technique": "高斯公式",
+      "expected": "写出 rot F，选等价曲面或化为边界曲线积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分（通量）结果是什么？",
+      "technique": "斯托克斯公式",
+      "expected": "$12\\pi$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 336,
+    "syllabus_note": "旋度通量·斯托克斯/补面高斯",
+    "commentary": "评注 方法1与方法2本质上是同一种方法."
+  }
+}

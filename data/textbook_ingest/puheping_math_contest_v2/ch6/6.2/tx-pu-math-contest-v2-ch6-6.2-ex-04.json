@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-04",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.gauss.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\Sigma$ 是一个光滑封闭曲面，方向朝外. 给定第二型曲面积分\n\n$$\nI = \\iint_ {\\Sigma} (x ^ {3} - x) d y d z + (2 y ^ {3} - y) d z d x + (3 z ^ {3} - z) d x d y.\n$$\n\n试确定曲面 $\\Sigma$ ，使得积分 I 的值最小，并求该最小值.",
+  "answer": "I = \\frac {3}{\\sqrt {6}} \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\pi} d \\theta \\int_ {0} ^ {1} (r ^ {2} - 1) r ^ {2} \\sin",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "高斯公式",
+    "投影法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $\\Sigma$ 是光滑封闭曲面，可考虑用高斯公式来计算。在三重积分中，若积分区域是被积函数取负值的最大区域，则积分值为最小。\n\n记 $\\Sigma$ 围成的空间区域为 $\\Omega$ ，由高斯公式，得\n\n$$\nI = \\iiint_ {\\Omega} (3 x ^ {2} + 6 y ^ {2} + 9 z ^ {2} - 3) d V = 3 \\iiint_ {\\Omega} (x ^ {2} + 2 y ^ {2} + 3 z ^ {2} - 1) d x d y d z.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "为了使 $I$ 达到最小，就要求 $\\Omega$ 是 $x^{2} + 2y^{2} + 3z^{2} - 1\\leqslant 0$ 的对应区域，即\n\n$$\n\\Omega = \\left\\{(x, y, z) \\mid x ^ {2} + 2 y ^ {2} + 3 z ^ {2} \\leqslant 1 \\right\\}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "所以 $\\Omega$ 是一个椭球，当 $\\Sigma$ 是 $\\Omega$ 的表面时，积分 $I$ 最小.\n\n为便于三重积分计算，做变换 $\\left\\{ \\begin{array}{l} x = u \\\\ y = v / \\sqrt{2} \\\\ z = w / \\sqrt{3} \\end{array} \\right.$ ，则 $J = \\frac{\\partial(x, y, z)}{\\partial(u, v, w)} = \\frac{1}{\\sqrt{6}}$ ，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nI = \\frac {3}{\\sqrt {6}} \\iiint_ {u ^ {2} + v ^ {2} + w ^ {2} \\leqslant 1} (u ^ {2} + v ^ {2} + w ^ {2} - 1) d u d v d w.\n$$\n\n利用球面坐标，有\n\n$$\nI = \\frac {3}{\\sqrt {6}} \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\pi} d \\theta \\int_ {0} ^ {1} (r ^ {2} - 1) r ^ {2} \\sin \\theta d r = - \\frac {4 \\sqrt {6}}{1 5} \\pi .\n$$"
+      }
+    ],
+    "final_answer": "I = \\frac {3}{\\sqrt {6}} \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\pi} d \\theta \\int_ {0} ^ {1} (r ^ {2} - 1) r ^ {2} \\sin",
+    "techniques_used": [
+      "高斯公式",
+      "投影法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用高斯公式？是否需要补面？散度如何计算？",
+      "technique": "高斯公式",
+      "expected": "写出 div F，必要时补面构成闭曲面后化为三重积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分（或证明结论）是什么？",
+      "technique": "投影法",
+      "expected": "I = \\frac {3}{\\sqrt {6}} \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\pi} d \\theta \\int_ {0} ^ {1} (r ^ {2} - 1) r ^ {2} \\sin"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 339,
+    "syllabus_note": "闭曲面使积分最小·散度取负区"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "section": "6.2",
+  "chapter": "第6章 多元向量值函数积分学",
+  "title": "对坐标的曲面积分",
+  "page_range": [
+    334,
+    344
+  ],
+  "page_note": "merged MD §6.2 → ## 习题6.2; OCR PDF pages 334–344 (printed TOC ~327–337)",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 10,
+  "starred_count": 1,
+  "starred": [
+    "例8*"
+  ],
+  "l3_counts": {
+    "math.calc.surf.second": 4,
+    "math.calc.stokes.formula": 1,
+    "math.calc.gauss.formula": 5
+  },
+  "l2_counts": {
+    "曲面积分与高斯斯托克斯": 10
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch6-6.2-ex-01",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-02",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-03",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-04",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-05",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-06",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-07",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-08",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-09",
+    "tx-pu-math-contest-v2-ch6-6.2-ex-10"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-01",
+      "example_id": "例1",
+      "page": 335,
+      "l3_id": "math.calc.surf.second",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-02",
+      "example_id": "例2",
+      "page": 336,
+      "l3_id": "math.calc.stokes.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-03",
+      "example_id": "例3",
+      "page": 337,
+      "l3_id": "math.calc.gauss.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-04",
+      "example_id": "例4",
+      "page": 339,
+      "l3_id": "math.calc.gauss.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-05",
+      "example_id": "例5",
+      "page": 339,
+      "l3_id": "math.calc.surf.second",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-06",
+      "example_id": "例6",
+      "page": 340,
+      "l3_id": "math.calc.gauss.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-07",
+      "example_id": "例7",
+      "page": 341,
+      "l3_id": "math.calc.surf.second",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-08",
+      "example_id": "例8*",
+      "page": 342,
+      "l3_id": "math.calc.gauss.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-09",
+      "example_id": "例9",
+      "page": 343,
+      "l3_id": "math.calc.surf.second",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch6-6.2-ex-10",
+      "example_id": "例10",
+      "page": 344,
+      "l3_id": "math.calc.gauss.formula",
+      "l2": "曲面积分与高斯斯托克斯",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

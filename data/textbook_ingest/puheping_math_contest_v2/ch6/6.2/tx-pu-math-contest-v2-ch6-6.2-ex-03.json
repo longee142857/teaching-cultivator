@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-03",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.gauss.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算曲面积分 $I = \\iint_{S} \\frac{x \\, \\mathrm{d}y \\, \\mathrm{d}z + y \\, \\mathrm{d}z \\, \\mathrm{d}x + z \\, \\mathrm{d}x \\, \\mathrm{d}y}{(x^2 + y^2 + 4z^2)^{3/2}}$ .\n\n(1) S 为旋转抛物面 $z = 2 - x^{2} - y^{2}$ ( $z \\geqslant 1$ )，取上侧；\n\n(2) $S$ 为球面 $(x - 1)^{2} + y^{2} + z^{2} = a^{2}(a > 0, a \\neq 1)$ ，取外侧；\n\n(3) S 为旋转抛物面 $z = 2 - x^{2} - y^{2}$ ( $z \\geqslant -2$ )，取上侧.",
+  "answer": "I = \\left(\\iint_ {S + S _ {0} + S _ {\\delta}} - \\iint_ {S _ {0}} - \\iint_ {S _ {\\delta}}\\right) \\frac {x \\mathrm{d} y \\mathr",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "高斯公式",
+    "投影法",
+    "补面",
+    "奇点处理",
+    "参数化/旋转曲面"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 在第（1）小题中，可补平面 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ ，在 $S$ 与 $S_0$ 围成的区域中用高斯公式.\n\n在第（2）小题中，对于球面 $S$ ，当 $a < 1$ 时，原点不在球面内，可用高斯公式；当 $a > 1$ 时，原点为奇点，不能直接用高斯公式，可在 $S$ 内作闭曲面 $S_{\\varepsilon}$ 并挖去奇点，在 $S$ 与 $S_{\\varepsilon}$ 围成的区域中用高斯公式.\n\n在第（3）小题中，为了用高斯公式，除补平面 $S_0: z = -2 (x^2 + y^2 \\leqslant 4)$ 外，同时还需在 $S$ 与 $S_0$ 围成的区域内作闭曲面 $S_\\delta$ 并挖去原点.\n\n解（1）补平面 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ ，取下侧，在 $S$ 与 $S_0$ 围成的区域中 $(x, y, z) \\neq (0, 0, 0)$ ，且\n\n$$\n\\frac {\\partial P}{\\partial x} + \\frac {\\partial Q}{\\partial y} + \\frac {\\partial R}{\\partial z} = \\frac {- 2 x ^ {2} + y ^ {2} + 4 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} + \\frac {x ^ {2} - 2 y ^ {2} + 4 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} + \\frac {x ^ {2} + y ^ {2} - 8 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} = 0,\n$$\n\n由高斯公式，得\n\n$$\n\\oiint_ {S + S _ {0}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = 0.\n$$\n\n对 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ （下侧）的积分用分面投影法，\n\n$$\n\\iint_ {S _ {0}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = - \\iint_ {D _ {x y}} \\frac {\\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4) ^ {3 / 2}} \\quad (D _ {x y}: x ^ {2} + y ^ {2} \\leqslant 1)\n\n= - \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {1} \\frac {\\rho}{\\left(\\rho^ {2} + 4\\right) ^ {3 / 2}} d \\rho = - 2 \\pi \\"
+      },
+      {
+        "id": "s2",
+        "text": "分析 在第（1）小题中，可补平面 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ ，在 $S$ 与 $S_0$ 围成的区域中用高斯公式.\n\n在第（2）小题中，对于球面 $S$ ，当 $a < 1$ 时，原点不在球面内，可用高斯公式；当 $a > 1$ 时，原点为奇点，不能直接用高斯公式，可在 $S$ 内作闭曲面 $S_{\\varepsilon}$ 并挖去奇点，在 $S$ 与 $S_{\\varepsilon}$ 围成的区域中用高斯公式.\n\n在第（3）小题中，为了用高斯公式，除补平面 $S_0: z = -2 (x^2 + y^2 \\leqslant 4)$ 外，同时还需在 $S$ 与 $S_0$ 围成的区域内作闭曲面 $S_\\delta$ 并挖去原点.\n\n解（1）补平面 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ ，取下侧，在 $S$ 与 $S_0$ 围成的区域中 $(x, y, z) \\neq (0, 0, 0)$ ，且\n\n$$\n\\frac {\\partial P}{\\partial x} + \\frac {\\partial Q}{\\partial y} + \\frac {\\partial R}{\\partial z} = \\frac {- 2 x ^ {2} + y ^ {2} + 4 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} + \\frac {x ^ {2} - 2 y ^ {2} + 4 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} + \\frac {x ^ {2} + y ^ {2} - 8 z ^ {2}}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {5 / 2}} = 0,\n$$\n\n由高斯公式，得\n\n$$\n\\oiint_ {S + S _ {0}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = 0.\n$$\n\n对 $S_0: z = 1 (x^2 + y^2 \\leqslant 1)$ （下侧）的积分用分面投影法，\n\n$$\n\\iint_ {S _ {0}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = - \\iint_ {D _ {x y}} \\frac {\\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4) ^ {3 / 2}} \\quad (D _ {x y}: x ^ {2} + y ^ {2} \\leqslant 1)\n$$\n\n$$\n= - \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {1} \\frac {\\rho}{\\left(\\rho^ {2} + 4\\right) ^ {3 / 2}} d \\rho = - 2 \\pi \\left(\\frac {1}{2} - \\frac {1}{\\sqrt {5}}\\right).\n$$\n\n故\n\n$$\nI = \\left(\\oiint_ {S + S _ {0}} - \\iint_ {S _ {0}}\\right) \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {3 / 2}} = 2 \\pi \\left(\\frac {1}{2} - \\frac {1}{\\sqrt {5}}\\right).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 0 < a < 1 时，S 围成的立体 $\\Omega$ 不包含原点，由高斯公式，有\n\n$$\nI = \\iiint_ {\\Omega} \\left(\\frac {\\partial P}{\\partial x} + \\frac {\\partial Q}{\\partial y} + \\frac {\\partial R}{\\partial z}\\right) d V = 0.\n$$\n\n当 $a > 1$ 时， $S$ 包含原点，在原点处 $\\frac{\\partial P}{\\partial x}, \\frac{\\partial Q}{\\partial y}, \\frac{\\partial R}{\\partial z}$ 均不连续，故不能直接用高斯公式。在 $S$ 内作椭球面 $S_{\\varepsilon}: x^{2} + y^{2} + 4z^{2} = \\varepsilon^{2}$ ，取内侧，由高斯公式，得\n\n$$\n\\oiint_ {S + S _ {e}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {3 / 2}} = 0.\n$$\n\n在椭球面 $S_{\\varepsilon}: x^{2} + y^{2} + 4z^{2} = \\varepsilon^{2}$ （内侧）上积分为\n\n$$\n\\begin{array}{r l} & {\\iint_ {S _ {\\varepsilon}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = - \\frac {1}{\\varepsilon^ {3}} \\iint_ {S _ {\\varepsilon}} x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y} \\\\ & {= - \\frac {1}{\\varepsilon^ {3}} \\iiint_ {\\Omega_ {1}} 3 \\mathrm{d} V = - \\frac {3}{\\varepsilon^ {3}} \\cdot \\frac {4}{3} \\pi \\cdot \\varepsilon \\cdot \\varepsilon \\cdot \\frac {1}{2} \\varepsilon = - 2 \\pi (\\Omega_ {1} \\text {是} S _ {\\varepsilon} \\text {围成的立体区域}).} \\end{array}\n$$\n\n故\n\n$$\nI = \\left(\\oiint_ {S + S _ {\\varepsilon}} - \\iint_ {S _ {\\varepsilon}}\\right) \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {3 / 2}} = 0 - (- 2 \\pi) = 2 \\pi .\n$$\n\n（3）如图6.10所示，补平面 $S_0: z = -2 (x^2 + y^2 \\leqslant 4)$ ，取下侧，在 $S$ 与 $S_0$ 围成的区域内作椭球面 $S_\\delta: x^2 + y^2 + 4z^2 = \\delta^2$ ，取内侧，记 $S, S_0, S_\\delta$ 所围立体为 $\\Omega_2$ ，由高斯公式，得\n\n$$\n\\iint_ {S + S _ {0} + S _ {\\delta}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = \\iiint_ {\\Omega_ {2}} \\left(\\frac {\\partial P}{\\partial x} + \\frac {\\partial P}{\\partial y} + \\frac {\\partial P}{\\partial z}\\right) \\mathrm{d} V = 0.\n$$\n\n又\n\n![](images/4e09f8341036126e1121384b4edbff5d1cd5f721eee32981325307bf94ee0825.jpg)\n\n$$\n\\begin{array}{r l} & {\\iint_ {S _ {0}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = - \\iint_ {D _ {x y}} \\frac {- 2 \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 1 6) ^ {3 / 2}}} \\\\ & {\\qquad = 2 \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {2} \\frac {\\rho \\mathrm{d} \\rho}{(\\rho^ {2} + 1 6) ^ {3 / 2}} = \\left(1 - \\frac {2}{\\sqrt {5}}\\right) \\pi .} \\\\ & {\\iint_ {S _ {\\delta}} \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{(x ^ {2} + y ^ {2} + 4 z ^ {2}) ^ {3 / 2}} = \\frac {1}{\\delta^ {3}} \\iint_ {S _ {\\delta}} x \\mathrm{d} x \\mathrm{d} y + y \\mathrm{d} y \\mathrm{d} z + z \\mathrm{d} z \\mathrm{d} x} \\\\ & {\\qquad = - \\frac {1}{\\delta^ {3}} \\iiint_ {\\Omega_ {3}} 3 \\mathrm{d} V = - \\frac {3}{\\delta^ {3}} \\cdot \\frac {4}{3} \\pi \\cdot \\delta \\cdot \\delta \\cdot \\frac {\\delta}{2} = - 2 \\pi (\\Omega_ {3} \\text {是} S _ {\\delta} \\text {围成的立体区域}).} \\end{array}\n$$\n\n图6.10\n\n故\n\n$$\nI = \\left(\\iint_ {S + S _ {0} + S _ {\\delta}} - \\iint_ {S _ {0}} - \\iint_ {S _ {\\delta}}\\right) \\frac {x \\mathrm{d} y \\mathrm{d} z + y \\mathrm{d} z \\mathrm{d} x + z \\mathrm{d} x \\mathrm{d} y}{\\left(x ^ {2} + y ^ {2} + 4 z ^ {2}\\right) ^ {3 / 2}} = 0 - \\left(1 - \\frac {2}{\\sqrt {5}}\\right) \\pi - (- 2 \\pi) = \\left(1 + \\frac {2}{\\sqrt {5}}\\right) \\pi .\n$$\n\n评注 该题的几个积分中，其被积式均相同，但曲面不同，用高斯公式处理的方法也不同. 计算中要注意几点：一是要利用曲面方程化简被积函数；二是曲面是否为封闭，不封闭如何增补；三是闭曲面内是否有被积函数的奇点，若有，如何挖掉."
+      }
+    ],
+    "final_answer": "I = \\left(\\iint_ {S + S _ {0} + S _ {\\delta}} - \\iint_ {S _ {0}} - \\iint_ {S _ {\\delta}}\\right) \\frac {x \\mathrm{d} y \\mathr",
+    "techniques_used": [
+      "高斯公式",
+      "投影法",
+      "补面",
+      "奇点处理",
+      "参数化/旋转曲面"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用高斯公式？是否需要补面？散度如何计算？",
+      "technique": "高斯公式",
+      "expected": "写出 div F，必要时补面构成闭曲面后化为三重积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分（或证明结论）是什么？",
+      "technique": "投影法",
+      "expected": "I = \\left(\\iint_ {S + S _ {0} + S _ {\\delta}} - \\iint_ {S _ {0}} - \\iint_ {S _ {\\delta}}\\right) \\frac {x \\mathrm{d} y \\mathr"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 337,
+    "syllabus_note": "抛物面与球面·补面高斯公式",
+    "commentary": "评注 该题的几个积分中，其被积式均相同，但曲面不同，用高斯公式处理的方法也不同. 计算中要注意几点：一是要利用曲面方程化简被积函数；二是曲面是否为封闭，不封闭如何增补；三是闭曲面内是否有被积函数的奇点，若有，如何挖掉."
+  }
+}
