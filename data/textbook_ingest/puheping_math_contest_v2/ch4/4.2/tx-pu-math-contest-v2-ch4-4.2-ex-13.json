@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-13",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(u, v)$ 有一阶连续偏导数， $z = f(x^2 - y^2, \\cos xy)$ ， $x = \\rho \\cos \\varphi$ ， $y = \\rho \\sin \\varphi$ 。证明：\n\n$$\n\\cos \\varphi \\cdot \\frac {\\partial z}{\\partial \\rho} - \\frac {1}{\\rho} \\sin \\varphi \\cdot \\frac {\\partial z}{\\partial \\varphi} = 2 x \\frac {\\partial z}{\\partial u} - y \\frac {\\partial z}{\\partial v} \\sin x y\n$$",
+  "answer": "到所证等式右边.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里 $u = x^2 - y^2, v = \\cos xy$ ，函数的复合结构如图4.2所示。只需分别求出 $\\frac{\\partial z}{\\partial r}, \\frac{\\partial z}{\\partial \\theta}$ ，代入等式左边化简即可。\n\n图4.2"
+      },
+      {
+        "id": "s2",
+        "text": "因为 $x = \\rho \\cos \\varphi, y = \\rho \\sin \\varphi$ ，则 $\\frac{\\partial x}{\\partial \\rho} = \\cos \\varphi, \\frac{\\partial y}{\\partial \\rho} = \\sin \\varphi$ 。记 $u = x^2 - y^2, v = \\cos xy$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} & {\\frac {\\partial z}{\\partial \\rho} = \\frac {\\partial z}{\\partial x} \\cdot \\frac {\\partial x}{\\partial \\rho} + \\frac {\\partial z}{\\partial y} \\cdot \\frac {\\partial y}{\\partial \\rho} = \\left(\\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial x}\\right) \\frac {\\partial x}{\\partial \\rho} + \\left(\\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial y} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial y}\\right) \\frac {\\partial y}{\\partial \\rho}} \\\\ & {\\qquad = 2 (x \\cos \\varphi - y \\sin \\varphi) \\frac {\\partial z}{\\partial u} - \\sin x y \\cdot (y \\cos \\varphi + x \\sin \\varphi) \\frac {\\partial z}{\\partial v},} \\\\ & {\\frac {\\partial z}{\\partial \\varphi} = \\frac {\\partial z}{\\partial x} \\cdot \\frac {\\partial x}{\\partial \\varphi} + \\frac {\\partial z}{\\partial y} \\cdot \\frac {\\partial y}{\\partial \\varphi} = \\left(\\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial x}\\right) \\frac {\\partial x}{\\partial \\varphi} + \\left(\\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial y} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial y}\\right) \\frac {\\partial y}{\\partial \\varphi}} \\\\ & {\\qquad = - 2 \\rho (x \\sin \\varphi + y \\cos \\varphi) \\frac {\\partial z}{\\partial u} + \\rho \\sin x y \\cdot (y \\sin \\varphi - x \\cos \\varphi) \\frac {\\partial z}{\\partial v}.} \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "代入所证等式左边化简即可得到所证等式右边."
+      }
+    ],
+    "final_answer": "到所证等式右边.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "偏导数与全微分",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "证明技巧",
+      "expected": "到所证等式右边."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例13",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 231,
+    "syllabus_note": "复合+极坐标恒等式",
+    "commentary": "评注 该题的函数有两层中间变量，偏导数的计算是从内到外的，也可从外到内，即\n\n$$\n\\frac {\\partial z}{\\partial \\rho} = \\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial \\rho} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial \\rho} = \\frac {\\partial z}{\\partial u} \\cdot \\left(\\frac {\\partial u}{\\partial x} \\cdot \\frac {\\partial x}{\\partial \\rho} + \\frac {\\partial u}{\\partial y} \\cdot \\frac {\\partial y}{\\partial \\rho}\\right) + \\frac {\\partial z}{\\partial v} \\cdot \\left(\\frac {\\partial v}{\\partial x} \\cdot \\frac {\\partial x}{\\partial \\rho} + \\frac {\\partial v}{\\partial y} \\cdot \\frac {\\partial y}{\\partial \\rho}\\right).\n$$"
+  }
+}

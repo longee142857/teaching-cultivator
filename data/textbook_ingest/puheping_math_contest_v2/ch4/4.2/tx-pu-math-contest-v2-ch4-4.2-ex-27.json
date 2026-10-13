@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-27",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设二元函数 $f(u, v)$ 具有连续的偏导数，且对任意实数 $t$ 满足 $f(tu, tv) = t^2 f(u, v)$ ， $f(1, 2) = 0$ 和 $f_u(1, 2) = 3$ ，求极限 $\\lim_{x \\to 0} \\frac{1}{x} \\int_0^x \\left[ 1 + f\\left( t - \\sin t + 1, \\sqrt{1 + t^3} + 1 \\right) \\right]^{\\frac{1}{\\ln(1 + t^3)}} \\mathrm{d}t.$",
+  "answer": "连续，则有 $\\lim_{x\\to 0}f\\left(x - \\sin x + 1,\\sqrt{1 + x^3} +1\\right) = f(1,2) = 0$ ，利用等价无穷小替换，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "泰勒展开"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该极限属于 $\\frac{0}{0}$ 型，可用洛必达法则与等价无穷小代替等方法计算。求导时要注意利用多元函数的全导数公式。也可用泰勒公式将 $f$ 展开后再求极限。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 该极限属于 $\\frac{0}{0}$ 型，由洛必达法则，得\n\n$$\n\\begin{array}{r l} \\text {原式} & = \\lim _ {x \\to 0} \\left[ 1 + f \\left(x - \\sin x + 1, \\sqrt {1 + x ^ {3}} + 1\\right) \\right] ^ {\\frac {1}{\\ln (1 + x ^ {3})}} \\\\ & = \\exp \\left[ \\lim _ {x \\to 0} \\frac {\\ln \\left[ 1 + f \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right) \\right]}{\\ln (1 + x ^ {3})} \\right]. \\end{array}\\tag{①}\n$$\n\n由于 $f$ 连续，则有 $\\lim_{x\\to 0}f\\left(x - \\sin x + 1,\\sqrt{1 + x^3} +1\\right) = f(1,2) = 0$ ，利用等价无穷小替换，有\n\n$$\n\\begin{array}{r l} & {\\underset {x \\to 0} {\\lim} \\frac {\\ln \\left[ 1 + f \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right) \\right]}{\\ln (1 + x ^ {3})} = \\underset {x \\to 0} {\\lim} \\frac {f \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right)}{x ^ {3}}} \\\\ & {= \\frac {1}{3} \\underset {x \\to 0} {\\lim} \\frac {\\frac {\\mathrm{d}}{\\mathrm{d} x} f \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right)}{x ^ {2}} (\\text {洛必达法则})} \\\\ & {= \\frac {1}{3} \\underset {x \\to 0} {\\lim} \\frac {f _ {u} \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right) (1 - \\cos x) + f _ {v} \\left(x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1\\right) \\frac {3 x ^ {2}}{2 \\sqrt {1 + x ^ {3}}}}{x ^ {2}}} \\\\ & {= \\frac {1}{3} \\Bigg [ \\underset {x \\to 0} {\\lim} f _ {u} \\left(x - \\sin x + 1, \\sqrt {1 + x ^ {3}} + 1\\right) \\frac {1 - \\cos x}{x ^ {2}} + \\underset {x \\to 0} {\\lim} f _ {v} \\left(x - \\sin x + 1, \\sqrt {1 + x ^ {3}} + 1\\right) \\frac {3}{2 \\sqrt {1 + x ^ {3}}} \\Bigg ]} \\\\ & {= \\frac {1}{3} \\Bigg [ f _ {u} (1, 2) \\times \\frac {1}{2} + f _ {v} (1, 2) \\times \\frac {3}{2} \\Bigg ].} \\end{array}\\tag{②}\n$$\n\n为计算 $f_{\\nu}(1,2)$ ，在等式 $f(tu,t\\nu) = t^2 f(u,\\nu)$ 的两边对 $t$ 求导，得\n\n$$\nf _ {1} (t u, t v) u + f _ {2} (t u, t v) v = 2 t f (u, v),\n$$\n\n令 $t = 1, u = 1, v = 2$ ，得\n\n$$\nf _ {1} (1, 2) \\cdot 1 + f _ {2} (1, 2) \\cdot 2 = 2 f (1, 2),\n$$\n\n即\n\n$$\nf _ {v} (1, 2) = f _ {2} (1, 2) = f (1, 2) - \\frac {1}{2} f _ {1} (1, 2) = 0 - \\frac {1}{2} \\times 3 = - \\frac {3}{2}.\n$$\n\n代入②式，得\n\n$$\n\\lim _ {x \\rightarrow 0} \\frac {\\ln [ 1 + f (x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1) ]}{\\ln (1 + x ^ {3})} = \\frac {1}{3} \\left[ 3 \\times \\frac {1}{2} + \\left(- \\frac {3}{2}\\right) \\times \\frac {3}{2} \\right] = - \\frac {1}{4}.\\tag{③}\n$$\n\n将③式代入①式，得\n\n$$\n\\lim _ {x \\rightarrow 0} \\frac {1}{x} \\int_ {0} ^ {x} \\left[ 1 + f (t - \\sin t + 1, \\sqrt {1 + t ^ {3}} + 1) \\right] ^ {\\frac {1}{\\ln (1 + t ^ {3})}} d t = e ^ {- \\frac {1}{4}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 利用泰勒公式计算极限 $\\lim_{x\\to 0}\\frac{f(x - \\sin x + 1,\\sqrt{1 + x^3} + 1)}{x^3}$\n\n由 $f$ 在点(1,2)的一阶泰勒公式，有\n\n$$\n\\begin{array}{r l} & {f \\Big (x - \\sin x + 1, \\sqrt {1 + x ^ {3}} + 1 \\Big) = f (1, 2) + f _ {u} (1, 2) (x - \\sin x) + f _ {\\nu} (1, 2) \\big (\\sqrt {1 + x ^ {3}} - 1 \\big) + o (\\rho)} \\\\ & {\\qquad = 3 (x - \\sin x) - \\frac {3}{2} \\big (\\sqrt {1 + x ^ {3}} - 1 \\big) + o (\\rho),} \\end{array}\n\n\\text {其中} \\rho = \\sqrt {(x - \\sin x) ^ {2} + (\\sqrt {1 + x ^ {3}} - 1) ^ {2}} \\sim \\sqrt {\\frac {5}{1 8}} x ^ {3} \\quad \\left(\\because x - \\sin x \\sim \\frac {1}{6} x ^ {3}, \\sqrt {1 + x ^ {3}} - 1 \\sim \\frac {1}{2} x ^ {3}\\right).\n$$\n\n所以\n\n$$\n\\begin{array}{l}\\lim _ {x \\rightarrow 0} \\frac {f (x - \\sin x + 1 , \\sqrt {1 + x ^ {3}} + 1)}{x ^ {3}} = \\lim _ {x \\rightarrow 0} \\frac {3 (x - \\sin x) - \\frac {3}{2} (\\sqrt {1 + x ^ {3}} - 1) + o (x ^ {3})}{x ^ {3}}\\\\= \\lim _ {x \\rightarrow 0} \\frac {3 (x - \\sin x) - \\frac {3}{2} (\\sqrt {1 + x ^ {3}} - 1) + o (x ^ {3})}{x ^ {3}} = 3 \\cdot \\frac {1}{6} - \\frac {3}{2} \\cdot \\frac {1}{2} = - \\frac {1}{4}.\\end{array}\n$$"
+      }
+    ],
+    "final_answer": "连续，则有 $\\lim_{x\\to 0}f\\left(x - \\sin x + 1,\\sqrt{1 + x^3} +1\\right) = f(1,2) = 0$ ，利用等价无穷小替换，有",
+    "techniques_used": [
+      "偏导数与全微分",
+      "泰勒展开"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "泰勒展开",
+      "expected": "连续，则有 $\\lim_{x\\to 0}f\\left(x - \\sin x + 1,\\sqrt{1 + x^3} +1\\right) = f(1,2) = 0$ ，利用等价无穷小替换，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例27*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 240,
+    "starred": true,
+    "syllabus_note": "齐次函数性质+极限*",
+    "commentary": "评注 注意，该题是一元函数的极限问题，不要误解为二重极限."
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-15",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x, y)$ 具有连续偏导数，且满足方程 $x \\frac{\\partial f}{\\partial x} = ky \\frac{\\partial f}{\\partial y}, k \\in \\mathbb{N}_{+}, f(1, 1) = 1$ ，求 $f\\left(10, \\frac{1}{10^k}\\right)$ .",
+  "answer": "$f$ 与 $t$ 无关．记 $f\\left(t,\\frac{u}{t^k}\\right) = g(u)$ ，则 $f(1,1) = g(1) = 1$ ，故 $f\\left(10,\\frac{1}{10^k}\\right) = g(1) = 1$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "微分方程法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 所给方程是关于 $f(x, y)$ 的一阶线性齐次偏微分方程，该方程的特征线方程为 $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = -\\frac{ky}{x}$ ，其通解为 $yx^k = C$ ，沿该曲线 $f(x, y)$ 的值不变。所以作变量代换 $u = x^k y, t = x$ ，可化简方程或得到方程的解。"
+      },
+      {
+        "id": "s2",
+        "text": "设 $u = x^{k}y, t = x$ ，则 $f(x,y) = f\\left(t,\\frac{u}{t^k}\\right)$ . 求偏导数，得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {\\partial f}{\\partial x} = f _ {1} + f _ {2} \\cdot \\left(\\frac {k u}{t ^ {k + 1}} - \\frac {k u}{t ^ {k + 1}}\\right) = f _ {1}, \\quad \\frac {\\partial f}{\\partial y} = f _ {2}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "代入方程 $x\\frac{\\partial f}{\\partial x} = ky\\frac{\\partial f}{\\partial y}$ ，得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nt f _ {1} = k \\frac {u}{t ^ {k}} f _ {2} \\Rightarrow t f _ {1} - \\frac {k u}{t ^ {k}} f _ {2} = 0.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "由于 $\\frac{\\partial f}{\\partial t} = f_1 - \\frac{ku}{t^{k + 1}} f_2$ ，所以方程化为"
+      },
+      {
+        "id": "s7",
+        "text": "$$\nt \\frac {\\partial f}{\\partial t} = 0 \\Rightarrow \\frac {\\partial f}{\\partial t} = 0.\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "所以 $f$ 与 $t$ 无关．记 $f\\left(t,\\frac{u}{t^k}\\right) = g(u)$ ，则 $f(1,1) = g(1) = 1$ ，故 $f\\left(10,\\frac{1}{10^k}\\right) = g(1) = 1$ 。"
+      }
+    ],
+    "final_answer": "$f$ 与 $t$ 无关．记 $f\\left(t,\\frac{u}{t^k}\\right) = g(u)$ ，则 $f(1,1) = g(1) = 1$ ，故 $f\\left(10,\\frac{1}{10^k}\\right) = g(1) = 1$ 。",
+    "techniques_used": [
+      "偏导数与全微分",
+      "微分方程法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "偏导数与全微分",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "微分方程法",
+      "expected": "$f$ 与 $t$ 无关．记 $f\\left(t,\\frac{u}{t^k}\\right) = g(u)$ ，则 $f(1,1) = g(1) = 1$ ，故 $f\\left(10,\\frac{1}{10^k}\\right) = g(1) = 1$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例15*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 232,
+    "starred": true,
+    "syllabus_note": "齐次型偏微分方程求值*",
+    "commentary": "评注 一阶线性方程 $af_{x} + bf_{y} = 0$ （ $a, b$ 为已知函数）的特征线方程为 $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = \\frac{b}{a}$ ，沿特征线 $f$ 为常数。读者不难从隐函数方程 $f(x, y) = C$ （ $C$ 为常数）的导数公式 $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = -\\frac{f_x}{f_y}$ 去理解。"
+  }
+}

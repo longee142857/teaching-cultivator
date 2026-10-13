@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-11",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $u(x, y)$ 有二阶连续偏导数，证明 $u(x, y) = f(x)g(y)$ 的充分必要条件是 $u\\frac{\\partial^2 u}{\\partial x \\partial y} = \\frac{\\partial u}{\\partial x}$ . $\\frac{\\partial u}{\\partial y} (u \\neq 0)$ .",
+  "answer": "$\\frac{v}{u} = \\varphi(y)$ ，即 $\\frac{\\frac{\\partial u}{\\partial y}}{u} = \\varphi(y)$ （ $\\varphi(y)$ 是任意的待定函数).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "高阶偏导",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 对函数 $u(x, y) = f(x)g(y)$ 求二阶混合偏导数，很容易验证必要性成立；对充分性部分，由于 $u\\frac{\\partial^2 u}{\\partial x \\partial y} = \\frac{\\partial u}{\\partial x} \\cdot \\frac{\\partial u}{\\partial y}$ 是一个二阶方程，令 $\\frac{\\partial u}{\\partial y} = v$ ，可将方程降为一阶，再凑微分求解方程，最后可求得方程的解为 $u(x, y) = f(x)g(y)$ .\n\n必要性：若 $u(x,y) = f(x)g(y)$ ，则"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\frac {\\partial u}{\\partial x} = f ^ {\\prime} (x) g (y), \\quad \\frac {\\partial u}{\\partial y} = f (x) g ^ {\\prime} (y), \\quad \\frac {\\partial^ {2} u}{\\partial x \\partial y} = f ^ {\\prime} (x) g ^ {\\prime} (y),\n$$\n\n所以\n\n$$\nu \\frac {\\partial^ {2} u}{\\partial x \\partial y} = f (x) g (y) f ^ {\\prime} (x) g ^ {\\prime} (y) = \\frac {\\partial u}{\\partial x} \\cdot \\frac {\\partial u}{\\partial y}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "充分性：令 $\\frac{\\partial u}{\\partial y} = v$ ，则 $\\frac{\\partial^2u}{\\partial x\\partial y} = \\frac{\\partial}{\\partial x}\\left(\\frac{\\partial u}{\\partial y}\\right) = \\frac{\\partial v}{\\partial x}$ 由 $u\\frac{\\partial^2u}{\\partial x\\partial y} = \\frac{\\partial u}{\\partial x}\\cdot \\frac{\\partial u}{\\partial y}$ ，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nu \\cdot \\frac {\\partial v}{\\partial x} = v \\cdot \\frac {\\partial u}{\\partial x},\n$$\n\n变形为\n\n$$\n\\frac {u \\cdot \\frac {\\partial v}{\\partial x} - v \\cdot \\frac {\\partial u}{\\partial x}}{u ^ {2}} = 0, \\text {即} \\frac {\\partial}{\\partial x} \\left(\\frac {v}{u}\\right) = 0.\n$$\n\n两边对 $x$ 积分，得"
+      },
+      {
+        "id": "s5",
+        "text": "$\\frac{v}{u} = \\varphi(y)$ ，即 $\\frac{\\frac{\\partial u}{\\partial y}}{u} = \\varphi(y)$ （ $\\varphi(y)$ 是任意的待定函数).\n\n上式即为 $\\frac{\\partial(\\ln u)}{\\partial y} = \\varphi(y)$ ，两边对 $y$ 积分，得\n\n$$\n\\ln u = \\int \\varphi (y) \\mathrm{d} y + h (x) \\quad (h (x) \\text {是任意的待定函数}),\n$$\n\n即\n\n$$\nu = \\mathrm{e} ^ {\\int \\varphi (y) \\mathrm{d} y + h (x)} = \\mathrm{e} ^ {h (x)} \\cdot \\mathrm{e} ^ {\\int \\varphi (y) \\mathrm{d} y} = f (x) g (y).\n$$"
+      }
+    ],
+    "final_answer": "$\\frac{v}{u} = \\varphi(y)$ ，即 $\\frac{\\frac{\\partial u}{\\partial y}}{u} = \\varphi(y)$ （ $\\varphi(y)$ 是任意的待定函数).",
+    "techniques_used": [
+      "偏导数与全微分",
+      "高阶偏导",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "高阶偏导",
+      "expected": "$\\frac{v}{u} = \\varphi(y)$ ，即 $\\frac{\\frac{\\partial u}{\\partial y}}{u} = \\varphi(y)$ （ $\\varphi(y)$ 是任意的待定函数)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 230,
+    "syllabus_note": "可分离变量充要条件",
+    "commentary": "评注 注意，二元函数对其某一变量做偏积分时，积分常数应该是另一变量的任意函数.\n\n## 2. 复合函数、隐函数的微分法\n\n多元复合函数的偏导计算关键是要弄清楚函数的复合结构，按链式法则从外层到内层逐层计算；隐函数的偏导数可由公式计算，也可利用复合函数求导法则在方程两边对某一变量求偏导数（或求微分）再求解；对求由方程组所确定的隐函数的偏导数，最好采用方程两边求微分的方法求解."
+  }
+}

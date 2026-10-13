@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-20",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $z = f(x, y)$ 在 $\\mathbb{R}^2$ 上有连续的一阶偏导数， $w = w(u, v)$ 是由方程组 $u = x^2 + y^2$ ， $v = \\frac{1}{x} + \\frac{1}{y}$ ， $z = e^{w + x + y}$ 所确定的隐函数，试将方程 $y\\frac{\\partial z}{\\partial x} - x\\frac{\\partial z}{\\partial y} = (y - x)z (x \\neq y)$ 化为以 $w$ 为未知函数， $u, v$ 为自变量的形式.",
+  "answer": "到 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ ，此后同方法1.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "复合/隐函数求导",
+    "微分方程法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这与上题是同类型问题. 为将 $\\frac{\\partial w}{\\partial u}$ 和 $\\frac{\\partial w}{\\partial v}$ 引入方程, 需将 $z = f(x, y)$ 看成由 $z = e^{w + x + y}$ , $w = w(u, v)$ , $u = u(x, y)$ , $v = v(x, y)$ 复合而成, 只需计算 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 并代入方程化简即可. 为避免复杂的函数关系, 也可用一阶微分形式不变性来计算两个偏导数."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 将 $z = f(x, y)$ 看成由 $z = \\mathrm{e}^{w + x + y}$ , $w = w(u, v)$ , $u = u(x, y)$ , $v = v(x, y)$ 复合而成，由链式法则，有\n\n$$\n\\begin{array}{r l} \\frac {\\partial z}{\\partial x} & = \\frac {\\partial f}{\\partial x} + \\frac {\\partial f}{\\partial w} \\cdot \\frac {\\partial w}{\\partial x} = e ^ {w + x + y} + e ^ {w + x + y} \\left(\\frac {\\partial w}{\\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial w}{\\partial v} \\cdot \\frac {\\partial v}{\\partial x}\\right) \\\\ & = z \\left(1 + 2 x \\cdot \\frac {\\partial w}{\\partial u} - \\frac {1}{x ^ {2}} \\cdot \\frac {\\partial w}{\\partial v}\\right), \\end{array}\n$$\n\n利用 $x, y$ 的对称性，有\n\n$$\n\\frac {\\partial z}{\\partial y} = z \\left(1 + 2 y \\cdot \\frac {\\partial w}{\\partial u} - \\frac {1}{y ^ {2}} \\cdot \\frac {\\partial w}{\\partial v}\\right).\n$$\n\n将 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 代入所给方程，化简得\n\n$$\nz \\left(\\frac {x}{y ^ {2}} - \\frac {y}{x ^ {2}}\\right) \\cdot \\frac {\\partial w}{\\partial v} = 0.\n$$\n\n由题设，知 $z\\left(\\frac{x}{y^2} -\\frac{y}{x^2}\\right) = \\frac{z(x^3 - y^3)}{x^2y^2}\\neq 0$ ，故原方程可化为 $\\frac{\\partial w}{\\partial\\nu} = 0$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 在等式 $z = \\mathrm{e}^{w + x + y}$ ， $w = w(u, v)$ ， $u = x^2 + y^2$ ， $v = \\frac{1}{x} + \\frac{1}{y}$ 两边取微分，得\n\n$$\n\\left\\{ \\begin{array}{l} \\mathrm{d} z = \\mathrm{e} ^ {w + x + y} (\\mathrm{d} w + \\mathrm{d} x + \\mathrm{d} y), \\\\ \\mathrm{d} w = \\frac {\\partial w}{\\partial u} \\mathrm{d} u + \\frac {\\partial w}{\\partial v} \\mathrm{d} v, \\\\ \\mathrm{d} u = 2 x \\mathrm{d} x + 2 y \\mathrm{d} y, \\\\ \\mathrm{d} v = - \\frac {1}{x ^ {2}} \\mathrm{d} x - \\frac {1}{y ^ {2}} \\mathrm{d} y. \\end{array} \\right.\n$$\n\n将后3式代入第1式化简得\n\n$$\n\\mathrm{d} z = \\mathrm{e} ^ {w + x + y} \\left[ \\left(1 + 2 x \\frac {\\partial w}{\\partial u} - \\frac {1}{x ^ {2}} \\frac {\\partial w}{\\partial v}\\right) \\mathrm{d} x + \\left(1 + 2 y \\frac {\\partial w}{\\partial u} - \\frac {1}{y ^ {2}} \\frac {\\partial w}{\\partial v}\\right) \\mathrm{d} y \\right],\n$$\n\n由此可得到 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ ，此后同方法1."
+      }
+    ],
+    "final_answer": "到 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ ，此后同方法1.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "复合/隐函数求导",
+      "微分方程法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "复合/隐函数求导",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "复合/隐函数求导",
+      "expected": "到 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ ，此后同方法1."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例20",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 235,
+    "syllabus_note": "隐函数组换自变量",
+    "commentary": "评注 由于微分运算是将各变量地位平等对待，所以对函数结构较复杂或由方程组所确定的隐函数的求导问题，采用微分运算会更为方便."
+  }
+}

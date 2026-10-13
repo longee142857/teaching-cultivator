@@ -1,0 +1,90 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-22",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "已知函数 $z = f(x, y)$ 有连续的二阶偏导数，且 $f_x(x, y) \\neq 0$ ， $\\frac{\\partial^2 z}{\\partial x^2} \\frac{\\partial^2 z}{\\partial y^2} - \\left(\\frac{\\partial^2 z}{\\partial x \\partial y}\\right)^2 = 0$ ，又设 $x = x(y, z)$ 是由 $z = f(x, y)$ 所确定的函数，证明 $\\frac{\\partial^2 x}{\\partial y^2} \\cdot \\frac{\\partial^2 x}{\\partial z^2} - \\left(\\frac{\\partial^2 x}{\\partial y \\partial z}\\right)^2 = 0$ 。",
+  "answer": "由已知条件 $\\frac{\\partial^2z}{\\partial x^2}\\cdot \\frac{\\partial^2z}{\\partial y^2} -\\left(\\frac{\\partial^2z}{\\partial x\\partial y}\\right)^2 = 0$ ，故",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "复合/隐函数求导",
+    "高阶偏导",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将 $z = f(x, y)$ 视为隐函数方程（ $x$ 为 $y, z$ 的函数），由此计算 $\\frac{\\partial x}{\\partial y}$ 和 $\\frac{\\partial x}{\\partial z}$ ，再计算 $\\frac{\\partial^2 x}{\\partial y^2}$ 、 $\\frac{\\partial^2 x}{\\partial z^2}$ 和 $\\frac{\\partial^2 x}{\\partial y \\partial z}$ 代入等式左端，利用所给条件化简即得证."
+      },
+      {
+        "id": "s2",
+        "text": "记 $F(x,y,z) = f(x,y) - z$ ，则 $F_{x} = f_{x}$ ， $F_{y} = f_{y}$ ， $F_{z} = -1$ ，由隐函数的偏导公式，得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {\\partial x}{\\partial y} = - \\frac {F _ {y}}{F _ {x}} = - \\frac {f _ {y}}{f _ {x}}, \\quad \\frac {\\partial x}{\\partial z} = - \\frac {F _ {z}}{F _ {x}} = \\frac {1}{f _ {x}};\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "对上式再求偏导数，得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\frac {\\partial^ {2} x}{\\partial y ^ {2}} = - \\frac {\\left(f _ {y x} \\frac {\\partial x}{\\partial y} + f _ {y y}\\right) f _ {x} - \\left(f _ {x x} \\frac {\\partial x}{\\partial y} + f _ {x y}\\right) f _ {y}}{\\left(f _ {x}\\right) ^ {2}} = \\frac {2 f _ {y x} f _ {x} f _ {y} - f _ {x x} \\left(f _ {y}\\right) ^ {2} - f _ {y y} \\left(f _ {x}\\right) ^ {2}}{\\left(f _ {x}\\right) ^ {3}},"
+      },
+      {
+        "id": "s6",
+        "text": "\\frac {\\partial^ {2} x}{\\partial z ^ {2}} = - \\frac {f _ {x x} \\frac {\\partial x}{\\partial z}}{\\left(f _ {x}\\right) ^ {2}} = - \\frac {f _ {x x}}{\\left(f _ {x}\\right) ^ {3}}, \\quad \\frac {\\partial^ {2} x}{\\partial y \\partial z} = \\frac {\\partial^ {2} x}{\\partial z \\partial y} = - \\frac {f _ {x x} \\frac {\\partial x}{\\partial y} + f _ {x y}}{\\left(f _ {x}\\right) ^ {2}} = \\frac {f _ {x x} f _ {y} - f _ {x y} f _ {x}}{\\left(f _ {x}\\right) ^ {3}}.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "由已知条件 $\\frac{\\partial^2z}{\\partial x^2}\\cdot \\frac{\\partial^2z}{\\partial y^2} -\\left(\\frac{\\partial^2z}{\\partial x\\partial y}\\right)^2 = 0$ ，故"
+      },
+      {
+        "id": "s8",
+        "text": "$$\n\\begin{array}{r l} \\frac {\\partial^ {2} x}{\\partial y ^ {2}} \\cdot \\frac {\\partial^ {2} x}{\\partial z ^ {2}} - \\left(\\frac {\\partial^ {2} x}{\\partial y \\partial z}\\right) ^ {2} & = - \\frac {2 f _ {y x} f _ {x} f _ {y} - f _ {x x} (f _ {y}) ^ {2} - f _ {y y} (f _ {x}) ^ {2}}{(f _ {x}) ^ {3}} \\cdot \\frac {f _ {x x}}{(f _ {x}) ^ {3}} - \\frac {(f _ {x x} f _ {y} - f _ {x y} f _ {x}) ^ {2}}{(f _ {x}) ^ {6}} \\\\ & = \\frac {(f _ {x}) ^ {2} f _ {x x} f _ {y y} - (f _ {x y}) ^ {2} (f _ {x}) ^ {2}}{(f _ {x}) ^ {6}} = 0. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "由已知条件 $\\frac{\\partial^2z}{\\partial x^2}\\cdot \\frac{\\partial^2z}{\\partial y^2} -\\left(\\frac{\\partial^2z}{\\partial x\\partial y}\\right)^2 = 0$ ，故",
+    "techniques_used": [
+      "偏导数与全微分",
+      "复合/隐函数求导",
+      "高阶偏导",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "复合/隐函数求导",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "复合/隐函数求导",
+      "expected": "由已知条件 $\\frac{\\partial^2z}{\\partial x^2}\\cdot \\frac{\\partial^2z}{\\partial y^2} -\\left(\\frac{\\partial^2z}{\\partial x\\partial y}\\right)^2 = 0$ ，故"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例22",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 237,
+    "syllabus_note": "隐函数保持 Hessian 退化"
+  }
+}
