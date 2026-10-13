@@ -1,0 +1,89 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-10",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.tpl.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\Omega: x^2 + y^2 + z^2 \\leqslant 1$ ，证明 $\\frac{4\\sqrt[3]{2}\\pi}{3} \\leqslant \\iiint_{\\Omega} \\sqrt[3]{x + 2y - 2z + 5} \\mathrm{d}V \\leqslant \\frac{8\\pi}{3}$ .",
+  "answer": "$\\dfrac{4\\sqrt[3]{2}\\pi}{3} \\leqslant \\iiint_{\\Omega}\\sqrt[3]{x+2y-2z+5}\\,\\mathrm{d}V \\leqslant \\dfrac{8\\pi}{3}$（得证）",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分估值",
+    "证明技巧",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需求出被积函数在积分区域上的最大值与最小值，再利用积分的估值定理就可得证."
+      },
+      {
+        "id": "s2",
+        "text": "设 $f(x, y, z) = x + 2y - 2z + 5$ 。由于 $f_x = 1 \\neq 0, f_y = 2 \\neq 0, f_z = -2 \\neq 0$ ，所以函数 $f(x, y, z)$ 在区域 $\\Omega$ 内部无驻点，必在边界上取得最值。"
+      },
+      {
+        "id": "s3",
+        "text": "令 $L(x,y,z,\\lambda) = x + 2y - 2z + 5 + \\lambda (x^2 +y^2 +z^2 -1)$ ，由"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nL _ {x} = 1 + 2 \\lambda x = 0, L _ {y} = 2 + 2 \\lambda y = 0, L _ {z} = - 2 + 2 \\lambda z = 0, L _ {\\lambda} = x ^ {2} + y ^ {2} + z ^ {2} - 1 = 0,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "得驻点 $P_{1}\\left(\\frac{1}{3},\\frac{2}{3},\\frac{-2}{3}\\right),P_{2}\\left(-\\frac{1}{3}, - \\frac{2}{3},\\frac{2}{3}\\right).$"
+      },
+      {
+        "id": "s6",
+        "text": "而 $f(P_{1}) = 8, f(P_{2}) = 2$ ，所以函数 $f(x,y,z)$ 在闭域 $\\Omega$ 上的最大值为 8，最小值为 2."
+      },
+      {
+        "id": "s7",
+        "text": "由于 $f(x,y,z)$ 与 $\\sqrt[3]{f(x,y,z)}$ 同时取得最值，所以函数 $\\sqrt[3]{f(x,y,z)}$ 的最大值为2，最小值为 $\\sqrt[3]{2}$ ，所以有"
+      },
+      {
+        "id": "s8",
+        "text": "$$\n\\frac {4 \\sqrt [ 3 ]{2} \\pi}{3} = \\iiint_ {\\Omega} \\sqrt [ 3 ]{2} d V \\leqslant \\iiint_ {\\Omega} \\sqrt [ 3 ]{x + 2 y - 2 z + 5} d V \\leqslant \\iiint_ {\\Omega} 2 d V = \\frac {8 \\pi}{3}.\n$$"
+      }
+    ],
+    "final_answer": "$\\dfrac{4\\sqrt[3]{2}\\pi}{3} \\leqslant \\iiint_{\\Omega}\\sqrt[3]{x+2y-2z+5}\\,\\mathrm{d}V \\leqslant \\dfrac{8\\pi}{3}$（得证）",
+    "techniques_used": [
+      "积分估值",
+      "证明技巧",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜选直角、柱面还是球面坐标？如何确定积分限（投影法/平行截面/射线）？",
+      "technique": "累次积分",
+      "expected": "根据区域与被积函数选坐标系，写出累次积分上下限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终三重积分结果是什么？",
+      "technique": "证明技巧",
+      "expected": "最值，所以函数 $\\sqrt[3]{f(x,y,z)}$ 的最大值为2，最小值为 $\\sqrt[3]{2}$ ，所以有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 296,
+    "syllabus_note": "三重积分估值不等式",
+    "commentary": "评注 与二重积分一样，只有当被积函数在积分区域上的最大值与最小值相差不大时，这种估计才较好。要得到更好的积分估计，通常是将被积函数做适当放大或缩小来完成。"
+  }
+}

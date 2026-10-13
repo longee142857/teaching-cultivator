@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-04",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.tpl.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $\\iiint_{\\Omega} \\left( \\frac{x}{a} + \\frac{y}{b} + \\frac{z}{c} \\right)^2 \\mathrm{d}V$ ，其中 $\\Omega: x^2 + y^2 + z^2 \\leqslant R^2$ .",
+  "answer": "$I = \\dfrac{4}{15}\\pi R^{5}\\left(\\dfrac{1}{a^{2}}+\\dfrac{1}{b^{2}}+\\dfrac{1}{c^{2}}\\right)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极坐标变换",
+    "对称性",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $\\Omega$ 为球域，宜用球面坐标系计算，利用对称性可使计算更简便."
+      },
+      {
+        "id": "s2",
+        "text": "$$\nI = \\iiint_ {\\Omega} \\left(\\frac {x ^ {2}}{a ^ {2}} + \\frac {y ^ {2}}{b ^ {2}} + \\frac {z ^ {2}}{c ^ {2}} + \\frac {2 x y}{a b} + \\frac {2 y z}{b c} + \\frac {2 z x}{c a}\\right) d V.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $\\Omega$ 关于三坐标面均对称，则"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\iiint_ {\\Omega} \\frac {2 x y}{a b} \\mathrm{d} V = \\iiint_ {\\Omega} \\frac {2 y z}{b c} \\mathrm{d} V = \\iiint_ {\\Omega} \\frac {2 z x}{c a} \\mathrm{d} V = 0,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "再由 $\\Omega$ 关于 $x, y, z$ 轮换对称，有 $\\iiint_{\\Omega} x^2 \\mathrm{d}V = \\iiint_{\\Omega} y^2 \\mathrm{d}V = \\iiint_{\\Omega} z^2 \\mathrm{d}V$ 。因此"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{r l} I & = \\frac {1}{a ^ {2}} \\iiint_ {\\Omega} x ^ {2} \\mathrm{d} V + \\frac {1}{b ^ {2}} \\iiint_ {\\Omega} y ^ {2} \\mathrm{d} V + \\frac {1}{c ^ {2}} \\iiint_ {\\Omega} z ^ {2} \\mathrm{d} V \\\\ & = \\left(\\frac {1}{a ^ {2}} + \\frac {1}{b ^ {2}} + \\frac {1}{c ^ {2}}\\right) \\iiint_ {\\Omega} x ^ {2} \\mathrm{d} V = \\frac {1}{3} \\left(\\frac {1}{a ^ {2}} + \\frac {1}{b ^ {2}} + \\frac {1}{c ^ {2}}\\right) \\iiint_ {\\Omega} (x ^ {2} + y ^ {2} + z ^ {2}) \\mathrm{d} V \\\\ & = \\frac {1}{3} \\left(\\frac {1}{a ^ {2}} + \\frac {1}{b ^ {2}} + \\frac {1}{c ^ {2}}\\right) \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\pi} \\mathrm{d} \\theta \\int_ {0} ^ {R} r ^ {2} \\cdot r ^ {2} \\sin \\theta \\mathrm{d} r = \\frac {4}{1 5} \\pi R ^ {5} \\left(\\frac {1}{a ^ {2}} + \\frac {1}{b ^ {2}} + \\frac {1}{c ^ {2}}\\right). \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$I = \\dfrac{4}{15}\\pi R^{5}\\left(\\dfrac{1}{a^{2}}+\\dfrac{1}{b^{2}}+\\dfrac{1}{c^{2}}\\right)$",
+    "techniques_used": [
+      "极坐标变换",
+      "对称性",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜选直角、柱面还是球面坐标？如何确定积分限（投影法/平行截面/射线）？",
+      "technique": "累次积分",
+      "expected": "根据区域与被积函数选坐标系，写出累次积分上下限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终三重积分结果是什么？",
+      "technique": "对称性",
+      "expected": "I = \\iiint_ {\\Omega} \\left(\\frac {x ^ {2}}{a ^ {2}} + \\frac {y ^ {2}}{b ^ {2}} + \\frac {z ^ {2}}{c ^ {2}} + \\frac {2 x y}{a"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 291,
+    "syllabus_note": "球域+线性型平方+对称",
+    "commentary": "评注（1）三重积分的对称性与二重积分完全类似，见5.1节例7评注.\n\n(2) 轮换对称性：若积分区域 $\\Omega$ 的边界曲面中的 $x, y, z$ 依次轮换 $x \\to y \\to z \\to x$ ，其方程不变，则称 $\\Omega$ 关于 $x, y, z$ 具有轮换对称性。此时有\n\n$$\n\\iiint_ {\\Omega} f (x, y, z) \\mathrm{d} V = \\iiint_ {\\Omega} f (y, z, x) \\mathrm{d} V = \\iiint_ {\\Omega} f (z, x, y) \\mathrm{d} V.\n$$"
+  }
+}

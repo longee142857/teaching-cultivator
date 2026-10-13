@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-03",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.tpl.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $I = \\int_{-1}^{1}\\mathrm{d}x\\int_{0}^{\\sqrt{1 - x^2}}\\mathrm{d}y\\int_{1}^{1 + \\sqrt{1 - x^2 - y^2}}\\frac{1}{\\sqrt{x^2 + y^2 + z^2}}\\mathrm{d}z.$",
+  "answer": "$I = \\dfrac{\\pi}{6}(7 - 4\\sqrt{2})$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "球面坐标",
+    "极坐标变换",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若直接计算，则积分较困难，易知积分区域是球形区域的一部分，被积函数是 $f(x^{2} + y^{2} + z^{2})$ 的类型，因此选用球面坐标系计算为好."
+      },
+      {
+        "id": "s2",
+        "text": "积分区域为 $\\Omega: 1 \\leqslant z \\leqslant 1 + \\sqrt{1 - x^2 - y^2}, 0 \\leqslant y \\leqslant \\sqrt{1 - x^2}, -1 \\leqslant x \\leqslant 1.$"
+      },
+      {
+        "id": "s3",
+        "text": "如图5.19所示，在球面坐标系中，边界曲面 $z = 1 + \\sqrt{1 - x^2 - y^2}$ 和 $z = 1$ 的方程分别为 $r = 2\\cos \\theta$ 和 $r = \\frac{1}{\\cos\\theta}$ 。两曲面的交线满足 $\\theta = \\frac{\\pi}{4}$ 。积分区域为"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\Omega : \\frac {1}{\\cos \\theta} \\leqslant r \\leqslant 2 \\cos \\theta , 0 \\leqslant \\theta \\leqslant \\frac {\\pi}{4}, 0 \\leqslant \\varphi \\leqslant \\pi .\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{l} I = \\iiint_ {\\Omega} \\frac {1}{r} r ^ {2} \\sin \\theta \\mathrm{d} \\theta \\mathrm{d} \\varphi \\mathrm{d} r = \\int_ {0} ^ {\\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\frac {\\pi}{4}} \\sin \\theta \\mathrm{d} \\theta \\int_ {\\frac {1}{\\cos \\theta}} ^ {2 \\cos \\theta} r \\mathrm{d} r \\\\ = \\frac {1}{2} \\pi \\int_ {0} ^ {\\frac {\\pi}{4}} \\sin \\theta \\left(4 \\cos^ {2} \\theta - \\frac {1}{\\cos^ {2} \\theta}\\right) \\mathrm{d} \\theta = \\frac {\\pi}{6} (7 - 4 \\sqrt {2}). \\end{array}\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "图5.19"
+      }
+    ],
+    "final_answer": "$I = \\dfrac{\\pi}{6}(7 - 4\\sqrt{2})$",
+    "techniques_used": [
+      "球面坐标",
+      "极坐标变换",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜选直角、柱面还是球面坐标？如何确定积分限（投影法/平行截面/射线）？",
+      "technique": "球面坐标",
+      "expected": "根据区域与被积函数选坐标系，写出累次积分上下限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终三重积分结果是什么？",
+      "technique": "极坐标变换",
+      "expected": "I = \\iiint_ {\\Omega} \\frac {1}{r} r ^ {2} \\sin \\theta \\mathrm{d} \\theta \\mathrm{d} \\varphi \\mathrm{d} r = \\int_ {0} ^ {\\pi}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 291,
+    "syllabus_note": "累次→球面坐标"
+  }
+}
