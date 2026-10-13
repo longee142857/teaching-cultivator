@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-11",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.multi.int.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设一球面的方程为 $x^{2} + y^{2} + (z + 1)^{2} = 4$ ，从原点向球面上任意一点 $Q$ 处的切平面作垂线，垂足为点 $P$ ，当点 $Q$ 在球面上变动时，点 $P$ 的轨迹形成一封闭曲面 $S$ ，求此封闭曲面 $S$ 所围成的立体 $\\Omega$ 的体积.",
+  "answer": "$V = \\dfrac{40\\pi}{3}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "球面坐标",
+    "极坐标变换",
+    "体积应用",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 问题的关键是求闭曲面 S 的方程，计算体积时再根据方程的特点选取适当的坐标系.\n\n过球面上点 $Q(x_0, y_0, z_0)$ 的切平面的方程为\n\n$$\n\\pi : x _ {0} (x - x _ {0}) + y _ {0} (y - y _ {0}) + (z _ {0} + 1) (z - z _ {0}) = 0,\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "即\n\n$$\nx _ {0} x + y _ {0} y + (z _ {0} + 1) (z + 1) = 4.\\tag{①}\n$$\n\n过原点向该切平面作垂线 $l$ ，其参数方程为\n\n$$\nx = x _ {0} t, y = y _ {0} t, z = (z _ {0} + 1) t \\Rightarrow x _ {0} = \\frac {x}{t}, y _ {0} = \\frac {y}{t}, z _ {0} = \\frac {z}{t} - 1.\\tag{②}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "将②式代入球面方程与切平面方程①，得\n\n$$\nx ^ {2} + y ^ {2} + z ^ {2} = 4 t ^ {2}, \\quad x ^ {2} + y ^ {2} + z ^ {2} + z = 4 t,\n$$\n\n两式消去 t，得 l 与切平面 $\\pi$ 的交点（垂足 P）的轨迹方程为\n\n$$\n\\left(x ^ {2} + y ^ {2} + z ^ {2} + z\\right) ^ {2} = 4 \\left(x ^ {2} + y ^ {2} + z ^ {2}\\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": ". 用球面坐标表示为 $r = 2 - \\cos \\theta$ ，所求体积为\n\n$$\nV = \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\pi} \\sin \\theta d \\theta \\int_ {0} ^ {2 - \\cos \\theta} r ^ {2} d r = \\frac {2 \\pi}{3} \\int_ {0} ^ {\\pi} (2 - \\cos \\theta) ^ {3} d (2 - \\cos \\theta) = \\frac {4 0 \\pi}{3}.\n$$"
+      }
+    ],
+    "final_answer": "$V = \\dfrac{40\\pi}{3}$",
+    "techniques_used": [
+      "球面坐标",
+      "极坐标变换",
+      "体积应用",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何把体积/质量/重心等问题化为三重积分？如何选取坐标系与微元？",
+      "technique": "球面坐标",
+      "expected": "写出三重积分表达式并选定直角/柱面/球面坐标。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终应用结论（体积/质量/重心位置等）是什么？",
+      "technique": "极坐标变换",
+      "expected": "l 与切平面 $\\pi$ 的交点（垂足 P）的轨迹方程为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 296,
+    "syllabus_note": "切平面包络立体体积"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-05",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.tpl.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\Omega$ 是由曲面 $z = y^2, z = 4y^2 (y > 0)$ ，平面 $z = x, z = 2x$ 及 $z = 2$ 所围成的区域。计算下列积分：（1） $\\iiint_{\\Omega} x^2 \\mathrm{d}x \\mathrm{d}y \\mathrm{d}z$ ；（2）\\* $\\iiint_{\\Omega} \\frac{z \\sqrt{z}}{y^3} \\cos \\frac{z}{y^2} \\mathrm{d}x \\mathrm{d}y \\mathrm{d}z$ 。",
+  "answer": "(1) 见题解；(2) $I_2 = \\dfrac{4\\sqrt{2}}{7}(\\sin 4 - \\sin 1)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "球面坐标",
+    "柱面坐标",
+    "变量代换",
+    "累次积分",
+    "体积应用"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）积分区域由柱面与平面所围成，宜选用直角坐标系，先对 $x$ 积分，再将 $\\Omega$ 向 $yOz$ 面投影，做二重积分；\n\n（2）采用（1）中的方法直接积分较困难. 可利用换元积分法，化简被积函数，再做积分.\n\n解（1）如图5.20所示， $\\Omega$ 在 yOz 面上的投影区域为 D： $\\left\\{\\begin{aligned}\\frac{1}{2}\\sqrt{z}&\\leqslant y\\leqslant\\sqrt{z}\\\\ 0&\\leqslant z\\leqslant2\\end{aligned}\\right.$ 所以\n\n$$\nI _ {1} = \\iint_ {D} \\mathrm{d} y \\mathrm{d} z \\int_ {\\frac {1}{2} z} ^ {z} x ^ {2} \\mathrm{d} x = \\int_ {0} ^ {2} \\mathrm{d} z \\int_ {\\frac {1}{2} \\sqrt {z}} ^ {\\sqrt {z}} \\mathrm{d} y \\int_ {\\frac {1}{2} z} ^ {z} x ^ {2} \\mathrm{d} x = \\frac {1 4}{2 7} \\sqrt {2}.\n$$\n\n(2) 令 $u = \\frac{z}{y^2}$ , $v = \\frac{z}{x}$ , $z = z$ , 即 $x = \\frac{z}{v}$ , $y = \\sqrt{\\frac{z}{u}}$ , $z = z$ , 则 $\\Omega$ 变成\n\n图5.20\n\n$$\n\\overline {{{\\Omega}}}: 0 \\leqslant z \\leqslant 2, 1 \\leqslant v \\leqslant 2, 1 \\leqslant u \\leqslant 4.\n$$\n\n且\n\n$$\nJ = \\frac {\\partial (x , y , z)}{\\partial (u , v , z)} = \\left| \\begin{array}{c c c} 0 & - \\frac {z}{v ^ {2}} & \\frac {1}{v} \\\\ - \\frac {1}{2} \\sqrt {\\frac {z}{u ^ {3}}} & 0 & \\frac {1}{2} \\sqrt {\\frac {1}{u z}} \\\\ 0 & 0 & 1 \\end{array} \\right| = - \\frac {z}{2 v ^ {2}} \\left(\\frac {z}{u}\\right) ^ {3 / 2}.\n$$\n\n所以\n\n$$\n\\begin{array}{l} I _ {2} = \\iiint_ {\\Omega} (u) ^ {3 / 2} \\cos u \\cdot | J | d u d v d z = \\iiint_ {\\Omega} (u) ^ {3 / 2} \\cos u \\cdot \\frac {z}{2 v ^ {2}} \\left(\\frac {z}{u}\\right) ^ {3 / 2} d u d v d z \\\\ = \\frac {1}{2} \\int_ {1} ^ {4} \\cos u d u \\int_ {1} ^ {2} \\frac {1}{v ^ {2}} d v \\int_ {0} ^ {2} z ^ {5 / 2} d z = \\frac {4 \\sqrt {2}}{7} (\\sin 4 - \\sin 1). \\end{array"
+      },
+      {
+        "id": "s2",
+        "text": "分析（1）积分区域由柱面与平面所围成，宜选用直角坐标系，先对 $x$ 积分，再将 $\\Omega$ 向 $yOz$ 面投影，做二重积分；\n\n（2）采用（1）中的方法直接积分较困难. 可利用换元积分法，化简被积函数，再做积分.\n\n解（1）如图5.20所示， $\\Omega$ 在 yOz 面上的投影区域为 D： $\\left\\{\\begin{aligned}\\frac{1}{2}\\sqrt{z}&\\leqslant y\\leqslant\\sqrt{z}\\\\ 0&\\leqslant z\\leqslant2\\end{aligned}\\right.$ 所以\n\n$$\nI _ {1} = \\iint_ {D} \\mathrm{d} y \\mathrm{d} z \\int_ {\\frac {1}{2} z} ^ {z} x ^ {2} \\mathrm{d} x = \\int_ {0} ^ {2} \\mathrm{d} z \\int_ {\\frac {1}{2} \\sqrt {z}} ^ {\\sqrt {z}} \\mathrm{d} y \\int_ {\\frac {1}{2} z} ^ {z} x ^ {2} \\mathrm{d} x = \\frac {1 4}{2 7} \\sqrt {2}.\n$$\n\n![](images/66ae924a8d43c4359a3fd04d37a5c0fb4fc95651168c1ca538fd7f39ace2abbc.jpg)"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 令 $u = \\frac{z}{y^2}$ , $v = \\frac{z}{x}$ , $z = z$ , 即 $x = \\frac{z}{v}$ , $y = \\sqrt{\\frac{z}{u}}$ , $z = z$ , 则 $\\Omega$ 变成\n\n图5.20\n\n$$\n\\overline {{{\\Omega}}}: 0 \\leqslant z \\leqslant 2, 1 \\leqslant v \\leqslant 2, 1 \\leqslant u \\leqslant 4.\n$$\n\n且\n\n$$\nJ = \\frac {\\partial (x , y , z)}{\\partial (u , v , z)} = \\left| \\begin{array}{c c c} 0 & - \\frac {z}{v ^ {2}} & \\frac {1}{v} \\\\ - \\frac {1}{2} \\sqrt {\\frac {z}{u ^ {3}}} & 0 & \\frac {1}{2} \\sqrt {\\frac {1}{u z}} \\\\ 0 & 0 & 1 \\end{array} \\right| = - \\frac {z}{2 v ^ {2}} \\left(\\frac {z}{u}\\right) ^ {3 / 2}.\n$$\n\n所以\n\n$$\n\\begin{array}{l} I _ {2} = \\iiint_ {\\Omega} (u) ^ {3 / 2} \\cos u \\cdot | J | d u d v d z = \\iiint_ {\\Omega} (u) ^ {3 / 2} \\cos u \\cdot \\frac {z}{2 v ^ {2}} \\left(\\frac {z}{u}\\right) ^ {3 / 2} d u d v d z \\\\ = \\frac {1}{2} \\int_ {1} ^ {4} \\cos u d u \\int_ {1} ^ {2} \\frac {1}{v ^ {2}} d v \\int_ {0} ^ {2} z ^ {5 / 2} d z = \\frac {4 \\sqrt {2}}{7} (\\sin 4 - \\sin 1). \\end{array}\n$$\n\n评注 （1）若空间积分区域作图有困难，可画出它在坐标平面上的投影区域，以帮助正确确定积分限.\n\n（2）做换元积分要兼顾被积函数与积分区域，使积分容易计算。柱面坐标系与球面坐标系均属于换元积分法的特例。"
+      }
+    ],
+    "final_answer": "(1) 见题解；(2) $I_2 = \\dfrac{4\\sqrt{2}}{7}(\\sin 4 - \\sin 1)$",
+    "techniques_used": [
+      "球面坐标",
+      "柱面坐标",
+      "变量代换",
+      "累次积分",
+      "体积应用"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题宜选直角、柱面还是球面坐标？如何确定积分限（投影法/平行截面/射线）？",
+      "technique": "球面坐标",
+      "expected": "根据区域与被积函数选坐标系，写出累次积分上下限。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终三重积分结果是什么？",
+      "technique": "柱面坐标",
+      "expected": "要兼顾被积函数与积分区域，使积分容易计算。柱面坐标系与球面坐标系均属于换元积分法的特例。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 292,
+    "syllabus_note": "换元/柱面与直角",
+    "commentary": "评注 （1）若空间积分区域作图有困难，可画出它在坐标平面上的投影区域，以帮助正确确定积分限.\n\n（2）做换元积分要兼顾被积函数与积分区域，使积分容易计算。柱面坐标系与球面坐标系均属于换元积分法的特例。"
+  }
+}

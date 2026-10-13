@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-14",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.multi.int.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "有一形状为 $x^{2} + y^{2}\\leqslant z\\leqslant 1$ 的均匀物体，斜放置于水平桌面上，试求物体静止时的位置（即求轴线与桌面的夹角 $\\theta$ ）.",
+  "answer": "$\\theta = \\arctan\\sqrt{\\dfrac{3}{2}}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "对称性",
+    "物理应用",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 物体静止时的位置一定是其重心与桌面距离最近的位置，而桌面又是抛物面 $z = x^{2} + y^{2}$ 的切平面，故问题求解的关键在于求出对应的切点. 切平面确定后就容易得到所求的夹角 $\\theta$ ."
+      },
+      {
+        "id": "s2",
+        "text": "由于物体为关于 z 轴对称的旋转体，所以质心在 z 轴上，设为 $A(0,0,\\overline{z})$ .\n\n$$\n\\overline {{{z}}} = \\frac {\\iiint_ {V} z \\mathrm{d} V}{\\iiint_ {V} \\mathrm{d} V} = \\frac {\\int_ {0} ^ {1} z \\mathrm{d} z \\iint_ {D _ {z}} \\mathrm{d} x \\mathrm{d} y}{\\int_ {0} ^ {1} \\mathrm{d} z \\iint_ {D _ {z}} \\mathrm{d} x \\mathrm{d} y} = \\frac {\\int_ {0} ^ {1} z \\pi z \\mathrm{d} z}{\\int_ {0} ^ {1} \\pi z \\mathrm{d} z} = \\frac {2}{3}.\n$$\n\n为简化问题，不妨设切点 $B$ 在 $yOz$ 面上，于是化为求 $yOz$ 面上的抛物线 $z = y^2$ 离点 $A\\left(0, \\frac{2}{3}\\right)$ 最近的切线，然后求此切线和 $z$ 轴的夹角 $\\theta$ ，如图5.23(a)所示.\n\n(a)\n\n(b)\n图5.23"
+      },
+      {
+        "id": "s3",
+        "text": "方法1 设 $(y, y^2)$ 是抛物线上任意一点，过此点的切线方程为\n\n$Z - y^{2} = 2y(Y - y)$ ，即 $2yY - Z - y^{2} = 0$\n\n点 $A\\left(0, \\frac{2}{3}\\right)$ 到此切线的距离为\n\n$$\nd = \\frac {\\left| - \\frac {2}{3} - y ^ {2} \\right|}{\\sqrt {4 y ^ {2} + 1}} = \\frac {y ^ {2} + \\frac {2}{3}}{\\sqrt {4 y ^ {2} + 1}}.\n$$\n\n令 $f(y) = d^{2} = \\frac{9y^{4} + 12y^{2} + 4}{36y^{2} + 9}$ $(0\\leqslant y\\leqslant 1)$ ，由 $f^{\\prime}(y) = \\frac{36y(18y^{4} + 9y^{2} - 2)}{(36y^{2} + 9)^{2}} = 0$ ，得 $y = 0$ 或 $y = \\frac{1}{\\sqrt{6}}$ 而 $d^2 (0) = \\frac{4}{9},\\quad d^2\\left(\\frac{1}{\\sqrt{6}}\\right) = \\frac{5}{12},\\quad d^2 (1) = \\frac{5}{9}.$ 经比较，知当 $y = \\frac{1}{\\sqrt{6}}$ 时， $d$ 取得最小值.\n\n此时切线斜率为 $\\frac{\\mathrm{d}z}{\\mathrm{d}y} = 2y = \\sqrt{\\frac{2}{3}} = \\tan \\alpha$ ，由于 $\\theta +\\alpha = \\frac{\\pi}{2}$ ，故有 $\\tan \\theta = \\sqrt{\\frac{3}{2}},\\quad \\theta = \\arctan \\sqrt{\\frac{3}{2}}.$"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 如图5.23(b)所示，当处于稳定平衡时，切点 $B(y,z)$ 处的法线必过重心 $A\\left(0,\\frac{2}{3}\\right)$ ，由此得法线的斜率 $k_{1} = \\frac{z - \\frac{2}{3}}{y}$ ；切线斜率 $k_{2} = 2y$ 。由 $k_{1} \\cdot k_{2} = -1$ ，得 $z = \\frac{1}{6}$ ，故 $y = \\sqrt{\\frac{1}{6}}$ 。这样，切线斜率 $k_{2} = \\sqrt{\\frac{2}{3}}$ ，即 $\\tan \\alpha = \\sqrt{\\frac{2}{3}}$ ，于是 $\\tan \\theta = \\frac{1}{\\tan \\alpha} = \\sqrt{\\frac{3}{2}}$ ，即 $\\theta = \\arctan \\sqrt{\\frac{3}{2}}$ 。"
+      }
+    ],
+    "final_answer": "$\\theta = \\arctan\\sqrt{\\dfrac{3}{2}}$",
+    "techniques_used": [
+      "对称性",
+      "物理应用",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何把体积/质量/重心等问题化为三重积分？如何选取坐标系与微元？",
+      "technique": "物理应用",
+      "expected": "写出三重积分表达式并选定直角/柱面/球面坐标。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终应用结论（体积/质量/重心位置等）是什么？",
+      "technique": "物理应用",
+      "expected": "法线的斜率 $k_{1} = \\frac{z - \\frac{2}{3}}{y}$ ；切线斜率 $k_{2} = 2y$ 。由 $k_{1} \\cdot k_{2} = -1$ ，得 $z = \\frac{1}{6}$ ，故 $y = \\sqrt{\\frac{1}{6}}$ 。这样，切线斜率 $k_{2} = \\sqrt{\\frac{2}{3}}$ ，即 $\\tan \\alpha = \\sqrt{"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 298,
+    "syllabus_note": "抛物柱体静置平衡角",
+    "commentary": "评注 题设条件已给出物体所在空间区域的解析表达式, 所以坐标系已经建立. 题解的首要任务是要将待解问题用准确的数学语言来描述, 然后用正确的方法求解."
+  }
+}

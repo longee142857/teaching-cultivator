@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.2-ex-06",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.multi.int.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "某物体所在的空间区域为 $\\Omega: x^2 + y^2 + 2z^2 \\leqslant x + y + 2z$ ，密度函数为 $x^2 + y^2 + z^2$ ，求质量 $M = \\iiint_{\\Omega} (x^2 + y^2 + z^2) \\, \\mathrm{d}x \\, \\mathrm{d}y \\, \\mathrm{d}z$ .",
+  "answer": "$M = \\dfrac{5\\sqrt{2}}{6}\\pi$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "球面坐标",
+    "极坐标变换",
+    "对称性",
+    "体积应用",
+    "物理应用"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $\\Omega$ 为椭球形区域，适宜选择广义球面坐标变换。但椭球中心不在坐标原点，需做平移。"
+      },
+      {
+        "id": "s2",
+        "text": "做平移变换，令 $x - \\frac{1}{2} = u, y - \\frac{1}{2} = v, z - \\frac{1}{2} = w$ ， $\\Omega$ 化为 $\\Omega: u^2 + v^2 + 2w^2 \\leqslant 1$ ，体积微元 $\\mathrm{d}V = \\mathrm{d}x\\mathrm{d}y\\mathrm{d}z = \\mathrm{d}u\\mathrm{d}v\\mathrm{d}w$ ，并应用三重积分的奇偶、对称性得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{l} M = \\iiint_ {\\Omega_ {1}} \\left(\\frac {1}{4} + u + u ^ {2} + \\frac {1}{4} + v + v ^ {2} + \\frac {1}{4} + w + w ^ {2}\\right) d u d v d w \\\\ = \\frac {3}{4} V (\\Omega_ {1}) + 0 + \\iiint_ {\\Omega_ {1}} (u ^ {2} + v ^ {2} + w ^ {2}) d u d v d w \\\\ = \\frac {\\sqrt {2}}{2} \\pi + \\iiint_ {\\Omega_ {1}} (u ^ {2} + v ^ {2} + w ^ {2}) d u d v d w. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "再做广义球面坐标变换，令 $u = r\\sin \\theta \\cos \\varphi, v = r\\sin \\theta \\sin \\varphi, w = \\frac{1}{\\sqrt{2}} r\\cos \\theta,$ 则 $|J| = \\frac{1}{\\sqrt{2}} r^2\\sin \\theta$"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\iiint_ {\\Omega_ {1}} (u ^ {2} + v ^ {2} + w ^ {2}) \\mathrm{d} u \\mathrm{d} v \\mathrm{d} w & = \\frac {1}{\\sqrt {2}} \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\pi} \\mathrm{d} \\theta \\int_ {0} ^ {1} \\left(r ^ {2} \\sin^ {2} \\theta + \\frac {1}{2} r ^ {2} \\cos^ {2} \\theta\\right) r ^ {2} \\sin \\theta \\mathrm{d} r \\\\ & = \\frac {\\sqrt {2} \\pi}{5} \\int_ {0} ^ {\\pi} \\left(\\sin^ {2} \\theta + \\frac {1}{2} \\cos^ {2} \\theta\\right) \\sin \\theta \\mathrm{d} \\theta \\\\ & = \\frac {\\sqrt {2} \\pi}{5} \\left(\\frac {1}{6} \\cos^ {3} \\theta - \\cos \\theta\\right) \\Bigg | _ {0} ^ {\\pi} = \\frac {\\sqrt {2}}{3} \\pi . \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "于是 $M = \\frac{\\sqrt{2}}{2}\\pi +\\frac{\\sqrt{2}}{3}\\pi = \\frac{5\\sqrt{2}}{6}\\pi .$"
+      }
+    ],
+    "final_answer": "$M = \\dfrac{5\\sqrt{2}}{6}\\pi$",
+    "techniques_used": [
+      "球面坐标",
+      "极坐标变换",
+      "对称性",
+      "体积应用",
+      "物理应用"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何把体积/质量/重心等问题化为三重积分？如何选取坐标系与微元？",
+      "technique": "球面坐标",
+      "expected": "写出三重积分表达式并选定直角/柱面/球面坐标。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终应用结论（体积/质量/重心位置等）是什么？",
+      "technique": "极坐标变换",
+      "expected": "微元 $\\mathrm{d}V = \\mathrm{d}x\\mathrm{d}y\\mathrm{d}z = \\mathrm{d}u\\mathrm{d}v\\mathrm{d}w$ ，并应用三重积分的奇偶、对称性得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.2",
+    "example_id": "例6*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "三重积分",
+    "page": 293,
+    "starred": true,
+    "syllabus_note": "椭球质量+球面坐标*"
+  }
+}
