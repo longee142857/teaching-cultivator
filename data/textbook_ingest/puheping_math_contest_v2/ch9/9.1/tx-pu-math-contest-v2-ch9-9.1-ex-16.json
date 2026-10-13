@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-16",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.rank",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A$ 是对角元素全为0，其余元素全大于0的 $n$ 阶矩阵，求 $\\operatorname{rank}(A)$ 的最小值.",
+  "answer": "1的矩阵之和，它的秩最多为3. 所以 $\\operatorname{rank}(A) = 3$ 综上可知",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "矩阵秩",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 显然矩阵的秩与矩阵的阶数有关. 当 $n \\leqslant 3$ 时, 可具体计算并求得秩; 当 $n > 3$ 时, 就很难具体计算了, 只能通过矩阵秩的性质去猜想、构造, 找到秩最小的矩阵例子.\n\n当 $n = 1$ 时， $A$ 是零矩阵， $\\operatorname{rank}(A) = 0$ ；\n\n当 $n = 2$ 时， $|A| = \\begin{vmatrix} 0 & a \\\\ b & 0 \\end{vmatrix} = -ab < 0$ ， $\\operatorname{rank}(A) = 2$ ；"
+      },
+      {
+        "id": "s2",
+        "text": "当 $n = 3$ 时， $|A| = \\begin{vmatrix} 0 & a_{12} & a_{13} \\\\ a_{21} & 0 & a_{23} \\\\ a_{31} & a_{32} & 0 \\end{vmatrix} = a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32} > 0$ ， $\\operatorname{rank}(A) = 3$ ；\n\n①\n\n当 $n > 3$ 时，由①式知 $\\pmb{A}$ 的三阶顺序主子式大于0，所以 $\\operatorname{rank}(A) \\geqslant 3$ ；构造矩阵"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\boldsymbol {A} = \\left( \\begin{array}{c} 1 ^ {2} \\\\ 2 ^ {2} \\\\ \\vdots \\\\ n ^ {2} \\end{array} \\right) (1 \\quad 1 \\quad \\dots \\quad 1) - 2 \\left( \\begin{array}{c} 1 \\\\ 2 \\\\ \\vdots \\\\ n \\end{array} \\right) (1 \\quad 2 \\quad \\dots \\quad n) + \\left( \\begin{array}{c} 1 \\\\ 1 \\\\ \\vdots \\\\ 1 \\end{array} \\right) (1 ^ {2} \\quad 2 ^ {2} \\quad \\dots \\quad n ^ {2})"
+      },
+      {
+        "id": "s4",
+        "text": "= \\left( \\begin{array}{c c c c c} 0 & 1 ^ {2} & 2 ^ {2} & \\dots & (n - 1) ^ {2} \\\\ (- 1) ^ {2} & 0 & 1 ^ {2} & \\dots & (n - 2) ^ {2} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ (1 - n) ^ {2} & (2 - n) ^ {2} & (3 - n) ^ {2} & \\dots & 0 \\end{array} \\right).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "该矩阵满足题设条件，由于该矩阵是三个秩为1的矩阵之和，它的秩最多为3. 所以 $\\operatorname{rank}(A) = 3$ 综上可知\n\n$$\n\\min \\left\\{\\operatorname{rank} (A) \\right\\} = \\left\\{ \\begin{array}{l l} 0, & n = 1, \\\\ 2, & n = 2, \\\\ 3, & n \\geqslant 3. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "1的矩阵之和，它的秩最多为3. 所以 $\\operatorname{rank}(A) = 3$ 综上可知",
+    "techniques_used": [
+      "矩阵秩",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用初等变换、分块或秩不等式建立关系？",
+      "technique": "矩阵秩",
+      "expected": "建立秩的等式/不等式并完成论证。"
+    },
+    {
+      "id": "c2",
+      "prompt": "秩相关结论是什么？",
+      "technique": "矩阵运算",
+      "expected": "1的矩阵之和，它的秩最多为3. 所以 $\\operatorname{rank}(A) = 3$ 综上可知"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 472,
+    "syllabus_note": "零对角正非对角矩阵秩下界",
+    "commentary": "评注 当 $n > 3$ 时，题中的例子是根据矩阵的“秩1和分解”与“满秩分解”而想到的（见例14）."
+  }
+}

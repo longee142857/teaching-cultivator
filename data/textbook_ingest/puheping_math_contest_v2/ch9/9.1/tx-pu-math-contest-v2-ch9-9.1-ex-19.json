@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-19",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.ops",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A_{1}, A_{2}, \\cdots, A_{m}$ 为 $n$ 阶方阵，适合条件 $A_{1} + A_{2} + \\cdots + A_{m} = I_{n}$ . 证明下列 3 个命题等价：\n\n(1) $A_{1},A_{2},\\cdots,A_{m}$ 都是幂等矩阵;\n\n(2) $\\operatorname{rank}(A_1) + \\operatorname{rank}(A_2) + \\dots + \\operatorname{rank}(A_m) = n$ ;\n\n(3) 当 $1 \\leqslant i, j \\leqslant n$ 且 $i \\neq j$ 时，有 $A_{i}A_{j} = 0$ （称 $A_{i}$ 与 $A_{j}$ 正交）.",
+  "answer": "$M_{11} = I_r$ 。则有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分块矩阵",
+    "伴随与逆矩阵",
+    "矩阵秩",
+    "证明技巧",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 采用(1)⇒(2)⇒(3)⇒(1)的方式."
+      },
+      {
+        "id": "s2",
+        "text": "$(1) \\Rightarrow (2)$ ：首先证明“幂等矩阵的秩等于它的迹”\n\n设 $A$ 是 $n$ 阶幂等矩阵，且 $\\operatorname{rank}(A) = r$ ，则存在可逆矩阵 $P, Q$ 使得\n\n$$\n\\boldsymbol {A} = \\boldsymbol {P} \\left( \\begin{array}{c c} \\boldsymbol {I} _ {r} & \\boldsymbol {0} \\\\ \\boldsymbol {0} & \\boldsymbol {0} \\end{array} \\right) \\boldsymbol {Q}.\n$$\n\n由 $A^2 = A$ 得\n\n$$\n\\begin{array}{r l} P \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q P \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q & = P \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q \\\\ & \\Rightarrow \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q P \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) = \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right). \\end{array}\\tag{①}\n$$\n\n将 $QP$ 分块，记 $QP = \\begin{pmatrix} M_{11} & M_{12} \\\\ M_{21} & M_{22} \\end{pmatrix}$ ，代入①式可得 $M_{11} = I_r$ 。则有\n\n$$\n\\operatorname{tr} (A) = \\operatorname{tr} \\left(P \\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q\\right) = \\operatorname{tr} \\left(\\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) Q P\\right)\n\n= \\operatorname{tr} \\left(\\left( \\begin{array}{c c} I _ {r} & 0 \\\\ 0 & 0 \\end{array} \\right) \\left( \\begin{array}{c c} I _ {r} & M _ {1 2} \\\\ M _ {2 1} & M _ {2 2} \\end{array} \\right)\\right) = \\operatorname{tr} \\left(\\left( \\begin{array}{c c} I _ {r} & M _ {1 2} \\\\ 0 & 0 \\end{array} \\right)\\right) = r.\n$$\n\n若 $A_{1}, A_{2}, \\cdots, A_{m}$ 都是幂等矩阵，则由上面的结论得\n\n$$\n\\sum_ {i = 1} ^ {m} \\operatorname{rank} (A _ {i}) = \\sum_ {i = 1} ^ {m} \\operatorname{tr} (A _ {i}) = \\operatorname{tr} (I _ {n}) = n.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) $\\Rightarrow$ (3): 考虑 $n^{2} \\times n^{2}$ 块对角矩阵.\n\n$$\n\\left( \\begin{array}{c c c c c} A _ {1} & & & & \\\\ & A _ {2} & & & \\\\ & & A _ {3} & & \\\\ & & & \\ddots & \\\\ & & & & A _ {m} \\end{array} \\right) \\xrightarrow [ i = 2 , \\cdots m ]{(I) r _ {i} + r _ {1}} \\left( \\begin{array}{c c c c c} A _ {1} & A _ {2} & A _ {3} & \\dots & A _ {m} \\\\ & A _ {2} & & \\\\ & & A _ {3} & \\\\ & & & \\ddots \\\\ & & & & A _ {m} \\end{array} \\right) \\xrightarrow [ i = 2 , \\cdots m ]{c _ {i} (I) + c _ {1}} \\left( \\begin{array}{c c c c c} I _ {n} & A _ {2} & A _ {3} & \\dots & A _ {m} \\\\ A _ {2} & A _ {2} & & \\\\ A _ {3} & & A _ {3} & \\\\ \\vdots & & & \\ddots \\\\ A _ {m} & & & & A _ {m} \\end{array} \\right)\n\n\\xrightarrow [ i = 2 , \\cdots m ]{c _ {1} (- A _ {i}) + c _ {i}} \\left( \\begin{array}{c c c c c} I _ {n} & 0 & 0 & \\dots & 0 \\\\ A _ {2} & A _ {2} - A _ {2} ^ {2} & - A _ {2} A _ {3} & \\dots & - A _ {2} A _ {m} \\\\ A _ {3} & - A _ {3} A _ {2} & A _ {3} - A _ {3} ^ {2} & \\dots & - A _ {3} A _ {m} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ A _ {m} & - A _ {m} A _ {2} & - A _ {m} A _ {3} & \\dots & A _ {m} - A _ {m} ^ {2} \\end{array} \\right) \\xrightarrow [ i = 2 , \\cdots m ]{(- A _ {i}) r _ {1} + r _ {i}} \\left( \\begin{array}{c c c c c} I _ {n} & 0 & 0 & \\dots & 0 \\\\ 0 & A _ {2} - A _ {2} ^ {2} & - A _ {2} A _ {3} & \\dots & - A _ {2} A _ {m} \\\\ 0 & - A _ {3} A _ {2} & A _ {3} - A _ {3} ^ {2} & \\dots & - A _ {3} A _ {m} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 0 & - A _ {m} A _ {2} & - A _ {m} A _ {3} & \\dots & A _ {m} - A _ {m} ^ {2} \\end{array} \\right).\n$$\n\n所以 $\\mathrm{rank}(A_{1})+\\mathrm{rank}(A_{2})+\\cdots+\\mathrm{rank}(A_{m})=n$ ，当且仅当右下角的 $(n^{2}-n)\\times(n^{2}-n)$ 阶矩阵为 0，即 $A_{i}(i\\geqslant2)$ 都是幂等矩阵且相互正交.\n\n对 $i = 1$ 的情况，在等式 $A_{1} + A_{2} + \\dots +A_{m} = I_{n}$ 两边，左乘 $A_{j}(j\\geqslant 2)$ ，有\n\n$$\nA _ {j} A _ {1} + A _ {j} ^ {2} = A _ {j} \\Rightarrow A _ {j} A _ {1} = 0.\n$$\n\n所以命题（3）成立."
+      },
+      {
+        "id": "s4",
+        "text": "(3) $\\Rightarrow(1)$ ：在等式 $A_{1}+A_{2}+\\cdots+A_{m}=I_{n}$ 两边，左乘 $A_{1}$ ，有\n\n$$\nA _ {1} ^ {2} + A _ {1} \\left(A _ {2} + \\dots + A _ {m}\\right) = A _ {1} \\Rightarrow A _ {1} ^ {2} = A _ {1}.\n$$\n\n这说明 $A_{1}$ 是幂等矩阵，对其他 $A_{i}$ 也完全类似，这就完成了全部证明."
+      }
+    ],
+    "final_answer": "$M_{11} = I_r$ 。则有",
+    "techniques_used": [
+      "分块矩阵",
+      "伴随与逆矩阵",
+      "矩阵秩",
+      "证明技巧",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "矩阵运算、等价标准形或对称性条件如何切入？",
+      "technique": "证明技巧",
+      "expected": "选定矩阵变换或代数恒等式路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论是什么？",
+      "technique": "伴随与逆矩阵",
+      "expected": "$M_{11} = I_r$ 。则有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例19*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 474,
+    "starred": true,
+    "syllabus_note": "幂等正交分解三命题等价*",
+    "commentary": "评注（1）该题的结论又称为矩阵的“正交幂等性质”.\n\n(2) 注意在该题证明中得到的另一个结论：若 $A$ 是幂等矩阵，则 $\\operatorname{rank}(A) = \\operatorname{tr}(A)$ .\n\n(3) 通过此题可再次休会上题评注的意义."
+  }
+}

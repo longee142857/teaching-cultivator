@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-06",
+  "subject": "math",
+  "l2": "行列式",
+  "l3_id": "math.linalg.det.vandermonde",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\omega \\neq 1$ 是五次单位根， $D = \\begin{vmatrix} 1 & \\omega & \\omega^2 & \\omega^3 \\\\ 1 & \\omega^2 & \\omega^4 & \\omega \\\\ 1 & \\omega^3 & \\omega & \\omega^4 \\\\ 1 & \\omega^4 & \\omega^3 & \\omega^2 \\end{vmatrix}$ ，求 $|D|$ .",
+  "answer": "(2) 前面几个例子给出了行列式计算的常见方法，读者可自行归纳总结.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特殊/范德蒙德型",
+    "伴随与逆矩阵",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由五次单位根的特点 $\\omega^5 = 1$ ， $\\omega^{5 + i} = \\omega^i$ ，做行列式乘法 $DD$ 或 $DD^{\\mathrm{T}}$ 通常能化简行列式。解 因为 $\\omega$ 是五次单位根，则\n\n$$\n0 = 1 - \\omega^ {5} = (1 - \\omega) \\left(1 + \\omega + \\omega^ {2} + \\omega^ {3} + \\omega^ {4}\\right) \\xrightarrow {\\omega \\neq 1} 1 + \\omega + \\omega^ {2} + \\omega^ {3} + \\omega^ {4} = 0.\n\n| D | = \\sqrt {D ^ {2}} = \\sqrt {\\left( \\begin{array}{c c c c} 1 & \\omega & \\omega^ {2} & \\omega^ {3} \\\\ 1 & \\omega^ {2} & \\omega^ {4} & \\omega \\\\ 1 & \\omega^ {3} & \\omega & \\omega^ {4} \\\\ 1 & \\omega^ {4} & \\omega^ {3} & \\omega^ {2} \\end{array} \\right) \\left( \\begin{array}{c c c c} 1 & \\omega & \\omega^ {2} & \\omega^ {3} \\\\ 1 & \\omega^ {2} & \\omega^ {4} & \\omega \\\\ 1 & \\omega^ {3} & \\omega & \\omega^ {4} \\\\ 1 & \\omega^ {4} & \\omega^ {3} & \\omega^ {2} \\end{array}\\right)}\n\n= \\sqrt {\\left| \\begin{array}{l l l l} - \\omega^ {4} & - \\omega^ {4} & - \\omega^ {4} & - \\omega^ {4} \\\\ - \\omega^ {3} & - \\omega^ {3} & - \\omega^ {3} & 4 \\omega^ {3} \\\\ - \\omega^ {2} & - \\omega^ {2} & 4 \\omega^ {2} & - \\omega^ {2} \\\\ - \\omega & 4 \\omega & - \\omega & - \\omega \\end{array} \\right|} = \\sqrt {(- \\omega^ {4}) (- \\omega^ {3}) (- \\omega^ {2}) (- \\omega)} \\left| \\begin{array}{r r r r} 1 & 1 & 1 & 1 \\\\ 1 & 1 & 1 & - 4 \\\\ 1 & 1 & - 4 & 1 \\\\ 1 & - 4 & 1 & 1 \\end{array} \\right|\n\n= \\sqrt {\\left| \\begin{array}{c c c c} 1 & 0 & 0 & 0 \\\\ 1 & 0 & 0 & - 5 \\\\ 1 & 0 & - 5 & 0 \\\\ 1 & - 5 & 0 & 0 \\end{array} \\right|} = \\sqrt {1 2 5} = 5 \\sqrt {5}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 由五次单位根的特点 $\\omega^5 = 1$ ， $\\omega^{5 + i} = \\omega^i$ ，做行列式乘法 $DD$ 或 $DD^{\\mathrm{T}}$ 通常能化简行列式。解 因为 $\\omega$ 是五次单位根，则\n\n$$\n0 = 1 - \\omega^ {5} = (1 - \\omega) \\left(1 + \\omega + \\omega^ {2} + \\omega^ {3} + \\omega^ {4}\\right) \\xrightarrow {\\omega \\neq 1} 1 + \\omega + \\omega^ {2} + \\omega^ {3} + \\omega^ {4} = 0.\n$$\n\n$$\n| D | = \\sqrt {D ^ {2}} = \\sqrt {\\left( \\begin{array}{c c c c} 1 & \\omega & \\omega^ {2} & \\omega^ {3} \\\\ 1 & \\omega^ {2} & \\omega^ {4} & \\omega \\\\ 1 & \\omega^ {3} & \\omega & \\omega^ {4} \\\\ 1 & \\omega^ {4} & \\omega^ {3} & \\omega^ {2} \\end{array} \\right) \\left( \\begin{array}{c c c c} 1 & \\omega & \\omega^ {2} & \\omega^ {3} \\\\ 1 & \\omega^ {2} & \\omega^ {4} & \\omega \\\\ 1 & \\omega^ {3} & \\omega & \\omega^ {4} \\\\ 1 & \\omega^ {4} & \\omega^ {3} & \\omega^ {2} \\end{array}\\right)}\n$$\n\n$$\n= \\sqrt {\\left| \\begin{array}{l l l l} - \\omega^ {4} & - \\omega^ {4} & - \\omega^ {4} & - \\omega^ {4} \\\\ - \\omega^ {3} & - \\omega^ {3} & - \\omega^ {3} & 4 \\omega^ {3} \\\\ - \\omega^ {2} & - \\omega^ {2} & 4 \\omega^ {2} & - \\omega^ {2} \\\\ - \\omega & 4 \\omega & - \\omega & - \\omega \\end{array} \\right|} = \\sqrt {(- \\omega^ {4}) (- \\omega^ {3}) (- \\omega^ {2}) (- \\omega)} \\left| \\begin{array}{r r r r} 1 & 1 & 1 & 1 \\\\ 1 & 1 & 1 & - 4 \\\\ 1 & 1 & - 4 & 1 \\\\ 1 & - 4 & 1 & 1 \\end{array} \\right|\n$$\n\n$$\n= \\sqrt {\\left| \\begin{array}{c c c c} 1 & 0 & 0 & 0 \\\\ 1 & 0 & 0 & - 5 \\\\ 1 & 0 & - 5 & 0 \\\\ 1 & - 5 & 0 & 0 \\end{array} \\right|} = \\sqrt {1 2 5} = 5 \\sqrt {5}.\n$$\n\n评注（1）若行列式 $D$ 中的元素对幂运算有周期性，或行列式的行（或列）向量组有正交性，做行列式乘法 $DD$ 或 $DD^{\\mathrm{T}}$ 通常能化简行列式."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 前面几个例子给出了行列式计算的常见方法，读者可自行归纳总结."
+      }
+    ],
+    "final_answer": "(2) 前面几个例子给出了行列式计算的常见方法，读者可自行归纳总结.",
+    "techniques_used": [
+      "特殊/范德蒙德型",
+      "伴随与逆矩阵",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "行列式宜用展开、行变换化三角、加边还是特殊结构？",
+      "technique": "特殊/范德蒙德型",
+      "expected": "选定计算途径并化简行列式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "行列式的值或结论是什么？",
+      "technique": "伴随与逆矩阵",
+      "expected": "(2) 前面几个例子给出了行列式计算的常见方法，读者可自行归纳总结."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 467,
+    "syllabus_note": "单位根特殊行列式",
+    "commentary": "评注（1）若行列式 $D$ 中的元素对幂运算有周期性，或行列式的行（或列）向量组有正交性，做行列式乘法 $DD$ 或 $DD^{\\mathrm{T}}$ 通常能化简行列式.\n\n(2) 前面几个例子给出了行列式计算的常见方法，读者可自行归纳总结."
+  }
+}

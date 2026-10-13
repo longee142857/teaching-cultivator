@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-09",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.inv",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A, B$ 为 $n$ 阶方阵， $A$ 可逆， $A^{\\bullet}$ 是 $A$ 的伴随矩阵，满足 $ABA^{\\bullet} = 2BA^{-1} + I$ 。问下列命题哪些一定成立？对成立的给出证明，不成立的给出反例。\n\n(1) AB = BA; (2) B 与 $A^{*}$ 等价; (3) B 与 A 相似.",
+  "answer": "AB = BA.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "伴随与逆矩阵",
+    "矩阵秩",
+    "证明技巧",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 所给等式右乘 A 得 $\\left|A\\right|AB=2B+A$ ，由此可看出（1）和（2）是正确的，（3）不一定."
+      },
+      {
+        "id": "s2",
+        "text": "命题（1）和（2）均成立. 证明如下:"
+      },
+      {
+        "id": "s3",
+        "text": "(1) 所给等式右乘 A，得\n\n$$\n\\mid A \\mid A B = 2 B + A,\\tag{①}\n$$\n\n变形得\n\n$$\n(| A | A - 2 I) (| A | B - I) = 2 I.\n$$\n\n$|A|A-2I$ 与 $\\frac{1}{2}(|A|B-I)$ 互为逆矩阵，且有\n\n$$\n(| \\boldsymbol {A} | \\boldsymbol {A} - 2 \\boldsymbol {I}) (| \\boldsymbol {A} | \\boldsymbol {B} - \\boldsymbol {I}) = (| \\boldsymbol {A} | \\boldsymbol {B} - \\boldsymbol {I}) (| \\boldsymbol {A} | \\boldsymbol {A} - 2 \\boldsymbol {I}),\n$$\n\n化简即得 AB = BA."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 由①式得\n\n$$\n(| A | A - 2 I) B = A.\n$$\n\n因为 $\\pmb{A}$ 可逆，故 $\\pmb{B}$ 也一定可逆，从而\n\n$$\n\\operatorname{rank} (B) = \\operatorname{rank} (A) = \\operatorname{rank} (A ^ {\\bullet}) = n.\n$$\n\n所以 B 与 $A^{*}$ 等价.\n\n（3）命题不一定成立. 例如，取 $A = \\begin{pmatrix} 1 & 1 \\\\ 0 & 1 \\end{pmatrix}$ ，代入①式可得\n\n$$\n\\boldsymbol {B} = (\\boldsymbol {A} - 2 \\boldsymbol {I}) ^ {- 1} \\boldsymbol {A} = \\left( \\begin{array}{c c} - 1 & - 2 \\\\ 0 & - 1 \\end{array} \\right).\n$$\n\nA 的特征值为 1，B 的特征值为 -1，它们不可能相似."
+      }
+    ],
+    "final_answer": "AB = BA.",
+    "techniques_used": [
+      "伴随与逆矩阵",
+      "矩阵秩",
+      "证明技巧",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "伴随/逆/分块关系如何用来化简方程或行列式？",
+      "technique": "伴随与逆矩阵",
+      "expected": "利用伴随、逆或分块打洞完成化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终矩阵或证明结论是什么？",
+      "technique": "矩阵秩",
+      "expected": "AB = BA."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 469,
+    "syllabus_note": "伴随矩阵命题判定与反例*",
+    "commentary": "评注（1） $AA^{*}=A^{*}A=|A|I$ 是矩阵与其伴随矩阵最基本的关系式，当一个命题与矩阵的伴随矩阵有关时，常用这个关系式来做化简.\n\n(2) 矩阵 A 与其伴随矩阵秩的关系：设 A 为 n 阶矩阵，则 $\\mathrm{rank}(A^{*})=\\left\\{\\begin{aligned}n,\\mathrm{rank}(A^{*})&=n\\\\ 1,\\mathrm{rank}(A^{*})&=n-1\\\\ 0,\\mathrm{rank}(A^{*})&<n-1\\end{aligned}\\right.$\n\n(3) 注意结论: 若方阵 $A, B$ 满足 $AB = \\alpha B + \\beta A$ （数 $\\alpha \\beta \\neq 0$ ），则有: ① $AB = BA$ ; ② $A$ 与 $B$ 有完全相同的特征向量（参见模拟试题六第八题）.\n\n(1) $|A|=0;$"
+  }
+}

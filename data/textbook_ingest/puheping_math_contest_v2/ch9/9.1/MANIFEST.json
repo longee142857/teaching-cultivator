@@ -1,0 +1,277 @@
+{
+  "section": "9.1",
+  "chapter": "第9章 线性代数",
+  "title": "行列式与矩阵",
+  "page_range": [
+    464,
+    475
+  ],
+  "page_note": "merged MD 「## 9.1 行列式与矩阵」→ 「## 习题9.1」; OCR PDF pages 464–475 (习题 on 476)",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 20,
+  "starred_count": 2,
+  "starred": [
+    "例19*",
+    "例20*"
+  ],
+  "l3_counts": {
+    "math.linalg.det.expand": 1,
+    "math.linalg.det.compute": 4,
+    "math.linalg.det.vandermonde": 1,
+    "math.linalg.mat.block": 1,
+    "math.linalg.mat.inv": 4,
+    "math.linalg.mat.ops": 3,
+    "math.linalg.mat.rank": 5,
+    "math.linalg.mat.elem": 1
+  },
+  "l2_counts": {
+    "行列式": 6,
+    "矩阵与初等变换": 14
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch9-9.1-ex-01",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-02",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-03",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-04",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-05",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-06",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-07",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-08",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-09",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-10",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-11",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-12",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-13",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-14",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-15",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-16",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-17",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-18",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-19",
+    "tx-pu-math-contest-v2-ch9-9.1-ex-20"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-01",
+      "example_id": "例1",
+      "page": 464,
+      "l3_id": "math.linalg.det.expand",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-02",
+      "example_id": "例2",
+      "page": 464,
+      "l3_id": "math.linalg.det.compute",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-03",
+      "example_id": "例3",
+      "page": 465,
+      "l3_id": "math.linalg.det.compute",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-04",
+      "example_id": "例4",
+      "page": 466,
+      "l3_id": "math.linalg.det.compute",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-05",
+      "example_id": "例5",
+      "page": 467,
+      "l3_id": "math.linalg.det.compute",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-06",
+      "example_id": "例6",
+      "page": 467,
+      "l3_id": "math.linalg.det.vandermonde",
+      "l2": "行列式",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-07",
+      "example_id": "例7",
+      "page": 468,
+      "l3_id": "math.linalg.mat.block",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-08",
+      "example_id": "例8",
+      "page": 468,
+      "l3_id": "math.linalg.mat.inv",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-09",
+      "example_id": "例9",
+      "page": 469,
+      "l3_id": "math.linalg.mat.inv",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-10",
+      "example_id": "例10",
+      "page": 469,
+      "l3_id": "math.linalg.mat.inv",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-11",
+      "example_id": "例11",
+      "page": 470,
+      "l3_id": "math.linalg.mat.ops",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-12",
+      "example_id": "例12",
+      "page": 470,
+      "l3_id": "math.linalg.mat.inv",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-13",
+      "example_id": "例13",
+      "page": 471,
+      "l3_id": "math.linalg.mat.ops",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-14",
+      "example_id": "例14",
+      "page": 471,
+      "l3_id": "math.linalg.mat.rank",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-15",
+      "example_id": "例15",
+      "page": 472,
+      "l3_id": "math.linalg.mat.rank",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-16",
+      "example_id": "例16",
+      "page": 472,
+      "l3_id": "math.linalg.mat.rank",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-17",
+      "example_id": "例17",
+      "page": 473,
+      "l3_id": "math.linalg.mat.rank",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-18",
+      "example_id": "例18",
+      "page": 473,
+      "l3_id": "math.linalg.mat.elem",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-19",
+      "example_id": "例19*",
+      "page": 474,
+      "l3_id": "math.linalg.mat.ops",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.1-ex-20",
+      "example_id": "例20*",
+      "page": 475,
+      "l3_id": "math.linalg.mat.rank",
+      "l2": "矩阵与初等变换",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

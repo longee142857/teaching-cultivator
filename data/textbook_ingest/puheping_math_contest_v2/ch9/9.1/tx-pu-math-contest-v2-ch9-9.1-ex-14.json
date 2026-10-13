@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-14",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.rank",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A$ 是 $m \\times n$ 阶矩阵，若 $\\operatorname{rank}(A) = r$ ，证明：\n\n（1）存在秩为 r 的 $m \\times r$ 阶矩阵 B 和秩为 r 的 $r \\times n$ 阶矩阵 C，使得 A = BC.\n\n(2) A 可表示为 r 个秩为 1 的矩阵之和.",
+  "answer": "$A = P \\begin{pmatrix} I_r & 0 \\\\ 0 & 0 \\end{pmatrix} Q = P \\begin{pmatrix} I_r \\\\ 0 \\end{pmatrix} (I_r, 0) Q \\quad (I_r \\text{为 } r \\text{ 阶单位矩阵，后同})$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "伴随与逆矩阵",
+    "矩阵秩",
+    "证明技巧",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）考察 A 的等价标准形： $\\begin{pmatrix}I_{r}&0\\\\0&0\\end{pmatrix}=\\begin{pmatrix}I_{r}\\\\0\\end{pmatrix}\\left(I_{r},0\\right)$ ，问题迎刃而解.\n\n(2) 将 A 的等价标准形 $\\begin{pmatrix} I_{r} & 0 \\\\ 0 & 0 \\end{pmatrix}$ 写成 r 个秩为 1 的矩阵之和是显然的."
+      },
+      {
+        "id": "s2",
+        "text": "（1）因为 $\\operatorname{rank}(A) = r$ ，则存在 $m$ 阶可逆矩阵 $P$ 与 $n$ 阶可逆矩阵 $Q$ ，使得\n\n$A = P \\begin{pmatrix} I_r & 0 \\\\ 0 & 0 \\end{pmatrix} Q = P \\begin{pmatrix} I_r \\\\ 0 \\end{pmatrix} (I_r, 0) Q \\quad (I_r \\text{为 } r \\text{ 阶单位矩阵，后同})$ .\n\n记 $B = P \\begin{pmatrix} I_{r} \\\\ 0 \\end{pmatrix}$ ， $C = (I_{r}, 0)Q$ 。显然 B 是 $m \\times r$ 阶矩阵，C 是 $r \\times n$ 阶矩阵，且 A = BC。\n\n由 $P, Q$ 可逆，得\n\n$$\n\\operatorname{rank} (B) = \\operatorname{rank} \\binom {I _ {r}} {\\mathbf {0}} = r, \\quad \\operatorname{rank} (C) = \\operatorname{rank} \\left( \\begin{array}{c c} I _ {r} & \\mathbf {0} \\end{array} \\right) = r.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 记 $E_{i}$ 为 r 阶矩阵中第 i 个主对角元为 1，其余元全为 0 的矩阵，则\n\n$$\n\\boldsymbol {A} = \\boldsymbol {P} \\left( \\begin{array}{l l} \\boldsymbol {I} _ {r} & \\boldsymbol {0} \\\\ \\boldsymbol {0} & \\boldsymbol {0} \\end{array} \\right) \\boldsymbol {Q} = \\boldsymbol {P} \\left[ \\sum_ {i = 1} ^ {r} \\left( \\begin{array}{l l} \\boldsymbol {E} _ {i} & \\boldsymbol {0} \\\\ \\boldsymbol {0} & \\boldsymbol {0} \\end{array} \\right) \\right] \\boldsymbol {Q} = \\sum_ {i = 1} ^ {r} \\boldsymbol {P} \\left( \\begin{array}{l l} \\boldsymbol {E} _ {i} & \\boldsymbol {0} \\\\ \\boldsymbol {0} & \\boldsymbol {0} \\end{array} \\right) \\boldsymbol {Q},\n$$\n\n其中 $P\\left(\\begin{array}{cc}E_{i}&0\\\\0&0\\end{array}\\right)Q(i=1,2,\\cdots,r)$ 的秩全为 1."
+      }
+    ],
+    "final_answer": "$A = P \\begin{pmatrix} I_r & 0 \\\\ 0 & 0 \\end{pmatrix} Q = P \\begin{pmatrix} I_r \\\\ 0 \\end{pmatrix} (I_r, 0) Q \\quad (I_r \\text{为 } r \\text{ 阶单位矩阵，后同})$ .",
+    "techniques_used": [
+      "伴随与逆矩阵",
+      "矩阵秩",
+      "证明技巧",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用初等变换、分块或秩不等式建立关系？",
+      "technique": "矩阵秩",
+      "expected": "建立秩的等式/不等式并完成论证。"
+    },
+    {
+      "id": "c2",
+      "prompt": "秩相关结论是什么？",
+      "technique": "矩阵秩",
+      "expected": "$A = P \\begin{pmatrix} I_r & 0 \\\\ 0 & 0 \\end{pmatrix} Q = P \\begin{pmatrix} I_r \\\\ 0 \\end{pmatrix} (I_r, 0) Q \\quad (I_r \\text{为 } r \\text{ 阶单位矩阵，后同})$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 471,
+    "syllabus_note": "满秩分解与秩等式证明",
+    "commentary": "评注（1）该题（1）的结论较为常用，称为矩阵的满秩分解。其特殊情形：\n\n$\\operatorname{rank}(A) = 1 \\Leftrightarrow A = \\begin{pmatrix} a_1 \\\\ a_2 \\\\ \\vdots \\\\ a_m \\end{pmatrix} \\left( b_1 \\quad b_2 \\cdots \\quad b_n \\right)$ （右端为两个非零向量，简称列行分解）.\n\n该题（2）的结论又常称为矩阵的“秩1和分解”.\n\n(2) 标准形是同类问题中的最简形式，用标准形来分析、处理问题通常能收到事半功倍的效果."
+  }
+}

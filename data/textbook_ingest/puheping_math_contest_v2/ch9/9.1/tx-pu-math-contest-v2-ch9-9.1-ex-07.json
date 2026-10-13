@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-07",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.block",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 A, C, B, D 均是 n 阶方阵，且 AC = CA，证明 $\\left|\\begin{array}{cc}A & B \\\\ C & D\\end{array}\\right| = |AD - CB|$ .",
+  "answer": "$(A + \\lambda I)C = C(A + \\lambda I)$ ，由（1）得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "初等变换",
+    "证明技巧",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是分块矩阵的行列式，只需利用行列式的初等变换性质，将其化为块上三角形来计算."
+      },
+      {
+        "id": "s2",
+        "text": "（1）当 $|A| \\neq 0$ 时， $A$ 可逆。对行列式用初等变换性质，并注意到 $AC = CA$ ，有\n\n$$\n\\begin{array}{r l} & {\\left| \\begin{array}{l l} A & B \\\\ C & D \\end{array} \\right| = | A | \\left| \\begin{array}{c c} I & A ^ {- 1} B \\\\ C & D \\end{array} \\right| = | A | \\left| \\begin{array}{c c} I & A ^ {- 1} B \\\\ 0 & D - C A ^ {- 1} B \\end{array} \\right| = | A | \\cdot | D - C A ^ {- 1} B |} \\\\ & {\\qquad = | A D - A C A ^ {- 1} B | = | A D - C A A ^ {- 1} B | = | A D - C B | (I \\text {为}} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 $|A|=0$ 时，由于 A 至多有 n 个不同的特征值，从而存在 $\\lambda$ 使 $|- \\lambda I - A| \\neq 0$ ，即 $|\\lambda I + A| \\neq 0$ 。又由 AC = CA 可得 $(A + \\lambda I)C = C(A + \\lambda I)$ ，由（1）得\n\n$$\n\\left| \\begin{array}{c c} \\boldsymbol {A} + \\lambda \\boldsymbol {I} & \\boldsymbol {B} \\\\ \\boldsymbol {C} & \\boldsymbol {D} \\end{array} \\right| = | (\\boldsymbol {A} + \\lambda \\boldsymbol {I}) \\boldsymbol {D} - \\boldsymbol {C B} |.\n$$\n\n上式是关于 $\\lambda$ 的有限多次多项式，但由于有无穷多个 $\\lambda$ 使上式成立，从而成为 $\\lambda$ 的恒等式，再令 $\\lambda = 0$ ，又有\n\n$$\n\\left| \\begin{array}{c c} A & B \\\\ C & D \\end{array} \\right| = | A D - C B |.\n$$"
+      }
+    ],
+    "final_answer": "$(A + \\lambda I)C = C(A + \\lambda I)$ ，由（1）得",
+    "techniques_used": [
+      "初等变换",
+      "证明技巧",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "伴随/逆/分块关系如何用来化简方程或行列式？",
+      "technique": "证明技巧",
+      "expected": "利用伴随、逆或分块打洞完成化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终矩阵或证明结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$(A + \\lambda I)C = C(A + \\lambda I)$ ，由（1）得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 468,
+    "syllabus_note": "分块行列式 AD-CB（打洞）",
+    "commentary": "评注（1）分块矩阵行列式的初等变换性质与普通行列式的初等变换性质相类似。其结论的正确性可通过（块）初等矩阵的乘积（左乘行变换，右乘列变换）来证明。例如：\n\n$$\n\\left( \\begin{array}{c c} I & 0 \\\\ - C A ^ {- 1} & I \\end{array} \\right) \\left( \\begin{array}{c c} A & B \\\\ C & D \\end{array} \\right) = \\left( \\begin{array}{c c} A & B \\\\ 0 & D - C A ^ {- 1} B \\end{array} \\right),\n$$\n\n两边取行列式得\n\n$$\n\\left| \\begin{array}{c c} \\boldsymbol {A} & \\boldsymbol {B} \\\\ \\boldsymbol {C} & \\boldsymbol {D} \\end{array} \\right| = \\left| \\begin{array}{c c} \\boldsymbol {A} & \\boldsymbol {B} \\\\ \\boldsymbol {0} & \\boldsymbol {D} - \\boldsymbol {C A} ^ {- 1} \\boldsymbol {B} \\end{array} \\right|.\n$$\n\n（2）对分块矩阵做初等变换使其某一子块为零的方法又称为矩阵“打洞”。做打洞，需要主对角块的某一子矩阵 $A$ 可逆，当可逆条件不满足时，常用可逆矩阵 $\\lambda I + A$ （ $\\lambda$ 为参数）去替换 $A$ ，实现目标后再取入 $\\lambda = 0$ 或 $\\lambda \\to 0$ 来还原。"
+  }
+}

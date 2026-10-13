@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-05",
+  "subject": "math",
+  "l2": "行列式",
+  "l3_id": "math.linalg.det.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $1 - a_{i}b_{j}\\neq 0(i,j = 1,2,\\dots ,n)$ ，计算 $n$ 阶行列式 $D = \\left| \\begin{array}{ccc}1 - a_1^n b_1^n & \\dots & \\frac{1 - a_1^n b_n^n}{1 - a_1b_n}\\\\ \\vdots & & \\vdots \\\\ \\frac{1 - a_n^n b_1^n}{1 - a_nb_1} & \\dots & \\frac{1 - a_1^n b_1^n}{1 - a_nb_n} \\end{array} \\right|$",
+  "answer": "1 - a _ {i} ^ {n} b _ {j} ^ {n} = \\left(1 - a _ {i} b _ {j}\\right) \\left(1 + a _ {i} b _ {j} + a _ {i} ^ {2} b _ {j} ^ {2} + \\dots + a _ {i} ^ {n} b _ {j} ^ {n}\\right) \\quad (i, j = 1, 2, \\dots , n),",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "矩阵运算",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 行列式的 $(i,j)$ 元素为 $\\frac{1-a_{i}^{n}b_{j}^{n}}{1-a_{i}b_{j}}=1+a_{i}b_{j}+a_{i}^{2}b_{j}^{2}+\\cdots+a_{i}^{n}b_{j}^{n}=(1,a_{i},\\cdots,a_{i}^{n})\\begin{pmatrix}1\\\\b_{i}\\\\ \\vdots\\\\b_{i}^{n}\\end{pmatrix}$ ，由此可以看出该行列式的矩阵能分解为两个矩阵的乘积."
+      },
+      {
+        "id": "s2",
+        "text": "因为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n1 - a _ {i} ^ {n} b _ {j} ^ {n} = \\left(1 - a _ {i} b _ {j}\\right) \\left(1 + a _ {i} b _ {j} + a _ {i} ^ {2} b _ {j} ^ {2} + \\dots + a _ {i} ^ {n} b _ {j} ^ {n}\\right) \\quad (i, j = 1, 2, \\dots , n),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} D & = \\left| \\begin{array}{c c c c c} 1 & a _ {1} & a _ {1} ^ {2} & \\dots & a _ {1} ^ {n - 1} \\\\ 1 & a _ {2} & a _ {2} ^ {2} & \\dots & a _ {2} ^ {n - 1} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 1 & a _ {n} & a _ {n} ^ {2} & \\dots & a _ {n} ^ {n - 1} \\end{array} \\right| \\left| \\begin{array}{c c c c} 1 & 1 & \\dots & 1 \\\\ b _ {1} & b _ {2} & \\dots & b _ {n} \\\\ b _ {1} ^ {2} & b _ {2} ^ {2} & \\dots & b _ {n} ^ {2} \\\\ \\vdots & \\vdots & & \\vdots \\\\ b _ {1} ^ {n - 1} & b _ {2} ^ {n - 1} & \\dots & b _ {n} ^ {n - 1} \\end{array} \\right| (\\text {范德蒙行列式}) \\\\ & = \\prod_ {1 \\leqslant j <   i \\leqslant n} ^ {n} (a _ {i} - a _ {j}) \\prod_ {1 \\leqslant j <   i \\leqslant n} ^ {n} (b _ {i} - b _ {j}) = \\prod_ {1 \\leqslant j <   i \\leqslant n} ^ {n} (a _ {i} - a _ {j}) (b _ {i} - b _ {j}). \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "1 - a _ {i} ^ {n} b _ {j} ^ {n} = \\left(1 - a _ {i} b _ {j}\\right) \\left(1 + a _ {i} b _ {j} + a _ {i} ^ {2} b _ {j} ^ {2} + \\dots + a _ {i} ^ {n} b _ {j} ^ {n}\\right) \\quad (i, j = 1, 2, \\dots , n),",
+    "techniques_used": [
+      "矩阵运算",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "行列式宜用展开、行变换化三角、加边还是特殊结构？",
+      "technique": "矩阵运算",
+      "expected": "选定计算途径并化简行列式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "行列式的值或结论是什么？",
+      "technique": "证明技巧",
+      "expected": "1 - a _ {i} ^ {n} b _ {j} ^ {n} = \\left(1 - a _ {i} b _ {j}\\right) \\left(1 + a _ {i} b _ {j} + a _ {i} ^ {2} b _ {j} ^ {2} + \\dots + a _ {i} ^ {n} b _ {j} ^ {n}\\right) \\quad (i, j = 1, 2, \\dots , n),"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 467,
+    "syllabus_note": "结构化行列式分解计算",
+    "commentary": "评注 当行列式的 $(i,j)$ 元素为两向量的内积时，将行列式的矩阵分解成两个矩阵的乘积通常能起到化简行列式的作用."
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-03",
+  "subject": "math",
+  "l2": "行列式",
+  "l3_id": "math.linalg.det.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $n$ 阶行列式 $D_{n} = \\left| \\begin{array}{cccc} \\lambda & a & a & \\cdots & a \\\\ b & c & \\beta & \\cdots & \\beta \\\\ b & \\beta & c & \\cdots & \\beta \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ b & \\beta & \\beta & \\cdots & c \\end{array} \\right|(c \\neq \\beta)$ .",
+  "answer": "\\begin{array}{l} = \\left[ \\left(1 + \\frac {(n - 1) \\beta}{c - \\beta}\\right) \\lambda - \\frac {(n - 1) a}{c - \\beta} b \\right] (c - \\beta) ^ {n - 1} \\\\ = (c - \\beta) ^ {n - 2} [ \\lambda c + (n - 2) \\lambda \\beta - (n - 1) a b ]. \\end{array}",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "化三角形",
+    "加边/打洞",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 从第2行到第 $n$ 行，各行的相同元素较多，可用加边法化行列式为上（块）三角形.解 显然 $D_{1} = \\lambda ; D_{2} = \\lambda c - ab$ .\n\n当 $n > 2$ 时，将行列式加边，加边后将第 $i (i \\geqslant 3)$ 行分别减去第1行，得\n\n$$\nD _ {n} = \\left| \\begin{array}{c c c c c c} 1 & b & \\beta & \\beta & \\dots & \\beta \\\\ 0 & \\lambda & a & a & \\dots & a \\\\ 0 & b & c & \\beta & \\dots & \\beta \\\\ 0 & b & \\beta & c & \\dots & \\beta \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 0 & b & \\beta & \\beta & \\dots & \\beta \\end{array} \\right| _ {n + 1} \\overset {- r _ {i} + r _ {i}} {\\underset {i = 3, \\dots , (n + 1)} {=}} \\left| \\begin{array}{c c c c c c} 1 & b & \\beta & \\beta & \\dots & \\beta \\\\ 0 & \\lambda & a & a & \\dots & a \\\\ - 1 & 0 & c - \\beta & 0 & \\dots & 0 \\\\ - 1 & 0 & 0 & c - \\beta & \\dots & 0 \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ - 1 & 0 & 0 & 0 & \\dots . & c - \\beta \\end{array} \\right| _ {n + 1}\n\n\\frac {\\frac {1}{c - \\beta} c _ {i} + c _ {1}}{\\overline {{i = 3 , \\cdots , (n + 1)}}} \\left| \\begin{array}{c c c c c c} 1 + \\frac {(n - 1) \\beta}{c - \\beta} & b & \\beta & \\beta & \\dots & \\beta \\\\ \\frac {(n - 1) a}{\\dot {c} - \\beta} & \\lambda & a & a & \\dots & a \\\\ 0 & 0 & c - \\beta & 0 & \\dots & 0 \\\\ 0 & 0 & 0 & c - \\beta & \\dots & 0 \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 0 & 0 & 0 & 0 & \\dots & c - \\beta \\end{array} \\right| _ {n + 1}\n\n\\begin{array}{l} = \\left[ \\left(1 + \\frac {(n - 1) \\beta}{c - \\beta}\\right) \\lambda - \\frac {(n - 1) a}{c - \\beta} b \\right] (c - \\beta) ^ {n - 1} \\\\ = (c - \\beta) ^ {n - 2} [ \\lambda c + (n - 2) \\lambda \\"
+      },
+      {
+        "id": "s2",
+        "text": "分析 从第2行到第 $n$ 行，各行的相同元素较多，可用加边法化行列式为上（块）三角形.解 显然 $D_{1} = \\lambda ; D_{2} = \\lambda c - ab$ ."
+      },
+      {
+        "id": "s3",
+        "text": "当 $n > 2$ 时，将行列式加边，加边后将第 $i (i \\geqslant 3)$ 行分别减去第1行，得"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nD _ {n} = \\left| \\begin{array}{c c c c c c} 1 & b & \\beta & \\beta & \\dots & \\beta \\\\ 0 & \\lambda & a & a & \\dots & a \\\\ 0 & b & c & \\beta & \\dots & \\beta \\\\ 0 & b & \\beta & c & \\dots & \\beta \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 0 & b & \\beta & \\beta & \\dots & \\beta \\end{array} \\right| _ {n + 1} \\overset {- r _ {i} + r _ {i}} {\\underset {i = 3, \\dots , (n + 1)} {=}} \\left| \\begin{array}{c c c c c c} 1 & b & \\beta & \\beta & \\dots & \\beta \\\\ 0 & \\lambda & a & a & \\dots & a \\\\ - 1 & 0 & c - \\beta & 0 & \\dots & 0 \\\\ - 1 & 0 & 0 & c - \\beta & \\dots & 0 \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ - 1 & 0 & 0 & 0 & \\dots . & c - \\beta \\end{array} \\right| _ {n + 1}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\frac {\\frac {1}{c - \\beta} c _ {i} + c _ {1}}{\\overline {{i = 3 , \\cdots , (n + 1)}}} \\left| \\begin{array}{c c c c c c} 1 + \\frac {(n - 1) \\beta}{c - \\beta} & b & \\beta & \\beta & \\dots & \\beta \\\\ \\frac {(n - 1) a}{\\dot {c} - \\beta} & \\lambda & a & a & \\dots & a \\\\ 0 & 0 & c - \\beta & 0 & \\dots & 0 \\\\ 0 & 0 & 0 & c - \\beta & \\dots & 0 \\\\ \\vdots & \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 0 & 0 & 0 & 0 & \\dots & c - \\beta \\end{array} \\right| _ {n + 1}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{l} = \\left[ \\left(1 + \\frac {(n - 1) \\beta}{c - \\beta}\\right) \\lambda - \\frac {(n - 1) a}{c - \\beta} b \\right] (c - \\beta) ^ {n - 1} \\\\ = (c - \\beta) ^ {n - 2} [ \\lambda c + (n - 2) \\lambda \\beta - (n - 1) a b ]. \\end{array}\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "评注 当行列式各行的相同元素较多时，常用加边法化行列式为三角形（块）来计算."
+      }
+    ],
+    "final_answer": "\\begin{array}{l} = \\left[ \\left(1 + \\frac {(n - 1) \\beta}{c - \\beta}\\right) \\lambda - \\frac {(n - 1) a}{c - \\beta} b \\right] (c - \\beta) ^ {n - 1} \\\\ = (c - \\beta) ^ {n - 2} [ \\lambda c + (n - 2) \\lambda \\beta - (n - 1) a b ]. \\end{array}",
+    "techniques_used": [
+      "化三角形",
+      "加边/打洞",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "行列式宜用展开、行变换化三角、加边还是特殊结构？",
+      "technique": "化三角形",
+      "expected": "选定计算途径并化简行列式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "行列式的值或结论是什么？",
+      "technique": "加边/打洞",
+      "expected": "\\begin{array}{l} = \\left[ \\left(1 + \\frac {(n - 1) \\beta}{c - \\beta}\\right) \\lambda - \\frac {(n - 1) a}{c - \\beta} b \\right] (c - \\beta) ^ {n - 1} \\\\ = (c - \\beta) ^ {n - 2} [ \\lambda c + (n - 2) \\lam"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 465,
+    "syllabus_note": "加边法化块三角",
+    "commentary": "评注 当行列式各行的相同元素较多时，常用加边法化行列式为三角形（块）来计算."
+  }
+}
