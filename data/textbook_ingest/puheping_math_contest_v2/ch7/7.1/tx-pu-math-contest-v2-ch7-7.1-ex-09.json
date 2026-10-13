@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 为连续函数，解方程 $f(x) = \\mathrm{e}^{x} + \\mathrm{e}^{x}\\int_{0}^{x}[f(t)]^{2}\\mathrm{d}t.$",
-  "answer": "C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$",
+  "answer": "$C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "一阶线性",
@@ -35,7 +35,7 @@
         "text": "由原方程知 $f(0) = 1$ ，代入上式得 $C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$"
       }
     ],
-    "final_answer": "C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$",
+    "final_answer": "$C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$",
     "techniques_used": [
       "一阶线性",
       "伯努利方程",
@@ -53,7 +53,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "伯努利方程",
-      "expected": "C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$"
+      "expected": "$C = \\frac{3}{2}$ ，所以 $f(x) = \\frac{2}{3\\mathrm{e}^{-x} - \\mathrm{e}^x}$"
     }
   ],
   "meta": {

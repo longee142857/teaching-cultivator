@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求 $y'' + 2ay' + a^2y = e^{bx}$ 的通解， $a > 0, a, b$ 为常数.",
-  "answer": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.",
+  "answer": "$y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "常系数线性",
@@ -47,7 +47,7 @@
         "text": "$$\ny = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.\n$$"
       }
     ],
-    "final_answer": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.",
+    "final_answer": "$y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.$",
     "techniques_used": [
       "常系数线性",
       "可降阶",
@@ -65,7 +65,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}."
+      "expected": "$y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.$"
     }
   ],
   "meta": {

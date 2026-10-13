@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "如图 7.3 所示，设河宽为 a，一条船从岸边一点 O 出发驶向对岸，船头总是指向对岸与点 O 相对的一点 B。假设船在静水中的船速为常数 $v_{1}$ ，河流中水的流速为常数 $v_{2}$ ，试求船过河所走的路线（曲线方程），并讨论在什么条件下船能到达对岸，以及船能到达点 B。",
-  "answer": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
+  "answer": "$y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "建立微分方程",
@@ -36,7 +36,7 @@
         "text": "(3) 当 k > 1，即 $v_{2} > v_{1}$ 时， $\\lim_{y \\to a^{-}} x$ 不存在，即船不能到达对岸."
       }
     ],
-    "final_answer": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
+    "final_answer": "$y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
     "techniques_used": [
       "建立微分方程",
       "齐次方程",
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/特解或所求量是什么？",
       "technique": "齐次方程",
-      "expected": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。"
+      "expected": "$y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。"
     }
   ],
   "meta": {

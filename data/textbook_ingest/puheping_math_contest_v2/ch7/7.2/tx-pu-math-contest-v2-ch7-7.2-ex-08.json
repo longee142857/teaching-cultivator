@@ -9,7 +9,7 @@
   "item_form": "proof_outline",
   "difficulty": "hit",
   "question": "设当 $x > -1$ 时，可微函数 $f(x)$ 满足条件 $f'(x) + f(x) - \\frac{1}{x + 1}\\int_{0}^{x}f(t)\\mathrm{d}t = 0$ ，且 $f(0) = 1$ ，证明当 $x\\geqslant 0$ 时，有 $\\mathbf{e}^{-x}\\leqslant f(x)\\leqslant 1$ 成立.",
-  "answer": "y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).",
+  "answer": "$y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -41,7 +41,7 @@
         "text": "(3) 欧拉方程求解 $x^{2}y'' + pxy' + qy = f(x)$ .\n\n作变量代换 $x = \\mathrm{e}^t$ 或 $t = \\ln x$ ，方程化为二阶常系数线性微分方程\n\n$$\nD (D - 1) y + p D y + q y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).\n$$"
       }
     ],
-    "final_answer": "y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).",
+    "final_answer": "$y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).$",
     "techniques_used": [
       "可降阶",
       "常系数线性",
@@ -61,7 +61,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "常系数线性",
-      "expected": "y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t})."
+      "expected": "$y = f (\\mathbf {e} ^ {t}) \\quad (\\text {其中} D = \\frac {\\mathrm{d}}{\\mathrm{d} t}).$"
     }
   ],
   "meta": {

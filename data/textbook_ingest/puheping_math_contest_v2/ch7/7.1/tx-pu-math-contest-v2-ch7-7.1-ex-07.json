@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 上有定义， $f'(0) = 1$ ，且对任何 $x, y \\in (-\\infty, + \\infty)$ 恒有 $f(x + y) = e^y f(x) + e^x f(y)$ ，求 $f(x)$ .",
-  "answer": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
+  "answer": "$C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "一阶线性",
@@ -50,7 +50,7 @@
         "text": "由 $f(0) = 0$ ，得 $C = 0$ 所以 $f(x) = x\\mathrm{e}^x$"
       }
     ],
-    "final_answer": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
+    "final_answer": "$C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
     "techniques_used": [
       "一阶线性",
       "分离变量"
@@ -67,7 +67,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "分离变量",
-      "expected": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$"
+      "expected": "$C = 0$ 所以 $f(x) = x\\mathrm{e}^x$"
     }
   ],
   "meta": {

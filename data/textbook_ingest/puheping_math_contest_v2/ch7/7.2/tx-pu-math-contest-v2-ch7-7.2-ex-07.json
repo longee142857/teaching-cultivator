@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求方程 $x^{2}yy''=(y-xy')^{2}$ 的通解.",
-  "answer": "y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$",
+  "answer": "$y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "齐次降阶",
@@ -34,7 +34,7 @@
         "text": "解其通解为 $z = \\frac{1}{x} +\\frac{C_1}{x^2}$ ，原方程通解为 $y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$"
       }
     ],
-    "final_answer": "y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$",
+    "final_answer": "$y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$",
     "techniques_used": [
       "齐次降阶",
       "可降阶"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$"
+      "expected": "$y = e^{\\int \\left(\\frac{1}{x} +\\frac{C_1}{x^2}\\right)\\mathrm{d}x} = C_2x\\mathrm{e}^{-\\frac{C_1}{x}}.$"
     }
   ],
   "meta": {

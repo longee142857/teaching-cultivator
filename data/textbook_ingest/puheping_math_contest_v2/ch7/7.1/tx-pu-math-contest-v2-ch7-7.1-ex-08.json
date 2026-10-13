@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $y' = \\frac{\\cos y}{\\cos y \\sin 2y - x \\sin y}$ 的通解.",
-  "answer": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).",
+  "answer": "$x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -38,7 +38,7 @@
         "text": "$$\nx = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).\n$$"
       }
     ],
-    "final_answer": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).",
+    "final_answer": "$x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).$",
     "techniques_used": [
       "初值问题",
       "分离变量"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "分离变量",
-      "expected": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y)."
+      "expected": "$x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).$"
     }
   ],
   "meta": {

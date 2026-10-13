@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求解微分方程 $y'y'' - 2(y'')^{2} = 0$ .",
-  "answer": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
+  "answer": "$y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -30,7 +30,7 @@
         "text": "方法2 $y^{\\prime}y^{\\prime \\prime} - 2(y^{\\prime \\prime})^{2} = 0\\Rightarrow \\frac{y^{\\prime}y^{\\prime\\prime} - 2(y^{\\prime\\prime})^{2}}{(y^{\\prime})^{3}} = 0$ （当 $y^\\prime \\neq 0$ 时），即\n\n$$\n\\left(\\frac {y ^ {\\prime \\prime}}{\\left(y ^ {\\prime}\\right) ^ {2}}\\right) ^ {\\prime} = 0 \\Rightarrow \\frac {y ^ {\\prime \\prime}}{\\left(y ^ {\\prime}\\right) ^ {2}} = C \\Rightarrow \\left(\\frac {1}{y ^ {\\prime}}\\right) ^ {\\prime} = C _ {1} \\Rightarrow \\frac {1}{y ^ {\\prime}} = C _ {1} x + C _ {2} \\Rightarrow y ^ {\\prime} = \\frac {1}{C _ {1} x + C _ {2}}.\n$$\n\n积分得通解 $y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程."
       }
     ],
-    "final_answer": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
+    "final_answer": "$y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
     "techniques_used": [
       "可降阶",
       "积分方程转化"
@@ -47,7 +47,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "积分方程转化",
-      "expected": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程."
+      "expected": "$y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程."
     }
   ],
   "meta": {

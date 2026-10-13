@@ -413,6 +413,13 @@ def process(
         return 2
 
     try:
+        _ensure_root_on_path()
+        from math_format import math_render_warnings
+    except Exception as e:
+        print(f"failed to import math_render_warnings: {e}", file=sys.stderr)
+        return 2
+
+    try:
         syll = load_syllabus_index(validate, syll_comm, syll_math)
     except Exception as e:
         print(f"failed to load syllabus: {e}", file=sys.stderr)
@@ -497,15 +504,24 @@ def process(
             print(f"FAIL {path.relative_to(incoming)} map:{map_err}")
             continue
 
+        rel = path.relative_to(incoming)
+        for warn in math_render_warnings(
+            answer=str(kwargs.get("answer") or ""),
+            solution=kwargs.get("solution") if isinstance(kwargs.get("solution"), dict) else {},
+        ):
+            print(f"WARN {rel} {warn}")
+
         payload_err = payload_check(
             question=kwargs["question"],
             techniques=kwargs["techniques"],
             solution=kwargs["solution"],
             cdps=kwargs["cdps"],
+            answer=str(kwargs.get("answer") or ""),
+            check_math_delimiters=True,
         )
         if payload_err:
             failed += 1
-            print(f"FAIL {path.relative_to(incoming)} payload:{payload_err}")
+            print(f"FAIL {rel} payload:{payload_err}")
             continue
 
         src_id = kwargs["meta"].get("textbook_id") or kwargs["meta"].get("workshop_id")

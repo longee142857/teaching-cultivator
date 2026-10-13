@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f$ 处处可微且对所有 $xy \\neq 1$ 的实数 $x, y$ ，都有 $f(x) + f(y) = f\\left(\\frac{x + y}{1 - xy}\\right)$ ，求 $f(x)$ .",
-  "answer": "f (x) = f ^ {\\prime} (0) \\arctan x.",
+  "answer": "$f (x) = f ^ {\\prime} (0) \\arctan x.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "建立微分方程",
@@ -30,7 +30,7 @@
         "text": "方法2 令 $x = \\tan \\theta, y = \\tan \\varphi$ ，所给等式化为 $f(\\tan \\theta) + f(\\tan \\varphi) = f(\\tan (\\theta + \\varphi))$ ，记 $g(x) = f(\\tan x)$ ，则有 $g(x) + g(y) = g(x + y)$ ， $g(0) = 0$ 。由此可得\n\n$$\n\\lim _ {\\Delta x \\to 0} \\frac {g (x + \\Delta x) - g (x)}{\\Delta x} = \\lim _ {\\Delta x \\to 0} \\frac {g (\\Delta x)}{\\Delta x} , \\text {即} g ^ {\\prime} (x) = g ^ {\\prime} (0) .\n$$\n\n积分得\n\n$$\ng (x) = g ^ {\\prime} (0) x, \\text {即} f (\\tan x) = f ^ {\\prime} (0) x, f (x) = f ^ {\\prime} (0) \\arctan x.\n$$"
       }
     ],
-    "final_answer": "f (x) = f ^ {\\prime} (0) \\arctan x.",
+    "final_answer": "$f (x) = f ^ {\\prime} (0) \\arctan x.$",
     "techniques_used": [
       "建立微分方程",
       "分离变量"
@@ -47,7 +47,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "分离变量",
-      "expected": "f (x) = f ^ {\\prime} (0) \\arctan x."
+      "expected": "$f (x) = f ^ {\\prime} (0) \\arctan x.$"
     }
   ],
   "meta": {

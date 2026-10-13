@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $(1 - x)y'' = \\frac{1}{5}\\sqrt{1 + y'^2}$ 满足 $y(0) = 0, y'(0) = 0$ 的特解.",
-  "answer": "y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.",
+  "answer": "$y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -31,7 +31,7 @@
         "text": "$$\n2 y ^ {\\prime} = (1 - x) ^ {- \\frac {1}{5}} - (1 - x) ^ {\\frac {1}{5}},\n$$\n\n积分，并由 $y(0) = 0$ 得\n\n$$\ny = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.\n$$"
       }
     ],
-    "final_answer": "y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.",
+    "final_answer": "$y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.$",
     "techniques_used": [
       "初值问题",
       "积分方程转化",
@@ -49,7 +49,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "积分方程转化",
-      "expected": "y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}."
+      "expected": "$y = - \\frac {5}{8} (1 - x) ^ {\\frac {4}{5}} + \\frac {5}{1 2} (1 - x) ^ {\\frac {6}{5}} + \\frac {5}{2 4}.$"
     }
   ],
   "meta": {

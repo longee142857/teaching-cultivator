@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 具有二阶导数，且 $f(x) + f'(\\pi - x) = \\sin x, f\\left(\\frac{\\pi}{2}\\right) = 0$ 。求 $f(x)$ .",
-  "answer": "f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.",
+  "answer": "$f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -34,7 +34,7 @@
         "text": "初值条件 $f\\left(\\frac{\\pi}{2}\\right) = 0$ . 又由 $f(x) + f'(\\pi - x) = \\sin x$ 得 $f'\\left(\\frac{\\pi}{2}\\right) = 1$ . 求得特解\n\n$$\nf (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.\n$$"
       }
     ],
-    "final_answer": "f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.",
+    "final_answer": "$f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.$",
     "techniques_used": [
       "初值问题",
       "可降阶"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x."
+      "expected": "$f (x) = \\left(\\frac {\\pi}{4} - \\frac {1}{2} - \\frac {x}{2}\\right) \\cos x + \\left(- \\frac {\\pi}{4} + \\frac {x}{2}\\right) \\sin x.$"
     }
   ],
   "meta": {

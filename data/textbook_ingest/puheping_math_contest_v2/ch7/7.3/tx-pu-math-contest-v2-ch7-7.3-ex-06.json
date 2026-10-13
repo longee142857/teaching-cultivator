@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "一小船 $A$ 从原点出发，以匀速 $\\nu_{0}$ 沿 $y$ 轴正向行驶。另一小船 $B$ 从 $x$ 轴上的点 $(x_{0},0)(x_{0} < 0)$ 出发，朝 $A$ 追去，其速度方向始终指向 $A$ ，速度大小为常数 $\\nu_{1}$\n\n(1) 求船 B 的运动方程;\n\n(2) 如果 $v_{1} > v_{0}$ ，问船 B 需要多少时间才能追上船 A.",
-  "answer": "t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x.",
+  "answer": "$t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -22,7 +22,7 @@
     "steps": [
       {
         "id": "s1",
-        "text": "分析 这是追击问题. 它所隐含的等量关系有两个: 一是船 $B$ 的运动方向 (切线方向) 始终为 $BA$ 方向; 二是两船在相同时间段所走过的路程比等于其速度比. 若船 $B$ 的运动轨迹为 $y = y(x)$ , 则船 $B$ 能追上船 $A$ 的标志是 $y(x)$ 在 $x = 0$ 有意义或 $\\lim_{x \\to 0^+} y(x)$ 存在.\n\n解（1）设船 $B$ 的轨迹线为 $y = y(x)$ 。经过时间 $t$ ，两船的位置分别为 $A(0, v_0 t)$ 与 $B(x, y)$ 。因为船 $B$ 的速度的方向指向船 $A$ （如图7.2所示），故\n\n$$\n\\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {v _ {0} t - y}{0 - x}, \\text {即} - x \\frac {\\mathrm{d} y}{\\mathrm{d} x} = v _ {0} t - y.\\tag{①}\n$$\n\n船 A 所走过的路程为 $v_{0}t$ ，船 B 所走过的路程为 $\\int_{0}^{x}\\sqrt{1+y'^{2}}dx$ ，\n\n它们的路程比等于其速度比，有\n\n$$\n\\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}}   \\mathrm{d} x / v _ {0} t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}}   \\mathrm{d} x.\n$$\n\n将②式代入①式得\n\n②\n\n$$\n- x \\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x - y.\n$$\n\n两边对 $x$ 求导，得方程\n\n$$\nx y ^ {\\prime \\prime} + \\frac {v _ {0}}{v _ {1}} \\sqrt {1 + (y ^ {\\prime}) ^ {2}} = 0, \\text {且有} y \\big | _ {x = x _ {0}} = 0, y ^ {\\prime} \\big | _ {x = x _ {0}} = 0.\\tag{③}\n$$\n\n这是可降阶方程，令 $p = \\frac{\\mathrm{d}y}{\\mathrm{d}x}$ ， $k = \\frac{v_0}{v_1} >0$ ，得到 $\\left\\{ \\begin{array}{l}x\\frac{\\mathrm{d}p}{\\mathrm{d}x} + k\\sqrt{1 + p^2} = 0\\\\ p(x_0) = 0 \\end{array} \\right.$\n\n解此初值问题，得 $p = \\frac{1}{2}\\left[\\left(\\frac{x_0}{x}\\right)^k -\\left(\\frac{x}{x_0}\\right)^k\\right]$ 再积分，以及利用 $y(x_0) = 0$ ，于是小船的运动轨迹为\n\n$$\ny (x) = \\left\\{ \\begin{array}{l} - \\frac {x _ {0}}{2} \\left[ \\frac {1}{k - 1} \\left(\\frac {x _ "
+        "text": "分析 这是追击问题. 它所隐含的等量关系有两个: 一是船 $B$ 的运动方向 (切线方向) 始终为 $BA$ 方向; 二是两船在相同时间段所走过的路程比等于其速度比. 若船 $B$ 的运动轨迹为 $y = y(x)$ , 则船 $B$ 能追上船 $A$ 的标志是 $y(x)$ 在 $x = 0$ 有意义或 $\\lim_{x \\to 0^+} y(x)$ 存在.\n\n解（1）设船 $B$ 的轨迹线为 $y = y(x)$ 。经过时间 $t$ ，两船的位置分别为 $A(0, v_0 t)$ 与 $B(x, y)$ 。因为船 $B$ 的速度的方向指向船 $A$ （如图7.2所示），故\n\n$$\n\\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {v _ {0} t - y}{0 - x}, \\text {即} - x \\frac {\\mathrm{d} y}{\\mathrm{d} x} = v _ {0} t - y.\\tag{①}\n$$\n\n船 A 所走过的路程为 $v_{0}t$ ，船 B 所走过的路程为 $\\int_{0}^{x}\\sqrt{1+y'^{2}}dx$ ，\n\n它们的路程比等于其速度比，有\n\n$$\n\\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}}   \\mathrm{d} x / v _ {0} t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}}   \\mathrm{d} x.\n$$\n\n将②式代入①式得\n\n②\n\n$$\n- x \\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x - y.\n$$\n\n两边对 $x$ 求导，得方程\n\n$$\nx y ^ {\\prime \\prime} + \\frac {v _ {0}}{v _ {1}} \\sqrt {1 + (y ^ {\\prime}) ^ {2}} = 0, \\text {且有} y \\big | _ {x = x _ {0}} = 0, y ^ {\\prime} \\big | _ {x = x _ {0}} = 0.\\tag{③}\n$$\n\n这是可降阶方程，令 $p = \\frac{\\mathrm{d}y}{\\mathrm{d}x}$ ， $k = \\frac{v_0}{v_1} >0$ ，得到 $\\left\\{ \\begin{array}{l}x\\frac{\\mathrm{d}p}{\\mathrm{d}x} + k\\sqrt{1 + p^2} = 0\\\\ p(x_0) = 0 \\end{array} \\right.$\n\n解此初值问题，得 $p = \\frac{1}{2}\\left[\\left(\\frac{x_0}{x}\\right)^k -\\left(\\frac{x}{x_0}\\right)^k\\right]$ 再积分，以及利用 $y(x_0) = 0$ ，于是小船的运动轨迹为\n\n$$\ny (x) = \\left\\{ \\begin{array}{l} - \\frac {x _ {0}}{2} \\left[ \\frac {1}{k - 1} \\left(\\frac {x _$$ "
       },
       {
         "id": "s2",
@@ -33,7 +33,7 @@
         "text": "(2) 只有当 $k=\\frac{v_{0}}{v_{1}}<1$ 时，船 B 才能追上船 A；而当船 B 追上船 A 时，其 x 坐标为 0，由于\n\n$\\lim_{x \\to 0^{-}} y(x) = \\lim_{x \\to 0^{-}} - \\frac{x_0}{2} \\left[ \\frac{1}{k-1} \\left( \\frac{x_0}{x} \\right)^{k-1} + \\frac{1}{k+1} \\left( \\frac{x}{x_0} \\right)^{k+1} - \\frac{2k}{k^2 - 1} \\right] = \\frac{x_0 k}{k^2 - 1}$ , 则船 $B$ 追上船 $A$ 需要费时 $T = \\frac{x_0 k}{(k^2 - 1) v_0} = \\frac{x_0 v_1}{v_0^2 - v_1^2}$ ."
       }
     ],
-    "final_answer": "t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x.",
+    "final_answer": "$t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x.$",
     "techniques_used": [
       "可降阶",
       "几何建模",
@@ -53,7 +53,7 @@
       "id": "c2",
       "prompt": "通解/特解或所求量是什么？",
       "technique": "几何建模",
-      "expected": "t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x."
+      "expected": "$t = v _ {1} / v _ {0}, \\text {即} v _ {0} t = \\frac {v _ {0}}{v _ {1}} \\int_ {0} ^ {x} \\sqrt {1 + y ^ {\\prime 2}} \\mathrm{d} x.$"
     }
   ],
   "meta": {

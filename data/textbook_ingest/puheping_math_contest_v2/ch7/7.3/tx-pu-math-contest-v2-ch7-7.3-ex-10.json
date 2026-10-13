@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设甲容器中有 100 升盐水，并含盐 10 升，乙容器中有 100 升清水。现以 2 升/分的速率将清水注入甲，搅均匀后以 2 升/分的速率将盐水注入乙容器，搅匀后又以 1 升/分的速率流出乙容器，求乙容器中含盐量的变化规律。",
-  "answer": "y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ .",
+  "answer": "$y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ .",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "混合问题",
@@ -35,7 +35,7 @@
         "text": "解出 $y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ ."
       }
     ],
-    "final_answer": "y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ .",
+    "final_answer": "$y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ .",
     "techniques_used": [
       "混合问题",
       "初值问题",
@@ -53,7 +53,7 @@
       "id": "c2",
       "prompt": "所求函数/轨迹/含盐量规律是什么？",
       "technique": "初值问题",
-      "expected": "y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ ."
+      "expected": "$y = \\frac{10}{100 + t} [150 - (150 + t)e^{\\frac{t}{50}}]$ ."
     }
   ],
   "meta": {

@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $x^{2}y''(x) + 4(x + 1)y'(x) + 2y(x) = \\frac{2}{x^{3}}$ 满足初始条件 $y(1) = -\\frac{1}{6}$ , $y'(1) = 0$ 的特解.",
-  "answer": "y = - \\frac {1}{x ^ {4}}.",
+  "answer": "$y = - \\frac {1}{x ^ {4}}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "积分方程转化",
@@ -38,7 +38,7 @@
         "text": "此解的存在区间为 $(0, +\\infty)$ ."
       }
     ],
-    "final_answer": "y = - \\frac {1}{x ^ {4}}.",
+    "final_answer": "$y = - \\frac {1}{x ^ {4}}.$",
     "techniques_used": [
       "积分方程转化",
       "可降阶"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/特解是什么？",
       "technique": "可降阶",
-      "expected": "y = - \\frac {1}{x ^ {4}}."
+      "expected": "$y = - \\frac {1}{x ^ {4}}.$"
     }
   ],
   "meta": {

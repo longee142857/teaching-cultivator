@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $(x^{2}\\ln x)y''-xy'+y=0$ 的通解.",
-  "answer": "y = C _ {2} x - C _ {1} (\\ln x + 1).",
+  "answer": "$y = C _ {2} x - C _ {1} (\\ln x + 1).$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -34,7 +34,7 @@
         "text": "将 $x = \\mathbf{e}^t$ 代入，得所给微分方程的通解\n\n$$\ny = C _ {2} x - C _ {1} (\\ln x + 1).\n$$"
       }
     ],
-    "final_answer": "y = C _ {2} x - C _ {1} (\\ln x + 1).",
+    "final_answer": "$y = C _ {2} x - C _ {1} (\\ln x + 1).$",
     "techniques_used": [
       "可降阶",
       "常系数线性"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/特解是什么？",
       "technique": "常系数线性",
-      "expected": "y = C _ {2} x - C _ {1} (\\ln x + 1)."
+      "expected": "$y = C _ {2} x - C _ {1} (\\ln x + 1).$"
     }
   ],
   "meta": {

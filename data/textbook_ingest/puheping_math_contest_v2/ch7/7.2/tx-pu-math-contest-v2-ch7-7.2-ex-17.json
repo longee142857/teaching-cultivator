@@ -9,7 +9,7 @@
   "item_form": "proof_outline",
   "difficulty": "hit",
   "question": "设二阶常系数非齐次线性方程为 $y'' + py' + qy = f(x)$ ，其中 $p, q$ 为常数。其对应的齐次方程的特征根分别为 $r_1, r_2$ 。证明该方程的通解为\n\n$$\ny = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right) \\mathrm{d} x + C _ {2}\\right).\n$$",
-  "answer": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _",
+  "answer": "$y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "常系数线性",
@@ -36,7 +36,7 @@
         "text": "再解此一阶线性方程得\n\n$$\ny = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _ {2} x} f (x) \\mathrm{d} x + C _ {1}\\right) \\mathrm{d} x + C _ {2}\\right).\n$$"
       }
     ],
-    "final_answer": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _",
+    "final_answer": "$y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _$",
     "techniques_used": [
       "常系数线性",
       "证明技巧",
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "证明技巧",
-      "expected": "y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _"
+      "expected": "$y = \\mathrm{e} ^ {r _ {1} x} \\left(\\int \\mathrm{e} ^ {- r _ {1} x} \\left(\\mathrm{e} ^ {r _ {2} x} \\int \\mathrm{e} ^ {- r _$"
     }
   ],
   "meta": {

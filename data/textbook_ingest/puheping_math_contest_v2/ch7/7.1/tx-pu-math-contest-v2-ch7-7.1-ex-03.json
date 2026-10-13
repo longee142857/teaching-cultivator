@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 在 $\\mathbb{R}$ 上连续，且对任意 $x, y \\in \\mathbb{R}$ 有 $f(x + y) = f(x) + f(y) + xy(x + y)$ ，已知 $f(1) = \\frac{2}{3}$ ，求 $f(x)$ .",
-  "answer": "f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$",
+  "answer": "$f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -38,7 +38,7 @@
         "text": "由①和②式得： $f'(x)=x^{2}+\\frac{1}{3}$ ，则 $f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$"
       }
     ],
-    "final_answer": "f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$",
+    "final_answer": "$f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$",
     "techniques_used": [
       "初值问题",
       "分离变量"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "分离变量",
-      "expected": "f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$"
+      "expected": "$f(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x+C$ ，再由 $f(1)=\\frac{2}{3}$ ，得C=0，所以 $\\dot{f}(x)=\\frac{1}{3}x^{3}+\\frac{1}{3}x.$"
     }
   ],
   "meta": {
