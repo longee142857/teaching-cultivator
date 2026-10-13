@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-15",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.sum",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $a_1 = 1, a_2 = 1, a_{n+2} = 2a_{n+1} + 3a_n (n \\geqslant 1)$ ，求 $\\sum_{n=1}^{\\infty} a_n x^n$ 的收敛半径及和函数.",
+  "answer": "收敛半径为 $R$ ，则当 $|x| < R$ 时，由“方法2”知",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "级数求和"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 一种方法是由 $a_{n}$ 所满足的递推式求出 $a_{n}$ 的表达式，再求级数的收敛半径与和函数；另一种方法是直接求极限 $\\lim_{n\\to \\infty}\\frac{a_{n + 1}}{a_n}$ 来得到收敛半径，由 $a_{n}$ 的递推式来建立和函数所满足的方程."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 把 $a_{n+2} = 2a_{n+1} + 3a_n$ 化为 $a_{n+2} - 3a_{n+1} = -1(a_{n+1} - 3a_n)$ ，则 $(a_{n+2} - 3a_{n+1})$ 是以-2为首项，-1为公比的等比数列，所以 $a_{n+2} - 3a_{n+1} = -2(-1)^n$ 。此时又可化为\n\n$$\na _ {n + 2} + \\frac {1}{2} (- 1) ^ {n + 2} = 3 \\left[ a _ {n + 1} + \\frac {1}{2} (- 1) ^ {n + 1} \\right],\n$$\n\n则 $\\left\\{a_{n} + \\frac{1}{2} (-1)^{n}\\right\\}$ 是以 $\\frac{1}{2}$ 为首项，3为公比的等比级数，所以\n\n$$\na _ {n} = - \\frac {1}{2} (- 1) ^ {n} + \\frac {1}{2} \\times 3 ^ {n - 1}.\n$$\n\n由于 $\\lim_{n\\to \\infty}\\sqrt[n]{a_n} = 3$ ，所以 $\\sum_{a = 1}^{\\infty}a_nx^n$ 的收敛半径是 $\\frac{1}{3}$ .和函数\n\n$$\n\\sum_ {n = 1} ^ {\\infty} a _ {n} x ^ {n} = - \\frac {1}{2} \\sum_ {n = 1} ^ {\\infty} (- x) ^ {n} + \\frac {1}{6} \\sum_ {n = 1} ^ {\\infty} (3 x) ^ {n} = - \\frac {1}{2} \\cdot \\frac {- x}{1 + x} + \\frac {1}{6} \\cdot \\frac {3 x}{1 - 3 x} = \\frac {x (1 - x)}{(1 + x) (1 - 3 x)}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 记 $b_{n} = \\frac{a_{n + 1}}{a_{n}}$ ，由于 $a_{n + 2} = 2a_{n + 1} + 3a_{n}$ ，则 $b_{n + 1} = 2 + \\frac{3}{b_n}$ ，且 $b_{n}\\geqslant 2(n\\geqslant 2)$ ，则\n\n$$\n\\left| b _ {n + 1} - 3 \\right| = \\frac {\\left| b _ {n} - 3 \\right|}{b _ {n}} \\leqslant \\frac {1}{2} \\left| b _ {n} - 3 \\right| \\leqslant \\dots \\leqslant \\left(\\frac {1}{2}\\right) ^ {n - 1} \\left| b _ {2} - 3 \\right|,\n$$\n\n所以 $\\lim_{n\\to \\infty}b_n = 3$ ，级数收敛半径为 $\\frac{1}{3}$\n\n和函数\n\n$$\n\\begin{array}{r l} S (x) & = \\sum_ {n = 1} ^ {\\infty} a _ {n} x ^ {n} = x + x ^ {2} + 2 \\sum_ {n = 3} ^ {\\infty} a _ {n - 1} x ^ {n} + 3 \\sum_ {n = 3} ^ {\\infty} a _ {n - 2} x ^ {n} \\\\ & = x + x ^ {2} + 2 x \\sum_ {n = 2} ^ {\\infty} a _ {n} x ^ {n} + 3 x ^ {2} \\sum_ {n = 1} ^ {\\infty} a _ {n} x ^ {n} \\\\ & = x + x ^ {2} + 2 x (S (x) - x) + 3 x ^ {2} S (x), \\end{array}\n$$\n\n解出 $S(x) = \\frac{x(1 - x)}{(1 + x)(1 - 3x)}.$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3 设 $S(x) = \\sum_{n=1}^{\\infty} a_n x^n$ 的收敛半径为 $R$ ，则当 $|x| < R$ 时，由“方法2”知\n\n$$\n\\begin{array}{r l} S (x) & = \\frac {x (1 - x)}{(1 + x) (1 - 3 x)} = \\frac {x}{2} \\left(\\frac {1}{1 + x} + \\frac {1}{1 - 3 x}\\right) \\\\ & = \\frac {x}{2} \\left(\\sum_ {n = 0} ^ {\\infty} (- 1) ^ {n} x ^ {n} + \\sum_ {n = 0} ^ {\\infty} 3 ^ {n} x ^ {n}\\right) = \\sum_ {n = 1} ^ {\\infty} \\frac {1}{2} \\left[ (- 1) ^ {n - 1} + 3 ^ {n - 1} \\right] x ^ {n}, \\end{array}\n$$\n\n所以 $a_{n} = \\frac{1}{2}\\left[(-1)^{n - 1} + 3^{n - 1}\\right], R = \\lim_{n\\to \\infty}\\frac{a_n}{a_{n + 1}} = \\frac{1}{3}.$"
+      }
+    ],
+    "final_answer": "收敛半径为 $R$ ，则当 $|x| < R$ 时，由“方法2”知",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "级数求和"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "级数求和",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "级数求和",
+      "expected": "收敛半径为 $R$ ，则当 $|x| < R$ 时，由“方法2”知"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 433,
+    "syllabus_note": "递推系数幂级数半径与和函数",
+    "commentary": "评注 (1) $a_{n}$ 的通项公式也可由特征根法解差分方程 $a_{n+2} = 2a_{n+1} + 3a_{n}$ 而得到。具体方法如下：解对应的特征方程 $r^2 - 2r - 3 = 0$ ，得特征根 $r_1 = -1$ ， $r_2 = 3$ 。由特征根写出差分方程的通解\n\n$$\na _ {n} = c _ {1} (- 1) ^ {n} + c _ {2} 3 ^ {n}.\n$$\n\n代入 $a_1 = 1$ ， $a_2 = 1$ ，解得 $c_{1} = -\\frac{1}{2}, c_{2} = \\frac{1}{6}$ 所以 $a_{n} = -\\frac{1}{2} (-1)^{n} + \\frac{1}{2} \\times 3^{n - 1}$\n\n(2) 若 $f(x) = \\sum_{n=0}^{\\infty} a_n x^n$ 的系数 $a_n$ 满足某个常系数线性差分方程（递推式），将 $a_n$ 的递推式代入级数，经运算或变形可得到一个关于 $f(x)$ 的代数方程，解代数方程可得 $f(x)$ 的表达式.\n\n(3) 若 $a_{n}$ 满足某个差分方程, 而该差分方程又不便求解, 则可通过幂级数 $\\sum_{n=0}^{\\infty} a_{n} x^{n}$ 的和函数的展开式来得到 $a_{n}$ 的表达式 (如本题 “方法 3” )."
+  }
+}

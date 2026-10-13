@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-34",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明：当且仅当存在常数 $c_{0}, c_{1}, \\cdots, c_{n}$ ，使对于所有大于某个 N 的 k，都有\n\n$$\nc _ {0} a _ {k} + c _ {1} a _ {k - 1} + \\dots + c _ {n} a _ {k - n} = 0\n$$\n\n时，函数 $f(x) = \\sum_{k=0}^{\\infty} a_k x^k$ 才是有理函数.",
+  "answer": "$g(x)$ 的次数有限，即它是一个多项式，从而 $f(x)=\\frac{g(x)}{c_{0}+c_{1}x+\\cdots+c_{n}x^{n}}$ 是有理函数.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "收敛半径与收敛域",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $f(x)$ 是有理函数，即\n\n$$\n\\sum_ {k = 0} ^ {\\infty} a _ {k} x ^ {k} = \\frac {b _ {0} + b _ {1} x + \\cdots + b _ {m} x ^ {m}}{c _ {0} + c _ {1} x + \\cdots + c _ {n} x ^ {n}} \\Leftrightarrow (c _ {0} + c _ {1} x + \\dots + c _ {n} x ^ {n}) \\sum_ {k = 0} ^ {\\infty} a _ {k} x ^ {k} = b _ {0} + b _ {1} x + \\dots + b _ {m} x ^ {m}.\n$$\n\n由此可得到系数 $a_{k}$ 所满足的关系式，反之亦然."
+      },
+      {
+        "id": "s2",
+        "text": "当 $f(x) = \\sum_{k=0}^{\\infty} a_k x^k = \\frac{b_0 + b_1 x + \\ldots + b_m x^m}{c_0 + c_1 x + \\ldots + c_n x^n}$ 是有理函数时，则有\n\n$$\n(a _ {0} + a _ {1} x + a _ {2} x ^ {2} + \\dots + a _ {k} x ^ {k} + \\dots) (c _ {0} + c _ {1} x + \\dots + c _ {n} x ^ {n}) = b _ {0} + b _ {1} x + \\dots + b _ {m} x ^ {m}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "则由幂级数的乘法，比较等式两边幂级数的系数可知，当 $k > N = \\max \\{m, n\\}$ 时，有\n\n$$\nb _ {k} = 0 = c _ {0} a _ {k} + c _ {1} a _ {k - 1} + \\dots + c _ {n} a _ {k - n}.\n$$\n\n反之，构造多项式 $c_{0} + c_{1}x + \\dots +c_{n}x^{n}$ ，将它视为幂级数，其中 $c_{k} = 0(k > n)$ .考虑幂级数乘法\n\n$$\ng (x) = \\left(c _ {0} + c _ {1} x + \\dots + c _ {n} x ^ {n}\\right) \\left(\\sum_ {k = 0} ^ {\\infty} a _ {k} x ^ {k}\\right) = \\sum_ {k = 0} ^ {\\infty} b _ {k} x ^ {k}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "当 $k > N$ 时，\n\n$$\n\\begin{array}{r l} & b _ {k} = c _ {0} a _ {k} + c _ {1} a _ {k - 1} + \\dots + c _ {n} a _ {k - n} + c _ {n + 1} a _ {k - n - 1} + \\dots + c _ {k} a _ {0} \\\\ & \\quad = c _ {0} a _ {k} + c _ {1} a _ {k - 1} + \\dots + c _ {n} a _ {k - n} = 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "因此 $g(x)$ 的次数有限，即它是一个多项式，从而 $f(x)=\\frac{g(x)}{c_{0}+c_{1}x+\\cdots+c_{n}x^{n}}$ 是有理函数."
+      }
+    ],
+    "final_answer": "$g(x)$ 的次数有限，即它是一个多项式，从而 $f(x)=\\frac{g(x)}{c_{0}+c_{1}x+\\cdots+c_{n}x^{n}}$ 是有理函数.",
+    "techniques_used": [
+      "证明技巧",
+      "收敛半径与收敛域",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "证明技巧",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "收敛半径与收敛域",
+      "expected": "$g(x)$ 的次数有限，即它是一个多项式，从而 $f(x)=\\frac{g(x)}{c_{0}+c_{1}x+\\cdots+c_{n}x^{n}}$ 是有理函数."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例34*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 448,
+    "starred": true,
+    "syllabus_note": "线性递推特征多项式*"
+  }
+}

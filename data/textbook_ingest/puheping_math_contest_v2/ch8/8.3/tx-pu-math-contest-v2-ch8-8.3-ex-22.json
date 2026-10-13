@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-22",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x) = \\sum_{n=0}^{\\infty} a_n x^n (|x| < \\infty, a_n > 0)$ ， $\\sum_{n=0}^{\\infty} a_n n!$ 收敛。证明 $\\int_0^{+\\infty} e^{-x} f(x) \\mathrm{d}x = \\sum_{n=0}^{\\infty} a_n n!$ .",
+  "answer": "收敛，由 M 判别法知， $\\sum_{n=0}^{\\infty} a_n x^n e^{-x}$ 在 $(0, +\\infty)$ 上一致收敛。所以对 $\\for",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "一致收敛判别",
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $\\mathbf{e}^{-x}f(x) = \\sum_{n = 0}^{\\infty}a_nx^n\\mathbf{e}^{-x}$ ，等式两边积分就可得到所需的等式.要使积分号与级数和号交\n\n换，只需要证明级数 $\\sum_{n=0}^{\\infty} a_n x^n e^{-x}$ 在 $(0, +\\infty)$ 上一致收敛.\n\n因为 $e^{x}=1+x+\\frac{1}{2!}x^{2}+\\cdots+\\frac{1}{n!}x^{n}+\\cdots$"
+      },
+      {
+        "id": "s2",
+        "text": "当 $x > 0$ 时，有\n\n$$\n\\mathrm{e} ^ {x} > \\frac {1}{n !} x ^ {n} \\Rightarrow x ^ {n} \\mathrm{e} ^ {- x} <   n! \\Rightarrow a _ {n} x ^ {n} \\mathrm{e} ^ {- x} <   a _ {n} n!.\n$$\n\n由于 $\\sum_{n=0}^{\\infty} a_n n!$ 收敛，由 M 判别法知， $\\sum_{n=0}^{\\infty} a_n x^n e^{-x}$ 在 $(0, +\\infty)$ 上一致收敛。所以对 $\\forall A > 0$ ，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\int_ {0} ^ {A} \\sum_ {n = 0} ^ {\\infty} a _ {n} x ^ {n} \\mathrm{e} ^ {- x} \\mathrm{d} x = \\sum_ {n = 0} ^ {\\infty} \\int_ {0} ^ {A} a _ {n} x ^ {n} \\mathrm{e} ^ {- x} \\mathrm{d} x.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "取 $A \\to +\\infty$ ，有\n\n$$\n\\int_ {0} ^ {+ \\infty} \\sum_ {n = 0} ^ {\\infty} a _ {n} x ^ {n} e ^ {- x} d x = \\sum_ {n = 0} ^ {\\infty} a _ {n} \\int_ {0} ^ {+ \\infty} x ^ {n} e ^ {- x} d x.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由于 $\\int_{0}^{+\\infty} x^{n} \\mathrm{e}^{-x} \\mathrm{d}x = \\Gamma(n + 1) = n!$ . 上式即为 $\\int_{0}^{+\\infty} \\mathrm{e}^{-x} f(x) \\mathrm{d}x = \\sum_{n=0}^{\\infty} a_{n} n!$ . 得证."
+      }
+    ],
+    "final_answer": "收敛，由 M 判别法知， $\\sum_{n=0}^{\\infty} a_n x^n e^{-x}$ 在 $(0, +\\infty)$ 上一致收敛。所以对 $\\for",
+    "techniques_used": [
+      "一致收敛判别",
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "一致收敛判别",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛，由 M 判别法知， $\\sum_{n=0}^{\\infty} a_n x^n e^{-x}$ 在 $(0, +\\infty)$ 上一致收敛。所以对 $\\for"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例22*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 440,
+    "starred": true,
+    "syllabus_note": "积分与幂级数交换*",
+    "commentary": "评注 这里用了 $\\Gamma$ 函数： $\\Gamma(\\alpha) = \\int_{0}^{+\\infty} x^{\\alpha - 1} \\mathrm{e}^{-x} \\, \\mathrm{d}x (\\alpha > 0)$ .\n\n$\\Gamma$ 函数具有递推公式： $\\Gamma (\\alpha +1) = \\alpha \\Gamma (\\alpha)$ 特别 $\\Gamma (n + 1) = n!$\n\n## 2. 函数的幂级数展开\n\n函数展开为幂级数的常用方法有“直接法”与“间接法”。由于“直接法”需计算函数的任意阶导数，并判断其泰勒公式余项在级数的收敛区间内是否趋于零，所以做直接展开是较困难的。更多的情况是做间接展开，以下是几个常用的麦克劳林展开式：\n\n$$\n\\begin{array}{l} \\mathrm{e} ^ {x} = 1 + x + \\frac {x ^ {2}}{2 !} + \\dots + \\frac {x ^ {n}}{n !} + \\dots = \\sum_ {n = 0} ^ {\\infty} \\frac {x ^ {n}}{n !}, x \\in (- \\infty , + \\infty); \\\\ \\sin x = x - \\frac {x ^ {2}}{3 !} + \\dots + (- 1) ^ {n} \\frac {x ^ {2 n + 1}}{(2 n + 1) !} + \\dots = \\sum_ {n = 0} ^ {\\infty} (- 1) ^ {n} \\frac {x ^ {2 n + 1}}{(2 n + 1) !}, x \\in (- \\infty , + \\infty); \\\\ \\cos x = 1 - \\frac {x ^ {2}}{2 !} + \\frac {x ^ {4}}{4 !} - \\dots "
+  }
+}

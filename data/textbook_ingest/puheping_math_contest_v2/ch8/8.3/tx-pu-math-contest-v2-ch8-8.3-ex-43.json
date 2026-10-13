@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-43",
+  "subject": "math",
+  "l2": "傅里叶级数",
+  "l3_id": "math.calc.fourier.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $I_{n}=\\int_{0}^{\\pi}\\frac{\\sin x\\sin nx}{1-2a\\cos x+a^{2}}dx(|a|<1)$ .",
+  "answer": "$b_{n} = a^{n - 1}$ ， $I_{n} = \\frac{\\pi}{2} b_{n} = \\frac{\\pi}{2} a^{n - 1}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "幂级数展开",
+    "傅里叶展开",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 直接计算积分很困难，如果将函数 $f(x) = \\frac{\\sin x}{1 - 2a\\cos x + a^2}$ 展开为正弦级数，由欧拉和傅里叶公式知 $b_{n} = \\frac{2}{\\pi} I_{n}$ ."
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\frac{\\sin x}{1 - 2a\\cos x + a^2}$ ，将 $f(x)$ 展开为正弦级数 $f(x) = \\sum_{n=1}^{\\infty} b_n \\sin nx$ ，则 $b_n = \\frac{2}{\\pi} I_n$ 。由欧拉公式"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} f (x) & = \\frac {1}{2 i} \\cdot \\frac {\\mathrm{e} ^ {i x} - \\mathrm{e} ^ {- i x}}{1 - a (\\mathrm{e} ^ {i x} + \\mathrm{e} ^ {- i x}) + a ^ {2}} = \\frac {1}{2 i} \\left(\\frac {\\mathrm{e} ^ {i x}}{1 - a \\mathrm{e} ^ {i x}} - \\frac {\\mathrm{e} ^ {- i x}}{1 - a \\mathrm{e} ^ {- i x}}\\right) \\\\ & = \\frac {1}{2 i} \\sum_ {n = 0} ^ {\\infty} a ^ {n} \\left[ \\mathrm{e} ^ {i (n + 1) x} - \\mathrm{e} ^ {- i (n + 1) x} \\right] = \\sum_ {n = 1} ^ {\\infty} a ^ {n - 1} \\sin n x. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $b_{n} = a^{n - 1}$ ， $I_{n} = \\frac{\\pi}{2} b_{n} = \\frac{\\pi}{2} a^{n - 1}$"
+      }
+    ],
+    "final_answer": "$b_{n} = a^{n - 1}$ ， $I_{n} = \\frac{\\pi}{2} b_{n} = \\frac{\\pi}{2} a^{n - 1}$",
+    "techniques_used": [
+      "幂级数展开",
+      "傅里叶展开",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何选取周期/奇偶延拓并计算傅里叶系数？",
+      "technique": "傅里叶展开",
+      "expected": "确定周期与奇偶性，按公式求 a_n、b_n 或写出展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "傅里叶级数或相关结论是什么？",
+      "technique": "傅里叶展开",
+      "expected": "$b_{n} = a^{n - 1}$ ， $I_{n} = \\frac{\\pi}{2} b_{n} = \\frac{\\pi}{2} a^{n - 1}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例43*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 456,
+    "starred": true,
+    "syllabus_note": "用傅里叶展开求积分*",
+    "commentary": "评注 对形如 $\\int_0^\\pi f(x)\\sin nx\\mathrm{d}x$ 或 $\\int_0^\\pi f(x)\\cos nx\\mathrm{d}x$ 的积分，若 $f(x)$ 可间接展开为傅里叶级数（通常利用欧拉公式），则积分就可通过展开式的系数而求得."
+  }
+}

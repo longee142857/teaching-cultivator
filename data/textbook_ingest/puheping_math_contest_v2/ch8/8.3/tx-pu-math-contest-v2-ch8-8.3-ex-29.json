@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-29",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.taylor",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "将 $f(x)=\\frac{\\arcsin x}{\\sqrt{1-x^{2}}}$ 展开为麦克劳林级数.",
+  "answer": "收敛域为区间 $(-1,1)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "泰勒/麦克劳林展开",
+    "幂级数展开"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 有两种展开方式：一是做间接展开，即由 $\\frac{1}{\\sqrt{1 - x^2}}$ 与 $\\arcsin x$ 的展开式做乘积；二是做直接展开，即先计算 $f^{(n)}(0)(n = 1,2,\\dots)$ ，再写出展开式。由于间接展开中两级数乘积的系数很难化简，因此这里做直接展开。\n\n做直接展开.\n\n由于\n\n$$\nf ^ {\\prime} (x) = \\frac {1}{1 - x ^ {2}} + \\frac {x \\arcsin x}{(1 - x ^ {2}) \\sqrt {1 - x ^ {2}}} = \\frac {1}{1 - x ^ {2}} + \\frac {x}{1 - x ^ {2}} f (x),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因此有\n\n$$\n(1 - x ^ {2}) f ^ {\\prime} (x) - x f (x) = 1.\n$$\n\n等式两边求 $n$ 阶导数，得\n\n$$\n\\left[ \\left(1 - x ^ {2}\\right) f ^ {(n + 1)} (x) - 2 n x f ^ {(n)} (x) - n (n - 1) f ^ {(n - 1)} (x) \\right] - \\left[ x f ^ {(n)} (x) + n f ^ {(n - 1)} (x) \\right] = 0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令 $x = 0$ ，得到 $f^{(n + 1)}(0) = n^2 f^{(n - 1)}(0)$ .其奇数阶导数\n\n$$\nf ^ {(2 n + 1)} (0) = (2 n) ^ {2} f ^ {(2 n - 1)} (0) = \\dots = [ (2 n)!! ] ^ {2} f ^ {\\prime} (0) = 4 ^ {n} (n!) ^ {2}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $f(x)$ 是奇函数，则其偶数阶导数 $f^{(2n)}(0) = 0$\n\n由于 $f(x) = \\frac{1}{\\sqrt{1 - x^2}}\\cdot \\arcsin x$ 能够表示为两个幂级数的乘积，因此它可以展开为幂级数。由幂级数展开式的唯一性得\n\n$$\nf (x) = \\sum_ {n = 0} ^ {\\infty} \\frac {f ^ {(n)} (0)}{n !} x ^ {n} = \\sum_ {n = 0} ^ {\\infty} \\frac {4 ^ {n} (n !) ^ {2}}{(2 n + 1) !} x ^ {2 n + 1}, x \\in (- 1, 1).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "$x = \\pm 1$ 是 $f(x)$ 的间断点，故该幂级数的收敛域为区间 $(-1,1)$ ."
+      }
+    ],
+    "final_answer": "收敛域为区间 $(-1,1)$ .",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "泰勒/麦克劳林展开",
+      "幂级数展开"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "选用直接泰勒还是间接展开（运算/代换）？",
+      "technique": "泰勒/麦克劳林展开",
+      "expected": "选取已知展开式，经乘除、代换或微积分得到目标展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "展开式或最终结论是什么？",
+      "technique": "泰勒/麦克劳林展开",
+      "expected": "收敛域为区间 $(-1,1)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例29*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 444,
+    "starred": true,
+    "syllabus_note": "arcsin/√(1-x²) 麦克劳林*",
+    "commentary": "评注 在最后写出 $f(x)$ 的展开式时，利用了“ $f(x)$ 能够表示为两个幂级数的乘积，因此它可以展开为幂级数”这样一个间接的手段。否则，需要证明 $f(x)$ 的泰勒公式的余项在区间 $(-1, 1)$ 上趋于0，这是很困难的。"
+  }
+}

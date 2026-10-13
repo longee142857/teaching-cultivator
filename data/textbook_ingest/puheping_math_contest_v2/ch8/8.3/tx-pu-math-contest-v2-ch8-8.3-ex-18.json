@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-18",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.taylor",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $z(k)=\\sum_{n=0}^{\\infty}\\frac{n^{k}}{n!}e^{-1}$ .\n\n（1）求 $z(0), z(1)$ 和 $z(2)$ 的值；（2）试证明当 $k$ 取正整数时， $z(k)$ 也为正整数.",
+  "answer": "$z(k) = P_{k}(1)$ 是正整数.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 利用展开式 $\\mathbf{e}^x = \\sum_{n=0}^{\\infty} \\frac{x^n}{n!}$ ，容易求得 $z(0) 、 z(1)$ 和 $z(2)$ 的值；由（1）中的结果利用归纳法容易证明（2）."
+      },
+      {
+        "id": "s2",
+        "text": "(1)\n\n$$\nz (0) = \\mathrm{e} ^ {- 1} \\sum_ {n = 0} ^ {\\infty} \\frac {x ^ {n}}{n !} \\Bigg | _ {x = 1} = \\mathrm{e} ^ {- 1} \\left. \\mathrm{e} ^ {x} \\right| _ {x = 1} = 1, \\quad z (1) = \\mathrm{e} ^ {- 1} \\sum_ {n = 0} ^ {\\infty} \\frac {n x ^ {n}}{n !} \\Bigg | _ {x = 1} = \\mathrm{e} ^ {- 1} x (\\mathrm{e} ^ {x}) ^ {\\prime} \\Bigg | _ {x = 1} = 1,\n\nz (2) = \\mathrm{e} ^ {- 1} \\sum_ {n = 0} ^ {\\infty} \\frac {n ^ {2} x ^ {n}}{n !} \\Bigg | _ {x = 1} = \\mathrm{e} ^ {- 1} x \\left[ x \\left(\\mathrm{e} ^ {x}\\right) ^ {\\prime} \\right] ^ {\\prime} \\Bigg | _ {x = 1} = \\mathrm{e} ^ {- 1} x (x + 1) \\mathrm{e} ^ {x} \\Bigg | _ {x = 1} = 2.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 方法1 找规律.\n\n当 $k = 1$ 时， $x(\\mathbf{e}^x)' = \\sum_{n=0}^{\\infty} \\frac{n x^n}{n!} = P_1(x) \\mathbf{e}^x$ ；当 $k = 2$ 时， $x(P_1(x) \\mathbf{e}^x)' = \\sum_{n=0}^{\\infty} \\frac{n^2 x^n}{n!} = P_2(x) \\mathbf{e}^x$ ；……；当 $k = k$ 时， $x\\left[P_{k-1}(x) \\mathbf{e}^x\\right]' = \\sum_{n=0}^{\\infty} \\frac{n^k x^n}{n!} = P_k(x) \\mathbf{e}^x$ 。\n\n其中 $P_0(x) \\equiv 1, P_1(x) \\equiv x, P_k(x) \\equiv x[P_{k-1}'(x) + P_{k-1}(x)]. P_k(x)$ 是系数为正整数的多项式，故 $P_k(1)$ 是正整数.\n\n而由 $P_{k}(1)\\mathrm{e} = \\sum_{n = 0}^{\\infty}\\frac{n^{k}}{n!}$ ，得 $z(k) = P_{k}(1)$ 是正整数."
+      },
+      {
+        "id": "s4",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} z (k + 1) & = \\sum_ {n = 0} ^ {\\infty} \\frac {n ^ {k + 1}}{n !} e ^ {- 1} = \\sum_ {n = 1} ^ {\\infty} \\frac {n ^ {k}}{(n - 1) !} e ^ {- 1} = \\sum_ {n = 0} ^ {\\infty} \\frac {(n + 1) ^ {k}}{n !} e ^ {- 1} \\\\ & = \\sum_ {n = 0} ^ {\\infty} \\frac {1}{n !} \\sum_ {i = 0} ^ {k} C _ {k} ^ {i} n ^ {i} e ^ {- 1} = \\sum_ {i = 0} ^ {k} C _ {k} ^ {i} \\sum_ {n = 0} ^ {\\infty} \\frac {n ^ {i}}{n !} e ^ {- 1} = \\sum_ {i = 0} ^ {k} C _ {k} ^ {i} z (i) \\quad (k = 0, 1, 2, \\dots). \\end{array}\n$$\n\n由归纳法可知 $z(k)$ 为正整数."
+      }
+    ],
+    "final_answer": "$z(k) = P_{k}(1)$ 是正整数.",
+    "techniques_used": [
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "选用直接泰勒还是间接展开（运算/代换）？",
+      "technique": "证明技巧",
+      "expected": "选取已知展开式，经乘除、代换或微积分得到目标展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "展开式或最终结论是什么？",
+      "technique": "收敛半径与收敛域",
+      "expected": "$z(k) = P_{k}(1)$ 是正整数."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例18*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 437,
+    "starred": true,
+    "syllabus_note": "e^{-1}n^k/n! 与展开*"
+  }
+}

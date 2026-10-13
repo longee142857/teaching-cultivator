@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-04",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.radius",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求级数 $\\sum_{n=1}^{\\infty} \\frac{3 + 2(-1)^n}{3^n}(x + 1)^n$ 的收敛域.",
+  "answer": "发散的，所以其收敛域为 $|x+1| < 3$ ，即 $-4 < x < 2$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比值审敛法",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 先求收敛半径，再确定收敛域."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\left|\\frac{a_n}{a_{n+1}}\\right| = \\frac{3 + 2(-1)^n}{3^n} \\cdot \\frac{3^{n+1}}{3 + 2(-1)^{n+1}} = \\frac{3[3 + 2(-1)^n]}{3 + 2(-1)^{n+1}} = \\begin{cases} \\frac{3}{5}, & n\\text{为奇数} \\\\ 15, & n\\text{为偶数} \\end{cases}$ ，所以 $\\lim_{n \\to \\infty} \\left|\\frac{a_n}{a_{n+1}}\\right|$ 不存在，因此不能用比值法求收敛半径。可将级数拆分为两个级数来考虑："
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\sum_ {n = 1} ^ {\\infty} \\frac {3 + 2 (- 1) ^ {n}}{3 ^ {n}} (x + 1) ^ {n} = \\sum_ {n = 1} ^ {\\infty} \\frac {3}{3 ^ {n}} (x + 1) ^ {n} + \\sum_ {n = 1} ^ {\\infty} \\frac {2 (- 1) ^ {n}}{3 ^ {n}} (x + 1) ^ {n}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "容易求出 $\\sum_{n=1}^{\\infty} \\frac{3}{3^n}(x+1)^n$ 的收敛半径为 3， $\\sum_{n=1}^{\\infty} \\frac{2(-1)^n}{3^n}(x+1)^n$ 的收敛半径也为 3，所以原级数的收敛半径至少为 3。将 $x+1 = \\pm 3$ 代入原级数都是发散的，所以其收敛域为 $|x+1| < 3$ ，即 $-4 < x < 2$ 。"
+      }
+    ],
+    "final_answer": "发散的，所以其收敛域为 $|x+1| < 3$ ，即 $-4 < x < 2$ 。",
+    "techniques_used": [
+      "比值审敛法",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求收敛半径？端点如何判定？",
+      "technique": "比值审敛法",
+      "expected": "用比值/根值/比较求半径，再检验端点得收敛域。"
+    },
+    {
+      "id": "c2",
+      "prompt": "收敛域（或半径）结论是什么？",
+      "technique": "收敛半径与收敛域",
+      "expected": "发散的，所以其收敛域为 $|x+1| < 3$ ，即 $-4 < x < 2$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 426,
+    "syllabus_note": "带交错系数幂级数收敛域",
+    "commentary": "评注（1）幂级数做线性运算，其代数和的收敛域是各项收敛域的交集.\n\n(2). 该幂级数的收敛半径虽然不能由比值法确定，却可以由根值法确定，方法如下：\n\n因为 $\\frac{1}{3^n} \\leqslant \\frac{3 + 2(-1)^n}{3^n} \\leqslant \\frac{5}{3^n}$ ，而 $\\lim_{n \\to \\infty} \\sqrt[n]{\\frac{1}{3^n}} = \\frac{1}{3}, \\lim_{n \\to \\infty} \\sqrt[n]{\\frac{5}{3^n}} = \\frac{1}{3}$ ，所以\n\n$$\n\\rho = \\lim _ {n \\rightarrow \\infty} \\sqrt [ n ]{\\frac {3 + 2 (- 1) ^ {n}}{3 ^ {n}}} = \\frac {1}{3}, R = 3.\n$$"
+  }
+}

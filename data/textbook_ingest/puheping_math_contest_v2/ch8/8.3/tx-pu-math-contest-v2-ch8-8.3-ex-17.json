@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-17",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.sum",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "定义 $S_0$ 为 1，设 $S_n$ 为某一类 $n \\times n$ 对称矩阵 $(a_{ij})$ 的总数 $(n \\geqslant 1)$ ，这类矩阵的元素为非负整数，且 $\\sum_{i=1}^{n} a_{ij} = 1 (j = 1, 2, \\cdots, n)$ ，求级数 $\\sum_{n=0}^{\\infty} S_n \\frac{x^n}{n!}$ 的和函数.",
+  "answer": "收敛区间为 $(- \\infty, + \\infty)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "级数求和",
+    "递推/生成函数",
+    "证明技巧",
+    "积分技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 须求得 $S_{n}$ 的表达式或递推公式，则级数的和函数才便于找到方法计算.\n\n由于对称矩阵 $(a_{ij})_{n\\times n}$ 的元素为非负整数，且有 $\\sum_{i=1}^{n}a_{ij}=1(j=1,2,\\cdots,n)$ ，所以矩阵的每行和每列只有一个元素，且为1，其余元素全为0。我们称该类矩阵为“对称置换矩阵”。下面讨论 $S_{n}$ 的递推关系式：\n\n设 $(a_{ij})_{n\\times n}$ 中的 $a_{1k} = 1$ ，若 $k = 1$ ，则有 $S_{n - 1}$ 个方法去构成这 $n$ 阶矩阵；\n\n若 $k \\neq 1$ ，则 $a_{1k} = a_{k1} = 1$ ，从而删去第1行第 $k$ 行及第1列第 $k$ 列，剩下一个 $(n - 2) \\times (n - 2)$ 对称的置换矩阵，可见\n\n$$\nS _ {n} = S _ {n - 1} + (n - 1) S _ {n - 2}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "令 $F(x) = \\sum_{n=0}^{\\infty} S_n \\frac{x^n}{n!}$ , $a_n = \\frac{S_n}{n!}$ . 先求幂级数的收敛区间.\n\n由于\n\n$$\n\\lim _ {n \\rightarrow \\infty} \\frac {a _ {n + 1}}{a _ {n}} = \\lim _ {n \\rightarrow \\infty} \\frac {S _ {n + 1}}{(n + 1) !} \\cdot \\frac {n !}{S _ {n}} = \\lim _ {n \\rightarrow \\infty} \\frac {S _ {n + 1}}{S _ {n}} \\cdot \\frac {1}{n + 1},\n$$\n\n若 $\\frac{S_{n + 1}}{S_n}$ 有界，则 $\\lim_{n\\to \\infty}\\frac{a_{n + 1}}{a_n} = 0$ ；若 $\\frac{S_{n + 1}}{S_n}$ 无界，则必有 $\\lim_{n\\to \\infty}\\frac{S_{n + 1}}{S_n} = \\infty$ （原因后叙），从而"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\lim _ {n \\rightarrow \\infty} \\frac {a _ {n + 1}}{a _ {n}} = \\lim _ {n \\rightarrow \\infty} \\left(\\frac {1}{n + 1} + \\frac {n S _ {n - 1}}{(n + 1) S _ {n}}\\right) = 0,\n$$\n\n所以幂级数的收敛区间为 $(- \\infty, + \\infty)$ .\n\n下面求级数的和函数:\n\n$$\n\\begin{array}{r l} F ^ {\\prime} (x) & = \\sum_ {n = 1} ^ {\\infty} S _ {n} \\frac {x ^ {n - 1}}{(n - 1) !} = \\sum_ {n = 1} ^ {\\infty} \\left(S _ {n - 1} \\frac {x ^ {n - 1}}{(n - 1) !} + (n - 1) S _ {n - 2} \\frac {x ^ {n - 1}}{(n - 1) !}\\right) \\\\ & = \\sum_ {n = 0} ^ {\\infty} S _ {n} \\frac {x ^ {n}}{n !} + \\sum_ {n = 2} ^ {\\infty} S _ {n - 2} \\frac {x ^ {n - 1}}{(n - 2) !} = F (x) + x F (x), \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "即 $\\frac{F'(x)}{F(x)} = 1 + x$ 。积分并由 $F(0) = S_0 = 1$ ，得 $F(x) = \\mathrm{e}^{x + \\frac{x^2}{2}}$ ， $x \\in (-\\infty, +\\infty)$ 。\n\n最后证明若 $\\frac{S_{n + 1}}{S_n}$ 无界，则必有 $\\lim_{n\\to \\infty}\\frac{S_{n + 1}}{S_n} = \\infty$ .因为\n\n$$\n\\begin{array}{r l} \\frac {S _ {n + 1}}{S _ {n}} - \\frac {S _ {n}}{S _ {n - 1}} & = \\frac {S _ {n + 1} S _ {n - 1} - S _ {n} ^ {2}}{S _ {n} S _ {n - 1}} = \\frac {S _ {n} S _ {n - 1} + n S _ {n - 1} ^ {2} - S _ {n} ^ {2}}{S _ {n} S _ {n - 1}} \\\\ & = \\frac {S _ {n}}{S _ {n - 1}} \\left[ \\frac {S _ {n - 1}}{S _ {n}} + n \\left(\\frac {S _ {n - 1}}{S _ {n}}\\right) ^ {2} - 1 \\right], \\end{array}\\tag{①}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "注意到方程 $nx^{2} + x - 1 = 0 (x > 0)$ 的根为 $x_{1} = \\frac{1}{\\sqrt{4n + 1} + 1}$ ，所以当 $0 < \\frac{S_{n - 1}}{S_n} \\leqslant \\frac{1}{\\sqrt{4n + 1} + 1}$ 时，有 $\\lim_{n \\to \\infty} \\frac{S_n}{S_{n - 1}} = \\infty$ ；当 $\\frac{S_{n - 1}}{S_n} > \\frac{1}{\\sqrt{4n + 1} + 1}$ 时，由①式知 $\\frac{S_{n + 1}}{S_n} - \\frac{S_n}{S_{n - 1}} > 0$ ，即 $\\left\\{\\frac{S_{n + 1}}{S_n}\\right\\}$ 是单调递增数列。该数列若无界，则必趋于无穷大。"
+      }
+    ],
+    "final_answer": "收敛区间为 $(- \\infty, + \\infty)$ .",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "级数求和",
+      "递推/生成函数",
+      "证明技巧",
+      "积分技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "级数求和",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "级数求和",
+      "expected": "收敛区间为 $(- \\infty, + \\infty)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例17*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 436,
+    "starred": true,
+    "syllabus_note": "对称矩阵计数指数生成函数*"
+  }
+}

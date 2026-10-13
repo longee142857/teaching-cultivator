@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-30",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.expand",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "将 $f(x) = \\frac{1 - x^2}{(1 - x)^4} + x\\ln (\\sqrt{x^2 + 1} - x)$ 展开为 $x$ 的幂级数.",
+  "answer": "见题解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "幂级数展开",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需将 $f(x)$ 中的两项分别展开。为利用已有的展开式，需要将函数做恒等变形（包括微分与积分的手段）。"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{r l} f (x) & = \\frac {1 + x}{(1 - x) ^ {3}} - x \\ln \\left(\\sqrt {x ^ {2} + 1} + x\\right) = \\left[ \\frac {x}{(1 - x) ^ {2}} \\right] ^ {\\prime} - x \\int_ {0} ^ {x} \\frac {\\mathrm{d} t}{\\sqrt {t ^ {2} + 1}} \\\\ & = \\left[ x \\left(\\frac {1}{1 - x}\\right) ^ {\\prime} \\right] ^ {\\prime} - x \\int_ {0} ^ {x} \\left[ 1 + \\sum_ {n = 1} ^ {\\infty} \\frac {(- 1 / 2) (- 1 / 2 - 1) \\cdots (- 1 / 2 - n + 1)}{n !} t ^ {2 n} \\right] \\mathrm{d} t \\\\ & = \\left(x \\sum_ {n = 1} ^ {\\infty} n x ^ {n - 1}\\right) ^ {\\prime} - x \\int_ {0} ^ {x} \\left[ 1 + \\sum_ {n = 1} ^ {\\infty} (- 1) ^ {n} \\frac {(2 n - 1) ! !}{(2 n) ! !} t ^ {2 n} \\right] \\mathrm{d} t \\\\ & = \\sum_ {n = 1} ^ {\\infty} n ^ {2} x ^ {n - 1} - x ^ {2} - \\sum_ {n = 1} ^ {\\infty} (- 1) ^ {n} \\frac {(2 n - 1) ! !}{(2 n) ! ! (2 n + 1)} x ^ {2 (n + 1)} (| x | <   1). \\end{array}"
+      },
+      {
+        "id": "s3",
+        "text": "$$"
+      }
+    ],
+    "final_answer": "见题解",
+    "techniques_used": [
+      "幂级数展开",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "选用直接泰勒还是间接展开（运算/代换）？",
+      "technique": "幂级数展开",
+      "expected": "选取已知展开式，经乘除、代换或微积分得到目标展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "展开式或最终结论是什么？",
+      "technique": "收敛半径与收敛域",
+      "expected": "见题解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例30",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 445,
+    "syllabus_note": "有理+对数间接展开"
+  }
+}

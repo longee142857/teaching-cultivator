@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-08",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $y = f(x)$ 由方程组 $\\left\\{ \\begin{array}{l} x = \\sum_{n=1}^{\\infty} \\frac{(t-1)^n}{n} \\\\ y = \\sum_{n=1}^{\\infty} \\frac{nt^{n-1}}{2^n} \\end{array} \\right.$ 所确定，求 $\\left. \\frac{\\mathrm{d}y}{\\mathrm{d}x} \\right|_{t=1}$ .",
+  "answer": "\\left. \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\right| _ {t = 1} = \\left. \\frac {\\dot {y}}{\\dot {x}} \\right| _ {t = 1} = \\left. \\frac {4}{(2 - t) ^ {2}} \\right| _ {t = 1} = 4.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "幂级数展开"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是参数式函数的求导问题. 如果级数的和函数容易求得, 则求出和函数后再求导; 否则, 应先求导, 再求和函数."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{l} \\dot {x} = \\sum_ {n = 1} ^ {\\infty} (t - 1) ^ {n - 1} = \\frac {1}{1 - (t - 1)} = \\frac {1}{2 - t} \\quad (0 <   t <   2), \\\\ y = \\sum_ {n = 1} ^ {\\infty} \\frac {n t ^ {n - 1}}{2 ^ {n}} = \\left(\\sum_ {n = 1} ^ {\\infty} \\left(\\frac {t}{2}\\right) ^ {n}\\right) _ {t} ^ {\\prime} = \\left(\\frac {t / 2}{1 - t / 2}\\right) _ {t} ^ {\\prime} = \\frac {2}{(2 - t) ^ {2}} (- 2 <   t <   2) \\Rightarrow \\dot {y} = \\frac {4}{(2 - t) ^ {3}}. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "则"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\left. \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\right| _ {t = 1} = \\left. \\frac {\\dot {y}}{\\dot {x}} \\right| _ {t = 1} = \\left. \\frac {4}{(2 - t) ^ {2}} \\right| _ {t = 1} = 4.\n$$"
+      }
+    ],
+    "final_answer": "\\left. \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\right| _ {t = 1} = \\left. \\frac {\\dot {y}}{\\dot {x}} \\right| _ {t = 1} = \\left. \\frac {4}{(2 - t) ^ {2}} \\right| _ {t = 1} = 4.",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "幂级数展开"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "收敛半径与收敛域",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "幂级数展开",
+      "expected": "\\left. \\frac {\\mathrm{d} y}{\\mathrm{d} x} \\right| _ {t = 1} = \\left. \\frac {\\dot {y}}{\\dot {x}} \\right| _ {t = 1} = \\left. \\frac {4}{(2 - t) ^ {2}} \\right| _ {t = 1} = 4."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 429,
+    "syllabus_note": "参数方程幂级数求 dy/dx"
+  }
+}

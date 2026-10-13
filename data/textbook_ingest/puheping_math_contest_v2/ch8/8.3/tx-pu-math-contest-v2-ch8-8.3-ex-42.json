@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-42",
+  "subject": "math",
+  "l2": "傅里叶级数",
+  "l3_id": "math.calc.fourier.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(-∞,∞)$ 上连续，且 $f(x)=f(x+2)=f(x+\\sqrt{3})$ ，证明 $f(x)$ 为常数.",
+  "answer": "收敛于 $f(x)$ ，所以",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "傅里叶展开",
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由题设知 $f(x)$ 是周期函数，若用傅里叶级数来表示，只需证明系数 $a_{n} = b_{n} = 0 (n = 1,2,\\dots)$ .\n\n由 $f(x) = f(x + 2)$ 知 $f(x)$ 以2为周期，则 $f(x)$ 的傅里叶系数为\n\n$$\na _ {n} = \\int_ {- 1} ^ {1} f (x) \\cos n \\pi x d x, b _ {n} = \\int_ {- 1} ^ {1} f (x) \\sin n \\pi x d x.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "又 $f(x) = f(x + \\sqrt{3})$ ，有\n\n$$\n\\begin{array}{r l} a _ {n} & = \\int_ {- 1} ^ {1} f (x + \\sqrt {3}) \\cos n \\pi x \\mathrm{d} x = \\int_ {- 1 + \\sqrt {3}} ^ {1 + \\sqrt {3}} f (t) \\cos n \\pi (t - \\sqrt {3}) \\mathrm{d} t \\\\ & = \\int_ {- 1 + \\sqrt {3}} ^ {1 + \\sqrt {3}} f (t) (\\cos n \\pi t \\cos \\sqrt {3} n \\pi + \\sin n \\pi t \\sin \\sqrt {3} n \\pi) \\mathrm{d} t \\\\ & = \\cos \\sqrt {3} n \\pi \\int_ {- 1 + \\sqrt {3}} ^ {1 + \\sqrt {3}} f (t) \\cos n \\pi t \\mathrm{d} t + \\sin \\sqrt {3} n \\pi \\int_ {- 1 + \\sqrt {3}} ^ {1 + \\sqrt {3}} f (t) \\sin n \\pi t \\mathrm{d} t \\\\ & = \\cos \\sqrt {3} n \\pi \\int_ {- 1} ^ {1} f (t) \\cos n \\pi t \\mathrm{d} t + \\sin \\sqrt {3} n \\pi \\int_ {- 1} ^ {1} f (t) \\sin n \\pi t \\mathrm{d} t, \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即有\n\n$$\na _ {n} = a _ {n} \\cos \\sqrt {3} n \\pi + b _ {n} \\sin \\sqrt {3} n \\pi .\\tag{①}\n$$\n\n同理可得\n\n$$\nb _ {n} = b _ {n} \\cos \\sqrt {3} n \\pi - a _ {n} \\sin \\sqrt {3} n \\pi .\\tag{②}\n$$\n\n①，②式联立解得 $a_{n} = b_{n} = 0 (n = 1,2,\\dots)$ 。因为 $f(x)$ 连续，其傅里叶级数处处收敛于 $f(x)$ ，所以"
+      },
+      {
+        "id": "s4",
+        "text": "$$\nf (x) = \\frac {a _ {0}}{2} + \\sum_ {n = 1} ^ {\\infty} a _ {n} \\cos n \\pi x + b _ {n} \\sin n \\pi x = \\frac {a _ {0}}{2}.\n$$"
+      }
+    ],
+    "final_answer": "收敛于 $f(x)$ ，所以",
+    "techniques_used": [
+      "傅里叶展开",
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何选取周期/奇偶延拓并计算傅里叶系数？",
+      "technique": "傅里叶展开",
+      "expected": "确定周期与奇偶性，按公式求 a_n、b_n 或写出展开。"
+    },
+    {
+      "id": "c2",
+      "prompt": "傅里叶级数或相关结论是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛于 $f(x)$ ，所以"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例42*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 455,
+    "starred": true,
+    "syllabus_note": "双周期连续函数为常数*",
+    "commentary": "评注 该题表明，若连续函数有两个不可公度的周期（两个周期的比为无理数），则该函数一定是常数."
+  }
+}

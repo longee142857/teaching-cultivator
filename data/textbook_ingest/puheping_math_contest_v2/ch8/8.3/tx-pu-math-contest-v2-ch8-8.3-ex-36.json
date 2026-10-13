@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-36",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A_{n}(x,y)=\\sum_{k=0}^{n}x^{n-k}y^{k}$ , 其中 $0<x, y<1$ , 证明 $\\frac{2}{2-x-y}\\leqslant\\sum_{n=0}^{\\infty}\\frac{A_{n}(x,y)}{n+1}\\leqslant\\frac{1}{2}\\left(\\frac{1}{1-x}+\\frac{1}{1-y}\\right)$ .",
+  "answer": "所证不等式①.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "收敛半径与收敛域"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 有两种解决问题的方法：一是求出级数 $\\sum_{n=0}^{\\infty} \\frac{A_n(x, y)}{n+1}$ 的和函数，再证明函数不等式；二是将不等式两边的函数展开为幂级数，再比较幂级数的大小."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 当 $x = y$ 时， $\\sum_{n=0}^{\\infty} \\frac{A_n(x, x)}{n+1} = \\sum_{n=0}^{\\infty} x^n = \\frac{1}{1-x}$ ，等式成立.\n\n当 $x \\neq y$ 时，注意到 $A_{n}(x, y) = A_{n}(y, x)$ ，故可设 $0 < x < y < 1$ 。因为\n\n$$\n\\begin{array}{r l} \\sum_ {n = 0} ^ {\\infty} \\frac {A _ {n} (x , y)}{n + 1} & = \\sum_ {n = 0} ^ {\\infty} \\frac {x ^ {n}}{n + 1} \\sum_ {k = 0} ^ {n} \\left(\\frac {y}{x}\\right) ^ {k} = \\sum_ {n = 0} ^ {\\infty} \\frac {x ^ {n}}{n + 1} \\frac {1 - (y / x) ^ {n + 1}}{1 - (y / x)} \\\\ & = \\frac {1}{y - x} \\sum_ {n = 1} ^ {\\infty} \\frac {y ^ {n} - x ^ {n}}{n} = \\frac {1}{y - x} \\ln \\frac {1 - x}{1 - y}, \\end{array}\n$$\n\n所以不等式化为\n\n$$\n\\frac {2}{2 - x - y} \\leqslant \\frac {1}{y - x} \\ln \\frac {1 - x}{1 - y} \\leqslant \\frac {1}{2} \\left(\\frac {1}{1 - x} + \\frac {1}{1 - y}\\right).\\tag{①}\n$$\n\n对于 $0 \\leqslant t < 1$ ，有\n\n$$\n\\frac {1}{2} \\ln \\frac {1 + t}{1 - t} = \\sum_ {n = 0} ^ {\\infty} \\frac {t ^ {2 n + 1}}{2 n + 1}, \\quad \\frac {1}{2} \\left(\\frac {1}{1 - t} + \\frac {1}{1 + t}\\right) = \\frac {1}{1 - t ^ {2}} = \\sum_ {n = 0} ^ {\\infty} t ^ {2 n}.\n$$\n\n所以\n\n$$\nt \\leqslant \\frac {1}{2} \\ln \\frac {1 + t}{1 - t} \\leqslant \\frac {t}{2} \\left(\\frac {1}{1 - t} + \\frac {1}{1 + t}\\right).\n$$\n\n取 $t = \\frac{y - x}{2 - x - y}$ ，则 $0 < t < 1$ ，代入上式即得所证不等式①."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 因为 $\\frac{2}{2 - x - y} = \\sum_{n=0}^{\\infty}\\left(\\frac{x + y}{2}\\right)^n$ ， $\\frac{1}{1 - x} = \\sum_{n=0}^{\\infty}x^n$ ，所以问题转化为\n\n$$\n\\sum_ {n = 0} ^ {\\infty} \\left(\\frac {x + y}{2}\\right) ^ {n} \\leqslant \\sum_ {n = 0} ^ {\\infty} \\frac {A _ {n} (x , y)}{n + 1} \\leqslant \\frac {1}{2} \\sum_ {n = 0} ^ {\\infty} \\left(x ^ {n} + y ^ {n}\\right).\n$$\n\n这只需证明：对任意 $n \\geqslant 0$ ，都有\n\n$$\n\\left(\\frac {x + y}{2}\\right) ^ {n} \\leqslant \\frac {A _ {n} (x , y)}{n + 1} \\leqslant \\frac {1}{2} (x ^ {n} + y ^ {n}) \\quad (0 <   x, y <   1).\\tag{②}\n$$\n\n用数学归纳法. 当 $n = 0,1$ 时，②式显然成立．假设当 $n = m$ 时，②式成立；当 $n = m + 1$ 时，\n\n$$\nA _ {m + 1} (x, y) = \\sum_ {k = 0} ^ {m + 1} x ^ {m + 1 - k} y ^ {k} = x ^ {m + 1} + y A _ {m} (x, y),\n\nA _ {m + 1} (x, y) = \\sum_ {k = 0} ^ {m + 1} x ^ {m + 1 - k} y ^ {k} = y ^ {m + 1} + x A _ {m} (x, y).\n$$\n\n两式相加除以2，得\n\n$$\nA _ {m + 1} (x, y) = \\frac {1}{2} \\left(x ^ {m + 1} + y ^ {m + 1}\\right) + \\frac {1}{2} (x + y) A _ {m} (x, y).\\tag{③}\n$$\n\n利用归纳假设，有\n\n$$\n\\begin{array}{r l} A _ {m + 1} (x, y) & \\leqslant \\frac {1}{2} (x ^ {m + 1} + y ^ {m + 1}) + \\frac {1}{2} (x + y) \\frac {m + 1}{2} (x ^ {m} + y ^ {m}) \\\\ & \\leqslant \\frac {1}{2} (x ^ {m + 1} + y ^ {m + 1}) + \\frac {m + 1}{2} (x ^ {m + 1} + y ^ {m + 1}) = \\frac {m + 2}{2} (x ^ {m + 1} + y ^ {m + 1}). \\end{array}\\tag{④}\n$$\n\n即\n\n$$\n\\frac {A _ {m + 1} (x , y)}{m + 2} \\leqslant \\frac {1}{2} \\left(x ^ {m + 1} + y ^ {m + 1}\\right).\n$$\n\n另一方面，利用③式及归纳假设②式，有\n\n$$\nA _ {m + 1} (x, y) \\geqslant \\left(\\frac {x + y}{2}\\right) ^ {m + 1} + \\frac {m + 1}{2} (x + y) \\left(\\frac {x + y}{2}\\right) ^ {m} = (m + 2) \\left(\\frac {x + y}{2}\\right) ^ {m + 1}.\n$$\n\n因此，所证不等式对任意 $n \\geqslant 0$ 及 $0 < x, y < 1$ 都成立."
+      }
+    ],
+    "final_answer": "所证不等式①.",
+    "techniques_used": [
+      "证明技巧",
+      "收敛半径与收敛域"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "证明技巧",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "收敛半径与收敛域",
+      "expected": "所证不等式①."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例36*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 450,
+    "starred": true,
+    "syllabus_note": "双参数级数不等式*",
+    "commentary": "评注 在不等式④的证明中用到了不等式 $\\frac{1}{2} (x + y)(x^m + y^m) \\leqslant x^{m+1} + y^{m+1}$ ，它等价于\n\n$$\ny x ^ {m} + x y ^ {m} \\leqslant x ^ {m + 1} + y ^ {m + 1}, \\text {即} (x - y) (x ^ {m} - y ^ {m}) \\geqslant 0.\n$$\n\n这是显然的."
+  }
+}

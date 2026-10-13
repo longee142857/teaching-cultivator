@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-05",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.radius",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设正项级数 $\\sum_{n=0}^{\\infty} a_n$ 发散， $A_n = a_0 + a_1 + \\cdots + a_n$ ，若 $\\frac{a_n}{A_n} \\to 0 (n \\to \\infty)$ ，求 $\\sum_{n=0}^{\\infty} a_n x^n$ 的收敛半径。",
+  "answer": "发散，从而级数 $\\sum_{n=0}^{\\infty} a_n x^n$ 对 $x = 1$ 发散。由此推知 $r \\leqslant 1$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "收敛半径与收敛域",
+    "幂级数展开"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于级数的一般项没有具体给出，所以无法用比值法或根值法求收敛半径，可考虑用比较法来确定。由于 $\\lim_{n \\to \\infty} \\frac{a_n}{A_n} = 0$ ，则 $\\lim_{n \\to \\infty} \\frac{A_n}{A_{n+1}} = \\lim_{n \\to \\infty} \\frac{A_{n+1} - a_n}{A_{n+1}} = 1$ ，即 $\\sum_{n=0}^{\\infty} A_n x^n$ 的收敛半径为 1。因此可选 $\\sum_{n=0}^{\\infty} A_n x^n$ 来做比较。"
+      },
+      {
+        "id": "s2",
+        "text": "设 $r$ 与 $R$ 分别是级数 $\\sum_{n=0}^{\\infty} a_n x^n$ 与 $\\sum_{n=0}^{\\infty} A_n x^n$ 的收敛半径."
+      },
+      {
+        "id": "s3",
+        "text": "因为正项级数 $\\sum_{n=0}^{\\infty} a_n$ 发散，从而级数 $\\sum_{n=0}^{\\infty} a_n x^n$ 对 $x = 1$ 发散。由此推知 $r \\leqslant 1$ 。"
+      },
+      {
+        "id": "s4",
+        "text": "另一方面，由题设 $\\lim_{n\\to \\infty}\\frac{a_n}{A_n} = 0$ ，且 $a_{n},A_{n}\\geqslant 0$ ，则必有 $r\\geqslant R$ ．由于"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nR = \\lim _ {n \\rightarrow \\infty} \\left(\\frac {A _ {n}}{A _ {n + 1}}\\right) = \\lim _ {n \\rightarrow \\infty} \\left(\\frac {A _ {n + 1} - a _ {n}}{A _ {n + 1}}\\right) = 1 - \\lim _ {n \\rightarrow \\infty} \\frac {a _ {n}}{A _ {n + 1}} = 1,\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以 $r \\geqslant 1$ ，从而得到 $r = 1$"
+      }
+    ],
+    "final_answer": "发散，从而级数 $\\sum_{n=0}^{\\infty} a_n x^n$ 对 $x = 1$ 发散。由此推知 $r \\leqslant 1$ 。",
+    "techniques_used": [
+      "收敛半径与收敛域",
+      "幂级数展开"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求收敛半径？端点如何判定？",
+      "technique": "收敛半径与收敛域",
+      "expected": "用比值/根值/比较求半径，再检验端点得收敛域。"
+    },
+    {
+      "id": "c2",
+      "prompt": "收敛域（或半径）结论是什么？",
+      "technique": "幂级数展开",
+      "expected": "发散，从而级数 $\\sum_{n=0}^{\\infty} a_n x^n$ 对 $x = 1$ 发散。由此推知 $r \\leqslant 1$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 427,
+    "syllabus_note": "比较法求收敛半径"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.3-ex-28",
+  "subject": "math",
+  "l2": "幂级数与函数展开",
+  "l3_id": "math.calc.power.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)=\\frac{1}{1-x-x^{2}}$ , $a_{n}=\\frac{1}{n!}f^{(n)}(0)$ , 证明级数 $\\sum_{n=0}^{\\infty}\\frac{a_{n+1}}{a_{n}a_{n+2}}$ 收敛, 并求其和.",
+  "answer": "收敛，其和为 2.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "泰勒/麦克劳林展开",
+    "级数求和",
+    "证明技巧",
+    "收敛半径与收敛域",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要求级数的和需计算其部分和数列 $S_{n}$ 的极限. 将所给函数 $f(x)$ 按幂级数形式展开, 可得到 $a_{n}$ 的表达式或递推公式, 进一步将 $S_{n}$ 化简 (有限和形式), 才便于其极限的计算.\n\n因为 $f(x) = \\frac{1}{1 - x - x^2}$ ，所以 $1 = (1 - x - x^2)f(x)$ . 将 $f(x)$ 按麦克劳林级数展开，有\n\n$$\nf (x) = \\sum_ {k = 0} ^ {\\infty} a _ {k} x ^ {k}    ,    \\text {其中}   a _ {k} = \\frac {1}{k !} f ^ {(k)} (0).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "则\n\n$$\n\\begin{array}{l} 1 = (1 - x - x ^ {2}) \\left(a _ {0} + a _ {1} x + \\sum_ {k = 2} ^ {\\infty} a _ {k} x ^ {k}\\right), \\\\ = a _ {0} + (a _ {1} - a _ {0}) x + \\left(- a _ {0} x ^ {2} - a _ {1} x ^ {2} - a _ {1} x ^ {3} + \\sum_ {k = 2} ^ {\\infty} a _ {k} x ^ {k} - \\sum_ {k = 2} ^ {\\infty} a _ {k} x ^ {k + 1} - \\sum_ {k = 2} ^ {\\infty} a _ {k} x ^ {k + 2}\\right), \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即有\n\n$$\n1 = a _ {0} + (a _ {1} - a _ {0}) x + \\sum_ {m = 0} ^ {\\infty} (a _ {m + 2} - a _ {m + 1} - a _ {m}) x ^ {m + 2}.\n$$\n\n比较两边系数，可得\n\n$$\na _ {0} = a _ {1} = 1, \\quad a _ {m + 2} - a _ {m + 1} - a _ {m} = 0 \\Rightarrow a _ {m + 1} = a _ {m + 2} - a _ {m}.\n\na _ {2} = a _ {1} + a _ {0} \\geqslant 2, a _ {3} = a _ {2} + a _ {1} \\geqslant 3, \\dots"
+      },
+      {
+        "id": "s4",
+        "text": "a _ {n} \\geqslant n\n\nn \\rightarrow \\infty\n$$\n\n于是级数 $\\sum_{n=0}^{\\infty} \\frac{a_{n+1}}{a_n a_{n+2}}$ 的部分和\n\n$$\na _ {n} \\rightarrow \\infty\n\n\\begin{array}{r l} S _ {n} & = \\sum_ {k = 0} ^ {n} \\frac {a _ {k + 1}}{a _ {k} a _ {k + 2}} = \\sum_ {k = 0} ^ {n} \\frac {a _ {k + 2} - a _ {k}}{a _ {k} a _ {k + 2}} = \\sum_ {k = 0} ^ {n} \\left(\\frac {1}{a _ {k}} - \\frac {1}{a _ {k + 2}}\\right) \\\\ & = \\sum_ {k = 0} ^ {n} \\left(\\frac {1}{a _ {k}} - \\frac {1}{a _ {k + 1}}\\right) + \\sum_ {k = 0} ^ {n} \\left(\\frac {1}{a _ {k + 1}} - \\frac {1}{a _ {k + 2}}\\right) \\\\ & = \\frac {1}{a _ {0}} - \\frac {1}{a _ {n + 1}} + \\frac {1}{a _ {1}} - \\frac {1}{a _ {n + 2}}. \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "因为 $\\frac{1}{a_{n+1}} \\to 0, \\frac{1}{a_{n+2}} \\to 0 (n \\to \\infty)$ ，故 $S_n \\to \\frac{1}{a_0} + \\frac{1}{a_1} = 2 (n \\to \\infty)$ 。即所给级数收敛，其和为 2."
+      }
+    ],
+    "final_answer": "收敛，其和为 2.",
+    "techniques_used": [
+      "泰勒/麦克劳林展开",
+      "级数求和",
+      "证明技巧",
+      "收敛半径与收敛域",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求和对或应用幂级数（逐项微积分/构造辅助级数）？",
+      "technique": "级数求和",
+      "expected": "构造已知展开或逐项微积分，得到和函数/应用结论。"
+    },
+    {
+      "id": "c2",
+      "prompt": "和函数或应用结果是什么？",
+      "technique": "级数求和",
+      "expected": "收敛，其和为 2."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.3",
+    "example_id": "例28*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "函数项级数",
+    "page": 444,
+    "starred": true,
+    "syllabus_note": "泰勒系数递推级数求和*"
+  }
+}
