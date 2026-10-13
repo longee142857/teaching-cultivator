@@ -1,0 +1,84 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-22",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a_{n} = \\sum_{k=1}^{n} \\frac{1}{k} - \\ln n$ . （1）证明极限 $\\lim_{n \\to \\infty} a_{n}$ 存在。（2）记 $\\lim_{n \\to \\infty} a_{n} = C$ ，讨论级数 $\\sum_{n=1}^{\\infty} (a_{n} - C)$ 的敛散性.",
+  "answer": "得证",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比较判别法",
+    "部分和/缩项求和",
+    "证明技巧",
+    "单调有界准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1） $\\lim_{n\\to \\infty}a_n$ 的存在性，前面已有证明；也可将 $a_{n}$ 视为一个级数的部分和，再证明级数收敛.\n\n（2）由于 $\\{a_{n}\\}$ 单调递减，故 $\\sum_{n=1}^{\\infty}(a_{n}-C)$ 是正项级数，可考虑用比较法。若能判断无穷小 $a_{n}-C$ 的阶或它与 $1/n$ 的关系，问题就解决了。\n\n解（1）方法1 见1.2节例30.\n\n方法2\n\n$$\n\\begin{array}{r l} a _ {n} & = a _ {1} + \\sum_ {k = 2} ^ {n} (a _ {k} - a _ {k - 1}) = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{k} - \\ln k + \\ln (k - 1) \\right] \\\\ & = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right] = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{2 k ^ {2}} + o \\left(\\frac {1}{k ^ {2}}\\right) \\right] \\\\ & \\quad \\left(\\because \\ln (1 + x) = x - \\frac {1}{2} x ^ {2} + o (x ^ {2})\\right). \\end{array}\n$$\n\n因为 $\\sum_{k=2}^{\\infty} \\frac{1}{2k^2}$ 与 $\\sum_{k=2}^{\\infty} o\\left(\\frac{1}{k^2}\\right)$ 均收敛，所以 $\\lim_{n \\to \\infty} a_n$ 存在.\n\n(2) 方法1 以 $a_{n}$ 为部分和的级数为\n\n$$\n1 + \\sum_ {k = 2} ^ {\\infty} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right].\n$$\n\n该级数收敛于 $C$ . 由 $a_{n}$ 是单调递减的知, $a_{n} - C > 0$ , 且\n\n$$\na _ {n} - C = - \\sum_ {k = n + 1} ^ {\\infty} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right] = \\sum_ {k = n + 1} ^ {\\infty} \\left(\\ln \\left(1 + \\frac {1}{k - 1}\\right) - \\frac {1}{k}\\right).\\tag{①}\n$$\n\n初步判断：因为当 $k \\to \\infty$ 时， $\\ln \\left(1 + \\frac{1}{k - 1}\\right) \\sim \\frac{1}{k - 1}$ ，则\n\n$$\na _ {n} - C \\sim \\sum_ {k = n + 1} ^ {\\infty} \\left(\\frac {1}{k - 1} - \\frac {1}{k}\\right) = \\frac {1}{n} (\\text {不严密}),\\tag{②}\n$$\n\n故级数 $\\sum_{n=1}^{\\infty}(a_n - C)$ 发散.\n\n下面给出级数发散的严格证明.\n\n由泰勒公式知，当 $x >"
+      },
+      {
+        "id": "s2",
+        "text": "分析（1） $\\lim_{n\\to \\infty}a_n$ 的存在性，前面已有证明；也可将 $a_{n}$ 视为一个级数的部分和，再证明级数收敛.\n\n（2）由于 $\\{a_{n}\\}$ 单调递减，故 $\\sum_{n=1}^{\\infty}(a_{n}-C)$ 是正项级数，可考虑用比较法。若能判断无穷小 $a_{n}-C$ 的阶或它与 $1/n$ 的关系，问题就解决了。\n\n解（1）方法1 见1.2节例30."
+      },
+      {
+        "id": "s3",
+        "text": "方法2\n\n$$\n\\begin{array}{r l} a _ {n} & = a _ {1} + \\sum_ {k = 2} ^ {n} (a _ {k} - a _ {k - 1}) = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{k} - \\ln k + \\ln (k - 1) \\right] \\\\ & = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right] = 1 + \\sum_ {k = 2} ^ {n} \\left[ \\frac {1}{2 k ^ {2}} + o \\left(\\frac {1}{k ^ {2}}\\right) \\right] \\\\ & \\quad \\left(\\because \\ln (1 + x) = x - \\frac {1}{2} x ^ {2} + o (x ^ {2})\\right). \\end{array}\n$$\n\n因为 $\\sum_{k=2}^{\\infty} \\frac{1}{2k^2}$ 与 $\\sum_{k=2}^{\\infty} o\\left(\\frac{1}{k^2}\\right)$ 均收敛，所以 $\\lim_{n \\to \\infty} a_n$ 存在."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 方法1 以 $a_{n}$ 为部分和的级数为\n\n$$\n1 + \\sum_ {k = 2} ^ {\\infty} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right].\n$$\n\n该级数收敛于 $C$ . 由 $a_{n}$ 是单调递减的知, $a_{n} - C > 0$ , 且\n\n$$\na _ {n} - C = - \\sum_ {k = n + 1} ^ {\\infty} \\left[ \\frac {1}{k} + \\ln \\left(1 - \\frac {1}{k}\\right) \\right] = \\sum_ {k = n + 1} ^ {\\infty} \\left(\\ln \\left(1 + \\frac {1}{k - 1}\\right) - \\frac {1}{k}\\right).\\tag{①}\n$$\n\n初步判断：因为当 $k \\to \\infty$ 时， $\\ln \\left(1 + \\frac{1}{k - 1}\\right) \\sim \\frac{1}{k - 1}$ ，则\n\n$$\na _ {n} - C \\sim \\sum_ {k = n + 1} ^ {\\infty} \\left(\\frac {1}{k - 1} - \\frac {1}{k}\\right) = \\frac {1}{n} (\\text {不严密}),\\tag{②}\n$$\n\n故级数 $\\sum_{n=1}^{\\infty}(a_n - C)$ 发散.\n\n下面给出级数发散的严格证明.\n\n由泰勒公式知，当 $x > 0$ 时， $\\ln (1 + x) > x - \\frac{x^2}{2}$ ，代入①式有\n\n$$\n\\begin{array}{r l} a _ {n} - C & > \\sum_ {k = n + 1} ^ {\\infty} \\left(\\frac {1}{k - 1} - \\frac {1}{2 (k - 1) ^ {2}} - \\frac {1}{k}\\right) > \\sum_ {k = n + 1} ^ {\\infty} \\left(\\frac {1}{k - 1} - \\frac {1}{k} - \\frac {1}{2 (k - 1) (k - 2)}\\right). \\\\ & = \\sum_ {k = n + 1} ^ {\\infty} \\left[ \\left(\\frac {1}{k - 1} - \\frac {1}{k}\\right) - \\frac {1}{2} \\left(\\frac {1}{k - 2} - \\frac {1}{k - 1}\\right) \\right] = \\frac {1}{n} - \\frac {1}{2 (n - 1)} = \\frac {n - 2}{2 n (n - 1)}. \\end{array}\n$$\n\n显然级数 $\\sum_{n=2}^{\\infty} \\frac{n-2}{2n(n-1)}$ 发散，因此 $\\sum_{n=1}^{\\infty}(a_n - C)$ 发散."
+      },
+      {
+        "id": "s5",
+        "text": "方法2 由数列极限的施笃兹定理\n\n$$\n\\begin{array}{r l} \\lim _ {n \\to \\infty} \\frac {a _ {n} - C}{\\frac {1}{n}} & = \\lim _ {n \\to \\infty} \\frac {a _ {n} - a _ {n - 1}}{\\frac {1}{n} - \\frac {1}{n - 1}} = \\lim _ {n \\to \\infty} \\frac {\\frac {1}{n} + \\ln \\left(1 - \\frac {1}{n}\\right)}{- \\frac {1}{n (n - 1)}} = - \\lim _ {n \\to \\infty} n (n - 1) \\left[ \\frac {1}{n} + \\ln \\left(1 - \\frac {1}{n}\\right) \\right] \\\\ & = - \\lim _ {n \\to \\infty} n (n - 1) \\left[ - \\frac {1}{2 n ^ {2}} + o \\left(\\frac {1}{n ^ {2}}\\right) \\right] = \\frac {1}{2}, \\end{array}\\tag{③}\n$$\n\n所以级数 $\\sum_{n=1}^{\\infty}(a_n - C)$ 是发散的.\n\n评注（1）在“初步判断”②中用了等价无穷小替换，这是不严密的，无须在证明过程中书写。但这个“初步判断”对解题却很重要，它确定了在用比较法时，应该将 $a_{n} - C$ 缩小来证明级数发散。"
+      },
+      {
+        "id": "s6",
+        "text": "(2) 级数敛散性的“方法 2”源于加边极限 $\\lim_{n\\to \\infty}n^{p}(a_{n} - C)$ 问题 (参见 1.2 节例 49 评注). 加边极限的思想在级数的审敛法中很有用, 其本质是将级数 $\\sum_{n=1}^{\\infty}(a_n - C)$ 与 $\\sum_{n=1}^{\\infty}\\frac{1}{n^p}$ 做比较."
+      }
+    ],
+    "final_answer": "得证",
+    "techniques_used": [
+      "比较判别法",
+      "部分和/缩项求和",
+      "证明技巧",
+      "单调有界准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何由定义/部分和/单调有界建立极限或余项估计？",
+      "technique": "部分和/缩项求和",
+      "expected": "用定义或单调有界证明极限存在，再讨论余项级数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "极限与级数敛散性结论是什么？",
+      "technique": "部分和/缩项求和",
+      "expected": "得证"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例22*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 405,
+    "starred": true,
+    "syllabus_note": "Euler 常数存在性与余项级数*",
+    "commentary": "评注（1）在“初步判断”②中用了等价无穷小替换，这是不严密的，无须在证明过程中书写。但这个“初步判断”对解题却很重要，它确定了在用比较法时，应该将 $a_{n} - C$ 缩小来证明级数发散。\n\n(2) 级数敛散性的“方法 2”源于加边极限 $\\lim_{n\\to \\infty}n^{p}(a_{n} - C)$ 问题 (参见 1.2 节例 49 评注). 加边极限的思想在级数的审敛法中很有用, 其本质是将级数 $\\sum_{n=1}^{\\infty}(a_n - C)$ 与 $\\sum_{n=1}^{\\infty}\\frac{1}{n^p}$ 做比较."
+  }
+}

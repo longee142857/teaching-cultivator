@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-08",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设数列 $\\{a_{n}\\}$ 是单调的，而且 $\\sum_{n=1}^{\\infty} a_{n}$ 收敛，证明 $\\sum_{n=1}^{\\infty} n(a_{n} - a_{n+1})$ 收敛.",
+  "answer": "收敛，所以 $\\lim_{n \\to \\infty} S_n$ 存在，级数 $\\sum_{n=1}^{\\infty} n(a_n - a_{n+1})$ 收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "部分和/缩项求和",
+    "证明技巧",
+    "单调有界准则",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易得所证级数的部分和为 $S_{n} = \\sum_{k=1}^{n} a_{k} - n a_{n+1}$ ，所以只需证明 $n a_{n+1}$ 有极限.\n\n因 $\\sum_{n=1}^{\\infty} a_n$ 收敛，故 $\\lim_{n \\to \\infty} a_n = 0$ 。又因数列 $\\{a_n\\}$ 单调，所以有\n\n$$\na _ {1} \\geqslant a _ {2} \\geqslant a _ {3} \\geqslant \\dots \\geqslant a _ {n} \\geqslant \\dots \\geqslant 0, \\text {或} a _ {1} \\leqslant a _ {2} \\leqslant a _ {3} \\leqslant \\dots \\leqslant a _ {n} \\leqslant \\dots \\leqslant 0.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "对第 2 种情形我们可以改变每项的符号，将其转化为第 1 种。于是只需考虑第 1 种情形而不失一般性。\n\n令 $S_{n} = \\sum_{k = 1}^{n}k(a_{k} - a_{k + 1})$ ，则\n\n$$\nS _ {n} = a _ {1} + a _ {2} (2 - 1) + \\dots + a _ {n} (n - (n - 1)) - n a _ {n + 1} = \\sum_ {k = 1} ^ {n} a _ {k} - n a _ {n + 1}.\\tag{①}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "设 $\\{\\sigma_{n}\\}$ 为 $\\sum_{n = 1}^{\\infty}a_n$ 的部分和数列，则\n\n$$\na _ {n + 1} + a _ {n + 2} + \\dots + a _ {2 n} = \\sigma_ {2 n} - \\sigma_ {n} \\rightarrow 0 (n \\rightarrow \\infty),\n$$\n\n故\n\n$$\na _ {n + 1} + a _ {n + 2} + \\dots + a _ {2 n} \\geqslant n a _ {2 n} \\rightarrow 0 (n \\rightarrow \\infty) \\Rightarrow \\lim _ {n \\rightarrow \\infty} (2 n a _ {2 n}) = 0.\\tag{②}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "又因\n\n$$\n0 <   (2 n + 1) a _ {2 n + 1} \\leqslant (2 n + 1) a _ {2 n} = 2 n a _ {2 n} + a _ {2 n} \\rightarrow 0 \\Rightarrow \\lim _ {n \\rightarrow \\infty} (2 n + 1) a _ {2 n + 1} = 0,\\tag{③}\n$$\n\n由②，③式知 $\\lim_{n\\to \\infty}na_n = 0.$ 从而 $\\lim_{n\\to \\infty}na_{n + 1} = \\lim_{n\\to \\infty}(n + 1)a_{n + 1} = 0.$"
+      },
+      {
+        "id": "s5",
+        "text": "在①式两边取极限，并注意 $\\sum_{n=1}^{\\infty} a_n$ 收敛，所以 $\\lim_{n \\to \\infty} S_n$ 存在，级数 $\\sum_{n=1}^{\\infty} n(a_n - a_{n+1})$ 收敛."
+      }
+    ],
+    "final_answer": "收敛，所以 $\\lim_{n \\to \\infty} S_n$ 存在，级数 $\\sum_{n=1}^{\\infty} n(a_n - a_{n+1})$ 收敛.",
+    "techniques_used": [
+      "部分和/缩项求和",
+      "证明技巧",
+      "单调有界准则",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛，所以 $\\lim_{n \\to \\infty} S_n$ 存在，级数 $\\sum_{n=1}^{\\infty} n(a_n - a_{n+1})$ 收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 395,
+    "syllabus_note": "单调收敛⇒n(a_n-a_{n+1})收敛"
+  }
+}

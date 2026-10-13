@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-16",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $|x| \\leqslant 1$ 上有定义，在 $x = 0$ 的某领域内有连续的二阶导数，当 $x \\neq 0$ 时 $f(x) \\neq 0$ ，当 $x \\to 0$ 时 $f(x)$ 是 $x$ 的高阶无穷小，且 $\\forall n \\in \\mathbb{N}$ ，有 $\\left|\\frac{b_{n+1}}{b_n}\\right| \\leqslant \\left|\\frac{f(1/(n+1))}{f(1/n)}\\right|$ 。证明级数 $\\sum_{n=1}^{\\infty} \\sqrt{|b_n b_{n+1}|}$ 收敛。",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若 $\\sum_{n=1}^{\\infty} |b_n|$ 收敛，则问题就容易解决了。由题设条件易知 $\\sum_{n=1}^{\\infty} \\left|f\\left(\\frac{1}{n}\\right)\\right|$ 是收敛的，故只需由题设中的不等式得到 $|b_n| \\leqslant M \\left|f\\left(\\frac{1}{n}\\right)\\right|$ （ $M$ 为正常数）即可。\n\n因为当 $x \\to 0$ 时 $f(x)$ 是 $x$ 的高阶无穷小，且 $f(x)$ 在 $x = 0$ 附近有连续的二阶导数，所以 $f(0) = 0$ ， $f'(0) = 0$ ，且 $\\exists K > 0$ ，使 $|x|$ 充分小时 $|f''(x)| \\leqslant K$ 。应用麦克劳林公式，有"
+      },
+      {
+        "id": "s2",
+        "text": "$f(x) = f(0) + f'(0)x + \\frac{1}{2!} f''(\\xi)x^2 = \\frac{1}{2} f''(\\xi)x^2$ （ $\\xi$ 介于0与 $x$ 之间）.\n\n当 $|x|$ 充分小时， $|f''(\\xi)| \\leqslant K$ ，所以当 $n$ 充分大时，有\n\n$$\n\\left| f \\left(\\frac {1}{n}\\right) \\right| = \\frac {1}{2} | f ^ {\\prime \\prime} (\\xi) | \\frac {1}{n ^ {2}} \\leqslant \\frac {K}{2} \\frac {1}{n ^ {2}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $\\sum_{n=1}^{\\infty} \\frac{K}{2} \\frac{1}{n^2}$ 收敛，所以级数 $\\sum_{n=1}^{\\infty} \\left| f\\left( \\frac{1}{n} \\right) \\right|$ 收敛.\n\n由于\n\n$$\n\\left| b _ {n + 1} \\right| \\leqslant \\left| b _ {n} \\right| \\left| \\frac {f \\left(\\frac {1}{n + 1}\\right)}{f \\left(\\frac {1}{n}\\right)} \\right| \\leqslant \\left| b _ {n - 1} \\right| \\left| \\frac {f \\left(\\frac {1}{n}\\right)}{f \\left(\\frac {1}{n - 1}\\right)} \\right| \\left| \\frac {f \\left(\\frac {1}{n + 1}\\right)}{f \\left(\\frac {1}{n}\\right)} \\right|"
+      },
+      {
+        "id": "s4",
+        "text": "= \\left| b _ {n - 1} \\right| \\left| \\frac {f \\left(\\frac {1}{n + 1}\\right)}{f \\left(\\frac {1}{n - 1}\\right)} \\right| \\leqslant \\dots \\leqslant \\left| b _ {1} \\right| \\left| \\frac {f \\left(\\frac {1}{n + 1}\\right)}{f (1)} \\right| = \\left| \\frac {b _ {1}}{f (1)} \\right\\lVert f \\left(\\frac {1}{n + 1}\\right) |,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由 $\\sum_{n=1}^{\\infty}\\left|f\\left(\\frac{1}{n}\\right)\\right|$ 收敛，知 $\\sum_{n=1}^{\\infty}\\left|\\frac{b_1}{f(1)}\\right|\\left|f\\left(\\frac{1}{n+1}\\right)\\right|$ 也收敛. 从而 $\\sum_{n=1}^{\\infty}|b_n|$ 收敛.\n\n又 $\\sqrt{|b_n b_{n+1}|} \\leqslant \\frac{1}{2} (|b_n| + |b_{n+1}|)$ ，得级数 $\\sum_{n=1}^{\\infty} \\sqrt{|b_n b_{n+1}|}$ 收敛."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "证明技巧",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "比较判别法",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 401,
+    "syllabus_note": "比值控制与比较收敛"
+  }
+}

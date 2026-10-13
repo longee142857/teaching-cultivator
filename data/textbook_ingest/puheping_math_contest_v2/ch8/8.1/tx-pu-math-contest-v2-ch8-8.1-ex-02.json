@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-02",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "判别下列级数的敛散性:\n\n(1) $\\frac{1}{3} + \\frac{1}{3\\sqrt{3}} + \\frac{1}{3\\sqrt{3}\\sqrt[3]{3}} + \\cdots + \\frac{1}{3\\sqrt{3}\\sqrt[3]{3}\\cdots\\sqrt[n]{3}};$ (2) $\\sum_{n=1}^{\\infty} \\frac{\\ln(n!)}{n^{\\alpha}}.$",
+  "answer": "收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "根值审敛法",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易验证两道题都不宜用比值法或根值法（极限为1），可考虑用比较法."
+      },
+      {
+        "id": "s2",
+        "text": "(1) $u_{n} = \\frac{1}{3^{1 + \\frac{1}{2} + \\cdots + \\frac{1}{n}}}$ ."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 由 $\\frac{1}{n} > \\ln \\left(1 + \\frac{1}{n}\\right)$ ，有\n\n$$\n1 + \\frac {1}{2} + \\dots + \\frac {1}{n} > \\ln (1 + 1) + \\ln \\left(1 + \\frac {1}{2}\\right) + \\dots + \\ln \\left(1 + \\frac {1}{n}\\right) = \\ln 2 + \\ln \\frac {3}{2} + \\dots + \\ln \\frac {n + 1}{n} = \\ln (n + 1),\n$$\n\n故\n\n$$\nu _ {n} <   \\frac {1}{3 ^ {\\ln (1 + n)}} <   \\frac {1}{3 ^ {\\ln n}} = \\frac {1}{e ^ {\\ln n \\cdot \\ln 3}} = \\frac {1}{n ^ {\\ln 3}}.\n$$\n\n由于 $\\ln 3 > 1$ ，级数 $\\sum_{n=1}^{\\infty} \\frac{1}{n^{\\ln 3}}$ 收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛."
+      },
+      {
+        "id": "s4",
+        "text": "方法2 由于 $\\lim_{n\\to \\infty}\\left(1 + \\frac{1}{2} +\\dots +\\frac{1}{n} -\\ln n\\right) = C$ （ $C$ 为欧拉常数，见1.2节例30），则\n\n$$\n\\lim _ {n \\rightarrow \\infty} \\frac {u _ {n}}{1 / 3 ^ {\\ln n}} = \\frac {1}{3 ^ {\\lim _ {n \\rightarrow \\infty} \\left(1 + \\frac {1}{2} + \\cdots + \\frac {1}{n} - \\ln n\\right)}} = \\frac {1}{3 ^ {C}}.\n$$\n\n由于 $\\sum_{n=1}^{\\infty} \\frac{1}{3^{\\ln n}} = \\sum_{n=1}^{\\infty} \\frac{1}{n^{\\ln 3}}$ 收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛."
+      },
+      {
+        "id": "s5",
+        "text": "(2) $u_{n}=\\frac{\\ln1+\\ln2+\\cdots+\\ln n}{n^{\\alpha}}$ ，由于\n\n$$\n\\frac {n - 2}{n ^ {\\alpha}} <   u _ {n} <   \\frac {n \\ln n}{n ^ {\\alpha}} = \\frac {\\ln n}{n ^ {\\alpha - 1}}.\n$$\n\n当 $\\alpha \\leqslant 2$ 时，级数 $\\sum_{n=1}^{\\infty} \\frac{n-2}{n^{\\alpha}}$ 发散，所以 $\\sum_{n=1}^{\\infty} u_n$ 发散；\n\n当 $\\alpha > 2$ 时，由例1中（2）知，级数 $\\sum_{n=1}^{\\infty} \\frac{\\ln n}{n^{\\alpha-1}}$ 收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛."
+      }
+    ],
+    "final_answer": "收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛.",
+    "techniques_used": [
+      "根值审敛法",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "根值审敛法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "比较判别法",
+      "expected": "收敛，所以 $\\sum_{n=1}^{\\infty} u_n$ 收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 392,
+    "syllabus_note": "比较法（对数下界与阶乘估计）",
+    "commentary": "评注 使用比较法的关键在于选取适当的比较标准，这可通过对级数一般项的适当放缩去寻找，或通过同阶（等价）无穷小（大）去寻找."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-06",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.ops",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $m \\geqslant 1$ 为正整数， $a_{n}$ 是 $(1 + x)^{n + m}$ 中 $x^{n}$ 的系数，证明级数 $\\sum_{n=0}^{\\infty} \\frac{1}{a_{n}}$ 收敛，并求其和。",
+  "answer": "$\\sum_{n=0}^{\\infty} \\frac{1}{a_n} = \\frac{m}{m-1}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "部分和/缩项求和",
+    "证明技巧",
+    "级数求和",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 写出 $a_{n}$ 的表达式，用“缩项法”化简级数的部分和再求极限。"
+      },
+      {
+        "id": "s2",
+        "text": "$a_{n}=C_{n+m}^{n}=\\frac{(n+1)\\cdots(n+m)}{m!}$ ， $\\sum_{n=0}^{\\infty}\\frac{1}{a_{n}}=\\sum_{n=0}^{\\infty}\\frac{m!}{(n+1)(n+2)\\cdots(n+m)}$ ;"
+      },
+      {
+        "id": "s3",
+        "text": "级数的部分和为"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\begin{array}{l}S _ {n} = \\sum_ {k = 0} ^ {n - 1} \\frac {m !}{(k + 1) (k + 2) \\cdots (k + m)} = \\frac {m !}{m - 1} \\sum_ {k = 0} ^ {n - 1} \\left[ \\frac {1}{(k + 1) \\cdots (k + m - 1)} - \\frac {1}{(k + 2) \\cdots (k + m)} \\right]\\\\= \\frac {m !}{m - 1} \\left(\\frac {1}{1 \\cdot 2 \\cdots (m - 1)} - \\frac {1}{(n + 1) \\cdots (n + m - 1)}\\right)\\rightarrow \\frac {m !}{(m - 1) \\cdot (m - 1) !} (n \\rightarrow \\infty).\\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\sum_{n=0}^{\\infty} \\frac{1}{a_n} = \\frac{m}{m-1}$ ."
+      }
+    ],
+    "final_answer": "$\\sum_{n=0}^{\\infty} \\frac{1}{a_n} = \\frac{m}{m-1}$ .",
+    "techniques_used": [
+      "部分和/缩项求和",
+      "证明技巧",
+      "级数求和",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项如何化简或裂项？部分和能否写成望远镜形式？",
+      "technique": "部分和/缩项求和",
+      "expected": "写出通项或差分形式，求部分和极限得到级数和。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数的和或敛散性结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$\\sum_{n=0}^{\\infty} \\frac{1}{a_n} = \\frac{m}{m-1}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 394,
+    "syllabus_note": "二项式系数倒数：缩项求和",
+    "commentary": "评注 注意拆分式:\n\n$$\n\\frac {1}{(k + 1) (k + 2) \\cdots (k + m)} = \\frac {1}{m - 1} \\left[ \\frac {1}{(k + 1) \\cdots (k + m - 1)} - \\frac {1}{(k + 2) \\cdots (k + m)} \\right].\n$$\n\n这对某些部分和的缩项是很有用的."
+  }
+}

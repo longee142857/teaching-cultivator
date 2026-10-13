@@ -1,0 +1,90 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-19",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $u_{n}>0$ ，且 $S_{n}=u_{1}+u_{2}+\\cdots+u_{n}$ ，证明：\n\n(1) 当 $\\alpha > 1$ 时，级数 $\\sum_{n=1}^{\\infty}\\frac{u_{n}}{S_{n}^{\\alpha}}$ 收敛；\n\n(2) 当 $\\alpha \\leqslant 1$ ，且 $S_{n} \\to \\infty (n \\to \\infty)$ 时，级数 $\\sum_{n=1}^{\\infty} \\frac{u_{n}}{S_{n}^{\\alpha}}$ 发散.",
+  "answer": "发散.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比较判别法",
+    "部分和/缩项求和",
+    "通项必要条件",
+    "证明技巧",
+    "单调有界准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）用比较法或部分和数列有界来证明. 为构造收敛的强级数，可利用等式 $u_{n} = S_{n} - S_{n-1}$ 来减少通项中的变元个数，以利寻找相等或大小关系.\n\n(2) 先考虑 $\\alpha=1$ 的情况，证明级数发散；再用比较法得到 $\\alpha<1$ 也发散."
+      },
+      {
+        "id": "s2",
+        "text": "方法1"
+      },
+      {
+        "id": "s3",
+        "text": "(1) $u_{n} > 0$ ，故 $\\{S_n\\}$ 单调递增. 则 $S_{n} \\to A$ （有限正数）或 $S_{n} \\to \\infty (n \\to \\infty)$ .\n\n当 $\\alpha > 1$ 时，对函数 $x^{1 - \\alpha}$ 在区间 $[S_{n-1}, S_n]$ 上用拉格朗日中值定理，有\n\n$$\nS _ {n} ^ {1 - \\alpha} - S _ {n - 1} ^ {1 - \\alpha} = (1 - \\alpha) \\xi^ {- \\alpha} \\left(S _ {n} - S _ {n - 1}\\right), \\quad S _ {n - 1} <   \\xi <   S _ {n}.\n$$\n\n即\n\n$$\n\\frac {1}{S _ {n - 1} ^ {\\alpha - 1}} - \\frac {1}{S _ {n} ^ {\\alpha - 1}} = (\\alpha - 1) \\frac {u _ {n}}{\\xi^ {\\alpha}} > (\\alpha - 1) \\frac {u _ {n}}{S _ {n} ^ {\\alpha}}.\n$$\n\n而级数 $\\sum_{n=2}^{\\infty}\\left(\\frac{1}{S_{n-1}^{\\alpha-1}} -\\frac{1}{S_n^{\\alpha-1}}\\right) = \\lim_{n\\to \\infty}\\left(\\frac{1}{u_1^{\\alpha-1}} -\\frac{1}{S_n^{\\alpha-1}}\\right)$ 收敛，由比较法知，级数 $\\sum_{n=1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 收敛."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 当 $\\alpha=1$ 时，有\n\n$$\n\\sum_ {k = n + 1} ^ {n + p} \\frac {u _ {k}}{S _ {k}} \\geqslant \\frac {1}{S _ {n + p}} \\sum_ {k = n + 1} ^ {n + p} u _ {k} = \\frac {S _ {n + p} - S _ {n}}{S _ {n + p}} = 1 - \\frac {S _ {n}}{S _ {n + p}}.\n$$\n\n因为 $S_{n}\\rightarrow \\infty (n\\to \\infty)$ ，故对任意的 $n$ ，当 $p$ 充分大时，有 $\\frac{S_n}{S_{n + p}} <  \\frac{1}{2}$ ，于是\n\n$$\n\\sum_ {k = n + 1} ^ {n + p} \\frac {u _ {k}}{S _ {k}} > 1 - \\frac {1}{2} = \\frac {1}{2}.\n$$\n\n由柯西收敛准则知，级数 $\\sum_{n=1}^{n} \\frac{u_n}{S_n}$ 发散.\n\n当 $\\alpha < 1$ 时， $\\frac{u_n}{S_n^\\alpha} \\geqslant \\frac{u_n}{S_n}$ ，由 $\\sum_{n=1}^{n} \\frac{u_n}{S_n}$ 发散及比较法知，级数 $\\sum_{n=1}^{\\infty} \\frac{u_n}{S_n^\\alpha}$ 发散.\n\n综上，当 $\\alpha \\leqslant 1$ 且 $S_{n}\\rightarrow \\infty (n\\to \\infty)$ 时，级数 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 发散."
+      },
+      {
+        "id": "s5",
+        "text": "方法2 对 $\\forall x\\in [S_{n - 1},S_n]$ ，有 $\\frac{1}{S_n^\\alpha}\\leqslant \\frac{1}{x^\\alpha}\\leqslant \\frac{1}{S_{n - 1}^\\alpha}$"
+      },
+      {
+        "id": "s6",
+        "text": "(1) 当 $\\alpha > 1$ 时，由 $\\frac{1}{S_{n}^{\\alpha}} \\leqslant \\frac{1}{x^{\\alpha}}$ ，得\n\n$$\n\\frac {u _ {n}}{S _ {n} ^ {\\alpha}} = \\frac {S _ {n} - S _ {n - 1}}{S _ {n} ^ {\\alpha}} = \\int_ {S _ {n - 1}} ^ {S _ {n}} \\frac {\\mathrm{d} x}{S _ {n} ^ {\\alpha}} \\leqslant \\int_ {S _ {n - 1}} ^ {S _ {n}} \\frac {\\mathrm{d} x}{x ^ {\\alpha}} \\Rightarrow \\sum_ {n = 1} ^ {\\infty} \\frac {u _ {n}}{S _ {n} ^ {\\alpha}} \\leqslant \\int_ {u _ {1}} ^ {+ \\infty} \\frac {\\mathrm{d} x}{x ^ {\\alpha}}.\n$$\n\n由于积分 $\\int_{u_1}^{+\\infty}\\frac{\\mathrm{d}x}{x^\\alpha}$ 收敛，则级数 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 的部分和数列有界，从而收敛."
+      },
+      {
+        "id": "s7",
+        "text": "(2) 当 $\\alpha \\leqslant 1$ 时，由 $\\frac{1}{x^{\\alpha}} \\leqslant \\frac{1}{S_{n-1}^{\\alpha}}$ 及 $S_{n} \\to \\infty (n \\to \\infty)$ ，得\n\n$$\n\\frac {u _ {n}}{S _ {n - 1} ^ {\\alpha}} = \\frac {S _ {n} - S _ {n - 1}}{S _ {n - 1} ^ {\\alpha}} = \\int_ {S _ {n - 1}} ^ {S _ {n}} \\frac {\\mathrm{d} x}{S _ {n - 1} ^ {\\alpha}} \\geqslant \\int_ {S _ {n - 1}} ^ {S _ {n}} \\frac {\\mathrm{d} x}{x ^ {\\alpha}} \\Rightarrow \\sum_ {n = 2} ^ {\\infty} \\frac {u _ {n}}{S _ {n - 1} ^ {\\alpha}} \\geqslant \\int_ {u _ {1}} ^ {+ \\infty} \\frac {\\mathrm{d} x}{x ^ {\\alpha}}.\n$$\n\n由于积分 $\\int_{u_1}^{+\\infty}\\frac{\\mathrm{d}x}{x^{\\alpha}}$ 发散到 $+\\infty$ ，则级数 $\\sum_{n = 2}^{\\infty}\\frac{u_n}{S_{n - 1}^{\\alpha}}$ 发散.\n\n若 $\\lim_{n\\to \\infty}\\frac{S_{n - 1}}{S_n} = 1$ ，则 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 与 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_{n - 1}^\\alpha}$ 有相同的敛散性，因而级数 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 发散；\n\n若 $\\lim_{n\\to \\infty}\\frac{S_{n - 1}}{S_n}\\neq 1$ ，则 $\\lim_{n\\to \\infty}\\frac{u_n}{S_n} = \\lim_{n\\to \\infty}\\left(1 - \\frac{S_{n - 1}}{S_n}\\right)\\neq 0\\Rightarrow \\lim_{n\\to \\infty}\\frac{u_n}{S_n^\\alpha}\\neq 0$ ，从而级数 $\\sum_{n = 1}^{\\infty}\\frac{u_n}{S_n^\\alpha}$ 也发散."
+      }
+    ],
+    "final_answer": "发散.",
+    "techniques_used": [
+      "比较判别法",
+      "部分和/缩项求和",
+      "通项必要条件",
+      "证明技巧",
+      "单调有界准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "部分和/缩项求和",
+      "expected": "发散."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例19*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 403,
+    "starred": true,
+    "syllabus_note": "部分和型通项敛散性*",
+    "commentary": "评注 当一个级数的通项中同时出现 $u_{n}$ 与 $S_{n}=u_{1}+u_{2}+\\cdots+u_{n}$ 时，常利用关系式 $u_{n}=S_{n}-S_{n-1}$ 来统一符号，减少变元个数，使运算得以简化."
+  }
+}
