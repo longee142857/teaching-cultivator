@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-06",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.ortho",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设二次型 $f(x_{1},x_{2},x_{3},x_{4}) = X^{\\mathrm{T}}AX$ ，其中\n\n$$\n\\boldsymbol {X} = \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\\\ x _ {4} \\end{array} \\right), \\quad \\boldsymbol {A} = \\left( \\begin{array}{c c c c} 2 & 2 & 2 & - 2 \\\\ a & 0 & b & c \\\\ d & e & 0 & f \\\\ g & h & k & 4 \\end{array} \\right),\n$$\n\n$a, b, c, d, e, f, g, h, k$ 均为实数. 已知 $\\lambda_{1} = 2$ 是 $A$ 的一个几何重数为3的特征值. 试回答以下问题:\n\n（1）A 能否相似于对角矩阵；若能，则请给出证明；若不能，则请给出例子.\n\n(2) 试求 $f(x_{1}, x_{2}, x_{3}, x_{4})$ 在正交变换下的标准形.",
+  "answer": "B 的特征值 $\\lambda_{1}=2$ （二重）， $\\lambda_{2}=1+2\\sqrt{3}$ ， $\\lambda_{3}=1-2\\sqrt{3}$ 。故 f 在正交变换下的标准形为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "标准形/合同",
+    "正交变换化二次型",
+    "特征值符号",
+    "矩阵秩",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 （1）A 能否相似于对角矩阵取决于 $\\lambda_{1}=2$ 是否是 3 重特征根，这由 tr A 容易确定.\n\n（2）由 $\\lambda_{1} = 2$ 的几何重数为3知 $\\operatorname{rank}(2I - A) = 1$ ，这可定出 $A$ 中的常数，再求二次型矩阵的特征值就能写出 $f$ 在正交变换下的标准形.\n\n解（1）由于 $\\operatorname{tr} A = 6$ 是 $A$ 的特征值之和，得 $\\lambda_1 = 2$ 的代数重数也是3，而 $A$ 的另一个特征值 $\\lambda_2 = 0$ ，且 $\\lambda_2$ 的代数重数为1．从而 $A$ 有4个线性无关的特征向量，故 $A$ 相似于对角矩阵.\n\n(2) 由于 $\\lambda_{1} = 2$ 的几何重数是3，故有\n\n$$\n\\operatorname{rank} (2 I - A) = \\operatorname{rank} \\left( \\begin{array}{c c c c} 0 & - 2 & - 2 & 2 \\\\ - a & 2 & - b & - c \\\\ - d & - e & 2 & - f \\\\ - g & - h & - k & - 2 \\end{array} \\right) = 1.\n$$\n\n$2I - A$ 的各行元素均成比例，有\n\n$$\n\\frac {- a}{0} = \\frac {2}{- 2} = \\frac {- b}{- 2} = \\frac {- c}{2}, \\quad \\frac {- d}{0} = \\frac {- e}{- 2} = \\frac {2}{- 2} = \\frac {- f}{2}, \\quad \\frac {- g}{0} = \\frac {- h}{- 2} = \\frac {- k}{- 2} = \\frac {- 2}{2}.\n$$\n\n得到\n\n$$\na = d = g = 0, b = e = h = k = - 2, c = f = 2.\n$$\n\n于是\n\n$$\n\\boldsymbol {A} = \\left( \\begin{array}{c c c c} 2 & 2 & 2 & - 2 \\\\ 0 & 0 & - 2 & 2 \\\\ 0 & - 2 & 0 & 2 \\\\ 0 & - 2 & - 2 & 4 \\end{array} \\right).\n$$\n\n二次型 $f$ 的矩阵为\n\n$$\n\\boldsymbol {B} = \\frac {1}{2} (\\boldsymbol {A} + \\boldsymbol {A} ^ {\\mathrm{T}}) = \\left( \\begin{array}{c c c c} 2 & 1 & 1 & - 1 \\\\ 1 & 0 & - 2 & 0 \\\\ 1 & - 2 & 0 & 0 \\\\ - 1 & 0 & 0 & 4 \\end{array} \\right),\n$$\n\n求得 B 的特征值 $\\lambda_{1}=2$ （二重）， $\\lambda_{2}=1+2\\sqrt{3}$ ， $\\lambda_{3}=1-2\\sqrt{3}$ 。故 f 在正交变换下的标准形为\n\n$$\n2 y _ {1} ^ {2} + 2 y _ {2} ^ {2} + (1 + 2 \\sqrt {3}) y _ {3} ^ {2} + (1 - 2 \\sqrt {3}) y _ {4} ^ {2}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 （1）A 能否相似于对角矩阵取决于 $\\lambda_{1}=2$ 是否是 3 重特征根，这由 tr A 容易确定.\n\n（2）由 $\\lambda_{1} = 2$ 的几何重数为3知 $\\operatorname{rank}(2I - A) = 1$ ，这可定出 $A$ 中的常数，再求二次型矩阵的特征值就能写出 $f$ 在正交变换下的标准形.\n\n解（1）由于 $\\operatorname{tr} A = 6$ 是 $A$ 的特征值之和，得 $\\lambda_1 = 2$ 的代数重数也是3，而 $A$ 的另一个特征值 $\\lambda_2 = 0$ ，且 $\\lambda_2$ 的代数重数为1．从而 $A$ 有4个线性无关的特征向量，故 $A$ 相似于对角矩阵."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 由于 $\\lambda_{1} = 2$ 的几何重数是3，故有\n\n$$\n\\operatorname{rank} (2 I - A) = \\operatorname{rank} \\left( \\begin{array}{c c c c} 0 & - 2 & - 2 & 2 \\\\ - a & 2 & - b & - c \\\\ - d & - e & 2 & - f \\\\ - g & - h & - k & - 2 \\end{array} \\right) = 1.\n$$\n\n$2I - A$ 的各行元素均成比例，有\n\n$$\n\\frac {- a}{0} = \\frac {2}{- 2} = \\frac {- b}{- 2} = \\frac {- c}{2}, \\quad \\frac {- d}{0} = \\frac {- e}{- 2} = \\frac {2}{- 2} = \\frac {- f}{2}, \\quad \\frac {- g}{0} = \\frac {- h}{- 2} = \\frac {- k}{- 2} = \\frac {- 2}{2}.\n$$\n\n得到\n\n$$\na = d = g = 0, b = e = h = k = - 2, c = f = 2.\n$$\n\n于是\n\n$$\n\\boldsymbol {A} = \\left( \\begin{array}{c c c c} 2 & 2 & 2 & - 2 \\\\ 0 & 0 & - 2 & 2 \\\\ 0 & - 2 & 0 & 2 \\\\ 0 & - 2 & - 2 & 4 \\end{array} \\right).\n$$\n\n二次型 $f$ 的矩阵为\n\n$$\n\\boldsymbol {B} = \\frac {1}{2} (\\boldsymbol {A} + \\boldsymbol {A} ^ {\\mathrm{T}}) = \\left( \\begin{array}{c c c c} 2 & 1 & 1 & - 1 \\\\ 1 & 0 & - 2 & 0 \\\\ 1 & - 2 & 0 & 0 \\\\ - 1 & 0 & 0 & 4 \\end{array} \\right),\n$$\n\n求得 B 的特征值 $\\lambda_{1}=2$ （二重）， $\\lambda_{2}=1+2\\sqrt{3}$ ， $\\lambda_{3}=1-2\\sqrt{3}$ 。故 f 在正交变换下的标准形为\n\n$$\n2 y _ {1} ^ {2} + 2 y _ {2} ^ {2} + (1 + 2 \\sqrt {3}) y _ {3} ^ {2} + (1 - 2 \\sqrt {3}) y _ {4} ^ {2}.\n$$\n\n评注 （1）特征根的代数重数与几何重数的概念见 9.3 节例 15 评注."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 题目没要求具体的正交变换, 能写出标准形即可."
+      }
+    ],
+    "final_answer": "B 的特征值 $\\lambda_{1}=2$ （二重）， $\\lambda_{2}=1+2\\sqrt{3}$ ， $\\lambda_{3}=1-2\\sqrt{3}$ 。故 f 在正交变换下的标准形为",
+    "techniques_used": [
+      "标准形/合同",
+      "正交变换化二次型",
+      "特征值符号",
+      "矩阵秩",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用正交变换（特征值/特征向量）化二次型？",
+      "technique": "标准形/合同",
+      "expected": "求特征值与正交矩阵并写出标准形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正交变换与标准形（或不变量）结论是什么？",
+      "technique": "正交变换化二次型",
+      "expected": "B 的特征值 $\\lambda_{1}=2$ （二重）， $\\lambda_{2}=1+2\\sqrt{3}$ ， $\\lambda_{3}=1-2\\sqrt{3}$ 。故 f 在正交变换下的标准形为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 513,
+    "syllabus_note": "几何重数约束下正交标准形",
+    "commentary": "评注 （1）特征根的代数重数与几何重数的概念见 9.3 节例 15 评注.\n\n(2) 题目没要求具体的正交变换, 能写出标准形即可."
+  }
+}

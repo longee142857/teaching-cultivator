@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-10",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.std",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A = (a_{ij})_{n \\times n}$ 为 $n$ 阶实矩阵，满足\n\n(1) $a_{11} = a_{22} = \\dots = a_{nn} = a > 0$ ;\n\n(2) 对每个 $i(i=1,2,\\cdots,n)$ ，有\n\n$$\n\\sum_ {j = 1} ^ {n} \\left| a _ {i j} \\right| + \\sum_ {j = 1} ^ {n} \\left| a _ {j i} \\right| <   4 a.\n$$\n\n求二次型 $f(x_{1},x_{2},\\cdots,x_{n})=X^{T}AX$ 的标准形. 其中 $X=(x_{1},x_{2},\\cdots,x_{n})^{\\mathrm{T}}$ .",
+  "answer": "到 $b_{ii} > \\sum_{j\\neq i}|b_{ij}|$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "标准形/合同",
+    "正定性判定",
+    "特征值符号"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 二次型的标准形由其正、负惯性指数唯一确定. 由于 A 不一定对称, 所以 $B = \\frac{1}{2}(A + A^{\\mathrm{T}})$ 才是二次型的矩阵. 确定 B 的正、负惯性指数可考察其特征值的符号.\n\n记 $B=\\frac{1}{2}(A+A^{T})$ ，则 B 是实对称矩阵，且 $f(x_{1},x_{2},\\cdots,x_{n})=X^{T}BX$ 。由已知条件，有"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nb _ {1 1} = b _ {2 2} = \\dots = b _ {n n} = a,\n\n\\sum_ {j = 1} ^ {n} | b _ {i j} | = \\sum_ {j = 1} ^ {n} \\left| \\frac {1}{2} (a _ {i j} + a _ {j i}) \\right| <   2 a.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由此可得到 $b_{ii} > \\sum_{j\\neq i}|b_{ij}|$\n\n下面证 $\\pmb{B}$ 的特征值全大于0.\n\n设 $B\\alpha = \\lambda\\alpha$ ， $\\alpha = (x_{1}, x_{2}, \\cdots, x_{n})^{\\mathrm{T}} \\neq 0$ ，记 $|x_{i}| = \\max_{1 \\leqslant j \\leqslant n} |x_{j}|$ ，考察等式 $B\\alpha = \\lambda\\alpha$ 中的第 i 个分量，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\sum_ {j = 1} ^ {n} b _ {i j} x _ {j} = \\lambda x _ {i}.\n$$\n\n由此可得到\n\n$$\n\\lambda = \\frac {\\sum_ {j = 1} ^ {n} b _ {i j} x _ {j}}{x _ {i}} = b _ {i i} + \\sum_ {j \\neq i} b _ {i j} \\frac {x _ {j}}{x _ {i}} \\geqslant b _ {i i} - \\sum_ {j \\neq i} | b _ {i j} | > 0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "故 B 是正定矩阵. 所以 f 的标准形为 $y_{1}^{2} + y_{2}^{2} + \\cdots + y_{n}^{2}$ ."
+      }
+    ],
+    "final_answer": "到 $b_{ii} > \\sum_{j\\neq i}|b_{ij}|$",
+    "techniques_used": [
+      "标准形/合同",
+      "正定性判定",
+      "特征值符号"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "化标准形用配方、合同还是正交变换？",
+      "technique": "标准形/合同",
+      "expected": "选定化标准形路径并写出变换。"
+    },
+    {
+      "id": "c2",
+      "prompt": "标准形（及变换矩阵）是什么？",
+      "technique": "正定性判定",
+      "expected": "到 $b_{ii} > \\sum_{j\\neq i}|b_{ij}|$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 516,
+    "syllabus_note": "对角占优条件下标准形",
+    "commentary": "评注 该题中的矩阵 B 是严格对角占优的. 一般结论: 严格对角占优的实对称矩阵, 若主对角元全为正 (负), 则矩阵正 (负) 定 (严格对角占优矩阵的概念见 9.3 节例 9 评注)."
+  }
+}

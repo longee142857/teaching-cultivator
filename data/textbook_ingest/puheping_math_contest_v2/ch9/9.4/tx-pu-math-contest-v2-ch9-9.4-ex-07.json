@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-07",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.ortho",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "$A=(a_{ij})$ 为三阶实对称矩阵， $A^{*}$ 是 A 的伴随矩阵，记\n\n$$\nf (x _ {1}, x _ {2}, x _ {3}, x _ {4}) = \\left| \\begin{array}{c c c c} x _ {1} ^ {2} & x _ {2} & x _ {3} & x _ {4} \\\\ - x _ {2} & a _ {1 1} & a _ {1 2} & a _ {1 3} \\\\ - x _ {3} & a _ {1 2} & a _ {2 2} & a _ {2 3} \\\\ - x _ {4} & a _ {1 3} & a _ {2 3} & a _ {3 3} \\end{array} \\right|.\n$$\n\n若 $|A| = -12$ ， $\\pmb{A}$ 的特征值之和为1，且 $(1,0, - 2)^{\\mathrm{T}}$ 为 $(\\pmb{A}^{\\bullet} - 4\\pmb {I})\\pmb {X} = \\pmb{0}$ 的一个解，试给出一正交变换 $X = QY$ ，使得 $f(x_{1},x_{2},x_{3},x_{4})$ 化为标准形.",
+  "answer": "$\\lambda_{1} = \\lambda_{2} = 2$ 。设该特征值对应的特征向量为 $(x_{1}, x_{2}, x_{3})^{\\mathrm{T}}$ 。由实对称矩阵不同特征值对应特征向量是正交的，得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "标准形/合同",
+    "正交变换化二次型",
+    "特征值符号",
+    "正定性判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 关键是要确定二次型的矩阵，将 f 的行列式按第 1 行展开就能看出.\n\n将行列式按第1行展开，得\n\n$$\n\\begin{array}{r l} f (x _ {1}, x _ {2}, x _ {3}, x _ {4}) & = x _ {1} ^ {2} | A | - x _ {2} \\left| \\begin{array}{c c c} - x _ {2} & a _ {1 2} & a _ {1 3} \\\\ - x _ {3} & a _ {2 2} & a _ {2 3} \\\\ - x _ {4} & a _ {2 3} & a _ {3 3} \\end{array} \\right| + x _ {3} \\left| \\begin{array}{c c c} - x _ {2} & a _ {1 1} & a _ {1 3} \\\\ - x _ {3} & a _ {1 2} & a _ {2 3} \\\\ - x _ {4} & a _ {1 3} & a _ {3 3} \\end{array} \\right| - x _ {4} \\left| \\begin{array}{c c c} - x _ {2} & a _ {1 1} & a _ {1 2} \\\\ - x _ {3} & a _ {1 2} & a _ {2 2} \\\\ - x _ {4} & a _ {1 3} & a _ {2 3} \\end{array} \\right| \\\\ & = - 1 2 x _ {1} ^ {2} + (x _ {2}, x _ {3}, x _ {4}) A ^ {*} \\left( \\begin{array}{l} x _ {2} \\\\ x _ {3} \\\\ x _ {4} \\end{array} \\right). \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "由此可知 $f(x_{1},x_{2},x_{3},x_{4})$ 是关于 $x_{1},x_{2},x_{3},x_{4}$ 的二次型.\n\n下面求矩阵 $A^{*}$ 。为此先求矩阵 A 。\n\n方程 $(A^{*} - 4I)X = 0$ 左乘 $A$ ，得 $(|A|I - 4A)X = 0$ ，即 $(A + 3I)X = 0$ ： $\\xi = (1,0, - 2)^{\\mathrm{T}}$ 是该方程组的解，这说明-3是矩阵 $A$ 的特征值， $\\xi$ 是对应的特征向量.\n\n设 $\\pmb{A}$ 的另外两个特征值为 $\\lambda_1, \\lambda_2$ ，由 $\\pmb{A}$ 的特征值之和为 1， $|\\pmb{A}| = -12$ ，得\n\n$$\n\\lambda_ {1} + \\lambda_ {2} - 3 = 1, - 3 \\lambda_ {1} \\lambda_ {2} = - 1 2.\n$$\n\n解得 $\\lambda_{1} = \\lambda_{2} = 2$ 。设该特征值对应的特征向量为 $(x_{1}, x_{2}, x_{3})^{\\mathrm{T}}$ 。由实对称矩阵不同特征值对应特征向量是正交的，得\n\n$$\nx _ {1} - 2 x _ {3} = 0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "该方程组的一个正交基础解系为 $\\alpha = (0,1,0)^{\\mathrm{T}}$ ， $\\pmb {\\beta} = \\left(\\frac{2}{\\sqrt{5}},0,\\frac{1}{\\sqrt{5}}\\right)^{\\mathrm{T}}$\n\n记 $\\gamma = \\frac{\\xi}{\\|\\xi\\|} = \\left(\\frac{1}{\\sqrt{5}}, 0, -\\frac{2}{\\sqrt{5}}\\right)^{\\mathrm{T}}$ ，则 $\\alpha, \\beta, \\gamma$ 是矩阵 $A$ 分别对应特征值 2, 2, -3 的特征向量，且为单位正交向量组。令 $P = (\\alpha, \\beta, \\gamma)$ ，则 $P$ 是正交矩阵，且\n\n$$\n\\boldsymbol {A} = \\boldsymbol {P} \\left( \\begin{array}{c c c} 2 & & \\\\ & 2 & \\\\ & & - 3 \\end{array} \\right) \\boldsymbol {P} ^ {- 1} \\Rightarrow \\boldsymbol {A} ^ {- 1} = \\boldsymbol {P} \\left( \\begin{array}{c c c} 1 / 2 & & \\\\ & 1 / 2 & \\\\ & & - 1 / 3 \\end{array} \\right) \\boldsymbol {P} ^ {\\mathrm{T}} \\left(\\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} ^ {\\mathrm{T}}\\right),"
+      },
+      {
+        "id": "s4",
+        "text": "\\boldsymbol {A} ^ {*} = | \\boldsymbol {A} | \\boldsymbol {A} ^ {- 1} = - 1 2 \\boldsymbol {P} \\left( \\begin{array}{c c c} 1 / 2 & & \\\\ & 1 / 2 & \\\\ & & - 1 / 3 \\end{array} \\right) \\boldsymbol {P} ^ {\\mathrm{T}} = \\boldsymbol {P} \\left( \\begin{array}{c c c} - 6 & & \\\\ & - 6 & \\\\ & & 4 \\end{array} \\right) \\boldsymbol {P} ^ {\\mathrm{T}}.\n$$\n\n令 $Q = \\begin{pmatrix} 1 & 0 \\\\ 0 & P \\end{pmatrix}$ ，做正交变换 $X = QY$ ，即 $\\begin{pmatrix} x_1 \\\\ x_2 \\\\ x_3 \\\\ x_4 \\end{pmatrix} = \\begin{pmatrix} 1 & 0 & 0 & 0 \\\\ 0 & 0 & 2 / \\sqrt{5} & 1 / \\sqrt{5} \\\\ 0 & 1 & 0 & 0 \\\\ 0 & 0 & 1 / \\sqrt{5} & -2 / \\sqrt{5} \\end{pmatrix} \\begin{pmatrix} y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4 \\end{pmatrix}$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} f (x _ {1}, x _ {2}, x _ {3}, x _ {4}) & = - 1 2 x _ {1} ^ {2} + (x _ {2}, x _ {3}, x _ {4}) P \\left( \\begin{array}{c c c} - 6 & & \\\\ & - 6 & \\\\ & & 4 \\end{array} \\right) P ^ {\\mathrm{T}} \\left( \\begin{array}{c} x _ {2} \\\\ x _ {3} \\\\ x _ {4} \\end{array} \\right) \\\\ & = - 1 2 y _ {1} ^ {2} + (y _ {2}, y _ {3}, y _ {4}) \\left( \\begin{array}{c c c} - 6 & & \\\\ & - 6 & \\\\ & & 4 \\end{array} \\right) \\left( \\begin{array}{c} y _ {2} \\\\ y _ {3} \\\\ y _ {4} \\end{array} \\right) \\\\ & = - 1 2 y _ {1} ^ {2} - 6 y _ {2} ^ {2} - 6 y _ {3} ^ {2} + 4 y _ {4} ^ {2}. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "$\\lambda_{1} = \\lambda_{2} = 2$ 。设该特征值对应的特征向量为 $(x_{1}, x_{2}, x_{3})^{\\mathrm{T}}$ 。由实对称矩阵不同特征值对应特征向量是正交的，得",
+    "techniques_used": [
+      "标准形/合同",
+      "正交变换化二次型",
+      "特征值符号",
+      "正定性判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用正交变换（特征值/特征向量）化二次型？",
+      "technique": "标准形/合同",
+      "expected": "求特征值与正交矩阵并写出标准形。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正交变换与标准形（或不变量）结论是什么？",
+      "technique": "正交变换化二次型",
+      "expected": "$\\lambda_{1} = \\lambda_{2} = 2$ 。设该特征值对应的特征向量为 $(x_{1}, x_{2}, x_{3})^{\\mathrm{T}}$ 。由实对称矩阵不同特征值对应特征向量是正交的，得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例7*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 513,
+    "starred": true,
+    "syllabus_note": "伴随与特征值约束下正交化*",
+    "commentary": "评注（1）根据伴随矩阵的性质易知，由矩阵 $A$ 的相似（或合同）标准形容易确定 $A^{*}$ 的相似（或合同）标准形；反之却未必.\n\n(2) 矩阵相似与合同的关系：矩阵的相似与合同一般没有从属关系。但如果存在正交矩阵 P 使得 $B = P^{-1}AP$ ，则 A 与 B 既相似，又合同；两实对称矩阵若相似，则必合同，反之却未必。"
+  }
+}

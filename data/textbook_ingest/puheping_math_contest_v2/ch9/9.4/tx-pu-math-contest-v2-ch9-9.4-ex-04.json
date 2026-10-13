@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-04",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.std",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设二次型 $f(x_{1}, x_{2}, x_{3}, x_{4}) = 2x_{1}x_{2} + 2x_{3}x_{4} + ax_{3}^{2} + 2x_{4}^{2}$ 的系数矩阵 $A$ 有一个特征值为3，求 $a$ 的值及可逆矩阵 $P$ ，使 $g(X) = X^{\\mathrm{T}}(AP)^{\\mathrm{T}}(AP)X$ 为标准形.",
+  "answer": "$a = 2$ ，从而",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "标准形/合同",
+    "特征值符号",
+    "正定性判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 二次型 $g(X) = (PX)^{\\mathrm{T}}A^{2}(PX)$ ，只需做可逆变换 $\\pmb{Y} = \\pmb{P}\\pmb{X}$ ，使 $g(Y) = Y^{\\mathrm{T}}A^{2}Y$ 为标准形即可。所以首先要确定 $\\alpha$ 并写出 $A^2$ 。\n\n二次型 f 的矩阵为 $A = \\begin{pmatrix} 0 & 1 & 0 & 0 \\\\ 1 & 0 & 0 & 0 \\\\ 0 & 0 & a & 1 \\\\ 0 & 0 & 1 & 2 \\end{pmatrix}$ .\n\n因为3是矩阵 $\\pmb{A}$ 的特征值，所以\n\n$$\n\\left| 3 \\boldsymbol {I} - \\boldsymbol {A} \\right| = \\left| \\begin{array}{c c c c} 3 & - 1 & 0 & 0 \\\\ - 1 & 3 & 0 & 0 \\\\ 0 & 0 & 3 - a & - 1 \\\\ 0 & 0 & - 1 & 1 \\end{array} \\right| = 8 \\left| \\begin{array}{c c} 3 - a & - 1 \\\\ - 1 & 1 \\end{array} \\right| = 0,\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "解得 $a = 2$ ，从而\n\n$$\n\\boldsymbol {A} ^ {2} = \\left( \\begin{array}{c c c c} 0 & 1 & 0 & 0 \\\\ 1 & 0 & 0 & 0 \\\\ 0 & 0 & 2 & 1 \\\\ 0 & 0 & 1 & 2 \\end{array} \\right) ^ {2} = \\left( \\begin{array}{c c c c} 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 0 & 0 & 5 & 4 \\\\ 0 & 0 & 4 & 5 \\end{array} \\right).\n\ng (\\boldsymbol {Y}) = \\boldsymbol {Y} ^ {\\mathrm{T}} \\boldsymbol {A} ^ {2} \\boldsymbol {Y} = y _ {1} ^ {2} + y _ {2} ^ {2} + 5 y _ {3} ^ {2} + 5 y _ {4} ^ {2} + 8 y _ {3} y _ {4}"
+      },
+      {
+        "id": "s3",
+        "text": "= y _ {1} ^ {2} + y _ {2} ^ {2} + 5 \\left(y _ {3} + \\frac {4}{5} y _ {4}\\right) ^ {2} + \\frac {9}{5} y _ {4} ^ {2}.\n$$\n\n令 $x_{1} = y_{1}, x_{2} = y_{2}, x_{3} = y_{3} + \\frac{4}{5} y_{4}, x_{4} = y_{4}$ ，即\n\n$$\n\\left( \\begin{array}{l} y _ {1} \\\\ y _ {2} \\\\ y _ {3} \\\\ y _ {4} \\end{array} \\right) = \\left( \\begin{array}{c c c c} 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 0 & 0 & 1 & - 4 / 5 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\\\ x _ {4} \\end{array} \\right), \\quad P = \\left( \\begin{array}{c c c c} 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 0 & 0 & 1 & - 4 / 5 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "则 $g(X) = X^{\\mathrm{T}}(AP)^{\\mathrm{T}}(AP)X = x_{1}^{2} + x_{2}^{2} + 5x_{3}^{2} + \\frac{9}{5} x_{4}^{2}$ 为标准形."
+      }
+    ],
+    "final_answer": "$a = 2$ ，从而",
+    "techniques_used": [
+      "标准形/合同",
+      "特征值符号",
+      "正定性判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "化标准形用配方、合同还是正交变换？",
+      "technique": "标准形/合同",
+      "expected": "选定化标准形路径并写出变换。"
+    },
+    {
+      "id": "c2",
+      "prompt": "标准形（及变换矩阵）是什么？",
+      "technique": "特征值符号",
+      "expected": "$a = 2$ ，从而"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 511,
+    "syllabus_note": "含参二次型化标准形与P"
+  }
+}
