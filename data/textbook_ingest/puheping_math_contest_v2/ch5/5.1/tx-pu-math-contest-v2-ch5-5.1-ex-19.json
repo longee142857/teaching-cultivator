@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-19",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x, y)$ 在 $0 \\leqslant x, y \\leqslant 1$ 内连续， $f(0, 0) = 0$ ，且在 $(0, 0)$ 处可微， $f_y(0, 0) = 1$ ，证明：\n\n$$\n\\lim _ {x \\rightarrow 0 ^ {+}} \\frac {\\int_ {0} ^ {x ^ {2}} \\mathrm{d} t \\int_ {x} ^ {\\sqrt {t}} f (t , u) \\mathrm{d} u}{1 - \\mathrm{e} ^ {- \\frac {x ^ {4}}{4}}} = - 1.\n$$",
+  "answer": "中定理}}{=} -\\lim_{x\\to 0^{+}}\\frac{f(\\xi,x)}{x}\\quad (0 < \\xi < x^{2})$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "交换积分次序",
+    "积分估值",
+    "证明技巧",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需将左边极限算出. 易知该极限属于 $\\frac{0}{0}$ 型, 为便于用洛必达法则, 需将分子内层积分限中的 $x$ 去掉. 这可通过交换积分次序来完成."
+      },
+      {
+        "id": "s2",
+        "text": "利用等价无穷小 $1 - \\mathrm{e}^{\\frac{x^4}{4}} \\sim \\frac{x^4}{4}$ ，并将分子交换积分次序，有"
+      },
+      {
+        "id": "s3",
+        "text": "原极限 $= \\lim_{x\\to 0^{+}}\\frac{-\\int_{0}^{x}\\mathrm{d}u\\int_{0}^{u^{2}}f(t,u)\\mathrm{d}t}{\\frac{x^{4}}{4}} = \\lim_{x\\to 0^{+}}\\frac{-\\int_{0}^{x^{2}}f(t,x)\\mathrm{d}t}{x^{3}} \\stackrel {\\text{积分中定理}}{=} -\\lim_{x\\to 0^{+}}\\frac{f(\\xi,x)}{x}\\quad (0 <   \\xi <  x^{2})$"
+      },
+      {
+        "id": "s4",
+        "text": "由 $f(x,y)$ 在 $(0,0)$ 处可微， $f(0,0) = 0$ ， $f_y(0,0) = 1$ ，得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nf (\\xi , x) = f (0, 0) + f _ {x} (0, 0) \\xi + f _ {y} (0, 0) x + o (\\sqrt {\\xi^ {2} + x ^ {2}}) = f _ {x} (0, 0) \\xi + x + o (x).\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\text {原极限} = - \\lim _ {x \\to 0 ^ {+}} {\\frac {f _ {x} (0 , 0) \\xi + x + o (x)}{x}} = - 1 \\quad (\\text {注意} \\lim _ {x \\to 0 ^ {+}} {\\frac {\\xi}{x}} = 0).\n$$"
+      }
+    ],
+    "final_answer": "中定理}}{=} -\\lim_{x\\to 0^{+}}\\frac{f(\\xi,x)}{x}\\quad (0 < \\xi < x^{2})$",
+    "techniques_used": [
+      "交换积分次序",
+      "积分估值",
+      "证明技巧",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分次序（或是否需要交换次序）并写出累次积分上下限？",
+      "technique": "交换积分次序",
+      "expected": "根据区域形状选择 dxdy 或 dydx，必要时交换次序。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终计算结果是什么？",
+      "technique": "积分估值",
+      "expected": "中定理}}{=} -\\lim_{x\\to 0^{+}}\\frac{f(\\xi,x)}{x}\\quad (0 < \\xi < x^{2})$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 280,
+    "syllabus_note": "交换次序+洛必达",
+    "commentary": "评注 由 $f$ 在 $(0,0)$ 处可微得到函数在 $(0,0)$ 处的局部表达式是问题得以解决的关键."
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-07",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(u)$ 是连续函数，求 $\\iint_{D} x[1 + y f(x^2 + y^2)] \\, \\mathrm{d}x \\, \\mathrm{d}y$ ，其中 $D$ 由 $y = x^3$ ， $y = 1$ ， $x = -1$ 所围成.",
+  "answer": "$$ \\iint_ {D} x [ 1 + y f (x ^ {2} + y ^ {2}) ] \\mathrm{d} \\sigma = \\iint_ {D} x \\mathrm{d} \\sigma = - \\frac {2}{5}. $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "对称性",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于被积函数中含有抽象函数，所以积分没法直接计算，通常采用设置原函数或用分部积分的方法."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 令 $F(x) = \\int_{0}^{x} f(t) \\, dt$ 为 $f(x)$ 的一个原函数，区域 $D$ 如图5.6(a)所示. 则\n\n$$\n\\begin{array}{r l} I & = \\iint_ {D} x \\mathrm{d} x \\mathrm{d} y + \\iint_ {D} x y f (x ^ {2} + y ^ {2}) ] \\mathrm{d} x \\mathrm{d} y \\\\ & = \\int_ {- 1} ^ {1} x \\mathrm{d} x \\int_ {x ^ {3}} ^ {1} \\mathrm{d} y + \\int_ {- 1} ^ {1} x \\mathrm{d} x \\int_ {x ^ {3}} ^ {1} y f (x ^ {2} + y ^ {2}) \\mathrm{d} y \\\\ & = - \\int_ {- 1} ^ {1} x ^ {4} \\mathrm{d} x + \\frac {1}{2} \\int_ {- 1} ^ {1} x \\cdot F (x ^ {2} + y ^ {2}) \\Big | _ {x ^ {3}} ^ {1} \\mathrm{d} x \\\\ & = - \\frac {2}{5} + \\frac {1}{2} \\int_ {- 1} ^ {1} x [ F (x ^ {2} + 1) - F (x ^ {2} + x ^ {6}) ] \\mathrm{d} x \\\\ & = - \\frac {2}{5}. x [ F (x ^ {2} + 1) - F (x ^ {2} + x ^ {6}) ] \\text {为} x \\text {的奇函数} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 添辅助线 $y = -x^3$ ，如图5.6(b)所示，将 $D$ 分成关于 $y$ 轴与 $x$ 轴对称的两块 $D_1$ 与 $D_2$ ，由被积函数的奇偶性可知\n\n$$\n\\iint_ {D _ {1}} x y f \\left(x ^ {2} + y ^ {2}\\right) \\mathrm{d} \\sigma = \\iint_ {D _ {2}} x y f \\left(x ^ {2} + y ^ {2}\\right) \\mathrm{d} \\sigma = 0,\n$$\n\n所以\n\n$$\n\\iint_ {D} x [ 1 + y f (x ^ {2} + y ^ {2}) ] \\mathrm{d} \\sigma = \\iint_ {D} x \\mathrm{d} \\sigma = - \\frac {2}{5}.\n$$\n\n(a)\n\n(b)\n图5.6"
+      }
+    ],
+    "final_answer": "$$ \\iint_ {D} x [ 1 + y f (x ^ {2} + y ^ {2}) ] \\mathrm{d} \\sigma = \\iint_ {D} x \\mathrm{d} \\sigma = - \\frac {2}{5}. $$",
+    "techniques_used": [
+      "对称性",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分次序（或是否需要交换次序）并写出累次积分上下限？",
+      "technique": "累次积分",
+      "expected": "根据区域形状选择 dxdy 或 dydx，必要时交换次序。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终计算结果是什么？",
+      "technique": "累次积分",
+      "expected": "$$ \\iint_ {D} x [ 1 + y f (x ^ {2} + y ^ {2}) ] \\mathrm{d} \\sigma = \\iint_ {D} x \\mathrm{d} \\sigma = - \\frac {2}{5}. $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 272,
+    "syllabus_note": "抽象函数+对称",
+    "commentary": "评注 （1）二重积分的对称性：\n\n设平面区域 $D$ 关于 $x = 0$ 对称， $D_{1}$ 是 $D$ 位于 $x = 0$ 一侧的区域，则有\n\n$$\n\\iint_ {D} f (x, y) \\mathrm{d} \\sigma = \\left\\{ \\begin{array}{l l} 0, & \\text {若}   f (- x, y) = - f (x, y), \\\\ 2 \\iint_ {D _ {1}} f (x, y) \\mathrm{d} \\sigma , & \\text {若}   f (- x, y) = f (x, y). \\end{array} \\right.\n$$\n\nD 关于 y=0 对称有类似的结果（以上结论可推广到三重积分、曲线与曲面积分）.\n\n(2) 当被积函数是某个变量的奇函数，而积分区域做适当的“割补”有对称性时，要利用对称性来简化计算."
+  }
+}
