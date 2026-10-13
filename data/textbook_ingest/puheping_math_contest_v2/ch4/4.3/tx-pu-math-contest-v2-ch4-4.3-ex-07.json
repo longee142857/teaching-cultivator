@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-07",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "给定半径为 R 的圆，问：是否存在该圆的一个外切三角形，使其面积为圆面积的 $\\frac{3}{2}$ 倍？是否存在该圆的一个外切三角形，使其面积为圆面积的 2 倍？证明结论.",
+  "answer": "连续函数，根据介值定理，故存在 $\\xi \\in \\left(\\frac{2\\pi}{3}, x_1\\right)$ ，使 $f(\\xi) = 2\\pi R^2$ ，即存在面积等于圆面积2倍的外切三角形.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值判定",
+    "偏导数与全微分",
+    "几何应用",
+    "证明技巧",
+    "定义法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于圆外切三角形面积一定有最小值而无最大值，所以只需将其最小值与 $\\frac{3}{2}\\pi R^2$ （圆面积的 $\\frac{3}{2}$ 倍值）及 $2\\pi R^2$ （圆面积的2倍值）比较，就可做出判断.\n\n构造该圆的任一外切三角形，连接圆心与3个切点，设3个圆心角分别为 $x, y, 2\\pi - (x + y)$ ，则外切三角形的面积\n\n$$\nS (x, y) = R ^ {2} \\left(\\tan \\frac {x}{2} + \\tan \\frac {y}{2} - \\tan \\frac {x + y}{2}\\right),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "其定义域为 $D = \\{(x,y)\\mid 0 <   x,y <   \\pi ,x + y > \\pi \\} .$ 令\n\n$$\n\\frac {\\partial S}{\\partial x} = \\frac {R ^ {2}}{2 \\cos^ {2} \\frac {x}{2}} - \\frac {R ^ {2}}{2 \\cos^ {2} \\frac {x + y}{2}} = 0,\n\n\\frac {\\partial S}{\\partial y} = \\frac {R ^ {2}}{2 \\cos^ {2} \\frac {y}{2}} - \\frac {R ^ {2}}{2 \\cos^ {2} \\frac {x + y}{2}} = 0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "求得唯一驻点 $x_0 = \\frac{2\\pi}{3}, y_0 = \\frac{2\\pi}{3}$ .\n\n由于圆外切三角形的面积一定有最小值，而驻点又唯一，所以\n\n$$\n\\min _ {(x, y) \\in D} S (x, y) = S \\left(x _ {0}, y _ {0}\\right) = 3 \\sqrt {3} R ^ {2} > \\frac {3}{2} \\pi R ^ {2}.\n$$\n\n这表明面积等于圆面积 $\\frac{3}{2}$ 倍的外切三角形不存在.\n\n下面回答第2个问题:"
+      },
+      {
+        "id": "s4",
+        "text": "取定圆周上两点 $A, B$ ，使劣弧 $\\widehat{AB}$ 对应的圆心角为 $\\frac{2\\pi}{3}$ ，在优弧 $\\widehat{AB}$ 上取点 $P$ ，设劣弧 $\\widehat{AP}$ 对应的圆心角为 $x$ ， $0 < x < \\pi$ ，则以 $A, B, P$ 为切点的外切三角形的面积为\n\n$$\nf (x) = S \\left(x, \\frac {2 \\pi}{3}\\right) = R ^ {2} \\left[ \\tan \\frac {\\pi}{3} + \\tan \\frac {x}{2} - \\tan \\left(\\frac {\\pi}{3} + \\frac {x}{2}\\right) \\right],"
+      },
+      {
+        "id": "s5",
+        "text": "f \\left(\\frac {2 \\pi}{3}\\right) = 3 \\sqrt {3} R ^ {2} <   2 \\pi R ^ {2}.\n$$\n\n当 $x \\to \\pi^{-}$ 时， $f(x) \\to +\\infty$ ，故存在 $x_{1} \\in \\left(\\frac{2\\pi}{3}, \\pi\\right)$ ，使 $f(x_{1}) > 2\\pi R^{2}$ .\n\n由 $f(x)$ 是 $x$ 的连续函数，根据介值定理，故存在 $\\xi \\in \\left(\\frac{2\\pi}{3}, x_1\\right)$ ，使 $f(\\xi) = 2\\pi R^2$ ，即存在面积等于圆面积2倍的外切三角形."
+      }
+    ],
+    "final_answer": "连续函数，根据介值定理，故存在 $\\xi \\in \\left(\\frac{2\\pi}{3}, x_1\\right)$ ，使 $f(\\xi) = 2\\pi R^2$ ，即存在面积等于圆面积2倍的外切三角形.",
+    "techniques_used": [
+      "极值判定",
+      "偏导数与全微分",
+      "几何应用",
+      "证明技巧",
+      "定义法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "偏导数与全微分",
+      "expected": "连续函数，根据介值定理，故存在 $\\xi \\in \\left(\\frac{2\\pi}{3}, x_1\\right)$ ，使 $f(\\xi) = 2\\pi R^2$ ，即存在面积等于圆面积2倍的外切三角形."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 249,
+    "syllabus_note": "圆外切三角形面积最值（几何）"
+  }
+}

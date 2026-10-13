@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-16",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明对任何正实数 $a, b, c$ ，恒有不等式 $abc^3 \\leqslant 27\\left(\\frac{a + b + c}{5}\\right)^5$ .",
+  "answer": "，而 $\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right)$ 为唯一驻点，故最大值为 $f\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right) = 27\\left(\\frac{r}{5}\\right)^5$ 。所以",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日乘数法",
+    "极值判定",
+    "不等式估计",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明目标函数 $f(x, y, z) = xyz^3 (x, y, z > 0)$ 在条件 $x + y + z = r$ 下的最大值为 $27\\left(\\frac{r}{5}\\right)^5$\n\n设目标函数为\n\n$$\nf (x, y, z) = x y z ^ {3} \\quad (x, y, z > 0),\n$$\n\n约束条件为 $x + y + z = r$"
+      },
+      {
+        "id": "s2",
+        "text": "做拉格朗日函数，得\n\n$$\nL (x, y, z, \\lambda) = x y z ^ {3} + \\lambda (x + y + z - r),\n\n\\int L _ {x} = y z ^ {3} + \\lambda = 0,\\tag{①}\n$$\n\n令\n\n$$\n\\int L _ {y} = x z ^ {3} + \\lambda = 0,\\tag{②}"
+      },
+      {
+        "id": "s3",
+        "text": "L _ {z} = 3 x y z ^ {2} + \\lambda = 0,\\tag{③}\n\n\\left\\lfloor L _ {\\lambda} = x + y + z - r = 0. \\right.\\tag{④}\n$$\n\n由前3式得 $x = y = \\frac{z}{3}$ ，代入第④式得驻点 $x = y = \\frac{r}{5}, z = \\frac{3r}{5}$ ."
+      },
+      {
+        "id": "s4",
+        "text": "因 $f(x,y,z) = xyz^3$ 在有界闭集 $x + y + z = r$ ( $x \\geqslant 0, y \\geqslant 0, z \\geqslant 0$ ) 上必有最大值，且最大值必在 $x > 0, y > 0, z > 0$ 取得，而 $\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right)$ 为唯一驻点，故最大值为 $f\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right) = 27\\left(\\frac{r}{5}\\right)^5$ 。所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nx y z ^ {3} \\leqslant 2 7 \\left(\\frac {r}{5}\\right) ^ {5} = 2 7 \\left(\\frac {x + y + z}{5}\\right) ^ {5}.\n$$\n\n即对任何正实数 $a, b, c$ ，恒有 $abc^3 \\leqslant 27\\left(\\frac{a + b + c}{5}\\right)^5$ 。"
+      }
+    ],
+    "final_answer": "，而 $\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right)$ 为唯一驻点，故最大值为 $f\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right) = 27\\left(\\frac{r}{5}\\right)^5$ 。所以",
+    "techniques_used": [
+      "拉格朗日乘数法",
+      "极值判定",
+      "不等式估计",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何建立拉格朗日函数并求驻点？",
+      "technique": "拉格朗日乘数法",
+      "expected": "写 L=f+λg（或多约束），对变量与乘数求偏导并解方程组。"
+    },
+    {
+      "id": "c2",
+      "prompt": "条件极值/最值结论是什么？",
+      "technique": "极值判定",
+      "expected": "，而 $\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right)$ 为唯一驻点，故最大值为 $f\\left(\\frac{r}{5}, \\frac{r}{5}, \\frac{3r}{5}\\right) = 27\\left(\\frac{r}{5}\\right)^5$ 。所以"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 257,
+    "syllabus_note": "条件极值证加权不等式",
+    "commentary": "评注（1）该题若用降元法求解，也可取目标函数为 $f = \\ln x + \\ln y + 3\\ln z$\n\n(2) 由目标函数与约束条件在形式上的对偶性, 还可将题解中的条件极大值问题改为下述条件极小值问题: 求目标函数 $f(x, y, z) = x + y + z (x, y, z > 0)$ 在条件 $xyz^3 = r$ 下的最小值 只是在计算上略困难.\n\n## 2. 几何应用\n\n几何应用涉及较多的是曲线的切线、曲面的切平面、动点轨迹方程。读者要熟悉曲线的切线与曲面的切平面方程的计算及向量代数的基本知识；了解一些常见曲面的几何特征与代数特征。几何问题还常与极值问题相交互，在上面的极值问题中我们已有部分接触。"
+  }
+}

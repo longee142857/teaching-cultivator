@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-08",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $f(x, y, z) = (x - 1)^2 + \\left( \\frac{y}{x} - 1 \\right)^2 + \\left( \\frac{z}{y} - 1 \\right)^2 + \\left( \\frac{4}{z} - 1 \\right)^2$ 在区域 $\\{(x, y, z) | 1 \\leqslant x \\leqslant y \\leqslant z \\leqslant 4\\}$ 上的最大值与最小值.",
+  "answer": "$a(a - 1) = b(b - 1) = c(c - 1) = d(d - 1)$ 。因此 $a = b = c = d = \\sqrt{2}$ ，从而有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日乘数法",
+    "极值判定",
+    "不等式估计",
+    "偏导数与全微分",
+    "变量代换"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 直接求三元函数在给定区域上的最值有困难，可考虑作变量代换将函数式化简，转化为条件极值问题来解决.\n\n作变量代换： $a = x, b = \\frac{y}{x}, c = \\frac{z}{y}, d = \\frac{4}{z}$ ，则问题转化为求函数\n\n$$\nf (a, b, c, d) = (a - 1) ^ {2} + (b - 1) ^ {2} + (c - 1) ^ {2} + (d - 1) ^ {2}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "在区域 $\\{(a, b, c, d) | 1 \\leqslant a, b, c, d \\leqslant 4\\}$ 上满足约束条件 $abcd = 4$ 的极值. 构造拉格朗日函数，得\n\n$$\nL = (a - 1) ^ {2} + (b - 1) ^ {2} + (c - 1) ^ {2} + (d - 1) ^ {2} + \\lambda (a b c d - 4),\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令 $\\frac{\\partial L}{\\partial a} = 0, \\frac{\\partial L}{\\partial b} = 0, \\frac{\\partial L}{\\partial c} = 0, \\frac{\\partial L}{\\partial d} = 0$ ，可得\n\n$$\n2 (a - 1) = - \\lambda b c d, 2 (b - 1) = - \\lambda a c d, 2 (c - 1) = - \\lambda a b d, 2 (d - 1) = - \\lambda a b c,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由此得 $a(a - 1) = b(b - 1) = c(c - 1) = d(d - 1)$ 。因此 $a = b = c = d = \\sqrt{2}$ ，从而有\n\n$$\nf (\\sqrt {2}, \\sqrt {2}, \\sqrt {2}, \\sqrt {2}) = 4 (\\sqrt {2} - 1) ^ {2} = 4 (3 - 2 \\sqrt {2}).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "在区域边界上， $a,b,c,d$ 中仅有一个等于4，其余3个都等于1，此时 $f = 9$\n\n因此，函数的最大值与最小值分别为 $f_{\\mathrm{max}} = 9$ 和 $f_{\\mathrm{min}} = 4(3 - 2\\sqrt{2})$ ."
+      }
+    ],
+    "final_answer": "$a(a - 1) = b(b - 1) = c(c - 1) = d(d - 1)$ 。因此 $a = b = c = d = \\sqrt{2}$ ，从而有",
+    "techniques_used": [
+      "拉格朗日乘数法",
+      "极值判定",
+      "不等式估计",
+      "偏导数与全微分",
+      "变量代换"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "极值判定",
+      "expected": "$a(a - 1) = b(b - 1) = c(c - 1) = d(d - 1)$ 。因此 $a = b = c = d = \\sqrt{2}$ ，从而有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例8*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 250,
+    "starred": true,
+    "syllabus_note": "闭区域最大最小值*",
+    "commentary": "评注（1）该题也可转化为一元函数的最值问题，见综合题2第38题.\n\n(2) 将一个 $n$ 元函数换元为 $n + 1$ 元函数，要使这种换元可逆，一定会增加一个约束条件."
+  }
+}

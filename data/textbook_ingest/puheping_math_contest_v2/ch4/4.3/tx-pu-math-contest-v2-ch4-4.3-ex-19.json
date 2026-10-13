@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-19",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "已知锐角 $\\triangle ABC$ ，若取点 $P(x, y)$ ，令 $f(x, y) = |AP| + |BP| + |CP|$ （ $|\\cdot|$ 表示线段的长度）。证明在 $f(x, y)$ 取极值的点 $P_0$ 处，向量 $\\overrightarrow{P_0A}, \\overrightarrow{P_0B}, \\overrightarrow{P_0C}$ 所夹的角相等。",
+  "answer": "命题成立.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值判定",
+    "偏导数与全微分",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 为便于讨论，需写出 $f(x, y)$ 的坐标表达式，由 $P_0$ 一定是 $f$ 的驻点可得 $\\frac{\\partial f}{\\partial x}\\bigg|_{P_0} = \\frac{\\partial f}{\\partial y}\\bigg|_{P_0} = 0$ ，根据该关系式去讨论几个向量夹角的余弦，并说明它们相等.\n\n设 $A, B, C$ 三点的坐标为 $(x_{i}, y_{i})(i = 1, 2, 3)$ ，极值点 $P_{0}$ 的坐标为 $(x_{0}, y_{0})$ ，则\n\n$$\n\\overrightarrow {P _ {0} A} = \\left(x _ {1} - x _ {0}, y _ {1} - y _ {0}\\right), \\quad \\overrightarrow {P _ {0} B} = \\left(x _ {2} - x _ {0}, y _ {2} - y _ {0}\\right), \\quad \\overrightarrow {P _ {0} C} = \\left(x _ {3} - x _ {0}, y _ {3} - y _ {0}\\right),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "又 $f(x,y) = \\sum_{i = 1}^{3}\\sqrt{(x - x_i)^2 + (y - y_i)^2}$ ，得\n\n$$\n\\left\\{ \\begin{array}{l} \\frac {\\partial f}{\\partial x} = \\sum_ {i = 1} ^ {3} \\frac {x - x _ {i}}{\\sqrt {(x - x _ {i}) ^ {2} + (y - y _ {i}) ^ {2}}}, \\\\ \\frac {\\partial f}{\\partial y} = \\sum_ {i = 1} ^ {3} \\frac {y - y _ {i}}{\\sqrt {(x - x _ {i}) ^ {2} + (y - y _ {i}) ^ {2}}}. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "极值点 $P_0 = (x_0, y_0)$ 应满足 $\\frac{\\partial f}{\\partial x}\\Bigg|_{P_0} = \\frac{\\partial f}{\\partial y}\\Bigg|_{P_0} = 0$ ，即\n\n$$\n\\left\\{ \\begin{array}{l} - \\frac {x _ {0} - x _ {1}}{\\sqrt {(x _ {0} - x _ {1}) ^ {2} + (y _ {0} - y _ {1}) ^ {2}}} = \\sum_ {i = 2} ^ {3} \\frac {x _ {0} - x _ {i}}{\\sqrt {(x _ {0} - x _ {i}) ^ {2} + (y _ {0} - y _ {i}) ^ {2}}}, \\\\ - \\frac {\\cdot y _ {0} - y _ {1}}{\\sqrt {(x _ {0} - x _ {1}) ^ {2} + (y _ {0} - y _ {1}) ^ {2}}} = \\sum_ {i = 2} ^ {3} \\frac {y _ {0} - y _ {i}}{\\sqrt {(x _ {0} - x _ {i}) ^ {2} + (y _ {0} - y _ {i}) ^ {2}}}. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "以上两式两边平方再相加，得\n\n$$\n\\cos \\left(\\overrightarrow {P _ {0} B}, \\overrightarrow {P _ {o} C}\\right) = \\frac {\\left(x _ {0} - x _ {2}\\right) \\left(x _ {0} - x _ {3}\\right) + \\left(y _ {0} - y _ {2}\\right) \\left(y _ {0} - y _ {3}\\right)}{\\sqrt {\\left(x _ {0} - x _ {2}\\right) ^ {2} + \\left(y _ {0} - y _ {2}\\right) ^ {2}} \\sqrt {\\left(x _ {0} - x _ {3}\\right) ^ {2} + \\left(y _ {0} - y _ {3}\\right) ^ {2}}} = - \\frac {1}{2}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "同理 $\\cos (\\overrightarrow{P_0A},\\overrightarrow{P_0B}) = \\cos (\\overrightarrow{P_0A},\\overrightarrow{P_0C}) = -\\frac{1}{2}$ 所以命题成立."
+      }
+    ],
+    "final_answer": "命题成立.",
+    "techniques_used": [
+      "极值判定",
+      "偏导数与全微分",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "偏导数与全微分",
+      "expected": "命题成立."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 259,
+    "syllabus_note": "Fermat 点夹角相等"
+  }
+}

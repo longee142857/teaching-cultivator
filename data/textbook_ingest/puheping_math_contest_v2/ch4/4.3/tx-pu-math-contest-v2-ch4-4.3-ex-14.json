@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-14",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $D = \\{(x, y) \\mid x^2 + y^2 < 1\\}$ ， $f(x, y)$ 在 $D$ 内连续， $g(x, y)$ 在 $D$ 内连续且有界，并满足条件：\n\n(1) 当 $x^{2} + y^{2}\\rightarrow 1$ 时， $f(x,y)\\rightarrow +\\infty$ ；\n\n(2) 在 D 内 f 与 g 有二阶偏导数， $\\frac{\\partial^{2}f}{\\partial x^{2}}+\\frac{\\partial^{2}f}{\\partial y^{2}}=e^{f}$ 和 $\\frac{\\partial^{2}g}{\\partial x^{2}}+\\frac{\\partial^{2}g}{\\partial y^{2}}\\geqslant e^{g}$ .",
+  "answer": "连续性，知它在 $D$ 内必然有最小值，设最小值点为 $(x_0, y_0) \\in D$ ，根据反证法假设，必有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值判定",
+    "不等式估计",
+    "偏导数与全微分",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "$f(x,y)\\geqslant g(x,y)$ 在 $\\pmb{D}$ 内处处成立.\n\n分析 如果命题结论不成立，则函数 $F(x, y) = f(x, y) - g(x, y)$ 的最小值（如果存在）应该为负。由于区域内的最值也是极值，这就会与二阶偏导数产生联系，再去发现矛盾。\n\n证明 用反证法. 假设该不等式在 $D$ 内某一点不成立, 我们将导出矛盾."
+      },
+      {
+        "id": "s2",
+        "text": "令 $F(x, y) = f(x, y) - g(x, y)$ . 由题设条件，知当 $x^2 + y^2 \\to 1$ 时， $F(x, y) \\to +\\infty$ 。由 $F(x, y)$ 的连续性，知它在 $D$ 内必然有最小值，设最小值点为 $(x_0, y_0) \\in D$ ，根据反证法假设，必有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nF (x _ {0}, y _ {0}) = f (x _ {0}, y _ {0}) - g (x _ {0}, y _ {0}) <   0.\n$$\n\n记 $\\Delta = \\frac{\\partial^2}{\\partial x^2} +\\frac{\\partial^2}{\\partial y^2}$ ，由已知条件知"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\Delta F = \\Delta f - \\Delta g \\leqslant e ^ {f (x, y)} - e ^ {g (x, y)}, \\quad (x, y) \\in D.\n$$\n\n特别地，\n\n$$\n\\Delta F \\mid_ {(x _ {0}, y _ {0})} \\leqslant \\mathrm{e} ^ {f (x _ {0}, y _ {0})} - \\mathrm{e} ^ {g (x _ {0}, y _ {0})} <   0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "但 $(x_0, y_0)$ 是 $F(x, y)$ 在 $D$ 内的最小值，也是极小值，应该有 $F_{xx}(x_0, y_0) \\geqslant 0$ ， $F_{yy}(x_0, y_0) \\geqslant 0$ ，由此得 $\\Delta F|_{(x_0, y_0)} \\geqslant 0$ ，矛盾。该矛盾说明在 $D$ 内只可能处处有 $f(x, y) \\geqslant g(x, y)$ 。"
+      }
+    ],
+    "final_answer": "连续性，知它在 $D$ 内必然有最小值，设最小值点为 $(x_0, y_0) \\in D$ ，根据反证法假设，必有",
+    "techniques_used": [
+      "极值判定",
+      "不等式估计",
+      "偏导数与全微分",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "不等式估计",
+      "expected": "连续性，知它在 $D$ 内必然有最小值，设最小值点为 $(x_0, y_0) \\in D$ ，根据反证法假设，必有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 255,
+    "syllabus_note": "开域边界∞+拉普拉斯⇒最小值"
+  }
+}

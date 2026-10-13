@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-12",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.dirgrad",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设有一小山，取它的底面所在的平面为 $xOy$ 坐标面，其底部所占的区域为 $D = \\{(x, y) | x^2 + y^2 - xy \\leqslant 75\\}$ ，小山的高度函数为 $h(x, y) = 75 - x^2 - y^2 + xy$ 。现欲利用此小山开展攀岩活动，为此需要在山脚寻找一上山坡度最大的点作为攀登的起点。试确定攀登起点的位置。",
+  "answer": "$x = y = \\pm 5\\sqrt{3}$ ， $x = -y = \\pm 5$ 。得到4个可能的极值点：",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日乘数法",
+    "极值判定",
+    "不等式估计",
+    "方向导数与梯度"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 上山坡度最大的点即为高度函数 $h(x, y)$ 增长最快的点，也就是 $h(x, y)$ 的方向导数取最大值的点。由于 $\\| \\operatorname{grad} h(x, y) \\|$ 是 $h(x, y)$ 在点 $(x, y)$ 处的最大方向导数，所以问题即求 $\\| \\operatorname{grad} h(x, y) \\|$ 在条件 $x^2 + y^2 - xy = 75$ 下的极大值点。"
+      },
+      {
+        "id": "s2",
+        "text": "因为 $\\operatorname{grad} h(x, y) = (y - 2x)i + (x - 2y)j$ ，则 $h(x, y)$ 在点 $(x, y)$ 处的最大方向导数为\n\n$$\n\\left\\| \\operatorname{grad} h (x, y) \\right\\| = \\sqrt {5 x ^ {2} + 5 y ^ {2} + 8 x y}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令 $f = 5x^{2} + 5y^{2} + 8xy$ ，下面求 $f$ 在条件 $x^{2} + y^{2} - xy = 75$ 下的极值.\n\n做拉格朗日函数\n\n$$\nL = 5 x ^ {2} + 5 y ^ {2} + 8 x y + \\lambda (7 5 - x ^ {2} - y ^ {2} + x y),\n$$\n\n解方程组\n\n$$\n\\left\\{ \\begin{array}{l} L _ {x} = 1 0 x - 8 y + \\lambda (y - 2 x) = 0, \\\\ L _ {y} = 1 0 y - 8 x + \\lambda (x - 2 y) = 0, \\\\ L _ {\\lambda} = 7 5 - x ^ {2} - y ^ {2} + x y = 0. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "利用函数 $L(x,y,z)$ 关于 $x, \\pm y$ 的对称性，解得 $x = y = \\pm 5\\sqrt{3}$ ， $x = -y = \\pm 5$ 。得到4个可能的极值点：\n\n$$\nM _ {1} (5 \\sqrt {3}, 5 \\sqrt {3}), M _ {2} (- 5 \\sqrt {3}, - 5 \\sqrt {3}), M _ {3} (5, - 5), M _ {4} (- 5, 5)\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由于 $f(M_{1}) = f(M_{2}) = 150$ ， $f(M_{3}) = f(M_{4}) = 450$ ，所以 $M_3$ 或 $M_4$ 可作为攀登的起点"
+      }
+    ],
+    "final_answer": "$x = y = \\pm 5\\sqrt{3}$ ， $x = -y = \\pm 5$ 。得到4个可能的极值点：",
+    "techniques_used": [
+      "拉格朗日乘数法",
+      "极值判定",
+      "不等式估计",
+      "方向导数与梯度"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用梯度/法向量/方向导数处理本题几何关系？",
+      "technique": "方向导数与梯度",
+      "expected": "计算 grad 或法向量，建立切平面/流线/夹角条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终几何结论是什么？",
+      "technique": "极值判定",
+      "expected": "$x = y = \\pm 5\\sqrt{3}$ ， $x = -y = \\pm 5$ 。得到4个可能的极值点："
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 254,
+    "syllabus_note": "山脚最大坡度=梯度方向"
+  }
+}

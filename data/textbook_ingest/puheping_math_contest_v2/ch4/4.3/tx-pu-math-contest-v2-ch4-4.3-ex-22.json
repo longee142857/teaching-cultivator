@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-22",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设光滑闭曲面 $S: F(x, y, z) = 0$ ，证明 $S$ 上任意两个相距最远点处的切平面相互平行，且垂直于这两点的连线.",
+  "answer": "连续一阶偏导数，且 $F_x^2 + F_y^2 + F_z^2 \\neq 0$ ；",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日乘数法",
+    "极值判定",
+    "切平面/法向量",
+    "偏导数与全微分",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $S$ 上两个相距最远点是两点间的距离函数满足曲面方程 $F(x, y, z) = 0$ 的最大值点，因而是对应拉格朗日函数的驻点，由此可推出所证结论."
+      },
+      {
+        "id": "s2",
+        "text": "因为 $S$ 是光滑封闭曲面，故满足："
+      },
+      {
+        "id": "s3",
+        "text": "(1) $F(x, y, z)$ 在一个包含 $S$ 的开域内有连续一阶偏导数，且 $F_x^2 + F_y^2 + F_z^2 \\neq 0$ ；"
+      },
+      {
+        "id": "s4",
+        "text": "(2) S 上必有相距最远的点.\n\n设 $P_0(x_0,y_0,z_0),Q_0(u_0,v_0,w_0)$ 为 $S$ 上两个相距最远的点，则点 $R_0(x_0,y_0,z_0,u_0,v_0,w_0)$ 是函数 $f(x,y,z,u,v,w) = (x - u^2) + (y - v)^2 +(z - w)^2$ 在约束条件 $F(x,y,z) = 0,F(u,v,w) = 0$ 下的极大值点.\n\n做拉格朗日函数\n\n$$\nL (x, y, z, u, v, w, \\lambda , \\mu) = f (x, y, z, u, v, w) + \\lambda F (x, y, z) + \\mu F (u, v, w),\n$$\n\n则存在 $\\lambda_0, \\mu_0$ ，使 $\\nabla L|_{R_0} = 0$ ，即有\n\n$$\n\\left\\{ \\begin{array}{l} 2 (x _ {0} - u _ {0}) + \\lambda_ {0} F _ {x} (x _ {0}, y _ {0}, z _ {0}) = 0, \\\\ 2 (y _ {0} - v _ {0}) + \\lambda_ {0} F _ {y} (x _ {0}, y _ {0}, z _ {0}) = 0, \\\\ 2 (z _ {0} - w _ {0}) + \\lambda_ {0} F _ {z} (x _ {0}, y _ {0}, z _ {0}) = 0, \\\\ - 2 (x _ {0} - u _ {0}) + \\mu_ {0} F _ {u} (u _ {0}, v _ {0}, w _ {0}) = 0, \\\\ - 2 (y _ {0} - v _ {0}) + \\mu_ {0} F _ {v} (u _ {0}, v _ {0}, w _ {0}) = 0, \\\\ - 2 (z _ {0} - w _ {0}) + \\mu_ {0} F _ {w} (u _ {0}, v _ {0}, w _ {0}) = 0. \\end{array} \\right.\n$$\n\n由以上方程组的前3式，知 $(x_0 - u_0, y_0 - v_0, z_0 - w_0) / / (F_x, F_y, F_z) |_{P_0}$ ，这说明 $S$ 在点 $P_0$ 处的切平面垂直于 $\\overline{P_0Q_0}$ ；由以上方程组的后3式，知 $S$ 在点 $Q_0$ 处的切平面也垂直于 $\\overline{P_0Q_0}$ ，故 $S$ 在点 $P_0, Q_0$ 处的切平面相互平行，且垂直于这两点之间的连线 $\\overline{P_0Q_0}$ ."
+      }
+    ],
+    "final_answer": "连续一阶偏导数，且 $F_x^2 + F_y^2 + F_z^2 \\neq 0$ ；",
+    "techniques_used": [
+      "拉格朗日乘数法",
+      "极值判定",
+      "切平面/法向量",
+      "偏导数与全微分",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何建立拉格朗日函数并求驻点？",
+      "technique": "拉格朗日乘数法",
+      "expected": "写 L=f+λg（或多约束），对变量与乘数求偏导并解方程组。"
+    },
+    {
+      "id": "c2",
+      "prompt": "条件极值/最值结论是什么？",
+      "technique": "极值判定",
+      "expected": "连续一阶偏导数，且 $F_x^2 + F_y^2 + F_z^2 \\neq 0$ ；"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例22",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 261,
+    "syllabus_note": "闭曲面最远点切平面平行"
+  }
+}

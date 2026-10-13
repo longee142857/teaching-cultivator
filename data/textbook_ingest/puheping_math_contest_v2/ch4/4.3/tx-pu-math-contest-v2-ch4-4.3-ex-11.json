@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-11",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.lagrange",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设椭球面 $\\Sigma: x^2 + 3y^2 + z^2 = 1$ ， $\\pi$ 为 $\\Sigma$ 在第一卦限内的切平面，求：\n\n（1）使 $\\pi$ 与3个坐标平面所围成的四面体的体积最小的切点坐标；\n\n(2) 使 $\\pi$ 与 3 个坐标平面截出的三角形的面积最小的切点坐标.",
+  "answer": "的驻点唯一，故点 $P\\left(\\frac{\\sqrt{6}}{4}, \\frac{\\sqrt{3}}{6}, \\frac{\\sqrt{6}}{4}\\right)$ 即为所求.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "拉格朗日乘数法",
+    "极值判定",
+    "不等式估计",
+    "切平面/法向量",
+    "几何应用"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是条件极值问题. 问题(1)的目标函数是平面 $\\pi$ 与3个坐标平面所围成的四面体的体积; 问题（2）的目标函数是平面 $\\pi$ 与三个坐标平面截出的三角形的面积. 约束条件为 $x^{2} + 3y^{2} + z^{2} = 1$ ."
+      },
+      {
+        "id": "s2",
+        "text": "记 $F(x, y, z) = x^2 + 3y^2 + z^2 - 1$ ，则椭球面 $\\sum$ 在第一卦限内的点 $P(x, y, z)$ 处的法向量为\n\n$$\n\\boldsymbol {n} = \\left(F _ {x}, F _ {y}, F _ {z}\\right) = 2 (x, 3 y, z).\n$$\n\n$\\pmb{\\Sigma}$ 在点 $P$ 处的切平面 $\\pi$ 为\n\n$$\nx (X - x) + 3 y (Y - y) + z (Z - x) = 0, \\text {即} x X + 3 y Y + z Z = 1.\n$$\n\n切平面 $\\pi$ 与3个坐标轴的交点分别为 $A\\left(\\frac{1}{x},0,0\\right),B\\left(0,\\frac{1}{3y},0\\right),C\\left(0,0,\\frac{1}{z}\\right)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "(1) $\\pi$ 与 3 个坐标平面所围成的四面体的体积为\n\n$$\nV = \\frac {1}{6} \\cdot \\frac {1}{x} \\cdot \\frac {1}{3 y} \\cdot \\frac {1}{z}.\n$$\n\n由于点 $P$ 在 $\\Sigma$ 上，即满足约束条件 $x^{2} + 3y^{2} + z^{2} = 1$ ，故\n\n$$\nx y z = \\frac {1}{\\sqrt {3}} \\sqrt {x ^ {2} \\cdot 3 y ^ {2} \\cdot z ^ {2}} \\leqslant \\frac {1}{\\sqrt {3}} \\sqrt {\\left(\\frac {x ^ {2} + 3 y ^ {2} + z ^ {2}}{3}\\right) ^ {3}} = \\frac {1}{9}.\n$$\n\n其中等号当且仅当 $x^{2} = 3y^{2} = z^{2}$ ，即 $x = z = \\frac{\\sqrt{3}}{3}, y = \\frac{1}{3}$ 时成立，此时 $xyz$ 取最大值 $\\frac{1}{9}$ ，从而 $V$ 取最小值 $\\frac{1}{2}$ ，故所求的点为 $\\left(\\frac{\\sqrt{3}}{3}, \\frac{1}{3}, \\frac{\\sqrt{3}}{3}\\right)$ ."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 三角形 ABC 的面积为\n\n$$\n\\begin{array}{r l} S & = \\frac {1}{2} \\left\\| \\overrightarrow {A B} \\times \\overrightarrow {A C} \\right\\| = \\frac {1}{2} \\left\\| \\left(- \\frac {1}{x}, \\frac {1}{3 y}, 0\\right) \\times \\left(- \\frac {1}{x}, 0, \\frac {1}{z}\\right) \\right\\| \\\\ & = \\frac {1}{2} \\left\\| \\left(\\frac {1}{3 y z}, \\frac {1}{z x}, \\frac {1}{3 x y}\\right) \\right\\| = \\frac {1}{2} \\sqrt {\\frac {1}{9 y ^ {2} z ^ {2}} + \\frac {1}{z ^ {2} x ^ {2}} + \\frac {1}{9 x ^ {2} y ^ {2}}}. \\end{array}\n$$\n\n记 $f(x,y,z) = \\frac{1}{9y^2z^2} +\\frac{1}{z^2x^2} +\\frac{1}{9x^2y^2}$ ，则 $S$ 与 $f$ 同时取最小值，做拉格朗日函数\n\n解方程组\n\n$$\n\\begin{array}{l} L (x, y, z, \\lambda) = \\frac {1}{9 y ^ {2} z ^ {2}} + \\frac {1}{z ^ {2} x ^ {2}} + \\frac {1}{9 x ^ {2} y ^ {2}} + \\lambda \\left(x ^ {2} + 3 y ^ {2} + z ^ {2} - 1\\right), \\\\ \\left\\{ \\begin{array}{l} L _ {x} = - \\frac {2}{9 x ^ {3}} \\left(\\frac {9}{z ^ {2}} + \\frac {1}{y ^ {2}}\\right) + 2 x \\lambda = 0, \\\\ L _ {y} = - \\frac {2}{9 y ^ {3}} \\left(\\frac {1}{z ^ {2}} + \\frac {1}{x ^ {2}}\\right) + 6 y \\lambda = 0, \\\\ L _ {z} = - \\frac {2}{9 z ^ {3}} \\left(\\frac {9}{x ^ {2}} + \\frac {1}{y ^ {2}}\\right) + 2 z \\lambda = 0, \\\\ L _ {\\lambda} = x ^ {2} + 3 y ^ {2} + z ^ {2} - 1 = 0. \\end{array} \\right. \\end{array}\n$$\n\n由于函数 $L(x,y,z,\\lambda)$ 关于 $x^{2},z^{2}$ 对称，且 $(x,y,z)$ 在第一卦限内，故上面方程组的解应满足 $x = z$ ，解出\n\n$$\nx = z = \\frac {\\sqrt {6}}{4}, y = \\frac {\\sqrt {3}}{6}.\n$$\n\n由于题设中具有最小面积的三角形是实际存在的，并且所求的驻点唯一，故点 $P\\left(\\frac{\\sqrt{6}}{4}, \\frac{\\sqrt{3}}{6}, \\frac{\\sqrt{6}}{4}\\right)$ 即为所求."
+      }
+    ],
+    "final_answer": "的驻点唯一，故点 $P\\left(\\frac{\\sqrt{6}}{4}, \\frac{\\sqrt{3}}{6}, \\frac{\\sqrt{6}}{4}\\right)$ 即为所求.",
+    "techniques_used": [
+      "拉格朗日乘数法",
+      "极值判定",
+      "不等式估计",
+      "切平面/法向量",
+      "几何应用"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何建立拉格朗日函数并求驻点？",
+      "technique": "拉格朗日乘数法",
+      "expected": "写 L=f+λg（或多约束），对变量与乘数求偏导并解方程组。"
+    },
+    {
+      "id": "c2",
+      "prompt": "条件极值/最值结论是什么？",
+      "technique": "极值判定",
+      "expected": "的驻点唯一，故点 $P\\left(\\frac{\\sqrt{6}}{4}, \\frac{\\sqrt{3}}{6}, \\frac{\\sqrt{6}}{4}\\right)$ 即为所求."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 252,
+    "syllabus_note": "椭球面切平面四面体/三角形最值",
+    "commentary": "评注（1）解方程组求驻点时，要尽量利用 $L$ 函数中自变量的对称性，使计算简便。若该题中没有 $x, y, z > 0$ 的限制，其对称性表现为 $x, \\pm z$ 对称，则有 $x = \\pm z$ 。\n\n(2) 该题在求函数 $f(x, y, z) = \\frac{1}{9y^2z^2} + \\frac{1}{z^2x^2} + \\frac{1}{9x^2y^2}$ 的条件极值时，也可用降元法：\n\n① 将条件 $x^{2} + 3y^{2} + z^{2} = 1$ ，代入函数 $f(x,y,z)$ 消去 $y$ ，有\n\n$$\nf (x, z) = \\frac {1}{3 \\left(1 - x ^ {2} - z ^ {2}\\right) z ^ {2}} + \\frac {1}{z ^ {2} x ^ {2}} + \\frac {1}{3 x ^ {2} \\left(1 - x ^ {2} - z ^ {2}\\right)} = \\frac {3 - 2 \\left(x ^ {2} + z ^ {2}\\right)}{3 x ^ {2} z ^ {2} \\left(1 - x ^ {2} - z ^ {2}\\right)}.\n$$\n\n令 $f_{x}(x,z) = 0$ ，化简整理得\n\n$$\n2 x ^ {4} + 2 z ^ {4} + 4 x ^ {2} z ^ {2} - 6 x ^ {2} - 5 z ^ {2} + 3 = 0,\n\n2 z ^ {4} + 2 x ^ {4} + 4 x ^ {2} z ^ {2} - 6 z ^ {2} - 5 x ^ {2} + 3 = 0.\n$$\n\n由 $f(x,z)$ 的对称性，将上式中的 $x,z$ 互换，可得 $f_{z}(x,z) = 0$ 的简化方程为\n\n两式相减，得 $x^{2} = z^{2}$ 。注"
+  }
+}
