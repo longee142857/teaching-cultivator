@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-09",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.abscond",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $a_{n} = \\sum_{k=1}^{n} \\sin\\left(\\frac{1}{n+k}\\right)$ ，判定级数 $\\sum_{n=1}^{\\infty} (-1)^{n} (\\ln 2 - a_{n})$ 的条件收敛性与绝对收敛性.",
+  "answer": "发散. 故原级数条件收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "莱布尼兹准则",
+    "绝对收敛判别",
+    "条件收敛判别"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 交错级数，考察是否满足莱布尼兹准则；绝对收敛性的思考：易得到 $\\lim_{n\\to \\infty}a_n = \\ln 2$ ，所以级数是否绝对收敛可考察加边极限 $\\lim_{n\\to \\infty}n^{p}(\\ln 2 - a_{n})$ 的情况（常取 $p = 1$ ）.\n\n记 $u_{n} = \\ln 2 - a_{n}$ ，则\n\n$$\nu _ {n} - u _ {n - 1} = a _ {n - 1} - a _ {n} = - \\sin \\frac {1}{2 n} <   0,\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "$\\{u_n\\}$ 是单调递减的.\n\n由泰勒公式 $\\sin x = x + o(x^2)$ ，有\n\n$$\n\\lim _ {n \\rightarrow \\infty} a _ {n} = \\lim _ {n \\rightarrow \\infty} \\sum_ {k = 1} ^ {n} \\sin \\left(\\frac {1}{n + k}\\right) = \\lim _ {n \\rightarrow \\infty} \\left[ \\sum_ {k = 1} ^ {n} \\frac {1}{n + k} + o \\left(\\frac {1}{n}\\right)\\right]"
+      },
+      {
+        "id": "s3",
+        "text": "= \\lim _ {n \\rightarrow \\infty} \\left[ \\sum_ {k = 1} ^ {n} \\frac {1}{1 + k / n} \\frac {1}{n} + o \\left(\\frac {1}{n}\\right)\\right] = \\int_ {0} ^ {1} \\frac {1}{1 + x} d x = \\ln 2,\n$$\n\n所以 $\\lim_{n\\to \\infty}u_n = 0$ ，由莱布尼兹准则知级数 $\\sum_{n = 1}^{\\infty}(-1)^n u_n$ 收敛."
+      },
+      {
+        "id": "s4",
+        "text": "下面讨论级数的绝对收敛性.\n\n首先 $u_{n} > 0$ （因为 $\\{u_n\\}$ 单调递减且以0为极限），由数列极限的施笃兹定理，\n\n$$\n\\lim _ {n \\rightarrow \\infty} \\frac {u _ {n}}{\\frac {1}{n}} = \\lim _ {n \\rightarrow \\infty} \\frac {u _ {n} - u _ {n - 1}}{\\frac {1}{n} - \\frac {1}{n - 1}} = \\lim _ {n \\rightarrow \\infty} \\frac {- \\sin \\frac {1}{2 n}}{- \\frac {1}{n (n - 1)}} = \\lim _ {n \\rightarrow \\infty} n (n - 1) \\cdot \\frac {1}{2 n} = \\infty ,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以级数 $\\sum_{n=1}^{\\infty} u_n$ 发散. 故原级数条件收敛."
+      }
+    ],
+    "final_answer": "发散. 故原级数条件收敛.",
+    "techniques_used": [
+      "莱布尼兹准则",
+      "绝对收敛判别",
+      "条件收敛判别"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "先看绝对收敛（比较/比值）还是条件收敛（莱布尼兹/阿贝尔）？",
+      "technique": "莱布尼兹准则",
+      "expected": "先判绝对收敛；若不绝对，再判条件收敛或发散。"
+    },
+    {
+      "id": "c2",
+      "prompt": "绝对收敛、条件收敛还是发散？关键依据是什么？",
+      "technique": "绝对收敛判别",
+      "expected": "发散. 故原级数条件收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 417,
+    "syllabus_note": "ln2-a_n 交错：条件与绝对收敛"
+  }
+}

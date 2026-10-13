@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-17",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.alt",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明若 $\\{p_n\\}$ 是一个严格递增的自然数列，则 $\\sum_{n=0}^{\\infty} \\frac{(-1)^n}{p_0 p_1 \\cdots p_n}$ 是无理数.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "莱布尼兹准则",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易知级数是收敛的. 要直接证明它是一个无理数不好论述, 可用反证法.\n\n由莱布尼兹准则易知级数收敛.\n\n假设 $\\sum_{n=0}^{\\infty} \\frac{(-1)^n}{p_0 p_1 \\cdots p_n} = \\frac{\\alpha}{\\beta}$ 是一个有理数，由交错级数和的估计知\n\n$$\n\\frac {1}{p _ {0}} - \\frac {1}{p _ {0} p _ {1}} <   \\frac {\\alpha}{\\beta} <   \\frac {1}{p _ {0}}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\frac{1}{p_0} -\\frac{1}{p_0p_1} -\\frac{1}{p_0 + 1} = \\frac{p_1 - p_0 - 1}{p_0p_1(p_0 + 1)}\\geqslant 0$ ，所以\n\n$$\n\\frac {1}{p _ {0} + 1} <   \\frac {\\alpha}{\\beta} <   \\frac {1}{p _ {0}},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "因而 $\\beta - \\alpha p_0 < \\alpha$ 。由于 $\\beta - \\alpha p_0$ 与 $\\alpha$ 均是自然数，则必有 $\\beta - \\alpha p_0 \\leqslant \\alpha - 1$ 。\n\n注意到\n\n$$\n\\sum_ {n = 1} ^ {\\infty} \\frac {(- 1) ^ {n - 1}}{p _ {1} p _ {2} \\cdots p _ {n}} = 1 - \\frac {\\alpha p _ {0}}{\\beta} = \\frac {\\beta - \\alpha p _ {0}}{\\beta} \\Rightarrow \\sum_ {n = 1} ^ {\\infty} \\frac {(- 1) ^ {n - 1}}{p _ {1} p _ {2} \\cdots p _ {n}} \\leqslant \\frac {\\alpha - 1}{\\beta},\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由此递推下去，可知 $\\sum_{n=\\alpha}^{\\infty}\\frac{(-1)^{n-\\alpha}}{p_{\\alpha}p_{\\alpha+1}\\cdots p_{n}}\\leqslant0$ 。这与结论 $\\frac{1}{p_{\\alpha}+1}<\\sum_{n=\\alpha}^{\\infty}\\frac{(-1)^{n-\\alpha}}{p_{\\alpha}p_{\\alpha+1}\\cdots p_{n}}<\\frac{1}{p_{\\alpha}}$ 相矛盾。结论得证。"
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "莱布尼兹准则",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "是否交错？通项绝对值是否单调趋于0？可否用莱布尼兹准则？",
+      "technique": "莱布尼兹准则",
+      "expected": "验证交错、单调递减、极限为0，应用莱布尼兹准则。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛性结论是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例17*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 423,
+    "starred": true,
+    "syllabus_note": "交错乘积分母级数为无理数*"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-15",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.alt",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明积分 $\\int_0^{+\\infty}\\sin (x^2)\\mathrm{d}x$ 收敛.",
+  "answer": "收敛，所以 $\\int_0^{+\\infty} \\sin(x^2) \\, \\mathrm{d}x = \\sum_{n=0}^{\\infty} u_n$ 收敛。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "莱布尼兹准则",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 用 “高等数学” 知识来判断该积分的敛散性有些困难，若将积分区间按被积函数的取值正、负分段，则积分可转化为一个交错级数，利用莱布尼兹准则就可判断级数的敛散性."
+      },
+      {
+        "id": "s2",
+        "text": "当 $n \\geqslant 0$ 时，令 $u_{n} = \\int_{\\sqrt{n\\pi}}^{\\sqrt{(n + 1)\\pi}} \\sin (x^{2}) \\, \\mathrm{d}x$ ，显然，如果 $\\sum_{n=0}^{\\infty} u_{n}$ 收敛，则原积分收敛."
+      },
+      {
+        "id": "s3",
+        "text": "令 $t = x^2$ ，则 $u_{n} = \\frac{1}{2}\\int_{n\\pi}^{(n + 1)\\pi}\\frac{\\sin t}{\\sqrt{t}}\\mathrm{d}t$ ，不难看出 $u_{n}$ 的符号是交错的.且有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n2 \\left| u _ {n} \\right| = \\left| \\int_ {n \\pi} ^ {(n + 1) \\pi} \\frac {\\sin t}{\\sqrt {t}} d t \\right| > \\left| \\int_ {n \\pi} ^ {(n + 1) \\pi} \\frac {\\sin t}{\\sqrt {t + \\pi}} d t \\right| = \\left| \\int_ {(n + 1) \\pi} ^ {(n + 2) \\pi} \\frac {\\sin t}{\\sqrt {t}} d t \\right| = 2 \\left| u _ {n + 1} \\right|,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即 $|u_n|$ 是单调递减的."
+      },
+      {
+        "id": "s6",
+        "text": "又"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n2 \\left| u _ {n} \\right| = \\left| \\int_ {n \\pi} ^ {(n + 1) \\pi} \\frac {\\sin t}{\\sqrt {t}} d t \\right| <   \\frac {1}{\\sqrt {n \\pi}} \\int_ {n \\pi} ^ {(n + 1) \\pi} | \\sin t | d t = \\frac {1}{\\sqrt {n \\pi}} \\int_ {0} ^ {\\pi} \\sin t d t = \\frac {2}{\\sqrt {n \\pi}},\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "得 $|u_n| \\to 0 (n \\to \\infty)$ 。由莱布尼兹准则知 $\\sum_{n=0}^{\\infty} u_n$ 收敛，所以 $\\int_0^{+\\infty} \\sin(x^2) \\, \\mathrm{d}x = \\sum_{n=0}^{\\infty} u_n$ 收敛。"
+      }
+    ],
+    "final_answer": "收敛，所以 $\\int_0^{+\\infty} \\sin(x^2) \\, \\mathrm{d}x = \\sum_{n=0}^{\\infty} u_n$ 收敛。",
+    "techniques_used": [
+      "莱布尼兹准则",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "是否交错？通项绝对值是否单调趋于0？可否用莱布尼兹准则？",
+      "technique": "莱布尼兹准则",
+      "expected": "验证交错、单调递减、极限为0，应用莱布尼兹准则。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛性结论是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛，所以 $\\int_0^{+\\infty} \\sin(x^2) \\, \\mathrm{d}x = \\sum_{n=0}^{\\infty} u_n$ 收敛。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例15*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 421,
+    "starred": true,
+    "syllabus_note": "Fresnel 积分化为交错级数莱布尼兹*",
+    "commentary": "评注（1）无穷级数与反常积分在基本性质与审敛法上有很多类似之处，请读者注意比较、总结.\n\n同时两者之间又有紧密的联系，常常借助其中一个去研究另一个。正项级数的积分判别法就是一个很好的例证。\n\n(2) 该例也可以用积分方法来做，具体做法： $\\int_{0}^{+\\infty}\\sin(x^{2})\\mathrm{d}x\\xlongequal{x=\\sqrt{t}}\\int_{0}^{+\\infty}\\frac{\\sin t}{2\\sqrt{t}}\\mathrm{d}t$ ，再用反常积分收敛性的狄利克雷判别法来证明收敛。关于狄利克雷判别法，读者可参看《数学分析》教材。"
+  }
+}
