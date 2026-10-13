@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.1-ex-03",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}(\\mathrm{e}^{xy} + x + y)^{\\frac{1}{xy}}$",
+  "answer": "不存在.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "未定式转化",
+    "特殊路径"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这属于 $1^{\\infty}$ 型的极限，可利用一元函数极限的运算法则将其化简，再看极限是否存在或求其极限."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}(\\mathrm{e}^{xy} + x + y)^{\\frac{1}{xy}} = \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\Bigl [1 + (\\mathrm{e}^{xy} - 1 + x + y)\\Bigr ]^{\\frac{1}{xy}} = \\mathrm{e}^{\\lim_{x\\to 0}\\frac{\\mathrm{e}^{xy} - 1 + x + y}{xy}},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "取 $y = -x + kx^{2}\\rightarrow 0$ ，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{\\mathrm{e}^{xy} - 1 + x + y}{xy} = \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{\\mathrm{e}^{xy} - 1}{xy} +\\lim_{x\\to 0}\\frac{kx^{2}}{x(-x + kx^{2})} = 1 - k.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "如果原极限存在，则其极限值为 $e^{1-k}$ ，该值与k有关，显然原极限不存在."
+      }
+    ],
+    "final_answer": "不存在.",
+    "techniques_used": [
+      "未定式转化",
+      "特殊路径"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用等价无穷小、极坐标还是特殊路径来处理二重极限？",
+      "technique": "未定式转化",
+      "expected": "选定化简手段后化为一元极限或说明路径相关。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极限结论（值或不存在）是什么？",
+      "technique": "特殊路径",
+      "expected": "不存在."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.1",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的极限与连续",
+    "page": 218,
+    "syllabus_note": "1^∞型二重极限；路径相关⇒不存在",
+    "commentary": "评注 否定一个极限存在的常用方法：取一条特殊路径，说明沿该路径极限不存在；或取两条（或多条）不同的路径，说明沿不同的路径的极限值也不同."
+  }
+}

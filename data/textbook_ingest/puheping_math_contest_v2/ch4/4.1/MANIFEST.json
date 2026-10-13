@@ -1,0 +1,127 @@
+{
+  "section": "4.1",
+  "chapter": "第4章 多元函数微分学",
+  "title": "多元函数的极限与连续",
+  "page_range": [
+    217,
+    221
+  ],
+  "page_note": "merged MD §4.1 → ## 习题4.1; OCR PDF pages 217–221 (book TOC ~210+)",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 8,
+  "starred_count": 0,
+  "starred": [],
+  "l3_counts": {
+    "math.calc.limit.def": 2,
+    "math.calc.limit.compute": 2,
+    "math.calc.cont.discontinuity": 2,
+    "math.calc.multi.partial": 1,
+    "math.calc.cont.closed": 1
+  },
+  "l2_counts": {
+    "函数极限与连续": 7,
+    "多元函数微分学": 1
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch4-4.1-ex-01",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-02",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-03",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-04",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-05",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-06",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-07",
+    "tx-pu-math-contest-v2-ch4-4.1-ex-08"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-01",
+      "example_id": "例1",
+      "page": 217,
+      "l3_id": "math.calc.limit.def",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-02",
+      "example_id": "例2",
+      "page": 217,
+      "l3_id": "math.calc.limit.compute",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-03",
+      "example_id": "例3",
+      "page": 218,
+      "l3_id": "math.calc.limit.compute",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-04",
+      "example_id": "例4",
+      "page": 218,
+      "l3_id": "math.calc.cont.discontinuity",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-05",
+      "example_id": "例5",
+      "page": 219,
+      "l3_id": "math.calc.limit.def",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-06",
+      "example_id": "例6",
+      "page": 219,
+      "l3_id": "math.calc.cont.discontinuity",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-07",
+      "example_id": "例7",
+      "page": 220,
+      "l3_id": "math.calc.multi.partial",
+      "l2": "多元函数微分学",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch4-4.1-ex-08",
+      "example_id": "例8",
+      "page": 220,
+      "l3_id": "math.calc.cont.closed",
+      "l2": "函数极限与连续",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

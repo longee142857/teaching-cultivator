@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.1-ex-04",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.cont.discontinuity",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "讨论函数的连续性 $f(x, y) = \\begin{cases} \\frac{\\sin(x^2y)}{x^2 + y^2}, & (x, y) \\neq (0, 0) \\\\ 0, & (x, y) = (0, 0) \\end{cases}$ .",
+  "answer": "连续．所以函数在全平面上处处连续.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极坐标代换",
+    "连续性判别",
+    "极限定义",
+    "特殊路径"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 当 $(x,y)\\neq(0,0)$ 时，函数显然连续；当 $(x,y)=(0,0)$ 时，只需计算是否有 $\\lim_{\\substack{x\\to0\\\\ y\\to0}}f(x,y)=0$ ."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 当 $(x, y) \\neq (0, 0)$ 时， $f(x, y) = \\frac{\\sin(x^2y)}{x^2 + y^2}$ 是初等函数，在其定义区域内处处连续.\n\n又\n\n$$\n\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}f(x,y) = \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{\\sin(x^{2}y)}{x^{2} + y^{2}} = \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{\\sin(x^{2}y)}{x^{2}y}\\cdot \\frac{x^{2}y}{x^{2} + y^{2}},\n$$\n\n其中\n\n$$\n\\lim _ {\\substack {x \\rightarrow 0\\\\y \\rightarrow 0}} \\frac {\\sin (x ^ {2} y)}{x ^ {2} y} \\stackrel {u = x ^ {2} y} {=} \\lim _ {u \\rightarrow 0} \\frac {\\sin u}{u} = 1, \\quad \\left| \\frac {x ^ {2} y}{x ^ {2} + y ^ {2}} \\right| \\leqslant \\frac {1}{2} | x | \\xrightarrow {x \\rightarrow 0} 0,\n$$\n\n所以 $\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}f(x,y) = 0 = f(0,0)$ ，函数在(0,0)点连续．所以函数在全平面上处处连续."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 取极坐标 $x = \\rho \\cos \\varphi, y = \\rho \\sin \\varphi$ ，则当 $(x, y) \\to (0, 0)$ 时，有 $\\rho \\to 0$ ，得\n\n$$\n\\lim _ {\\substack {x \\rightarrow 0\\\\y \\rightarrow 0}} \\frac {\\sin (x ^ {2} y)}{x ^ {2} + y ^ {2}} = \\lim _ {\\rho \\rightarrow 0 ^ {+}} \\frac {\\sin (\\rho^ {3} \\cos^ {2} \\varphi \\sin \\varphi)}{\\rho^ {2}} = \\lim _ {\\rho \\rightarrow 0 ^ {+}} \\frac {\\rho^ {3} \\cos^ {2} \\varphi \\sin \\varphi}{\\rho^ {2}} = 0.\n$$"
+      }
+    ],
+    "final_answer": "连续．所以函数在全平面上处处连续.",
+    "techniques_used": [
+      "极坐标代换",
+      "连续性判别",
+      "极限定义",
+      "特殊路径"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "在分段点处如何用二重极限判定连续性？",
+      "technique": "极坐标代换",
+      "expected": "计算 lim f 是否等于 f(点)；必要时用极坐标或特殊路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于连续性的结论是什么？",
+      "technique": "连续性判别",
+      "expected": "连续．所以函数在全平面上处处连续."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.1",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的极限与连续",
+    "page": 218,
+    "syllabus_note": "分段函数在原点连续性",
+    "commentary": "评注 当极限式中有 $x^{2} + y^{2}$ 的因子时，用极坐标代换求极限是比较方便的，读者可考虑对例1中化简后的极限用极坐标代换做计算.\n\n计算二重极限的常用方法：\n\n（1）通过恒等变形，将函数化为在极限点的连续函数，则极限值等于函数值；\n\n(2) 作变量代换(或用极坐标)，转化为一元函数的极限；\n\n(3) 利用极限的四则运算法则、无穷小的性质；\n\n(4) 利用夹逼原理."
+  }
+}
