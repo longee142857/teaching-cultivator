@@ -600,6 +600,11 @@ def test_submit_persists_item_id(tmp_db: str):
         )
     check(sub.get("ok") and sub.get("result", {}).get("gradeMode") == "ref_fallback", "ref_fallback no-push")
     _assert_last_item_id(store, "id_learner", iid_fb, "submit ref_fallback no-push")
+    fb_blob = json.dumps(sub.get("result") or {}, ensure_ascii=False)
+    check("llm down" not in fb_blob and "cacert.pem" not in fb_blob, "ref_fallback result hides the exception")
+    check("正式评分" in ((sub.get("result") or {}).get("comment") or ""), "ref_fallback comment is not a formal grade")
+    fb_rows = [a for a in store.get_attempts("id_learner") if a.get("item_id") == iid_fb]
+    check(fb_rows and "llm down" not in str(fb_rows[-1].get("feedback") or ""), "stored feedback hides the exception")
 
     # 6) submit ref with push
     sub = ps.submit(
@@ -1198,9 +1203,47 @@ def test_practice_api_auth():
         importlib.reload(pw)
 
 
+def test_scrub_legacy_tls_feedback():
+    """Rows already stored with the dead certifi path must not be shown again."""
+    import modules.bridge.practice_service as ps
+
+    raw = (
+        "与参考答案不一致（ref 模式）。（LLM 不可用：Could not find a suitable TLS CA "
+        "certificate bundle, invalid path: /home/ubuntu/teaching-cultivator-practice/venv/"
+        "lib/python3.12/site-packages/certifi/cacert.pem）"
+    )
+    clean = ps._scrub_student_grade_text(raw)
+    check("cacert.pem" not in clean, "scrub drops cacert path")
+    check("teaching-cultivator-practice" not in clean, "scrub drops venv path")
+    check("Could not find" not in clean, "scrub drops TLS sentence")
+    check("LLM 暂不可用" in clean and "正式评分" in clean, "scrub keeps a short LLM note")
+    dto = {
+        "commentOk": "步骤与结论正确。",
+        "commentBad": "结论或步骤有偏差，请对照参考要点复查。",
+        "explain": "",
+        "kp": "极限",
+    }
+    mapped = ps._attempt_result_dto(
+        {
+            "correct": False,
+            "feedback": raw,
+            "user_answer": "演示作答",
+            "update_reason": "practice_ref_grade",
+            "status": "applied",
+            "knowledge_point": "极限",
+        },
+        dto,
+    )
+    comment = (mapped or {}).get("comment") or ""
+    check("cacert.pem" not in comment and "/home/ubuntu" not in comment, "hydrate comment drops path")
+    check(mapped.get("gradeMode") == "ref_fallback", "legacy LLM note stays ref_fallback")
+    check("结论或步骤有偏差" not in comment, "hydrate does not replace the ref note with commentBad")
+
+
 def main():
     test_practice_api_auth()
     test_dto()
+    test_scrub_legacy_tls_feedback()
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t.db")
         test_bootstrap_submit(db)
