@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.1-ex-02",
+  "subject": "math",
+  "l2": "函数极限与连续",
+  "l3_id": "math.calc.limit.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求极限 $\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{(4 + \\sin xy)^{x + y} - 4^{x + y}}{\\sqrt{\\cos\\sqrt{x^2 + y^2}} - 1}$",
+  "answer": "极限为0.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "未定式转化",
+    "特殊路径"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这属于 $\\frac{0}{0}$ 型的极限，可利用一元函数极限中的等价无穷小来化简极限式."
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{aligned} & \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{(4 + \\sin xy)^{x + y} - 4^{x + y}}{\\sqrt{\\cos\\sqrt{x^2 + y^2}} - 1} = \\lim_{\\substack{x\\to 0\\\\ y\\to 0}}4^{x + y}\\left(\\sqrt{\\cos\\sqrt{x^2 + y^2}} +1\\right)\\frac{\\left(1 + \\frac{1}{4}\\sin xy\\right)^{x + y} - 1}{\\cos\\sqrt{x^2 + y^2} - 1}\\\\ & = 2\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{e^{(x + y)\\ln\\left(1 + \\frac{1}{4}\\sin xy\\right)} - 1}{\\cos\\sqrt{x^2 + y^2} - 1} = -2\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{(x + y)\\ln\\left(1 + \\frac{1}{4}\\sin xy\\right)}{\\frac{1}{2}\\left(x^2 + y^2\\right)} \\\\ & = -\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{(x + y)\\sin xy}{x^2 + y^2} = -\\lim_{\\substack{x\\to 0\\\\ y\\to 0}}\\frac{(x + y)xy}{x^2 + y^2}. \\end{aligned}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由于 $0 \\leqslant \\left|\\frac{(x + y)xy}{x^2 + y^2}\\right| \\leqslant \\frac{|x + y|}{2} \\to 0 (x \\to 0, y \\to 0)$ ，所以 $\\lim_{\\substack{x \\to 0 \\\\ y \\to 0}} \\frac{(x + y)xy}{x^2 + y^2} = 0$ ，故原极限为0."
+      }
+    ],
+    "final_answer": "极限为0.",
+    "techniques_used": [
+      "未定式转化",
+      "特殊路径"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题用等价无穷小、极坐标还是特殊路径来处理二重极限？",
+      "technique": "未定式转化",
+      "expected": "选定化简手段后化为一元极限或说明路径相关。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极限结论（值或不存在）是什么？",
+      "technique": "特殊路径",
+      "expected": "极限为0."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.1",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的极限与连续",
+    "page": 217,
+    "syllabus_note": "二重极限+等价无穷小"
+  }
+}
