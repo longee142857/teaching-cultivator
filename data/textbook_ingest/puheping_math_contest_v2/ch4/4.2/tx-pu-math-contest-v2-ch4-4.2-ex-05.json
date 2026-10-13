@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-05",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} x y \\sin \\frac {1}{\\sqrt {x ^ {2} + y ^ {2}}}, & x ^ {2} + y ^ {2} \\neq 0, \\\\ 0, & x ^ {2} + y ^ {2} = 0. \\end{array} \\right.\n$$\n\n(1) 求 $f(x,y)$ 的偏导数，并讨论其连续性.\n\n(2) 函数 $f(x,y)$ 在点 $(0,0)$ 处是否可微？",
+  "answer": "不存在，所以 $f_{x}(x,y)$ 在点 $(0,0)$ 处不连续. 同理 $f_{y}(x,y)$ 在点 $(0,0)$ 处也不连续.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "定义法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于点(0,0)是分段点，所以其偏导数要用定义计算；偏导数的连续性要考察其极限值是否存在且等于偏导数的函数值；f 在点(0,0)处的可微性需检验是否有 $\\Delta f = (f_{x}(0,0) \\cdot \\Delta x + f_{y}(0,0) \\cdot \\Delta y) + o(\\rho)$ .\n\n由偏导数的定义易，得 $f(0,0)=f_{x}(0,0)=0$\n\n解 由偏导数的定义易，得 $f_{x}(0,0) = f_{y}(0,0) = 0$ .\n\n当 $(x,y)\\neq (0,0)$ 时，\n\n$$\n\\begin{array}{l} f _ {x} (x, y) = y \\sin \\frac {1}{\\sqrt {x ^ {2} + y ^ {2}}} - \\frac {x ^ {2} y}{\\sqrt {(x ^ {2} + y ^ {2}) ^ {3}}} \\cos \\frac {1}{\\sqrt {x ^ {2} + y ^ {2}}}, \\\\ f _ {y} (x, y) = x \\sin \\frac {1}{\\sqrt {x ^ {2} + y ^ {2}}} - \\frac {x y ^ {2}}{\\sqrt {(x ^ {2} + y ^ {2}) ^ {3}}} \\cos \\frac {1}{\\sqrt {x ^ {2} + y ^ {2}}}. \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "当点 $(x,y)$ 沿直线 $y = x$ 趋于(0,0)时，\n\n$$\n\\lim _ {(x, x) \\rightarrow (0, 0)} f _ {x} (x, y) = \\lim _ {x \\rightarrow 0} \\left(x \\sin \\frac {1}{\\sqrt {2} | x |} - \\frac {x ^ {3}}{2 \\sqrt {2} | x | ^ {3}} \\cos \\frac {1}{\\sqrt {2} | x |}\\right),\n$$\n\n该极限不存在，所以 $f_{x}(x,y)$ 在点 $(0,0)$ 处不连续. 同理 $f_{y}(x,y)$ 在点 $(0,0)$ 处也不连续."
+      },
+      {
+        "id": "s3",
+        "text": "又\n\n$$\n\\Delta f - \\left(f _ {x} (0, 0) \\cdot \\Delta x + f _ {y} (0, 0) \\cdot \\Delta y\\right) = \\Delta f = \\Delta x \\cdot \\Delta y \\cdot \\sin \\frac {1}{\\sqrt {(\\Delta x) ^ {2} + (\\Delta y) ^ {2}}}.\n$$\n\n而\n\n$$\n\\begin{array}{r l}&{\\left| \\Delta x \\cdot \\Delta y \\cdot \\sin \\frac {1}{\\sqrt {(\\Delta x) ^ {2} + (\\Delta y) ^ {2}}} \\right| \\leqslant \\frac {1}{2} [ (\\Delta x) ^ {2} + (\\Delta y) ^ {2} ] = \\frac {1}{2} \\rho^ {2} \\left(\\rho = [ (\\Delta x) ^ {2} + (\\Delta y) ^ {2} ] ^ {\\frac {1}{2}}\\right)}\\\\&{\\quad \\Rightarrow \\frac {\\left| \\Delta f - (f _ {x} (0 , 0) \\cdot \\Delta x + f _ {y} (0 , 0) \\cdot \\Delta y) \\right|}{\\rho} \\leqslant \\frac {1}{2} \\rho \\rightarrow 0 (\\rho \\rightarrow 0).}\\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "即有\n\n$$\n\\Delta f = f _ {x} (0, 0) \\cdot \\Delta x + f _ {y} (0, 0) \\cdot \\Delta y + o (\\rho).\n$$\n\n故 $f$ 在点 $(0,0)$ 处可微，且 $\\mathrm{d}f\\big|_{(0,0)} = 0.$"
+      }
+    ],
+    "final_answer": "不存在，所以 $f_{x}(x,y)$ 在点 $(0,0)$ 处不连续. 同理 $f_{y}(x,y)$ 在点 $(0,0)$ 处也不连续.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "定义法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "定义法",
+      "expected": "不存在，所以 $f_{x}(x,y)$ 在点 $(0,0)$ 处不连续. 同理 $f_{y}(x,y)$ 在点 $(0,0)$ 处也不连续."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 225,
+    "syllabus_note": "分段偏导连续性与可微性",
+    "commentary": "评注 函数可微的概念：\n\n$z = f(x,y)$ 在点 $(x_0,y_0)$ 处可微\n\n$$\n\\begin{array}{l}\\Leftrightarrow \\Delta z = f _ {x} (x _ {0}, y _ {0}) \\cdot \\Delta x + f _ {y} (x _ {0}, y _ {0}) \\cdot \\Delta y + o (\\rho) \\quad \\left(\\rho = \\sqrt {(\\Delta x) ^ {2} + (\\Delta y) ^ {2}}\\right)\\\\\\Leftrightarrow \\lim _ {\\rho \\rightarrow 0 ^ {*}} \\frac {\\Delta f - \\left(f _ {x} (x _ {0} , y _ {0}) \\cdot \\Delta x + f _ {y} (x _ {0} , y _ {0}) \\cdot \\Delta y\\right)}{\\rho} = 0.\\end{array}\n$$"
+  }
+}

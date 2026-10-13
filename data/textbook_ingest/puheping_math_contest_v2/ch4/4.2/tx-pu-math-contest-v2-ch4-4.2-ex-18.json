@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-18",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $z = z(x, y)$ 是由方程 $x^{2} + y^{2} - z = \\varphi(x + y + z)$ 所确定的函数，其中 $\\varphi$ 具有二阶导数，且 $\\varphi' \\neq -1$ 。（1）求 $\\mathrm{d}z$ ；（2）记 $u(x, y) = \\frac{1}{x - y}\\left(\\frac{\\partial z}{\\partial x} - \\frac{\\partial z}{\\partial y}\\right)$ ，求 $\\frac{\\partial u}{\\partial x}$ .",
+  "answer": "到 $\\frac{\\partial z}{\\partial y}$ ，也可由 $\\frac{\\partial u}{\\partial x}$ 得到 $\\frac{\\partial u}{\\partial y}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "复合/隐函数求导",
+    "高阶偏导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是隐函数的求导问题. 对 (1), 可利用隐函数的偏导数公式计算 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ , 再写出 $dz$ , 也可将方程两边求微分, 解出 $dz$ . 对 (2), 只需将 (1) 中所求的 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 代入 $u(x,y)$ , 整理后再求 $\\frac{\\partial u}{\\partial x}$ .\n\n解（1）对 $x^{2} + y^{2} - z = \\varphi (x + y + z)$ 两边求微分，得\n\n$$\n2 x \\mathrm{d} x + 2 y \\mathrm{d} y - \\mathrm{d} z = \\varphi^ {\\prime} (x + y + z) (\\mathrm{d} x + \\mathrm{d} y + \\mathrm{d} z),\n$$\n\n解得\n\n$$\n\\mathrm{d} z = \\frac {1}{(1 + \\varphi^ {\\prime})} [ (2 x - \\varphi^ {\\prime}) \\mathrm{d} x - (2 y - \\varphi^ {\\prime}) \\mathrm{d} y ].\n$$\n\n(2)\n\n$u(x,y) = \\frac{1}{x - y}\\left(\\frac{2x - \\varphi'}{1 + \\varphi'} -\\frac{2y - \\varphi'}{1 + \\varphi'}\\right) = \\frac{2}{1 + \\varphi'}$ ，则\n\n$$\n\\frac {\\partial u}{\\partial x} = - \\frac {2}{(1 + \\varphi^ {\\prime}) ^ {2}} \\cdot \\varphi^ {\\prime \\prime} \\cdot \\left(1 + \\frac {\\partial z}{\\partial x}\\right) = - \\frac {2 \\varphi^ {\\prime \\prime}}{(1 + \\varphi^ {\\prime}) ^ {2}} \\cdot \\left(1 + \\frac {2 x - \\varphi^ {\\prime}}{1 + \\varphi^ {\\prime}}\\right) = - \\frac {2 (1 + 2 x) \\varphi^ {\\prime \\prime}}{(1 + \\varphi^ {\\prime}) ^ {3}}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 这是隐函数的求导问题. 对 (1), 可利用隐函数的偏导数公式计算 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ , 再写出 $dz$ , 也可将方程两边求微分, 解出 $dz$ . 对 (2), 只需将 (1) 中所求的 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 代入 $u(x,y)$ , 整理后再求 $\\frac{\\partial u}{\\partial x}$ .\n\n解（1）对 $x^{2} + y^{2} - z = \\varphi (x + y + z)$ 两边求微分，得\n\n$$\n2 x \\mathrm{d} x + 2 y \\mathrm{d} y - \\mathrm{d} z = \\varphi^ {\\prime} (x + y + z) (\\mathrm{d} x + \\mathrm{d} y + \\mathrm{d} z),\n$$\n\n解得\n\n$$\n\\mathrm{d} z = \\frac {1}{(1 + \\varphi^ {\\prime})} [ (2 x - \\varphi^ {\\prime}) \\mathrm{d} x - (2 y - \\varphi^ {\\prime}) \\mathrm{d} y ].\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2)\n\n$u(x,y) = \\frac{1}{x - y}\\left(\\frac{2x - \\varphi'}{1 + \\varphi'} -\\frac{2y - \\varphi'}{1 + \\varphi'}\\right) = \\frac{2}{1 + \\varphi'}$ ，则\n\n$$\n\\frac {\\partial u}{\\partial x} = - \\frac {2}{(1 + \\varphi^ {\\prime}) ^ {2}} \\cdot \\varphi^ {\\prime \\prime} \\cdot \\left(1 + \\frac {\\partial z}{\\partial x}\\right) = - \\frac {2 \\varphi^ {\\prime \\prime}}{(1 + \\varphi^ {\\prime}) ^ {2}} \\cdot \\left(1 + \\frac {2 x - \\varphi^ {\\prime}}{1 + \\varphi^ {\\prime}}\\right) = - \\frac {2 (1 + 2 x) \\varphi^ {\\prime \\prime}}{(1 + \\varphi^ {\\prime}) ^ {3}}.\n$$\n\n评注（1）读者不难发现该题中的方程 $x^{2} + y^{2} - z = \\varphi (x + y + z)$ 与函数 $u(x,y) = \\frac{1}{x - y}\\left(\\frac{\\partial z}{\\partial x} -\\frac{\\partial z}{\\partial y}\\right)$ 均关于 $x,y$ 对称，所以将 $x,y$ 互换就可由 $\\frac{\\partial z}{\\partial x}$ 得到 $\\frac{\\partial z}{\\partial y}$ ，也可由 $\\frac{\\partial u}{\\partial x}$ 得到 $\\frac{\\partial u}{\\partial y}$"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 该题在求 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 时，采用的是在方程 $x^{2} + y^{2} - z = \\varphi(x + y + z)$ 两边求微分，当然也可用复合函数求导法则，或隐函数的偏导数公式来计算。当函数关系较复杂时，采用求微分的方式来计算偏导数更为方便，因为这样能避免复杂函数关系所造成的困扰。"
+      }
+    ],
+    "final_answer": "到 $\\frac{\\partial z}{\\partial y}$ ，也可由 $\\frac{\\partial u}{\\partial x}$ 得到 $\\frac{\\partial u}{\\partial y}$",
+    "techniques_used": [
+      "偏导数与全微分",
+      "复合/隐函数求导",
+      "高阶偏导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "复合/隐函数求导",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "复合/隐函数求导",
+      "expected": "到 $\\frac{\\partial z}{\\partial y}$ ，也可由 $\\frac{\\partial u}{\\partial x}$ 得到 $\\frac{\\partial u}{\\partial y}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 234,
+    "syllabus_note": "隐函数全微分与二阶",
+    "commentary": "评注（1）读者不难发现该题中的方程 $x^{2} + y^{2} - z = \\varphi (x + y + z)$ 与函数 $u(x,y) = \\frac{1}{x - y}\\left(\\frac{\\partial z}{\\partial x} -\\frac{\\partial z}{\\partial y}\\right)$ 均关于 $x,y$ 对称，所以将 $x,y$ 互换就可由 $\\frac{\\partial z}{\\partial x}$ 得到 $\\frac{\\partial z}{\\partial y}$ ，也可由 $\\frac{\\partial u}{\\partial x}$ 得到 $\\frac{\\partial u}{\\partial y}$\n\n(2) 该题在求 $\\frac{\\partial z}{\\partial x}$ 和 $\\frac{\\partial z}{\\partial y}$ 时，采用的是在方程 $x^{2} + y^{2} - z = \\varphi(x + y + z)$ 两边求微分，当然也可用复合函数求导法则，或隐函数的偏导数公式来计算。当函数关系较复杂时，采用求微分的方式来计算偏导数更为方便，因为这样能避免复杂函数关系所造成的困扰。"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-10",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.dirgrad",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $l_{k}(k=1,2,\\cdots,n)$ 是平面上点 $P_{0}$ 处的 $n (n \\geqslant 2)$ 个方向向量，相邻两个向量之间的夹角为 $\\frac{2\\pi}{n}$ ，若函数 $f(x,y)$ 在点 $P_{0}$ 处有连续的偏导数，则证明 $\\sum_{k=1}^{n} \\frac{\\partial f(P_{0})}{\\partial l_{k}} = 0$ 。",
+  "answer": "$\\sum_{k=1}^{n}\\frac{\\partial f(P_0)}{\\partial l_k} = 0$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "方向导数与梯度",
+    "微分方程法",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由方向导数的公式 $\\frac{\\partial f(P_0)}{\\partial l_k} = \\nabla f(P_0) \\cdot l_k$ ，只需证明 $\\sum_{k=1}^{n} l_k = 0$ 。根据向量加法的几何意义这是显然的。若用代数方法计算，则需要设出 $l_k$ 的分量形式。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 由方向导数的公式 $\\frac{\\partial f(P_0)}{\\partial l_k} = \\nabla f(P_0) \\cdot l_k$ ，得\n\n$$\n\\sum_ {k = 1} ^ {n} \\frac {\\partial f (P _ {0})}{\\partial l _ {k}} = \\sum_ {k = 1} ^ {n} \\nabla f (P _ {0}) \\cdot l _ {k} = \\nabla f (P _ {0}) \\cdot \\sum_ {k = 1} ^ {n} l _ {k}.\n$$\n\n由于 $l_{k}(k=1,2,\\cdots,n)$ 是n个单位向量，且相邻两个向量之间的夹角为 $\\frac{2\\pi}{n}$ ，由向量加法的多边形法则（相邻向量首尾相接），这n个向量刚好构成一个正n边形（其外角和为 $n\\cdot\\frac{2\\pi}{n}=2\\pi$ ），因而 $\\sum_{k=1}^{n}l_{k}=0$ ，所以 $\\sum_{k=1}^{n}\\frac{\\partial f(P_{0})}{\\partial l_{k}}=0$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 设 $l_{k} = \\left(\\cos \\left(\\alpha + k\\frac{2\\pi}{n}\\right), \\sin \\left(\\alpha + k\\frac{2\\pi}{n}\\right)\\right) (\\alpha \\in [0, \\pi); k = 1, 2, \\cdots, n)$ .\n\n则\n\n$$\n\\begin{array}{r l} \\sum_ {k = 1} ^ {n} \\frac {\\partial f (P _ {0})}{\\partial l _ {k}} & = \\sum_ {k = 1} ^ {n} \\left(\\frac {\\partial f (P _ {0})}{\\partial x} \\cdot \\cos \\left(\\alpha + k \\frac {2 \\pi}{n}\\right) + \\frac {\\partial f (P _ {0})}{\\partial y} \\cdot \\sin \\left(\\alpha + k \\frac {2 \\pi}{n}\\right)\\right) \\\\ & = \\frac {\\partial f (P _ {0})}{\\partial x} \\cdot \\sum_ {k = 1} ^ {n} \\cos \\left(\\alpha + k \\frac {2 \\pi}{n}\\right) + \\frac {\\partial f (P _ {0})}{\\partial y} \\cdot \\sum_ {j = 1} ^ {n} \\sin \\left(\\alpha + k \\frac {2 \\pi}{n}\\right) \\\\ & = \\frac {\\partial f (P _ {0})}{\\partial x} \\cdot \\sum_ {k = 1} ^ {n} \\left(\\cos \\alpha \\cdot \\cos \\left(k \\frac {2 \\pi}{n}\\right) - \\sin \\alpha \\cdot \\sin \\left(k \\frac {2 \\pi}{n}\\right)\\right) + \\\\ & \\frac {\\partial f (P _ {0})}{\\partial y} \\cdot \\sum_ {k = 1} ^ {n} \\left(\\sin \\alpha \\cdot \\cos \\left(k \\frac {2 \\pi}{n}\\right) + \\cos \\alpha \\cdot \\sin \\left(k \\frac {2 \\pi}{n}\\right)\\right) \\end{array}\n\n\\begin{array}{l} = \\frac {\\partial f (P _ {0})}{\\partial x} \\cdot \\left(\\cos \\alpha \\cdot \\sum_ {k = 1} ^ {n} \\cos \\left(k \\frac {2 \\pi}{n}\\right) - \\sin \\alpha \\cdot \\sum_ {k = 1} ^ {n} \\sin \\left(k \\frac {2 \\pi}{n}\\right)\\right) + \\\\ \\frac {\\partial f (P _ {0})}{\\partial y} \\cdot \\left(\\sin \\alpha \\cdot \\sum_ {k = 1} ^ {n} \\cos \\left(k \\frac {2 \\pi}{n}\\right) + \\cos \\alpha \\cdot \\sum_ {k = 1} ^ {n} \\sin \\left(k \\frac {2 \\pi}{n}\\right)\\right). \\end{array}\n$$\n\n由于\n\n$$\n\\begin{array}{r l} \\sum_ {k = 1} ^ {n} \\cos \\left(k \\frac {2 \\pi}{n}\\right) & = \\frac {1}{\\sin \\frac {\\pi}{n}} \\cdot \\sum_ {k = 1} ^ {n} \\cos \\left(k \\frac {2 \\pi}{n}\\right) \\cdot \\sin \\frac {\\pi}{n} \\\\ & = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\sum_ {k = 1} ^ {n} \\left(\\sin (2 k + 1) \\frac {\\pi}{n} - \\sin (2 k - 1) \\frac {\\pi}{n}\\right) \\\\ & = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\left(\\sin (2 n + 1) \\frac {\\pi}{n} - \\sin \\frac {\\pi}{n}\\right) = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\left(\\sin \\frac {\\pi}{n} - \\sin \\frac {\\pi}{n}\\right) = 0; \\end{array}\n\n\\begin{array}{r l} \\sum_ {k = 1} ^ {n} \\sin \\left(k \\frac {2 \\pi}{n}\\right) & = \\frac {1}{\\sin \\frac {\\pi}{n}} \\cdot \\sum_ {k = 1} ^ {n} \\sin \\left(k \\frac {2 \\pi}{n}\\right) \\cdot \\sin \\frac {\\pi}{n} \\\\ & = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\sum_ {k = 1} ^ {n} \\left(\\cos (2 k - 1) \\frac {\\pi}{n} - \\cos (2 k + 1) \\frac {\\pi}{n}\\right) \\\\ & = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\left(\\cos \\frac {\\pi}{n} - \\cos (2 n + 1) \\frac {\\pi}{n}\\right) = \\frac {1}{2 \\sin \\frac {\\pi}{n}} \\cdot \\left(\\cos \\frac {\\pi}{n} - \\cos \\frac {\\pi}{n}\\right) = 0. \\end{array}\n$$\n\n所以 $\\sum_{k=1}^{n}\\frac{\\partial f(P_0)}{\\partial l_k} = 0$ ."
+      }
+    ],
+    "final_answer": "$\\sum_{k=1}^{n}\\frac{\\partial f(P_0)}{\\partial l_k} = 0$ .",
+    "techniques_used": [
+      "偏导数与全微分",
+      "方向导数与梯度",
+      "微分方程法",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用梯度/方向导数公式处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "计算 grad f 与单位方向，或利用方向导数线性性。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终方向导数/最值结论是什么？",
+      "technique": "方向导数与梯度",
+      "expected": "$\\sum_{k=1}^{n}\\frac{\\partial f(P_0)}{\\partial l_k} = 0$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例10*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 229,
+    "starred": true,
+    "syllabus_note": "等角方向导数之和为0*"
+  }
+}

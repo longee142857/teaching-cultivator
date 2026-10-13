@@ -1,0 +1,93 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-26",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x, y)$ 在平面上有连续的二阶偏导数。对任何角度 $\\alpha$ ，定义一元函数 $g_{\\alpha}(t) = f(t \\cos \\alpha, t \\sin \\alpha)$ 。若对任何 $\\alpha$ 都有 $\\frac{\\mathrm{d} g_{\\alpha}(0)}{\\mathrm{d} t} = 0$ 且 $\\frac{\\mathrm{d}^2 g_{\\alpha}(0)}{\\mathrm{d} t^2} > 0$ 。证明 $f(0, 0)$ 是 $f(x, y)$ 的极小值。",
+  "answer": "$f(0,0)$ 是 $f(x,y)$ 的极小值.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "复合/隐函数求导",
+    "泰勒展开",
+    "定义法",
+    "高阶偏导"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明在点 $(0,0)$ 的某去心邻域内有 $f(x,y) > f(0,0)$ . 根据题设条件会想到利用函数的二阶泰勒公式."
+      },
+      {
+        "id": "s2",
+        "text": "由于 $\\frac{\\mathrm{d}g_{\\alpha}(0)}{\\mathrm{d}t} = (f_x, f_y)_{(0,0)} \\begin{pmatrix} \\cos \\alpha \\\\ \\sin \\alpha \\end{pmatrix} = 0$ 对一切 $\\alpha$ 成立，故 $(f_x, f_y)_{(0,0)} = (0,0)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "又"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\begin{array}{r l} \\frac {\\mathrm{d} ^ {2} g _ {\\alpha} (t)}{\\mathrm{d} t ^ {2}} & = \\frac {\\mathrm{d}}{\\mathrm{d} t} (f _ {x}, f _ {y}) \\binom {\\cos \\alpha} {\\sin \\alpha} = (f _ {x x} \\cos \\alpha + f _ {x y} \\sin \\alpha , f _ {y x} \\cos \\alpha + f _ {y y} \\sin \\alpha) \\binom {\\cos \\alpha} {\\sin \\alpha} \\\\ & = (\\cos \\alpha , \\sin \\alpha) \\left( \\begin{array}{c c} f _ {x x} & f _ {y x} \\\\ f _ {x y} & f _ {y y} \\end{array} \\right) \\binom {\\cos \\alpha} {\\sin \\alpha}. \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由于 $\\frac{\\mathrm{d}^2g_\\alpha(0)}{\\mathrm{d}t^2} > 0$ ，由 $\\alpha$ 的任意性，知黑塞矩阵 $H_{f}(0,0) = \\left( \\begin{array}{cc}f_{xx} & f_{yx}\\\\ f_{xy} & f_{yy} \\end{array} \\right)_{(0,0)}$ 正定."
+      },
+      {
+        "id": "s6",
+        "text": "由泰勒公式，得"
+      },
+      {
+        "id": "s7",
+        "text": "$$\nf (x, y) - f (0, 0) = (x, y) H _ {f} (0, 0) {\\binom {x} {y}} + o (\\rho^ {2}) > 0  , \\quad {\\text {当}} (x, y) \\neq (0, 0) {\\text {时}}.\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "其中 $\\rho = \\sqrt{x^2 + y^2}$ ，所以 $f(0,0)$ 是 $f(x,y)$ 的极小值."
+      }
+    ],
+    "final_answer": "$f(0,0)$ 是 $f(x,y)$ 的极小值.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "复合/隐函数求导",
+      "泰勒展开",
+      "定义法",
+      "高阶偏导"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用各方向导数信息判定极值？",
+      "technique": "偏导数与全微分",
+      "expected": "由一阶为零、二阶为正得到局部极小。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值结论是什么？",
+      "technique": "复合/隐函数求导",
+      "expected": "$f(0,0)$ 是 $f(x,y)$ 的极小值."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例26",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 240,
+    "syllabus_note": "各方向二阶导数>0⇒极小",
+    "commentary": "评注 由于矩阵 $H_{f}$ 正定的充要条件是其顺序主子式全大于0，即 $f_{xx} > 0, f_{xx}f_{yy} - f_{xy}^2 > 0$ ，所以证明过程也可以用极小值的判定定理来描述."
+  }
+}

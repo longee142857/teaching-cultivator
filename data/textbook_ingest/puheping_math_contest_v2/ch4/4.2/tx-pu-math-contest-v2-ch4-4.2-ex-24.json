@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-24",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $u = f(z)$ ，而 z 是由方程 $z = x + y\\varphi(z)$ 确定的。 $\\varphi, f$ 都是任意次可微的函数，证明 $\\frac{\\partial^{n}u}{\\partial y^{n}} = \\frac{\\partial^{n-1}}{\\partial x^{n-1}}\\left[\\left(\\varphi(z)\\right)^{n}\\frac{\\partial u}{\\partial x}\\right]$ .",
+  "answer": "连续偏导数）.零阶泰勒公式就是函数的拉格朗日中值公式.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "泰勒展开",
+    "证明技巧",
+    "极值判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 n 阶偏导数问题，可对求导阶数 n 用归纳法.\n\n$z = x + y\\varphi (z)$ 的两边分别对 $x,y$ 求偏导数后，解得\n\n$$\n\\frac {\\partial z}{\\partial x} = \\frac {1}{1 - y \\varphi^ {\\prime} (z)}, \\quad \\frac {\\partial z}{\\partial y} = \\frac {\\varphi (z)}{1 - y \\varphi^ {\\prime} (z)} = \\varphi (z) \\frac {\\partial z}{\\partial x},\n$$\n\n于是\n\n$$\n\\begin{array}{r l} \\frac {\\partial u}{\\partial x} & = f ^ {\\prime} (z) \\frac {\\partial z}{\\partial x}, \\quad \\frac {\\partial u}{\\partial y} = f ^ {\\prime} (z) \\frac {\\partial z}{\\partial y} = f ^ {\\prime} (z) \\varphi (z) \\frac {\\partial z}{\\partial x} = \\varphi (z) \\frac {\\partial u}{\\partial x}. \\\\ & \\Rightarrow \\frac {\\partial z}{\\partial y} \\cdot \\frac {\\partial u}{\\partial x} = \\varphi (z) \\frac {\\partial z}{\\partial x} \\cdot \\frac {\\partial u}{\\partial x} = \\frac {\\partial z}{\\partial x} \\cdot \\frac {\\partial u}{\\partial y}. \\end{array}\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "由①式，知当 $n = 1$ 时，等式成立.\n\n设对 $n$ 阶偏导数等式成立，即 $\\frac{\\partial^n u}{\\partial y^n} = \\frac{\\partial^{n - 1}}{\\partial x^{n - 1}}\\left[\\left(\\varphi (z)\\right)^n\\frac{\\partial u}{\\partial x}\\right]$ ，对 $y$ 求偏导，得\n\n$$\n\\begin{array}{r l} \\frac {\\partial^ {n + 1} u}{\\partial y ^ {n + 1}} & = \\frac {\\partial}{\\partial y} \\cdot \\frac {\\partial^ {n - 1}}{\\partial x ^ {n - 1}} \\left[ (\\varphi (z)) ^ {n} \\frac {\\partial u}{\\partial x} \\right] = \\frac {\\partial^ {n - 1}}{\\partial x ^ {n - 1}} \\cdot \\frac {\\partial}{\\partial y} \\left[ (\\varphi (z)) ^ {n} \\frac {\\partial u}{\\partial x} \\right] \\\\ & = \\frac {\\partial^ {n - 1}}{\\partial x ^ {n - 1}} \\left[ n (\\varphi (z)) ^ {n - 1} \\varphi^ {\\prime} (z) \\frac {\\partial z}{\\partial y} \\cdot \\frac {\\partial u}{\\partial x} + (\\varphi (z)) ^ {n} \\frac {\\partial^ {2} u}{\\partial x \\partial y} \\right] \\\\ & = \\frac {\\partial^ {n - 1}}{\\partial x ^ {n - 1}} \\left[ n (\\varphi (z)) ^ {n - 1} \\varphi^ {\\prime} (z) \\frac {\\partial z}{\\partial x} \\cdot \\frac {\\partial u}{\\partial y} + (\\varphi (z)) ^ {n} \\frac {\\partial^ {2} u}{\\partial x \\partial y} \\right] \\\\ & = \\frac {\\partial^ {n - 1}}{\\partial x ^ {n - 1}} \\frac {\\partial}{\\partial x} \\left[ (\\varphi (z)) ^ {n} \\frac {\\partial u}{\\partial y} \\right] = \\frac {\\partial^ {n}}{\\partial x ^ {n}} \\left[ (\\varphi (z)) ^ {n + 1} \\frac {\\partial u}{\\partial x} \\right]. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "可见对 $n + 1$ 阶偏导数等式也成立，由归纳法，知对任意自然数 $n$ 等式成立.\n\n## 3. 泰勒公式\n\n多元函数的泰勒公式虽不及一元函数泰勒公式应用那样广泛，但在多元函数微分学中仍有重要的作用，在求函数极限、等式与不等式的证明、函数极值的判定等方面都有诸多应用。这里以二元函数为例（ $n$ 元函数有类似的结果），进行简单介绍。\n\n二元函数的 n 阶泰勒公式:\n\n定理 设 $f(x, y)$ 在凸区域 $D \\subset \\mathbb{R}^2$ 上具有 $n + 1$ 阶连续偏导数， $(x_0, y_0)$ 与 $(x_0 + h, y_0 + k)$ 是 $D$ 内两点，则至少有一个 $\\theta \\in (0, 1)$ ，使得\n\n$$\n\\begin{array}{c} {f (x _ {0} + h, y _ {0} + k) = f (x _ {0}, y _ {0}) + \\Bigg (h \\frac {\\partial}{\\partial x} + \\dot {k} \\frac {\\partial}{\\partial y} \\Bigg) f (x _ {0}, y _ {0}) + \\frac {1}{2 !} \\Bigg (h \\frac {\\partial}{\\partial x} + k \\frac {\\partial}{\\partial y} \\Bigg) ^ {2} f (x _ {0}, y _ {0})} \\\\ {+ \\dots + \\frac {1}{n !} \\Bigg (h \\frac {\\partial}{\\partial x} + k \\frac {\\partial}{\\partial y} \\Bigg) ^ {n} f (\\dot {x} _ {0}, y _ {0}) + R _ {n},} \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "其中 $R_{n} = \\frac{1}{(n + 1)!}\\left(h\\frac{\\partial}{\\partial x} +k\\frac{\\partial}{\\partial y}\\right)^{n + 1}f(x_0 + \\theta k,y_0 + \\theta k)$ （称为Lagrange型余项），或 $R_{n} = o(\\rho^{n})$ ， $\\rho = \\sqrt{k^2 + h^2}$ （称为Peano型余项.该余项的 $n$ 阶泰勒公式只要求 $f$ 在 $(x_0,y_0)$ 点处有 $n$ 阶连续偏导数）.零阶泰勒公式就是函数的拉格朗日中值公式."
+      }
+    ],
+    "final_answer": "连续偏导数）.零阶泰勒公式就是函数的拉格朗日中值公式.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "泰勒展开",
+      "证明技巧",
+      "极值判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "偏导数与全微分",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "泰勒展开",
+      "expected": "连续偏导数）.零阶泰勒公式就是函数的拉格朗日中值公式."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例24*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 239,
+    "starred": true,
+    "syllabus_note": "隐函数高阶偏导公式*"
+  }
+}

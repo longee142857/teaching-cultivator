@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-19",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "已知函数 $z = z(x, y)$ 满足 $x^{2} \\frac{\\partial z}{\\partial x} + y^{2} \\frac{\\partial z}{\\partial y} = z^{2}$ ，设 $u = x$ ， $v = \\frac{1}{y} - \\frac{1}{x}$ ， $\\psi = \\frac{1}{z} - \\frac{1}{x}$ ，对函数 $\\psi = \\psi(u, v)$ ，求证 $\\frac{\\partial \\psi}{\\partial u} = 0$ 。",
+  "answer": "$\\left\\{ \\begin{array}{l} x = u, \\\\ y = \\frac{u}{1 + uv} \\end{array} \\right.$ . 这样 $\\psi = \\frac{1}{z} - \\frac{1}{x}$ 便是 $u, v$ 的复合函数，对 $u$ 求偏导数，得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "复合/隐函数求导",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是由方程组所确定的隐函数的求导问题. 计算 $\\frac{\\partial \\psi}{\\partial u}$ 时需将 $x, y$ 作为中间变量（化为 $u, v$ 的函数），再利用关系式 $x^2 \\frac{\\partial z}{\\partial x} + y^2 \\frac{\\partial z}{\\partial y} = z^2$ 化简. 为避免复杂的函数关系，也可用求全微分的方式来计算. 证明 方法1 由 $\\left\\{ \\begin{array}{l} u = x \\\\ v = \\frac{1}{y} - \\frac{1}{x} \\end{array} \\right.$ ，解得 $\\left\\{ \\begin{array}{l} x = u, \\\\ y = \\frac{u}{1 + uv} \\end{array} \\right.$ . 这样 $\\psi = \\frac{1}{z} - \\frac{1}{x}$ 便是 $u, v$ 的复合函数，对 $u$ 求偏导数，得\n\n$$\n\\frac {\\partial \\psi}{\\partial u} = - \\frac {1}{z ^ {2}} \\left(\\frac {\\partial z}{\\partial x} \\frac {\\partial x}{\\partial u} + \\frac {\\partial z}{\\partial y} \\frac {\\partial y}{\\partial u}\\right) + \\frac {1}{u ^ {2}} = - \\frac {1}{z ^ {2}} \\left(\\frac {\\partial z}{\\partial x} + \\frac {\\partial z}{\\partial y} \\frac {1}{(1 + u v) ^ {2}}\\right) + \\frac {1}{u ^ {2}},\n$$\n\n利用 $\\frac{1}{1 + uv} = \\frac{y}{x}$ 和 $z(x,y)$ 满足的等式，有\n\n$$\n\\frac {\\partial \\psi}{\\partial u} = - \\frac {1}{z ^ {2} x ^ {2}} \\left(x ^ {2} \\frac {\\partial z}{\\partial x} + y ^ {2} \\frac {\\partial z}{\\partial y}\\right) + \\frac {1}{u ^ {2}} = - \\frac {1}{x ^ {2}} + \\frac {1}{u ^ {2}} = 0.\n$$\n\n方法二 因为 $v=\\frac{1}{y}-\\frac{1}{x}$ ， $\\psi=\\frac{1}{z}-\\frac{1}{x}$ ，两边求微分，有\n\n$$\n\\mathrm{d} v = - \\frac {1}{y ^ {2}} \\mathrm{d} y + \\frac {1}{x ^ {2}} \\mathrm{d} x,\\tag{①}\n\n\\mathrm{d} \\psi = - \\frac {1}{z ^ {2}} \\mathrm{d} z + \\frac {1}{x ^ {2}} \\mathrm{d} x.\\tag{②}\n$$\n\n将 $\\mathrm{dz} = \\frac{\\partial z}{\\partial x}\\mathrm{dx} + \\frac{\\partial z}{\\partial y}\\mathrm{dy}$ 代入②式，并与"
+      },
+      {
+        "id": "s2",
+        "text": "分析 这是由方程组所确定的隐函数的求导问题. 计算 $\\frac{\\partial \\psi}{\\partial u}$ 时需将 $x, y$ 作为中间变量（化为 $u, v$ 的函数），再利用关系式 $x^2 \\frac{\\partial z}{\\partial x} + y^2 \\frac{\\partial z}{\\partial y} = z^2$ 化简. 为避免复杂的函数关系，也可用求全微分的方式来计算. 证明 方法1 由 $\\left\\{ \\begin{array}{l} u = x \\\\ v = \\frac{1}{y} - \\frac{1}{x} \\end{array} \\right.$ ，解得 $\\left\\{ \\begin{array}{l} x = u, \\\\ y = \\frac{u}{1 + uv} \\end{array} \\right.$ . 这样 $\\psi = \\frac{1}{z} - \\frac{1}{x}$ 便是 $u, v$ 的复合函数，对 $u$ 求偏导数，得\n\n$$\n\\frac {\\partial \\psi}{\\partial u} = - \\frac {1}{z ^ {2}} \\left(\\frac {\\partial z}{\\partial x} \\frac {\\partial x}{\\partial u} + \\frac {\\partial z}{\\partial y} \\frac {\\partial y}{\\partial u}\\right) + \\frac {1}{u ^ {2}} = - \\frac {1}{z ^ {2}} \\left(\\frac {\\partial z}{\\partial x} + \\frac {\\partial z}{\\partial y} \\frac {1}{(1 + u v) ^ {2}}\\right) + \\frac {1}{u ^ {2}},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "利用 $\\frac{1}{1 + uv} = \\frac{y}{x}$ 和 $z(x,y)$ 满足的等式，有\n\n$$\n\\frac {\\partial \\psi}{\\partial u} = - \\frac {1}{z ^ {2} x ^ {2}} \\left(x ^ {2} \\frac {\\partial z}{\\partial x} + y ^ {2} \\frac {\\partial z}{\\partial y}\\right) + \\frac {1}{u ^ {2}} = - \\frac {1}{x ^ {2}} + \\frac {1}{u ^ {2}} = 0.\n$$\n\n方法二 因为 $v=\\frac{1}{y}-\\frac{1}{x}$ ， $\\psi=\\frac{1}{z}-\\frac{1}{x}$ ，两边求微分，有\n\n$$\n\\mathrm{d} v = - \\frac {1}{y ^ {2}} \\mathrm{d} y + \\frac {1}{x ^ {2}} \\mathrm{d} x,\\tag{①}\n$$\n\n$$\n\\mathrm{d} \\psi = - \\frac {1}{z ^ {2}} \\mathrm{d} z + \\frac {1}{x ^ {2}} \\mathrm{d} x.\\tag{②}\n$$\n\n将 $\\mathrm{dz} = \\frac{\\partial z}{\\partial x}\\mathrm{dx} + \\frac{\\partial z}{\\partial y}\\mathrm{dy}$ 代入②式，并与①式联立消去 $\\mathbf{dy}$ ，得到"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\mathrm{d} \\psi = \\left(\\frac {1}{x ^ {2}} - \\frac {1}{z ^ {2}} \\cdot \\frac {\\partial z}{\\partial x} - \\frac {y ^ {2}}{x ^ {2} z ^ {2}} \\cdot \\frac {\\partial z}{\\partial y}\\right) \\mathrm{d} x + \\frac {y ^ {2}}{z ^ {2}} \\cdot \\frac {\\partial z}{\\partial y} \\mathrm{d} z.\n$$\n\n由一阶微分形式不变性，得到\n\n$$\n\\frac {\\partial \\psi}{\\partial x} = \\frac {1}{x ^ {2}} - \\frac {1}{z ^ {2}} \\cdot \\frac {\\partial z}{\\partial x} - \\frac {y ^ {2}}{x ^ {2} z ^ {2}} \\cdot \\frac {\\partial z}{\\partial y} = \\frac {1}{x ^ {2}} - \\frac {1}{z ^ {2} x ^ {2}} \\left(x ^ {2} \\frac {\\partial z}{\\partial x} + y ^ {2} \\frac {\\partial z}{\\partial y}\\right) = \\frac {1}{x ^ {2}} - \\frac {1}{x ^ {2}} = 0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即 $\\frac{\\partial\\psi}{\\partial u} = 0.$"
+      }
+    ],
+    "final_answer": "$\\left\\{ \\begin{array}{l} x = u, \\\\ y = \\frac{u}{1 + uv} \\end{array} \\right.$ . 这样 $\\psi = \\frac{1}{z} - \\frac{1}{x}$ 便是 $u, v$ 的复合函数，对 $u$ 求偏导数，得",
+    "techniques_used": [
+      "偏导数与全微分",
+      "复合/隐函数求导",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "复合/隐函数求导",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "复合/隐函数求导",
+      "expected": "$\\left\\{ \\begin{array}{l} x = u, \\\\ y = \\frac{u}{1 + uv} \\end{array} \\right.$ . 这样 $\\psi = \\frac{1}{z} - \\frac{1}{x}$ 便是 $u, v$ 的复合函数，对 $u$ 求偏导数，得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例19",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 235,
+    "syllabus_note": "变量代换证明偏导为0"
+  }
+}

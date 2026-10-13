@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-03",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x, y) = \\begin{cases} \\frac{x^5}{(y - x^2)^2 + x^6}, & x^2 + y^2 \\neq 0 \\\\ 0, & x^2 + y^2 = 0 \\end{cases}$ ，求：\n\n(1) 使方向导数 $\\frac{\\partial f}{\\partial l}\\bigg|_{(0,0)} \\neq 0$ （方向 $l = (\\cos \\alpha, \\sin \\alpha)$ ， $\\alpha \\in [0,2\\pi)$ ）的最大 $\\alpha$ 值（记为 $\\alpha_0$ ）；\n\n(2) 过点 $M(2, -1, 3)$ ，与直线 $L_{1}$ : $\\frac{x - 1}{1} = \\frac{y}{-1} = \\frac{z + 2}{1}$ 相交，且与平面 $\\pi_{1}: 3x - 2y + z + 5 = 0$ 夹角为 $\\alpha_{0}$ 的直线 $L$ 的方程.",
+  "answer": "$t=\\frac{5}{3}$ ，点 $N\\left(\\frac{8}{3},-\\frac{5}{3},-\\frac{1}{3}\\right)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "方向导数与梯度",
+    "定义法",
+    "微分方程法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）由于(0,0)是函数的分段点，所以 $\\frac{\\partial f}{\\partial l}\\bigg|_{(0,0)}$ 需用定义计算.\n\n(2) 求直线 L 方程的方法有多种，关键是要求得 L 的方向向量或与已知直线 $L_{1}$ 的交点.\n\n解（1）设过原点方向向量为 $l$ 的射线为 $\\Gamma$ ， $(r\\cos \\alpha ,r\\sin \\alpha)$ 是 $\\Gamma$ 上的任一点，则\n\n$$\n\\begin{array}{r l} \\frac {\\partial f}{\\partial l} \\Bigg | _ {(0, 0)} & = \\lim _ {r \\to 0} \\frac {f (r \\cos \\alpha , r \\sin \\alpha) - f (0 , 0)}{r} = \\lim _ {r \\to 0} \\frac {\\frac {r ^ {5} \\cos^ {5} \\alpha}{(r \\sin \\alpha - r ^ {2} \\cos^ {2} \\alpha) ^ {2} + r ^ {6} \\cos^ {6} \\alpha}}{r} \\\\ & = \\lim _ {r \\to 0} \\frac {r ^ {2} \\cos^ {5} \\alpha}{(\\sin \\alpha - r \\cos^ {2} \\alpha) ^ {2} + r ^ {4} \\cos^ {6} \\alpha} = \\left\\{ \\begin{array}{l l} 1, & \\alpha = 0, \\\\ - 1, & \\alpha = \\pi , \\\\ 0, & \\text {其他}. \\end{array} \\right. \\end{array}\n$$\n\n因此使 $\\frac{\\partial f}{\\partial l}\\Bigg|_{(0,0)}\\neq 0$ 的最大 $\\alpha$ 值 $\\alpha_0 = \\pi .$\n\n（2）方法1 设 $L$ 的方向向量为 $s = (l, m, n)$ ，则由 $L$ 过点 $M(2, -1, 3)$ 及与直线 $L_1$ 相交，知向量 $\\overrightarrow{M_0M}, s_1, s$ 共面（其中 $M_0(1, 0, -2) \\in L_1, s_1 = (1, -1, 1)$ 是 $L_1$ 的方向向量），于是有\n\n$[\\overline{M_0M}, s_1, s] = 0$ ，即 $\\begin{vmatrix} 1 & -1 & 5 \\\\ 1 & -1 & 1 \\\\ l & m & n \\end{vmatrix} = 0$ .\n\n由此得到\n\n$$\nl + m = 0.\\tag{①}\n$$\n\n此外，由于 $L$ 与平面 $\\pi_1$ 的夹角为 $\\alpha_0 = \\pi$ ，即 $L$ 与平面 $\\pi_1$ 平行，所以\n\n$$\n\\boldsymbol {s} \\cdot \\boldsymbol {n} = 3 l - 2 m + n = 0.\\tag{②}\n$$\n\n由①，②式解得 $l = -\\frac{1}{5} n$ ， $m = \\frac{1}{5} n$ ，所以 $L$ 的方向向量可取为 $s = (-1, 1, 5)$ ， $L$ 的方程为\n\n$$\n\\frac {x - 2}{- 1} = \\frac {y + 1}{1} = \\frac {z - 3}{5}.\n$$\n\n方法2 只需求得直线 $L$ 与已知直线 $"
+      },
+      {
+        "id": "s2",
+        "text": "分析（1）由于(0,0)是函数的分段点，所以 $\\frac{\\partial f}{\\partial l}\\bigg|_{(0,0)}$ 需用定义计算."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 求直线 L 方程的方法有多种，关键是要求得 L 的方向向量或与已知直线 $L_{1}$ 的交点.\n\n解（1）设过原点方向向量为 $l$ 的射线为 $\\Gamma$ ， $(r\\cos \\alpha ,r\\sin \\alpha)$ 是 $\\Gamma$ 上的任一点，则\n\n$$\n\\begin{array}{r l} \\frac {\\partial f}{\\partial l} \\Bigg | _ {(0, 0)} & = \\lim _ {r \\to 0} \\frac {f (r \\cos \\alpha , r \\sin \\alpha) - f (0 , 0)}{r} = \\lim _ {r \\to 0} \\frac {\\frac {r ^ {5} \\cos^ {5} \\alpha}{(r \\sin \\alpha - r ^ {2} \\cos^ {2} \\alpha) ^ {2} + r ^ {6} \\cos^ {6} \\alpha}}{r} \\\\ & = \\lim _ {r \\to 0} \\frac {r ^ {2} \\cos^ {5} \\alpha}{(\\sin \\alpha - r \\cos^ {2} \\alpha) ^ {2} + r ^ {4} \\cos^ {6} \\alpha} = \\left\\{ \\begin{array}{l l} 1, & \\alpha = 0, \\\\ - 1, & \\alpha = \\pi , \\\\ 0, & \\text {其他}. \\end{array} \\right. \\end{array}\n$$\n\n因此使 $\\frac{\\partial f}{\\partial l}\\Bigg|_{(0,0)}\\neq 0$ 的最大 $\\alpha$ 值 $\\alpha_0 = \\pi .$\n\n（2）方法1 设 $L$ 的方向向量为 $s = (l, m, n)$ ，则由 $L$ 过点 $M(2, -1, 3)$ 及与直线 $L_1$ 相交，知向量 $\\overrightarrow{M_0M}, s_1, s$ 共面（其中 $M_0(1, 0, -2) \\in L_1, s_1 = (1, -1, 1)$ 是 $L_1$ 的方向向量），于是有\n\n$[\\overline{M_0M}, s_1, s] = 0$ ，即 $\\begin{vmatrix} 1 & -1 & 5 \\\\ 1 & -1 & 1 \\\\ l & m & n \\end{vmatrix} = 0$ .\n\n由此得到\n\n$$\nl + m = 0.\\tag{①}\n$$\n\n此外，由于 $L$ 与平面 $\\pi_1$ 的夹角为 $\\alpha_0 = \\pi$ ，即 $L$ 与平面 $\\pi_1$ 平行，所以\n\n$$\n\\boldsymbol {s} \\cdot \\boldsymbol {n} = 3 l - 2 m + n = 0.\\tag{②}\n$$\n\n由①，②式解得 $l = -\\frac{1}{5} n$ ， $m = \\frac{1}{5} n$ ，所以 $L$ 的方向向量可取为 $s = (-1, 1, 5)$ ， $L$ 的方程为\n\n$$\n\\frac {x - 2}{- 1} = \\frac {y + 1}{1} = \\frac {z - 3}{5}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 只需求得直线 $L$ 与已知直线 $L_{1}$ 的交点.\n\n过点 $M(2, -1, 3)$ 作与已知平面 $\\pi_1$ 平行的平面 $\\pi: 3(x - 2) - 2(y + 1) + (z - 3) = 0$ ，求得平面 $\\pi$ 与直线 $L_1$ 的交点为 $N\\left(\\frac{8}{3}, -\\frac{5}{3}, -\\frac{1}{3}\\right)$ .\n\n由于 L 过点 $M(2,-1,3)$ 且与平面 $\\pi_{1}$ 平行，所以点 N 也是 L 与 $L_{1}$ 的交点，由此可写出 L 的方程."
+      },
+      {
+        "id": "s5",
+        "text": "方法3 直线 $L_{1}$ 的参数形式为 $\\left\\{ \\begin{array}{l} x = 1 + t \\\\ y = -t \\\\ z = -2 + t \\end{array} \\right.$ ，设 $L$ 与 $L_{1}$ 的交点为 $N(1 + t, -t, -2 + t)$ ，由 $L$ 平行于 $\\pi_{1}$ ，得\n\n$\\overrightarrow{MN}\\cdot n=0$ ，即 $3(t-1)-2(1-t)+(t-5)=0$ 。\n\n求得 $t=\\frac{5}{3}$ ，点 $N\\left(\\frac{8}{3},-\\frac{5}{3},-\\frac{1}{3}\\right)$ .\n\n评注 几何问题通常有多种解法；求直（曲）线与某平（曲）面的交点，用直（曲）线的参数式方程便于计算."
+      }
+    ],
+    "final_answer": "$t=\\frac{5}{3}$ ，点 $N\\left(\\frac{8}{3},-\\frac{5}{3},-\\frac{1}{3}\\right)$ .",
+    "techniques_used": [
+      "偏导数与全微分",
+      "方向导数与梯度",
+      "定义法",
+      "微分方程法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "方向导数与梯度",
+      "expected": "$t=\\frac{5}{3}$ ，点 $N\\left(\\frac{8}{3},-\\frac{5}{3},-\\frac{1}{3}\\right)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例3*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 224,
+    "starred": true,
+    "syllabus_note": "分段函数偏导/可微性*",
+    "commentary": "评注 几何问题通常有多种解法；求直（曲）线与某平（曲）面的交点，用直（曲）线的参数式方程便于计算."
+  }
+}

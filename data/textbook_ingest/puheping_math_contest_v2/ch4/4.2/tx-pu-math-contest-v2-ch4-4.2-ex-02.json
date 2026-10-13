@@ -1,0 +1,68 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-02",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $f(x, y)$ 可微， $\\frac{\\partial f}{\\partial x} = -f(x, y), f\\left(0, \\frac{\\pi}{2}\\right) = 1$ ，且满足 $\\lim_{n \\to \\infty} \\left(\\frac{f\\left(0, y + \\frac{1}{n}\\right)}{f(0, y)}\\right)^n = e^{\\cot y}$ 处，求 $f(x, y)$ .",
+  "answer": "$\\ln f(x,y) = -x + \\ln \\varphi (y)\\Rightarrow f(x,y) = \\varphi (y)\\mathrm{e}^{-x}$ ， $\\varphi (y)$ 为待定函数.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "定义法",
+    "微分方程法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）求出左边的极限就可得到一个函数等式或微分方程， $f(x,y)$ 的表达式就容易求得了.\n\n(2) 也可以先解微分方程 $\\frac{\\partial f}{\\partial x} = -f(x, y)$ ，再由所给极限式确定通解中的待定函数."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 利用偏导数的定义，得\n\n$$\n\\begin{array}{l}\\lim _ {n \\rightarrow \\infty} \\left[ \\frac {f (0 , y + \\frac {1}{n})}{f (0 , y)} \\right] ^ {n} = \\lim _ {n \\rightarrow \\infty} \\left[ 1 + \\frac {f (0 , y + \\frac {1}{n}) - f (0 , y)}{f (0 , y)} \\right] ^ {n}\\\\= \\exp \\left[ \\lim _ {n \\rightarrow \\infty} \\frac {f (0 , y + \\frac {1}{n}) - f (0 , y)}{\\frac {1}{n} f (0 , y)} \\right] = \\exp \\left(\\frac {f _ {y} (0 , y)}{f (0 , y)}\\right),\\end{array}\n$$\n\n所给等式化为\n\n$$\n\\mathrm{e} ^ {\\frac {f _ {y} (0 , y)}{f (0 , y)}} = \\mathrm{e} ^ {\\cot y}, \\text {即} \\frac {f _ {y} (0 , y)}{f (0 , y)} = \\cot y.\n$$\n\n对 $y$ 积分得\n\n$\\ln f(0,y) = \\ln \\sin y + \\ln C,$ 即 $f(0,y) = C\\sin y$\n\n代入 $f\\left(0, \\frac{\\pi}{2}\\right) = 1$ ，得 $C = 1$ ，所以 $f(0, y) = \\sin y$ 。又已知 $\\frac{\\partial f}{\\partial x} = -f(x, y)$ ，解得\n\n$f(x,y) = \\varphi (y)\\mathrm{e}^{-x}$ ， $\\varphi (y)$ 为待定函数.\n\n由 $f(0,y) = \\sin y$ ，得 $\\varphi (y) = \\sin y$ ，故 $f(x,y) = \\mathrm{e}^{-x}\\sin y$ ："
+      },
+      {
+        "id": "s3",
+        "text": "方法2 将方程 $\\frac{\\partial f}{\\partial x} = -f(x, y)$ 化为 $\\frac{f_x(x, y)}{f(x, y)} = -1$ ，视 $y$ 为常数，两边关于 $x$ 求积分，得\n\n$\\ln f(x,y) = -x + \\ln \\varphi (y)\\Rightarrow f(x,y) = \\varphi (y)\\mathrm{e}^{-x}$ ， $\\varphi (y)$ 为待定函数.\n\n将上式代入所给极限式，有\n\n$$\n\\mathrm{e} ^ {\\cot y} = \\lim _ {n \\rightarrow \\infty} \\left[ \\frac {\\varphi \\left(y + \\frac {1}{n}\\right)}{\\varphi (y)} \\right] ^ {n} = \\lim _ {n \\rightarrow \\infty} \\left[ 1 + \\frac {\\varphi \\left(y + \\frac {1}{n}\\right) - \\varphi (y)}{\\varphi (y)} \\right] ^ {n} = \\mathrm{e} ^ {\\frac {\\varphi^ {\\prime} (y)}{\\varphi (y)}},\n$$\n\n所以\n\n$$\n\\frac {\\varphi^ {\\prime} (y)}{\\varphi (y)} = \\cot y \\Rightarrow \\varphi (y) = C \\sin y.\n$$\n\n再由 $\\varphi\\left(\\frac{\\pi}{2}\\right)=f\\left(0,\\frac{\\pi}{2}\\right)=1\\Rightarrow C=1$ ，所以 $f(x,y)=e^{-x}\\sin y$ 。"
+      }
+    ],
+    "final_answer": "$\\ln f(x,y) = -x + \\ln \\varphi (y)\\Rightarrow f(x,y) = \\varphi (y)\\mathrm{e}^{-x}$ ， $\\varphi (y)$ 为待定函数.",
+    "techniques_used": [
+      "偏导数与全微分",
+      "定义法",
+      "微分方程法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "定义法",
+      "expected": "$\\ln f(x,y) = -x + \\ln \\varphi (y)\\Rightarrow f(x,y) = \\varphi (y)\\mathrm{e}^{-x}$ ， $\\varphi (y)$ 为待定函数."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 223,
+    "syllabus_note": "偏微分方程+边值求 f"
+  }
+}

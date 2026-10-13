@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-07",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.partial",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明若函数 $f(x, y)$ 在点 $P(x_0, y_0)$ 的某邻域 $U(P)$ 内的两个偏导数 $f_x(x, y)$ 与 $f_y(x, y)$ 均存在且有界，则 $f(x, y)$ 在 $U(P)$ 内连续.",
+  "answer": "连续.由点 $(x,y)$ 的任意性，知 $f(x,y)$ 在 $U(P)$ 内连续",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要建立函数与偏导数的联系，自然会想到拉格朗日中值定理. 所以只需将二元函数在一点的增量转化为一元函数的增量（偏增量）."
+      },
+      {
+        "id": "s2",
+        "text": "因为 $f$ 的两个偏导数在 $U(P)$ 内有界，则存在常数 $M > 0$ ，使得 $\\forall (x,y)\\in U(P)$ ，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\mid f _ {x} (x, y) \\mid \\leqslant M, \\mid f _ {y} (x, y) \\mid \\leqslant M.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "取 $(x + \\Delta x, y + \\Delta y) \\in U(P)$ ，由一元函数的拉格朗日中值定理，有"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\Delta f & = f (x + \\Delta x, y + \\Delta y) - f (x, y) \\\\ & = [ f (x + \\Delta x, y + \\Delta y) - f (x, y + \\Delta y) ] + [ f (x, y + \\Delta y) - f (x, y) ] \\\\ & = f _ {x} (x + \\theta_ {1} \\Delta x, y + \\Delta y) \\Delta x + f _ {x} (x, y + \\theta_ {2} \\Delta y) \\Delta y, \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "其中 $0 < \\theta_{1} < 1$ ， $0 < \\theta_{2} < 1$ .由此可得"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\left| \\Delta f \\right| \\leqslant \\left| f _ {x} (x + \\theta_ {1} \\Delta x, y + \\Delta y) \\Delta x \\right| + \\left| f _ {x} (x, y + \\theta_ {2} \\Delta y) \\Delta y \\right| \\leqslant M (\\left| \\Delta x \\right| + \\left| \\Delta y \\right|).\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "所以 $\\lim_{\\substack{\\Delta x\\to 0\\\\ \\Delta y\\to 0}}\\Delta f = 0$ ， $f(x,y)$ 在点 $(x,y)$ 处连续.由点 $(x,y)$ 的任意性，知 $f(x,y)$ 在 $U(P)$ 内连续"
+      }
+    ],
+    "final_answer": "连续.由点 $(x,y)$ 的任意性，知 $f(x,y)$ 在 $U(P)$ 内连续",
+    "techniques_used": [
+      "偏导数与全微分",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用偏导定义/全微分条件处理本题？",
+      "technique": "偏导数与全微分",
+      "expected": "用定义求偏导，或由可微条件写出线性主部。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终关于偏导/可微性的结论是什么？",
+      "technique": "证明技巧",
+      "expected": "连续.由点 $(x,y)$ 的任意性，知 $f(x,y)$ 在 $U(P)$ 内连续"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 227,
+    "syllabus_note": "偏导有界⇒连续（证明）",
+    "commentary": "评注 函数的可微、连续、偏导数及方向导数之间的关系如下："
+  }
+}

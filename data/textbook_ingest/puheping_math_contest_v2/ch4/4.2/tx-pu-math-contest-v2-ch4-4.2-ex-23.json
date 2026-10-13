@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.2-ex-23",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.chain",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设函数 $z = z(x, y)$ 有连续的二阶偏导数，且满足方程\n\n$$\n\\operatorname{div} (\\operatorname{grad} z) - 2 \\frac {\\partial^ {2} z}{\\partial y ^ {2}} = 0.\n$$\n\n（1）用变量代换 $u = x - y, v = x + y$ 将上述方程化为以 $u, v$ 为自变量的方程；\n\n(2) 已知 $z(x,2x)=x,\\quad z_{x}(x,2x)=x^{2}$ ，求 $z(x,y)$ .",
+  "answer": "所求函数为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "偏导数与全微分",
+    "方向导数与梯度",
+    "复合/隐函数求导",
+    "变量代换",
+    "微分方程法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）将 $\\operatorname{div}(\\operatorname{grad} z)$ 写成偏导数的形式，按复合函数求导法则计算、化简即可.\n\n（2）求解（1）中化简后的微分方程得到一般解，再由所给条件确定一般解中的待定函数.\n\n解（1） $\\operatorname{div}(\\operatorname{grad}z) = \\operatorname{div}(z_x, z_y) = z_{xx} + z_{yy}$ ，于是原方程为\n\n$$\n\\frac {\\partial^ {2} z}{\\partial x ^ {2}} - \\frac {\\partial^ {2} z}{\\partial y ^ {2}} = 0.\\tag{①}\n$$\n\n由于\n\n$$\n\\frac {\\partial z}{\\partial x} = \\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial x} = \\frac {\\partial z}{\\partial u} + \\frac {\\partial z}{\\partial v},\n\n\\frac {\\partial z}{\\partial y} = \\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial y} + \\frac {\\partial u}{\\partial v} \\cdot \\frac {\\partial v}{\\partial y} = - \\frac {\\partial z}{\\partial u} + \\frac {\\partial z}{\\partial v};\n\n\\frac {\\partial^ {2} z}{\\partial x ^ {2}} = \\frac {\\partial^ {2} z}{\\partial u ^ {2}} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial u \\partial v} \\cdot \\frac {\\partial v}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial v \\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}} \\cdot \\frac {\\partial v}{\\partial x} = \\frac {\\partial^ {2} z}{\\partial u ^ {2}} + 2 \\frac {\\partial^ {2} z}{\\partial u \\partial v} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}},\\tag{②}\n\n\\frac {\\partial^ {2} z}{\\partial y ^ {2}} = - \\frac {\\partial^ {2} z}{\\partial u ^ {2}} \\cdot \\frac {\\partial u}{\\partial y} - \\frac {\\partial^ {2} z}{\\part"
+      },
+      {
+        "id": "s2",
+        "text": "分析（1）将 $\\operatorname{div}(\\operatorname{grad} z)$ 写成偏导数的形式，按复合函数求导法则计算、化简即可.\n\n（2）求解（1）中化简后的微分方程得到一般解，再由所给条件确定一般解中的待定函数.\n\n解（1） $\\operatorname{div}(\\operatorname{grad}z) = \\operatorname{div}(z_x, z_y) = z_{xx} + z_{yy}$ ，于是原方程为\n\n$$\n\\frac {\\partial^ {2} z}{\\partial x ^ {2}} - \\frac {\\partial^ {2} z}{\\partial y ^ {2}} = 0.\\tag{①}\n$$\n\n由于\n\n$$\n\\frac {\\partial z}{\\partial x} = \\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial z}{\\partial v} \\cdot \\frac {\\partial v}{\\partial x} = \\frac {\\partial z}{\\partial u} + \\frac {\\partial z}{\\partial v},\n$$\n\n$$\n\\frac {\\partial z}{\\partial y} = \\frac {\\partial z}{\\partial u} \\cdot \\frac {\\partial u}{\\partial y} + \\frac {\\partial u}{\\partial v} \\cdot \\frac {\\partial v}{\\partial y} = - \\frac {\\partial z}{\\partial u} + \\frac {\\partial z}{\\partial v};\n$$\n\n$$\n\\frac {\\partial^ {2} z}{\\partial x ^ {2}} = \\frac {\\partial^ {2} z}{\\partial u ^ {2}} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial u \\partial v} \\cdot \\frac {\\partial v}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial v \\partial u} \\cdot \\frac {\\partial u}{\\partial x} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}} \\cdot \\frac {\\partial v}{\\partial x} = \\frac {\\partial^ {2} z}{\\partial u ^ {2}} + 2 \\frac {\\partial^ {2} z}{\\partial u \\partial v} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}},\\tag{②}\n$$\n\n$$\n\\frac {\\partial^ {2} z}{\\partial y ^ {2}} = - \\frac {\\partial^ {2} z}{\\partial u ^ {2}} \\cdot \\frac {\\partial u}{\\partial y} - \\frac {\\partial^ {2} z}{\\partial u \\partial v} \\cdot \\frac {\\partial v}{\\partial y} + \\frac {\\partial^ {2} z}{\\partial v \\partial u} \\cdot \\frac {\\partial u}{\\partial y} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}} \\cdot \\frac {\\partial v}{\\partial y} = \\frac {\\partial^ {2} z}{\\partial u ^ {2}} - 2 \\frac {\\partial^ {2} z}{\\partial u \\partial v} + \\frac {\\partial^ {2} z}{\\partial v ^ {2}}.\\tag{③}\n$$\n\n将②，③式代入①式，方程化为 $\\frac{\\partial^2z}{\\partial u\\partial v} = 0$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 方程 $\\frac{\\partial^{2}z}{\\partial u\\partial v}=0$ 两边对 v 求积分，得\n\n$$\n\\frac {\\partial z}{\\partial u} = \\varphi (u) (\\varphi (u) \\text {为} u \\text {的任意可微函数}).\n$$\n\n此式两边对 $u$ 求积分，得\n\n$$\nz = \\int \\varphi (u) d u + g (v) = f (u) + g (v),\n$$\n\n这里 $f, g$ 为任意可微函数. 于是\n\n$$\nz (x, y) = f (x - y) + g (x + y).\\tag{④}\n$$\n\n由条件 $z(x,2x) = x$ ，得\n\n$$\nf (- x) + g (3 x) = x.\\tag{⑤}\n$$\n\n④式两边对 $x$ 求偏导，得\n\n$$\nz _ {x} = f ^ {\\prime} (x - y) + g ^ {\\prime} (x + y),\n$$\n\n由条件 $z_{x}(x,2x) = x^{2}$ ，得\n\n$$\nz _ {x} (x, 2 x) = f ^ {\\prime} (- x) + g ^ {\\prime} (3 x) = x ^ {2}.\\tag{⑥}\n$$\n\n⑥式两边对 $x$ 求积分，得\n\n$$\n- 3 f (- x) + g (3 x) = x ^ {3} + C.\\tag{⑦}\n$$\n\n联立⑤式与⑦式，解得\n\n$$\nf (- x) = \\frac {1}{4} (x - x ^ {3}) - \\frac {1}{4} C, g (3 x) = \\frac {1}{4} (3 x + x ^ {3}) + \\frac {1}{4} C,\n$$\n\n即有\n\n$$\nf (x) = \\frac {1}{4} \\left(x ^ {3} - x\\right) - \\frac {1}{4} C, g (x) = \\frac {1}{4} x + \\frac {1}{1 0 8} x ^ {3} + \\frac {1}{4} C.\n$$\n\n于是由④式可得所求函数为\n\n$$\n\\begin{array}{r l} z (x, y) & = \\frac {1}{4} [ (x - y) ^ {3} - (x - y) ] - \\frac {1}{4} C + \\frac {1}{4} (x + y) + \\frac {1}{1 0 8} (x + y) ^ {3} + \\frac {1}{4} C \\\\ & = \\frac {1}{4} (x - y) ^ {3} + \\frac {1}{1 0 8} (x + y) ^ {3} + \\frac {1}{2} y. \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "所求函数为",
+    "techniques_used": [
+      "偏导数与全微分",
+      "方向导数与梯度",
+      "复合/隐函数求导",
+      "变量代换",
+      "微分方程法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用复合/隐函数求导或变量代换建立关系？",
+      "technique": "复合/隐函数求导",
+      "expected": "写出链式法则或全微分，必要时引入新自变量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终求导/证明结论是什么？",
+      "technique": "方向导数与梯度",
+      "expected": "所求函数为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.2",
+    "example_id": "例23",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数的微分法",
+    "page": 238,
+    "syllabus_note": "变量代换解二阶 PDE"
+  }
+}
