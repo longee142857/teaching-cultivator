@@ -78,7 +78,36 @@ def test_mcq_gate_ignores_math_args() -> None:
     check(looks("选 (A) 连续 (B) 可导"), "two (A)(B) tokens is MCQ")
     check(looks("A. 1\nB. 2\nC. 3"), "A./B. lines is MCQ")
     check(looks("下列正确的是 A. 连续 B. 可导"), "inline A. B. is MCQ")
+    check(looks("A) 连续 B) 可导"), "A) B) labels are MCQ")
     check(looks("recognize the equivalent infinitesimal"), "recognize keyword is MCQ")
+    check(looks("Recognize the definition"), "Recognize keyword is MCQ")
+    check(
+        looks("计算 \\sin x\n(A) 1\n(B) 2"),
+        "options after a tex command are MCQ",
+    )
+    check(
+        looks(r"选择题：比较 $\operatorname{rank}(A)$ 与 $\operatorname{rank}(B)$"),
+        "keyword beside operatorname is MCQ",
+    )
+    check(
+        looks("下列正确的是\n(A) $\\operatorname{rank}(A)$\n(B) $0$"),
+        "option lines beside operatorname are MCQ",
+    )
+
+    # §9.2 例20: (A)/(B) after \operatorname{rank} are matrix args, not choices.
+    ex20 = (
+        r"证明矩阵方程 AXB = C 有解的充分必要条件是 "
+        r"$\operatorname{rank}(A) = \operatorname{rank}(A \quad C)$ ， "
+        r"$\operatorname{rank}(B) = \operatorname{rank}\begin{pmatrix} B \\ C \end{pmatrix}$ 。"
+    )
+    check(not looks(ex20), r"\operatorname{rank}(A)(B) in math is not MCQ")
+    check(
+        not looks(r"证明 \operatorname{rank}(A)=\operatorname{rank}(B)。"),
+        r"bare \operatorname{rank}(A)(B) is not MCQ",
+    )
+    item20 = _math_item(question=ex20, item_form="proof_outline", ability_goal="construct")
+    errs20 = val.check_item(item20, _syll(), False, None)
+    check(not any("MCQ" in e for e in errs20), f"proof_outline operatorname {errs20}")
 
     ex07 = (
         "设函数 $f(x)$ 在 $[a, b]$ 上连续，且 $a < c < d < b$ ，"
