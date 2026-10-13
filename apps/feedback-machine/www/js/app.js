@@ -1101,11 +1101,11 @@
   function renderFeedback() {
     var item = state.current || {};
     var r = state.lastResult || { correct: false, comment: "", explain: "", submitted: state.draft };
-    var ok = !!r.correct;
-    var partial = !ok && !!r.partial;
-    var markCls = ok ? "ok" : partial ? "warn" : "bad";
-    var markText = ok ? "通过" : partial ? "部分通过" : "未通过";
-    var markSub = ok ? "作答正确" : partial ? "部分正确" : "作答不正确";
+    var banner = FqmLoop.gradeBanner(r);
+    var markCls = banner.cls;
+    var markText = banner.text;
+    var markSub = banner.sub;
+    var comment = FqmLoop.studentGradeComment(r.comment || "");
     var gmLabel = GRADE_MODE_LABEL[r.gradeMode] || "";
     var mastery =
       typeof r.masteryBefore === "number" && typeof r.masteryAfter === "number"
@@ -1128,7 +1128,7 @@
       '</div><div class="result-verdict">' +
       esc(markSub) +
       '</div><div class="stem-text">' +
-      FqmMath.renderMathMarkdown(r.comment || "") +
+      FqmMath.renderMathMarkdown(comment) +
       '</div><div class="meta">' +
       mastery +
       "</div></div>" +
@@ -1460,6 +1460,7 @@
         else {
           state.screen = "today";
           render();
+          refreshToday();
         }
       };
     });
@@ -1479,7 +1480,42 @@
     }
   }
 
+  function refreshToday() {
+    if (!FqmLoop.shouldRefreshToday(state)) return Promise.resolve();
+    if (!FqmConfig.isConfigured(cfg)) return Promise.resolve();
+    return FqmApi.bootstrap(cfg)
+      .then(function (data) {
+        if (FqmLoop.isUnauthorized(data) || !data || !data.ok) return;
+        if (state.busy || state.polling) return;
+        var overview = state.screen === "today" || state.screen === "done";
+        var draft = state.draft;
+        var currentId = state.current && state.current.id;
+        var lastResult = state.lastResult;
+        var explainOpen = state.explainOpen;
+        mergeItemsFromBootstrap(data);
+        if (currentId) {
+          var it = itemById(currentId);
+          if (it) state.current = it;
+          state.draft = draft;
+          state.lastResult = lastResult;
+          state.explainOpen = explainOpen;
+        }
+        if (state.screen === "done" && countOpen() > 0) {
+          state.screen = "today";
+          render();
+          return;
+        }
+        if (overview && (state.screen === "today" || state.screen === "done")) render();
+      })
+      .catch(function () {});
+  }
+
   function boot() {
+    if (typeof document !== "undefined" && document.addEventListener) {
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") refreshToday();
+      });
+    }
     if (!FqmConfig.isConfigured(cfg)) {
       state.screen = "settings";
       state.error = "首次使用请填写练习台 Token 与学员编号。DeepSeek Key 现在不用填。";

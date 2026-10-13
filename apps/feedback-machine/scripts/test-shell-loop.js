@@ -114,6 +114,17 @@ assert(
   "async grade still polls"
 );
 
+var leakedGrade =
+  "与参考答案不一致（ref 模式）。（LLM 不可用：Could not find a suitable TLS CA certificate bundle, invalid path: /home/ubuntu/teaching-cultivator-practice/venv/lib/python3.12/site-packages/certifi/cacert.pem）";
+var cleanGrade = loop.studentGradeComment(leakedGrade);
+assert(cleanGrade.indexOf("cacert.pem") < 0 && cleanGrade.indexOf("teaching-cultivator-practice") < 0, "grade comment drops the certifi path");
+assert(cleanGrade.indexOf("正式评分") >= 0, "grade comment says the fallback is not a formal grade");
+var fallbackBanner = loop.gradeBanner({ correct: false, gradeMode: "ref_fallback" });
+assert(fallbackBanner.text === "初判未对齐" && fallbackBanner.sub.indexOf("不是正式评分") >= 0, "LLM-down mismatch is not a normal wrong answer");
+assert(loop.gradeBanner({ correct: false, gradeMode: "llm" }).text === "未通过", "a real incorrect grade stays 未通过");
+assert(loop.shouldRefreshToday({ screen: "today", busy: false, polling: false }) === true, "today overview can refetch slots");
+assert(loop.shouldRefreshToday({ screen: "practice", busy: true, polling: false }) === false, "in-flight submit does not refetch");
+
 var wired = loop.tutorReplyText({ httpStatus: 501, error: "tutor_agent_not_wired" }, "为什么");
 assert(wired.indexOf("讲师暂时连不上") >= 0 && wired.indexOf("为什么") >= 0, "501 matches desk copy");
 assert(loop.tutorReplyText({ httpStatus: 200, reply: "看这一步" }, "x") === "看这一步", "JSON reply is shown");
@@ -122,6 +133,8 @@ var app = read("www/js/app.js");
 assert(/route === "feedback"[\s\S]{0,220}state\.busy = false[\s\S]{0,120}render\(/.test(app), "success path sets busy=false and render()");
 assert(/if \(state\.screen === "feedback"\) return;/.test(app), "finally still skips an already painted feedback screen");
 assert(/FqmLoop\.bankKind\(/.test(app), "empty-slot refill goes through bankKind");
+assert(app.indexOf("studentGradeComment") >= 0 && app.indexOf("gradeBanner") >= 0, "feedback render scrubs fallback copy");
+assert(app.indexOf("visibilitychange") >= 0, "shell refetches today slots when it returns to the foreground");
 assert(app.indexOf("不懂，问讲师") >= 0, "tutor entry uses the desk label");
 assert(app.indexOf("/api/v1/tutor/chat") === -1, "tutor URL stays in api.js");
 

@@ -179,6 +179,49 @@
     return !s || s === "general" || /^general-\d+$/.test(s);
   }
 
+  /**
+   * Drop TLS / certifi paths from a grade comment. Legacy API rows stored
+   * the raw exception after 「LLM 不可用：」.
+   */
+  function studentGradeComment(text) {
+    var raw = String(text || "");
+    var leaked = /（\s*LLM\s*不可用：|cacert\.pem|Could not find a suitable TLS|invalid path:|llm_failed:/i.test(raw);
+    var s = raw.replace(/（\s*LLM\s*不可用：[\s\S]*?）/g, "");
+    s = s.replace(/Could not find a suitable TLS CA certificate bundle[^\n）]*/gi, "");
+    s = s.replace(/invalid path:\s*\S+/gi, "");
+    s = s.replace(/\/[^\s）]*cacert\.pem/gi, "");
+    s = s.replace(/\s*llm_failed:\S*/gi, "");
+    s = s.replace(/[ \t]{2,}/g, " ").trim();
+    if (leaked && s.indexOf("LLM 暂不可用") < 0 && s.indexOf("正式评分") < 0) {
+      s = (s ? s + " " : "") + "讲师暂时无法批改，以上为参考答案初判，不是正式评分。";
+    }
+    return s;
+  }
+
+  function gradeBanner(result) {
+    var r = result || {};
+    var ok = !!r.correct;
+    var partial = !ok && !!r.partial;
+    if (r.gradeMode === "ref_fallback" && !partial) {
+      if (ok) {
+        return { cls: "ok", text: "初判通过", sub: "参考答案初判为一致，不是正式评分" };
+      }
+      return { cls: "warn", text: "初判未对齐", sub: "讲师暂时无法批改，不是正式评分" };
+    }
+    return {
+      cls: ok ? "ok" : partial ? "warn" : "bad",
+      text: ok ? "通过" : partial ? "部分通过" : "未通过",
+      sub: ok ? "作答正确" : partial ? "部分正确" : "作答不正确"
+    };
+  }
+
+  /** Foreground refetch of today's slots. Skip while a submit is in flight. */
+  function shouldRefreshToday(state) {
+    if (!state || state.busy || state.polling) return false;
+    if (state.screen === "settings" || state.screen === "loading") return false;
+    return true;
+  }
+
   function tutorReplyText(pack, asked) {
     pack = pack || {};
     if (isUnauthorized(pack)) return TOKEN_INVALID_MESSAGE;
@@ -205,6 +248,9 @@
     applyImmediateSubmit: applyImmediateSubmit,
     shouldPollAfterSubmit: shouldPollAfterSubmit,
     routeSubmit: routeSubmit,
+    studentGradeComment: studentGradeComment,
+    gradeBanner: gradeBanner,
+    shouldRefreshToday: shouldRefreshToday,
     isGeneralThread: isGeneralThread,
     tutorReplyText: tutorReplyText
   };

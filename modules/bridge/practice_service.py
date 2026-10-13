@@ -15,12 +15,26 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import threading
 import time
 from datetime import datetime, timedelta
 from typing import Any, Optional
 
 log = logging.getLogger("practice")
+
+# Student-facing note when lecturer grade cannot run and ref text is used.
+# Keep the "LLM" token: hydrate treats practice_ref rows as ref_fallback only
+# when feedback still mentions LLM. Never append the exception (CA paths).
+_REF_FALLBACK_NOTE = "（LLM 暂不可用，以上为参考答案初判，不是正式评分。）"
+_GRADE_LEAK_RE = re.compile(
+    r"（\s*LLM\s*不可用：.*?）"
+    r"|Could not find a suitable TLS CA certificate bundle[^\n）]*"
+    r"|invalid path:\s*\S+"
+    r"|/[^\s）]*cacert\.pem"
+    r"|\s*llm_failed:\S*",
+    re.IGNORECASE | re.DOTALL,
+)
 
 # In-process lecturer-grade jobs. Keyed by learner|item|push so a second
 # click cannot start another LLM grade while the first is still running.
@@ -301,6 +315,30 @@ def _params_summary(learner_id: str) -> dict[str, Any]:
         return {"eta": {}, "masteryWeak": []}
 
 
+def _scrub_student_grade_text(text: str) -> str:
+    """Drop filesystem / TLS exception text from a grade comment.
+
+    Legacy rows stored ``（LLM 不可用：{err}）`` with the certifi path. New
+    writes use ``_REF_FALLBACK_NOTE`` and never include the exception.
+    """
+    raw = str(text or "")
+    leaked = bool(_GRADE_LEAK_RE.search(raw))
+    cleaned = _GRADE_LEAK_RE.sub("", raw)
+    cleaned = re.sub(r"[ \t]{2,}", " ", cleaned).strip()
+    cleaned = re.sub(r"\s+([。])", r"\1", cleaned)
+    if leaked and "LLM 暂不可用" not in cleaned and "正式评分" not in cleaned:
+        cleaned = f"{cleaned}{_REF_FALLBACK_NOTE}".strip()
+    return cleaned
+
+
+def _student_ref_fallback_text(ref_feedback: str) -> str:
+    base = _scrub_student_grade_text(ref_feedback)
+    if "正式评分" in base:
+        return base
+    base = base.strip()
+    return f"{base}{_REF_FALLBACK_NOTE}" if base else _REF_FALLBACK_NOTE.strip("（）")
+
+
 def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[str, Any]]:
     if not attempt:
         return None
@@ -315,7 +353,7 @@ def _attempt_result_dto(attempt: dict | None, item_dto: dict) -> Optional[dict[s
         or attempt.get("user_answer")
         or ""
     )
-    feedback = (
+    feedback = _scrub_student_grade_text(
         meta.get("feedback")
         or meta.get("comment")
         or attempt.get("feedback")
@@ -1154,6 +1192,8 @@ def _execute_ref_fallback(
     err: BaseException,
 ) -> dict[str, Any]:
     correct, credit, feedback = _ref_grade(row, ua)
+    student = _student_ref_fallback_text(feedback)
+    log.warning("practice llm grade failed, ref fallback: %s", err)
     _record_ref_attempt(
         learner_id=lid,
         push_id=push_id,
@@ -1162,21 +1202,21 @@ def _execute_ref_fallback(
         subject=subject,
         correct=correct,
         credit=credit,
-        feedback=f"{feedback}（LLM 不可用：{err}）",
+        feedback=student,
         user_answer=ua,
         store=store,
     )
     return {
         "correct": correct,
         "partial": False,
-        "comment": feedback if correct else dto["commentBad"],
+        "comment": student,
         "explain": explain,
         "submitted": ua,
         "status": "applied",
         "credit": credit,
         "kp": kp,
         "gradeMode": "ref_fallback",
-        "warning": f"llm_failed:{err}",
+        "warning": "讲师暂时无法批改",
     }
 
 
