@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-20",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.linear1",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $h_1(x)$ 、 $h_2(x)$ 以及 $g(x)$ 当 $x \\geqslant x_0$ 时连续，且 $h_1(x) \\geqslant h_2(x)$ ，若函数 $u(x)$ 与 $v(x)$ 分别是微分方程 $y' + g(x)y = h_1(x)$ 与 $y' + g(x)y = h_2(x)$ 满足初值条件 $u(x_0) = v(x_0) = c$ 的解，证明：\n\n(1) 当 $x \\geqslant x_{0}$ 时，有 $v(x) \\geqslant u(x)$ .\n\n（2）在 $x > x_0$ 的附近，初值问题 $\\nu' + g(x)\\nu = \\nu^2$ ， $\\nu (x_0) = c$ 的解可以写成\n\n$$\n\\nu (x) = \\max _ {w} \\left(c e ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] d t} - \\int_ {x _ {0}} ^ {x} e ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] d t} w ^ {2} (s) d s\\right).\n$$\n\n其中，极大值对任何连续函数 $w(t)$ 在某个区间 $[x_0, x]$ 上是确定的.",
+  "answer": "$$ v (x) = \\max _ {w} \\left(c e ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] d t} - \\int_ {x _ {0}} ^ {x} e ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] d t} w ^ {2} (s) d s\\right). $$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "初值问题",
+    "证明技巧",
+    "定性/比较",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）只需证明方程 $w' + g(x)w = \\varphi (x)$ （ $\\varphi (x)\\geqslant 0$ )满足初值 $w(x_0) = 0$ 的解在 $x\\geqslant x_0$ 时非负.\n\n（2）借用（1）的结果，需要构造 $u(x)$ 所对应的一阶线性微分方程。由需要证明的结论可看出该方程应该是 $u' + (g - 2w)u = -w^2$ 。"
+      },
+      {
+        "id": "s2",
+        "text": "（1）记 $w(x)=v(x)-u(x)$ ， $\\varphi(x)=h_{2}(x)-h_{1}(x)$ ，由题意知，当 $x\\geqslant x_{0}$ 时， $\\varphi(x)\\geqslant0$ ，且有\n\n$$\nu ^ {\\prime} + g (x) u = h _ {1} (x), v ^ {\\prime} + g (x) v = h _ {2} (x).\n$$\n\n两式相减得\n\n$$\nw ^ {\\prime} + g (x) w = \\varphi (x), \\quad w \\left(x _ {0}\\right) = 0.\n$$\n\n满足初值的解为\n\n$$\nw (x) = \\mathrm{e} ^ {- \\int_ {x _ {0}} ^ {x} g (t) \\mathrm{d} t} \\left(\\int_ {x _ {0}} ^ {x} \\mathrm{e} ^ {\\int_ {x _ {0}} ^ {s} g (t) \\mathrm{d} t} \\varphi (s) \\mathrm{d} s\\right).\n$$\n\n当 $x \\geqslant x_0$ 时，显然有 $w(x) \\geqslant 0$ ，即 $\\nu(x) \\geqslant u(x)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 假定 v 在某个区间 $[x_{0}, x]$ 上满足 $v' + g(x)v = v^{2}$ ， $v(x_{0}) = c$ ，并在 $[x_{0}, x]$ 上任选一个连续函数 w，则 $(v - w)^{2} \\geqslant 0$ ， $v^{2} \\geqslant 2wv - w^{2}$ ， $v' + g(x)v \\geqslant 2wv - w^{2}$ ，即有\n\n$$\nv ^ {\\prime} + (g - 2 w) v \\geqslant - w ^ {2}, v \\left(x _ {0}\\right) = c.\\tag{①}\n$$\n\n做方程\n\n$$\nu ^ {\\prime} + (g - 2 w) u = - w ^ {2}, \\quad u (x _ {0}) = c.\\tag{②}\n$$\n\n方程②的解为\n\n$$\n\\begin{array}{l} u (x) = \\mathrm{e} ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] \\mathrm{d} t} \\left(c - \\int_ {x _ {0}} ^ {x} \\mathrm{e} ^ {\\int_ {x _ {0}} ^ {s} [ g (t) - 2 w (t) ] \\mathrm{d} t} w ^ {2} (s) \\mathrm{d} s\\right) \\\\ = c \\mathrm{e} ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] \\mathrm{d} t} - \\int_ {x _ {0}} ^ {x} \\mathrm{e} ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] \\mathrm{d} t} w ^ {2} (s) \\mathrm{d} s. \\end{array}\n$$\n\n由（1）知 $v(x) \\geqslant u(x)$ . 若取 $w = v$ ，则上面一系列不等式成为等式. 因此\n\n$$\nv (x) = \\max _ {w} \\left(c e ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] d t} - \\int_ {x _ {0}} ^ {x} e ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] d t} w ^ {2} (s) d s\\right).\n$$"
+      }
+    ],
+    "final_answer": "$$ v (x) = \\max _ {w} \\left(c e ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] d t} - \\int_ {x _ {0}} ^ {x} e ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] d t} w ^ {2} (s) d s\\right). $$",
+    "techniques_used": [
+      "初值问题",
+      "证明技巧",
+      "定性/比较",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是一阶线性（或可化为线性/伯努利）吗？积分因子或标准形是什么？",
+      "technique": "定性/比较",
+      "expected": "化为 y′+P(x)y=Q(x)（或伯努利），写出积分因子并积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$$ v (x) = \\max _ {w} \\left(c e ^ {- \\int_ {x _ {0}} ^ {x} [ g (t) - 2 w (t) ] d t} - \\int_ {x _ {0}} ^ {x} e ^ {\\int_ {x} ^ {s} [ g (t) - 2 w (t) ] d t} w ^ {2} (s) d s\\right). $$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例20*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 360,
+    "starred": true,
+    "syllabus_note": "一阶线性解的比较定理*",
+    "commentary": "评注 该题中的结论（1）也称为一阶线性微分方程的比较定理，该结论也可推广到二阶线性微分方程的初值问题（见7.2节例18）."
+  }
+}

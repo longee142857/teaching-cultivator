@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-13",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求下列微分方程的通解：\n\n(1) $2xy\\mathrm{d}x - \\left(x^{2} + y^{3}\\sin y\\right)\\mathrm{d}y = 0$\n\n(2) $(y\\cos x - x\\sin x)\\mathrm{d}x + (y\\sin x + x\\cos x)\\mathrm{d}y = 0.$",
+  "answer": "y = 0.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "一阶线性",
+    "全微分方程",
+    "证明技巧",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 两个方程都难以判断其类型，看能否用上题评注中的方法找到积分因子，或通过凑微分化为全微分方程.\n\n解（1）方法1 将方程左端重新组合并凑微分，有\n\n$$\n\\begin{array}{l} \\left(y \\mathrm{d} x ^ {2} - x ^ {2} \\mathrm{d} y\\right) - y ^ {3} \\sin y \\mathrm{d} y = 0, \\\\ \\frac {y \\mathrm{d} x ^ {2} - x ^ {2} \\mathrm{d} y}{y ^ {2}} - y \\sin y \\mathrm{d} y = 0, \\\\ \\mathrm{d} \\left(\\frac {x ^ {2}}{y}\\right) - \\mathrm{d} (\\sin y - y \\cos y) = 0. \\end{array}\n$$\n\n得方程的通解\n\n$$\n\\frac {x ^ {2}}{y} - \\sin y + y \\cos y = C.\n$$\n\n方法2 找积分因子，这里 $P = 2xy$ ， $Q = -\\left(x^{2} + y^{3}\\sin y\\right)$ ，有\n\n$$\n\\frac {1}{P} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) = \\frac {1}{P} [ - 2 x - 2 x ] = - \\frac {2}{y},\n$$\n\n因而 $\\mu = e^{\\int -\\frac{2}{y} dy} = \\frac{1}{y^2}$ 是方程的一个积分因子，用 $\\frac{1}{y^2}$ 乘以原方程得全微分方程，再求解（略）.\n\n(2) 方法 1 找积分因子，这里 $P = y \\cos x - x \\sin x, Q = y \\sin x + x \\cos x$ ，有\n\n$$\n\\frac {1}{P} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) = \\frac {1}{P} \\left[ (y \\cos x + \\cos x - x \\sin x) - \\cos x \\right] = 1,\n$$\n\n因而 $\\mu = \\mathrm{e}^{\\int \\mathrm{d}y} = \\mathrm{e}^{y}$ 是方程的一个积分因子，用 $\\mathbf{e}^y$ 乘以原方程得全微分方程\n\n$$\n\\mathrm{e} ^ {y} (y \\cos x - x \\sin x) \\mathrm{d} x + \\mathrm{e} ^ {y} (y \\sin x + x \\cos x) \\mathrm{d} y = 0.\n$$\n\n用曲线积分求势函数\n\n$$\n\\begin{array}{r l} u (x, y) & = \\int_ {(0, 0)} ^ {(x, y)} e ^ {y} (y \\cos x - x \\sin x) d x + e ^ {y} (y \\sin x + x \\cos x) d y \\\\ & = \\int_ {0} ^ {x} - x \\sin x d x + \\int_ {0} ^ {y} e ^ {y} (y \\sin x + x \\cos x) d y \\\\ & = [ x \\cos x - \\sin x ] + [ e ^ {y} (y - 1) "
+      },
+      {
+        "id": "s2",
+        "text": "分析 两个方程都难以判断其类型，看能否用上题评注中的方法找到积分因子，或通过凑微分化为全微分方程.\n\n解（1）方法1 将方程左端重新组合并凑微分，有\n\n$$\n\\begin{array}{l} \\left(y \\mathrm{d} x ^ {2} - x ^ {2} \\mathrm{d} y\\right) - y ^ {3} \\sin y \\mathrm{d} y = 0, \\\\ \\frac {y \\mathrm{d} x ^ {2} - x ^ {2} \\mathrm{d} y}{y ^ {2}} - y \\sin y \\mathrm{d} y = 0, \\\\ \\mathrm{d} \\left(\\frac {x ^ {2}}{y}\\right) - \\mathrm{d} (\\sin y - y \\cos y) = 0. \\end{array}\n$$\n\n得方程的通解\n\n$$\n\\frac {x ^ {2}}{y} - \\sin y + y \\cos y = C.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 找积分因子，这里 $P = 2xy$ ， $Q = -\\left(x^{2} + y^{3}\\sin y\\right)$ ，有\n\n$$\n\\frac {1}{P} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) = \\frac {1}{P} [ - 2 x - 2 x ] = - \\frac {2}{y},\n$$\n\n因而 $\\mu = e^{\\int -\\frac{2}{y} dy} = \\frac{1}{y^2}$ 是方程的一个积分因子，用 $\\frac{1}{y^2}$ 乘以原方程得全微分方程，再求解（略）."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 方法 1 找积分因子，这里 $P = y \\cos x - x \\sin x, Q = y \\sin x + x \\cos x$ ，有\n\n$$\n\\frac {1}{P} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) = \\frac {1}{P} \\left[ (y \\cos x + \\cos x - x \\sin x) - \\cos x \\right] = 1,\n$$\n\n因而 $\\mu = \\mathrm{e}^{\\int \\mathrm{d}y} = \\mathrm{e}^{y}$ 是方程的一个积分因子，用 $\\mathbf{e}^y$ 乘以原方程得全微分方程\n\n$$\n\\mathrm{e} ^ {y} (y \\cos x - x \\sin x) \\mathrm{d} x + \\mathrm{e} ^ {y} (y \\sin x + x \\cos x) \\mathrm{d} y = 0.\n$$\n\n用曲线积分求势函数\n\n$$\n\\begin{array}{r l} u (x, y) & = \\int_ {(0, 0)} ^ {(x, y)} e ^ {y} (y \\cos x - x \\sin x) d x + e ^ {y} (y \\sin x + x \\cos x) d y \\\\ & = \\int_ {0} ^ {x} - x \\sin x d x + \\int_ {0} ^ {y} e ^ {y} (y \\sin x + x \\cos x) d y \\\\ & = [ x \\cos x - \\sin x ] + [ e ^ {y} (y - 1) \\sin x + \\sin x + (e ^ {y} - 1) x \\cos x ] \\\\ & = e ^ {y} [ (y - 1) \\sin x + x \\cos x ]. \\end{array}\n$$\n\n则原方程的通解为\n\n$$\n\\mathrm{e} ^ {y} [ (y - 1) \\sin x + x \\cos x ] = C.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "方法2 将方程左端重新组合并凑微分，有\n\n$$\n\\begin{array}{l} \\left(y \\cos x - x \\sin x\\right) d x + \\left(y \\sin x + x \\cos x\\right) d y \\\\ = \\left(y d \\sin x + \\sin x d y\\right) - x \\sin x d x + [ (y - 1) \\sin x + x \\cos x ] d y \\\\ = d (y \\sin x) + d (x \\cos x - \\sin x) + [ (y - 1) \\sin x + x \\cos x ] d y \\\\ = d [ (y - 1) \\sin x + x \\cos x ] + [ (y - 1) \\sin x + x \\cos x ] d y. \\end{array}\n$$\n\n则原方程可化为\n\n$$\n\\frac {\\mathrm{d} [ (y - 1) \\sin x + x \\cos x ]}{(y - 1) \\sin x + x \\cos x} + \\mathrm{d} y = 0.\n$$\n\n积分可得通解 $\\mathbf{e}^y[(y - 1)\\sin x + x\\cos x] = C.$\n\n评注 可以证明, 凡能用初等积分法求解的一阶微分方程都能通过乘以积分因子化为全微分方程, 所以当一个方程的类型难以辨别时, 不妨从化为全微分方程（凑微分或求积分因子）的思路去寻找求解方法."
+      }
+    ],
+    "final_answer": "y = 0.",
+    "techniques_used": [
+      "一阶线性",
+      "全微分方程",
+      "证明技巧",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程属于可分离、齐次、全微分还是需变量代换？关键化简步骤是什么？",
+      "technique": "全微分方程",
+      "expected": "判定类型后分离变量/齐次代换/求积分因子或建立方程。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "全微分方程",
+      "expected": "y = 0."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例13",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 356,
+    "syllabus_note": "全微分/恰当方程通解",
+    "commentary": "评注 可以证明, 凡能用初等积分法求解的一阶微分方程都能通过乘以积分因子化为全微分方程, 所以当一个方程的类型难以辨别时, 不妨从化为全微分方程（凑微分或求积分因子）的思路去寻找求解方法."
+  }
+}

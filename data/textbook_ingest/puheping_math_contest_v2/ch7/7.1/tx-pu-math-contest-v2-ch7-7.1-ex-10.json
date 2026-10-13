@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-10",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.linear1",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设初值问题 $\\left\\{ \\begin{array}{l} x \\frac{\\mathrm{d}y}{\\mathrm{d}x} - (2x^2 + 1)y = x^2, \\\\ y(1) = y_1 \\end{array} \\right.$ 的解为 $y(x)$ ，确定 $y_1$ 的值，使得 $\\lim_{x \\to +\\infty} y(x)$ 存在，并求该极限.",
+  "answer": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "一阶线性",
+    "初值问题",
+    "建立微分方程",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 一阶线性方程容易求得其解. 为便于讨论极限, 解的公式中用定积分表示较好.\n\n初值问题写成 $\\left\\{\\begin{aligned}\\frac{\\mathrm{d}y}{\\mathrm{d}x}-\\left(2x+\\frac{1}{x}\\right)y&=x,\\quad x\\geqslant1\\\\ y(1)&=y_{1}\\end{aligned}\\right.$\n\n由一阶线性方程的求解公式得到\n\n$$\n\\begin{array}{r l} y (x) & = \\mathrm{e} ^ {\\int_ {1} ^ {x} \\left(2 t + \\frac {1}{t}\\right) \\mathrm{d} t} \\left[ \\int_ {1} ^ {x} t \\mathrm{e} ^ {- \\int_ {1} ^ {t} \\left(2 s + \\frac {1}{s}\\right) \\mathrm{d} s} \\mathrm{d} t + y _ {1} \\right] \\\\ & = \\mathrm{e} ^ {- 1} x \\mathrm{e} ^ {x ^ {2}} \\left[ \\int_ {1} ^ {x} \\mathrm{e} \\cdot \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t + y _ {1} \\right] = x \\mathrm{e} ^ {x ^ {2}} \\left(\\int_ {1} ^ {x} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t + y _ {1} \\mathrm{e} ^ {- 1}\\right). \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "注意到 $\\lim_{x\\to +\\infty}xE^{x^2} = +\\infty$ ， $\\lim_{x\\to +\\infty}\\int_0^x\\mathrm{e}^{-t^2}\\mathrm{d}t = \\frac{\\sqrt{\\pi}}{2}$ ，要使 $\\lim_{x\\to +\\infty}y(x)$ 存在，必须有\n\n$$\n\\lim _ {x \\rightarrow + \\infty} \\left(\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}\\right) = 0,\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即\n\n$$\ny _ {1} = - \\mathrm{e} \\lim _ {x \\rightarrow + \\infty} \\int_ {1} ^ {x} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t = \\mathrm{e} \\left(\\int_ {0} ^ {1} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t - \\frac {\\sqrt {\\pi}}{2}\\right).\n$$\n\n此时\n\n$$\n\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.\n$$"
+      }
+    ],
+    "final_answer": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.",
+    "techniques_used": [
+      "一阶线性",
+      "初值问题",
+      "建立微分方程",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是一阶线性（或可化为线性/伯努利）吗？积分因子或标准形是什么？",
+      "technique": "一阶线性",
+      "expected": "化为 y′+P(x)y=Q(x)（或伯努利），写出积分因子并积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "初值问题",
+      "expected": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} "
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 353,
+    "syllabus_note": "一阶线性初值+极限存在",
+    "commentary": "评注 一阶线性方程 $\\frac{\\mathrm{d}y}{\\mathrm{d}x} + p(x)y = q(x)$ 的通解公式常用不定积分表示，但如果要对其解函数的某些性质进行研讨，则用如下定积分形式更方便：\n\n$$\ny (x) = \\mathrm{e} ^ {- \\int_ {x _ {0}} ^ {x} p (t) \\mathrm{d} t} \\left(\\int_ {x _ {0}} ^ {x} q (t) \\mathrm{e} ^ {\\int_ {x _ {0}} ^ {t} p (s) \\mathrm{d} s} \\mathrm{d} t + y _ {0}\\right).\n$$\n\n若 $y_0 = y(x_0)$ ，上式就是满足该初值的特解；若 $y_0$ 是任意常数，上式就是通解.\n\n本题方程的解若用不定积分表示，就很难讨论其极限情况. 下题也类似."
+  }
+}

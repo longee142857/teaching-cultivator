@@ -1,0 +1,274 @@
+{
+  "section": "7.1",
+  "chapter": "第7章 常微分方程",
+  "title": "一阶微分方程",
+  "page_range": [
+    348,
+    361
+  ],
+  "page_note": "merged MD 「7.1 一阶微分方程」→ ## 习题7.1; OCR PDF pages 348–361 (printed TOC ~341–354)",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 20,
+  "starred_count": 6,
+  "starred": [
+    "例14*",
+    "例15*",
+    "例16*",
+    "例17*",
+    "例18*",
+    "例20*"
+  ],
+  "l3_counts": {
+    "math.calc.ode.first": 14,
+    "math.calc.ode.linear1": 6
+  },
+  "l2_counts": {
+    "常微分方程": 20
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch7-7.1-ex-01",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-02",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-03",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-04",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-05",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-06",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-07",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-08",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-09",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-10",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-11",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-12",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-13",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-14",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-15",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-16",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-17",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-18",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-19",
+    "tx-pu-math-contest-v2-ch7-7.1-ex-20"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-01",
+      "example_id": "例1",
+      "page": 348,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-02",
+      "example_id": "例2",
+      "page": 349,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-03",
+      "example_id": "例3",
+      "page": 349,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-04",
+      "example_id": "例4",
+      "page": 350,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-05",
+      "example_id": "例5",
+      "page": 350,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-06",
+      "example_id": "例6",
+      "page": 351,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-07",
+      "example_id": "例7",
+      "page": 351,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-08",
+      "example_id": "例8",
+      "page": 352,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-09",
+      "example_id": "例9",
+      "page": 352,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-10",
+      "example_id": "例10",
+      "page": 353,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-11",
+      "example_id": "例11",
+      "page": 354,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-12",
+      "example_id": "例12",
+      "page": 355,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-13",
+      "example_id": "例13",
+      "page": 356,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-14",
+      "example_id": "例14*",
+      "page": 357,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-15",
+      "example_id": "例15*",
+      "page": 358,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-16",
+      "example_id": "例16*",
+      "page": 358,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-17",
+      "example_id": "例17*",
+      "page": 358,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-18",
+      "example_id": "例18*",
+      "page": 359,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-19",
+      "example_id": "例19",
+      "page": 360,
+      "l3_id": "math.calc.ode.first",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch7-7.1-ex-20",
+      "example_id": "例20*",
+      "page": 360,
+      "l3_id": "math.calc.ode.linear1",
+      "l2": "常微分方程",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-16",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求微分方程 $y + y' = \\ln \\sqrt{1 + y'^{2}}$ 的通解.",
+  "answer": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分离变量",
+    "一阶线性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 方程的特点是不显含变量 $x$ 。如果令 $y' = \\tan t$ ，代入方程可得 $y = \\ln |\\sec t| - \\tan t$ ，若能求得 $x$ 关于变量 $t$ 的表达式，则微分方程的解就找到了（解为参数式函数）。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $y' = \\tan t$ ，代入方程得 $y = \\ln |\\sec t| - \\tan t$ 。所以"
+      },
+      {
+        "id": "s3",
+        "text": "$\\mathrm{d}x = \\frac{\\mathrm{dy}}{y'} = \\left(1 - \\frac{\\sec^2 t}{\\tan t}\\right)\\mathrm{d}t$ ，积分得 $x = t - \\ln |\\tan t| + C$"
+      },
+      {
+        "id": "s4",
+        "text": "于是得到微分方程参数形式的通解"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\left\\{ \\begin{array}{l} x = t - \\ln | \\tan t | + C, \\\\ y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.",
+    "techniques_used": [
+      "分离变量",
+      "一阶线性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程属于可分离、齐次、全微分还是需变量代换？关键化简步骤是什么？",
+      "technique": "分离变量",
+      "expected": "判定类型后分离变量/齐次代换/求积分因子或建立方程。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "一阶线性",
+      "expected": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例16*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 358,
+    "starred": true,
+    "syllabus_note": "含 y+y′ 的一阶方程通解*",
+    "commentary": "评注 （1）通常称微分方程的这类解法叫“参数式解法”。若能消去参数，则就是通积分（隐函数解）。\n\n(2) 形如 $F(y, y') = 0$ 或 $F(x, y') = 0$ 的方程，可考虑用“参数式解法”求解.\n\n对方程 $F(y, y') = 0$ ，可令 $y = \\varphi(t)$ ，由方程解得 $y' = \\psi(t)$ （或令 $y' = \\psi(t)$ ，解得 $y = \\varphi(t)$ ），再由 $\\mathrm{d}x = \\frac{\\mathrm{d}y}{y'} = \\frac{\\varphi'(t)}{\\psi(t)}\\mathrm{d}t$ ，积分得 $x = \\int \\frac{\\varphi'(t)}{\\psi(t)}\\mathrm{d}t$ 。即微分方程的通解为 $\\left\\{ \\begin{array}{l} x = \\int \\frac{\\varphi'(t)}{\\psi(t)}\\mathrm{d}t \\\\ y = \\varphi(t) \\end{array} \\right.$ （显然 $y = \\varphi(t)$ 或 $y' = \\psi(t)$ 的选取具有多样性）。\n\n将上面解法中的 $y$ 换为 $x$ ，很容易得到 $F(x, y') = 0$ 型方程的求解."
+  }
+}

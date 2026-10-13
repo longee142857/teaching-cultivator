@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-07",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.linear1",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 上有定义， $f'(0) = 1$ ，且对任何 $x, y \\in (-\\infty, + \\infty)$ 恒有 $f(x + y) = e^y f(x) + e^x f(y)$ ，求 $f(x)$ .",
+  "answer": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "一阶线性",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 利用所给函数关系式来建立微分方程. 由于题设只给出了函数在点 $x = 0$ 可导的信息, 所以\n\n只能利用导数的定义来求函数的导数."
+      },
+      {
+        "id": "s2",
+        "text": "令 $x = y = 0$ ，得 $f(0) = f(0) + f(0) \\Rightarrow f(0) = 0$ 。则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{l}\\lim _ {y \\rightarrow 0} \\frac {f (x + y) - f (x)}{y} = \\lim _ {y \\rightarrow 0} \\frac {\\mathrm{e} ^ {y} f (x) + \\mathrm{e} ^ {x} f (y) - f (x)}{y}\\\\= \\lim _ {y \\rightarrow 0} \\left[ \\mathrm{e} ^ {x} \\cdot \\frac {f (y) - f (0)}{y} + f (x) \\cdot \\frac {\\mathrm{e} ^ {y} - 1}{y} \\right] = \\mathrm{e} ^ {x} f ^ {\\prime} (0) + f (x),\\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "即"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nf ^ {\\prime} (x) = \\mathrm{e} ^ {x} + f (x) \\Rightarrow f ^ {\\prime} (x) - f (x) = \\mathrm{e} ^ {x}.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "该一阶线性微分方程的通解为"
+      },
+      {
+        "id": "s7",
+        "text": "$$\nf (x) = \\mathrm{e} ^ {\\int \\mathrm{d} x} \\left[ \\int \\mathrm{e} ^ {x} \\mathrm{e} ^ {- \\int \\mathrm{d} x} \\mathrm{d} x + C \\right] = \\mathrm{e} ^ {x} [ x + C ].\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "由 $f(0) = 0$ ，得 $C = 0$ 所以 $f(x) = x\\mathrm{e}^x$"
+      }
+    ],
+    "final_answer": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$",
+    "techniques_used": [
+      "一阶线性",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是一阶线性（或可化为线性/伯努利）吗？积分因子或标准形是什么？",
+      "technique": "一阶线性",
+      "expected": "化为 y′+P(x)y=Q(x)（或伯努利），写出积分因子并积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "分离变量",
+      "expected": "C = 0$ 所以 $f(x) = x\\mathrm{e}^x$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 351,
+    "syllabus_note": "函数方程→一阶线性",
+    "commentary": "评注 一阶线性微分方程 $y' + p(x)y = q(x)$ 的求解有以下3种常见的方法：\n\n① 公式法： $y = e^{-\\int p(x)dx}\\left[\\int q(x)e^{\\int p(x)dx}dx + C\\right]$ 或 $y = e^{-\\int_{x_0}^x p(t)dt}\\left[\\int_{x_0}^x q(s)e^{\\int_{x_0}^s p(t)dt}ds + C\\right].$\n\n② 常数变易法：先求对应齐次方程的通解 $y = C\\mathrm{e}^{-\\int p(x)\\mathrm{d}x}$ ；设非齐次方程的解为 $y = C(x)\\mathrm{e}^{-\\int p(x)\\mathrm{d}x}$ ，代入非齐次方程解得 $C(x) = \\int q(x)\\mathrm{e}^{\\int p(x)\\mathrm{d}x}\\mathrm{d}x + C$ ，得非齐次方程的通解 $y = \\mathrm{e}^{-\\int p(x)\\mathrm{d}x}\\left[\\int q(x)\\mathrm{e}^{\\int p(x)\\mathrm{d}x}\\mathrm{d}x + C\\right]$ .\n\n③ 积分因子法：方程两边乘 $\\mathrm{e}^{\\int p(x)\\mathrm{d}x}$ ，得 $\\frac{\\mathrm{d}}{\\mathrm{d}x}\\left(\\mathrm{e}^{\\int p(x)\\mathrm{d}x}y\\right) = q(x)\\mathrm{e}^{\\int p(x)\\mathrm{d}x}$ ，两边积分得通解."
+  }
+}

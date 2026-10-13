@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-18",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "考虑 $x$ 的两个可微的且不恒为零的函数，使得它们之商的导数等于它们的导数之商。如果已知其中一个函数，试求出另一个函数的表达式，并给出这样两个具体函数的例子。",
+  "answer": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "齐次方程",
+    "一阶线性",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 需找出非零函数 $f$ 和 $g$ ，使得 $\\left(\\frac{f}{g}\\right)' = \\frac{f'}{g'}$ 。由于 $f$ 与 $g$ 不可交换，即 $\\left(\\frac{f}{g}\\right)' = \\frac{f'}{g'}$ 成立时，未必有 $\\left(\\frac{g}{f}\\right)' = \\frac{g'}{f'}$ 也成立，所以需分别讨论已知 $f$ 与已知 $g$ 的情况。\n\n设 $f$ 和 $g$ 是两个满足题设条件的函数，由题意 $\\frac{f'g - fg'}{g^2} = \\frac{f'}{g'}$ 变形为"
+      },
+      {
+        "id": "s2",
+        "text": "$$\ng (g ^ {\\prime} - g) f ^ {\\prime} - g ^ {2} f = 0.\\tag{①}\n$$\n\n若 $g$ 是某区间 $I$ 上已知的可微函数，当 $g$ 、 $g' - g$ 和 $g'$ 在 $I$ 上都不等于零时，则①式是未知函数 $f$ 的一个一阶线性齐次微分方程，其通解为\n\n$$\nf (x) = C \\exp \\int \\frac {g ^ {\\prime 2}}{g (g ^ {\\prime} - g)} \\mathrm{d} x \\quad (\\text {任意常数} C \\neq 0).\\tag{②}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "为确定出一个具体的函数, 取 $I = \\mathbb{R}$ 和 $g(x) = \\mathrm{e}^{\\lambda x}$ , 若 $\\lambda \\neq 1$ , 由②式可得 $f(x) = C \\exp \\left( \\frac{\\lambda^2}{\\lambda - 1} \\right)x$ . 例如选择 $\\lambda = 2$ , $C = 1$ , 便有 $f(x) = \\mathrm{e}^{4x}$ , $g(x) = \\mathrm{e}^{2x}$ , $f(x) / g(x) = \\mathrm{e}^{2x}$ , 且 $(f / g)' = 2\\mathrm{e}^{2x} = f' / g'$ ."
+      },
+      {
+        "id": "s4",
+        "text": "若 $f$ 是某区间 $I$ 上已知的可微函数，当 $f$ 在 $I$ 上不等于零时，则①式是未知函数 $g$ 的一个一阶非线性齐次微分方程（“齐次微分方程”的概念与求解，参看7.2节例7评注）。令 $g(x) = \\mathrm{e}^{\\int z(x)\\mathrm{d}x}$ ，方程①化为\n\n$$\nf z ^ {2} - f ^ {\\prime} z + f ^ {\\prime} = 0.\n$$\n\n解得 $z = \\frac{f' \\pm \\sqrt{f'^2 - 4f'f}}{2f}$ ，则方程①的通解为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\ng (x) = C \\exp \\int \\frac {f ^ {\\prime} \\pm \\sqrt {f ^ {\\prime 2} - 4 f ^ {\\prime} f}}{2 f} \\mathrm{d} x (\\text {任意常数} C \\neq 0).\\tag{③}\n$$\n\n若取 $f(x) = \\mathrm{e}^{\\lambda x}$ （ $\\lambda \\neq 1$ ），由③式可得 $g(x) = C \\exp \\left(\\frac{\\lambda \\pm \\sqrt{\\lambda^2 - 4\\lambda}}{2}\\right)x$ ，取 $\\lambda = 4$ ， $C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。"
+      }
+    ],
+    "final_answer": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
+    "techniques_used": [
+      "齐次方程",
+      "一阶线性",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程属于可分离、齐次、全微分还是需变量代换？关键化简步骤是什么？",
+      "technique": "齐次方程",
+      "expected": "判定类型后分离变量/齐次代换/求积分因子或建立方程。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "一阶线性",
+      "expected": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例18*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 359,
+    "starred": true,
+    "syllabus_note": "两函数商导数关系求表达式*"
+  }
+}
