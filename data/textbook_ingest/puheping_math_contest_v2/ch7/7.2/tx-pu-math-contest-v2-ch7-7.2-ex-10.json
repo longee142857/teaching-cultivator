@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "解方程 $y'' - 3y' + 2y = 2\\mathrm{e}^{-x}\\cos x + \\mathrm{e}^{2x}(4x + 5)$ .",
-  "answer": "y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}",
+  "answer": "$y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "常系数线性",
@@ -39,7 +39,7 @@
         "text": "$$\ny = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e} ^ {2 x} (2 x ^ {2} + x) \\cdot\n$$"
       }
     ],
-    "final_answer": "y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}",
+    "final_answer": "$y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}$",
     "techniques_used": [
       "常系数线性",
       "可降阶",
@@ -57,7 +57,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}"
+      "expected": "$y = C _ {1} \\mathrm{e} ^ {x} + C _ {2} \\mathrm{e} ^ {2 x} + \\frac {1}{5} \\mathrm{e} ^ {- x} (\\cos x - \\sin x) + \\mathrm{e}$"
     }
   ],
   "meta": {

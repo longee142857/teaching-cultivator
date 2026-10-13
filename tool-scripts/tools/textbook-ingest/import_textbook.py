@@ -13,6 +13,10 @@ with reasons=['textbook_example']. cloud_cursor_workshop is NOT auto-passed
 
 Default is dry-run. Pass --apply to write teaching.db. Never writes the
 repo teaching.db unless --apply --db is given. Catalog JSON is not moved.
+
+Undelimited TeX (``\\command`` / ``\\begin{`` outside $ $$ \\( \\) \\[ \\])
+fails dry-run and --apply via validate_bank_payload(check_math_delimiters).
+Stub answers (得证/证毕/略/见题解) and steps of stripped length ≤4 only warn.
 """
 from __future__ import annotations
 

@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "某种飞机在机场降落时，为了减小滑行距离，在触地的瞬间，飞机尾部将打开减速伞，以增大阻力，使飞机迅速减速并停下。现有一质量为 9000kg 的飞机，着陆时的水平速度为 700km/h，经测试，减速伞打开后，飞机所受的总阻力与飞机的速度成正比（比例系数为 $k = 6.0 \\times 10^{6}$ ）。问从着陆点算起，飞机滑行的最长距离是多少？",
-  "answer": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
+  "answer": "$x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "常系数线性",
@@ -35,7 +35,7 @@
         "text": "方法3 根据牛顿第二定律, 得 $m \\frac{\\mathrm{d}^2 x}{\\mathrm{d} t} = -k \\frac{\\mathrm{d} x}{\\mathrm{d} t}$ , 即 $\\frac{\\mathrm{d}^2 x}{\\mathrm{d} t^2} + \\frac{k}{m} \\cdot \\frac{\\mathrm{d} x}{\\mathrm{d} t} = 0$ , 其特征方程为 $r^2 + \\frac{k}{m} r = 0$ ,\n\n解得 $r_1 = 0, r_2 = -\\frac{k}{m}$ ，故 $x = C_1 + C_2 \\mathrm{e}^{\\frac{k}{m} t}$ .\n\n由 $x\\Bigg|_{t = 0} = 0,\\nu \\Bigg|_{t = 0} = \\frac{\\mathrm{d}x}{\\mathrm{d}t}\\Bigg|_{t = 0} = -\\frac{kC_2}{m}\\mathrm{e}^{-\\frac{k}{m} t}\\Bigg|_{t = 0} = v_0$ ，得 $C_1 = -C_2 = \\frac{mv_0}{k}$ ，于是 $x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$"
       }
     ],
-    "final_answer": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
+    "final_answer": "$x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
     "techniques_used": [
       "常系数线性",
       "牛顿定律建模",
@@ -53,7 +53,7 @@
       "id": "c2",
       "prompt": "通解/特解或所求量是什么？",
       "technique": "牛顿定律建模",
-      "expected": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$"
+      "expected": "$x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$"
     }
   ],
   "meta": {

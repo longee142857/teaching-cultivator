@@ -510,8 +510,14 @@ def validate_bank_payload(
     techniques: list,
     solution: dict,
     cdps: list,
+    answer: str = "",
+    check_math_delimiters: bool = False,
 ) -> str:
-    """返回空字符串表示通过，否则错误原因。"""
+    """返回空字符串表示通过，否则错误原因。
+
+    check_math_delimiters：教材/题库导入硬闸。壳层只渲染 $ / $$ / \\( \\) / \\[ \\]
+    内的公式，界外的 ``\\command`` / ``\\begin{`` 直接拒。培养主线预生成不打开此闸。
+    """
     if not (question or "").strip():
         return "empty_question"
     if not techniques:
@@ -528,6 +534,17 @@ def validate_bank_payload(
         ids.add(c["id"])
         if not c.get("technique"):
             return "cdp_missing_technique"
+    if check_math_delimiters:
+        from math_format import bare_tex_payload_error
+
+        tex_err = bare_tex_payload_error(
+            question=question,
+            answer=answer,
+            solution=solution,
+            cdps=cdps,
+        )
+        if tex_err:
+            return tex_err
     return ""
 
 

@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "考虑 $x$ 的两个可微的且不恒为零的函数，使得它们之商的导数等于它们的导数之商。如果已知其中一个函数，试求出另一个函数的表达式，并给出这样两个具体函数的例子。",
-  "answer": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
+  "answer": "$C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "齐次方程",
@@ -39,7 +39,7 @@
         "text": "$$\ng (x) = C \\exp \\int \\frac {f ^ {\\prime} \\pm \\sqrt {f ^ {\\prime 2} - 4 f ^ {\\prime} f}}{2 f} \\mathrm{d} x (\\text {任意常数} C \\neq 0).\\tag{③}\n$$\n\n若取 $f(x) = \\mathrm{e}^{\\lambda x}$ （ $\\lambda \\neq 1$ ），由③式可得 $g(x) = C \\exp \\left(\\frac{\\lambda \\pm \\sqrt{\\lambda^2 - 4\\lambda}}{2}\\right)x$ ，取 $\\lambda = 4$ ， $C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。"
       }
     ],
-    "final_answer": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
+    "final_answer": "$C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。",
     "techniques_used": [
       "齐次方程",
       "一阶线性",
@@ -57,7 +57,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "一阶线性",
-      "expected": "C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。"
+      "expected": "$C = 1$ ，有 $f(x) = \\mathrm{e}^{4x}$ ， $g(x) = \\mathrm{e}^{2x}$ ，这与前面所给出的具体例子完全一样。"
     }
   ],
   "meta": {

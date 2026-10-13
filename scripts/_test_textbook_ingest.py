@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -122,10 +123,9 @@ def test_ex07_dry_run_not_mcq() -> None:
             check=False,
         )
     out = (proc.stdout or "") + (proc.stderr or "")
-    check(proc.returncode == 0, f"ex-07 dry-run rc={proc.returncode} {out[-800:]}")
     check("MCQ" not in out, f"ex-07 must not fail MCQ {out}")
-    check("FAIL" not in out, f"ex-07 dry-run no FAIL {out}")
-    check("DRY" in out and "tx-pu-math-contest-v2-ch1-1.3-ex-07" in out, f"ex-07 DRY {out}")
+    check("payload:bare_tex:" in out, f"ex-07 bare steps fail the math gate {out[-800:]}")
+    check(proc.returncode != 0, f"ex-07 dry-run should fail closed {proc.returncode}")
 
 
 def test_ex20_dry_run_not_mcq() -> None:
@@ -187,12 +187,34 @@ def test_catalog_dir_dry_run_scans() -> None:
         check=False,
     )
     out = (proc.stdout or "") + (proc.stderr or "")
-    check(proc.returncode == 0, f"catalog dry-run rc={proc.returncode} {out[-800:]}")
     check("mode=dry-run" in out, f"dry-run banner {out[:400]}")
     check(str(TEXTBOOK_DIR) in out, f"incoming path printed {out[:400]}")
-    check("failed=0" in out, f"catalog dry-run no fail {out[-400:]}")
-    check("imported=627" in out, f"textbook items dry-ok {out[-200:]}")
     check("catalog example" in out, f"notes skipped example {out}")
+    summary = re.search(r"imported=(\d+) skipped=(\d+) failed=(\d+)", out)
+    check(summary is not None, f"summary line {out[-400:]}")
+    item_json = [
+        p
+        for p in TEXTBOOK_DIR.rglob("*.json")
+        if p.name != "MANIFEST.json"
+        and not p.name.endswith(".example.json")
+        and not p.name.endswith(".judge.json")
+        and "rejected" not in p.parts
+    ]
+    if summary:
+        imported_n, _skipped_n, failed_n = (int(x) for x in summary.groups())
+        check(failed_n > 0, f"bare TeX must fail closed failed={failed_n}")
+        check(
+            imported_n + failed_n == len(item_json),
+            f"accounted {imported_n}+{failed_n} vs items {len(item_json)}",
+        )
+        check(proc.returncode != 0, f"catalog dry-run rc={proc.returncode}")
+    fail_lines = [ln for ln in out.splitlines() if ln.startswith("FAIL ")]
+    check(fail_lines, "catalog reports FAIL lines")
+    check(
+        all("payload:bare_tex:" in ln for ln in fail_lines),
+        f"unexpected non-tex FAIL {next((ln for ln in fail_lines if 'payload:bare_tex:' not in ln), '')}",
+    )
+    check(not any(ln.startswith("FAIL ch7/") for ln in fail_lines), "ch7 answers stay importable")
 
 
 def test_mapping_tags_and_keeps_ref_source() -> None:

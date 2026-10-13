@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求方程 $y'' + (y')^2 = 2\\mathrm{e}^{-y}$ 的通解.",
-  "answer": "y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）.",
+  "answer": "$y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）.",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "积分方程转化",
@@ -34,7 +34,7 @@
         "text": "故原方程的通解为 $y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）."
       }
     ],
-    "final_answer": "y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）.",
+    "final_answer": "$y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）.",
     "techniques_used": [
       "积分方程转化",
       "可降阶"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）."
+      "expected": "$y = \\ln (x^2 + ax + b)$ （ $a, b$ 为任意常数）."
     }
   ],
   "meta": {

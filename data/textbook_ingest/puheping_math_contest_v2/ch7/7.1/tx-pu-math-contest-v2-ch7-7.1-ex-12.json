@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "已知方程 $(6y + x^2 y^2)\\mathrm{d}x + (8x + x^3 y)\\mathrm{d}y = 0$ 的两边乘以 $y^{3}f(x)$ 后便成为全微分方程，试求出可导函数 $f(x)$ ，并解此微分方程.",
-  "answer": "y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}",
+  "answer": "$$y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}$$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "全微分方程",
@@ -39,7 +39,7 @@
         "text": "$$\nu = 2 y ^ {4} x ^ {3} + \\frac {1}{5} x ^ {5} y ^ {5} + \\varphi (y) \\Rightarrow \\frac {\\partial u}{\\partial y} = 8 y ^ {3} x ^ {3} + x ^ {5} y ^ {4} + \\dot {\\varphi^ {\\prime}} (y).\\tag{③}\n$$\n\n比较②、③两式得 $\\varphi'(y) = 0 \\Rightarrow \\varphi(y) = C$ ，得方程的通解为 $2x^3 y^4 + \\frac{1}{5} x^5 y^5 = C$ ."
       }
     ],
-    "final_answer": "y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}",
+    "final_answer": "$$y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}$$",
     "techniques_used": [
       "全微分方程",
       "定性/比较",
@@ -57,7 +57,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "定性/比较",
-      "expected": "y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}"
+      "expected": "$$y = 2 x ^ {3} y ^ {4} + \\frac {1}{5} x ^ {5} y ^ {5}, \\end{array}$$"
     }
   ],
   "meta": {

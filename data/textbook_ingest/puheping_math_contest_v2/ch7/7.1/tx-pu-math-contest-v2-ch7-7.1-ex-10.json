@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设初值问题 $\\left\\{ \\begin{array}{l} x \\frac{\\mathrm{d}y}{\\mathrm{d}x} - (2x^2 + 1)y = x^2, \\\\ y(1) = y_1 \\end{array} \\right.$ 的解为 $y(x)$ ，确定 $y_1$ 的值，使得 $\\lim_{x \\to +\\infty} y(x)$ 存在，并求该极限.",
-  "answer": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.",
+  "answer": "$\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "一阶线性",
@@ -32,7 +32,7 @@
         "text": "即\n\n$$\ny _ {1} = - \\mathrm{e} \\lim _ {x \\rightarrow + \\infty} \\int_ {1} ^ {x} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t = \\mathrm{e} \\left(\\int_ {0} ^ {1} \\mathrm{e} ^ {- t ^ {2}} \\mathrm{d} t - \\frac {\\sqrt {\\pi}}{2}\\right).\n$$\n\n此时\n\n$$\n\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.\n$$"
       }
     ],
-    "final_answer": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.",
+    "final_answer": "$\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} \\frac {e ^ {- x ^ {2}}}{- \\frac {1}{x ^ {2}} e ^ {- x ^ {2}} - 2 e ^ {- x ^ {2}}} = - \\frac {1}{2}.$",
     "techniques_used": [
       "一阶线性",
       "初值问题",
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "初值问题",
-      "expected": "\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty} "
+      "expected": "$\\lim _ {x \\rightarrow + \\infty} y (x) = \\lim _ {x \\rightarrow + \\infty} \\frac {\\int_ {1} ^ {x} e ^ {- t ^ {2}} d t + y _ {1} e ^ {- 1}}{\\frac {1}{x} e ^ {- x ^ {2}}} = \\lim _ {x \\rightarrow + \\infty}$ "
     }
   ],
   "meta": {

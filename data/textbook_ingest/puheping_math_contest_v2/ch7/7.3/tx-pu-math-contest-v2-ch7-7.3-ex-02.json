@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 是区间 $[0, +\\infty)$ 上具有连续导数的单调递增函数，且 $f(0) = 1$ ，对任意的 $t \\in [0, +\\infty)$ ，直线 $x = 0, x = t$ ，曲线 $y = f(x)$ 以及 $x$ 轴所围成的曲边梯形绕 $x$ 轴旋转一周生成一旋转体，若该旋转体的侧面积在数值上等于其体积的2倍，求 $f(x)$ 的表达式.",
-  "answer": "y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$",
+  "answer": "$y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "分离变量",
@@ -43,7 +43,7 @@
         "text": "由 $y(0) = 1$ ，得 $C = 1$ ，故 $y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$"
       }
     ],
-    "final_answer": "y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$",
+    "final_answer": "$y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$",
     "techniques_used": [
       "分离变量",
       "几何/物理量",
@@ -61,7 +61,7 @@
       "id": "c2",
       "prompt": "通解/特解或所求量是什么？",
       "technique": "几何/物理量",
-      "expected": "y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$"
+      "expected": "$y = f(x) = \\frac{1}{2} (\\mathbf{e}^x +\\mathbf{e}^{-x})$"
     }
   ],
   "meta": {

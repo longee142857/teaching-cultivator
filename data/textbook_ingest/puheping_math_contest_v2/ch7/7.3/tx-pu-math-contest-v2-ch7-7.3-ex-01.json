@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "在 13 时到 14 时的什么时刻，一个时钟的分针恰好与时针重和.",
-  "answer": "y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和.",
+  "answer": "$y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和.",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "建立微分方程",
@@ -34,7 +34,7 @@
         "text": "解得 $x = t$ ， $y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和."
       }
     ],
-    "final_answer": "y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和.",
+    "final_answer": "$y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和.",
     "techniques_used": [
       "建立微分方程",
       "分离变量"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "通解/特解或所求量是什么？",
       "technique": "分离变量",
-      "expected": "y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和."
+      "expected": "$y = \\frac{1}{12} t + 5$ .由 $x = y$ ，得 $t = \\frac{60}{11}\\mathrm{min}\\approx 5\\mathrm{min}27\\mathrm{s}$ .即两针在13时5分27秒重和."
     }
   ],
   "meta": {

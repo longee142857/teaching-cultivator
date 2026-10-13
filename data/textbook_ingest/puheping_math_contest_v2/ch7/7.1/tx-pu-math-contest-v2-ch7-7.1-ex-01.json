@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设 $f(x)$ 在 $(0, +\\infty)$ 内可导， $f(x) > 0$ ，且 $\\lim_{x \\to +\\infty} f(x) = 1$ ，又 $\\lim_{h \\to 0} \\left[ \\frac{f(x + xh)}{f(x)} \\right]^{\\frac{1}{h}} = e^{\\frac{1}{x}}$ ，求 $f(x)$ .",
-  "answer": "f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。",
+  "answer": "$f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "分离变量",
@@ -23,11 +23,11 @@
       },
       {
         "id": "s2",
-        "text": "$$\n\\mathrm{e} ^ {\\frac {1}{x}} = \\lim _ {h \\rightarrow 0} \\left[ \\frac {f (x + x h)}{f (x)} \\right] ^ {\\frac {1}{h}} = \\lim _ {h \\rightarrow 0} \\left[ 1 + \\frac {f (x + x h) - f (x)}{f (x)} \\right] ^ {\\frac {1}{h}}"
+        "text": "$$\n\\mathrm{e} ^ {\\frac {1}{x}} = \\lim _ {h \\rightarrow 0} \\left[ \\frac {f (x + x h)}{f (x)} \\right] ^ {\\frac {1}{h}} = \\lim _ {h \\rightarrow 0} \\left[ 1 + \\frac {f (x + x h) - f (x)}{f (x)} \\right] ^ {\\frac {1}{h}}$$"
       },
       {
         "id": "s3",
-        "text": "= \\exp \\left(\\lim _ {h \\rightarrow 0} \\frac {f (x + x h) - f (x)}{f (x)} \\cdot \\frac {1}{h}\\right) = \\exp \\left(f ^ {\\prime} (x) \\cdot \\frac {x}{f (x)}\\right),\n$$"
+        "text": "$$= \\exp \\left(\\lim _ {h \\rightarrow 0} \\frac {f (x + x h) - f (x)}{f (x)} \\cdot \\frac {1}{h}\\right) = \\exp \\left(f ^ {\\prime} (x) \\cdot \\frac {x}{f (x)}\\right),\n$$"
       },
       {
         "id": "s4",
@@ -42,7 +42,7 @@
         "text": "两边积分得 $f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。"
       }
     ],
-    "final_answer": "f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。",
+    "final_answer": "$f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。",
     "techniques_used": [
       "分离变量",
       "一阶线性"
@@ -59,7 +59,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "一阶线性",
-      "expected": "f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。"
+      "expected": "$f(x) = C\\mathrm{e}^{\\frac{1}{x}}$ 。由 $\\lim_{x\\to +\\infty}f(x) = 1$ 得 $C = 1$ ，故 $f(x) = \\mathrm{e}^{\\frac{1}{x}}$ 。"
     }
   ],
   "meta": {

@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "有一个直径为 3 寸水平放置的圆盘，正在按每分钟 4 周旋转。离圆盘较远但在同一平面上有一个点在发光。将一个昆虫放在圆盘的边上离光源最远处，头对光源。这时它立即惊起按每秒 1 寸爬行，而且总是头对着光源。试建立运动的微分方程，并求出昆虫再次到达圆盘的边上的点的坐标。",
-  "answer": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
+  "answer": "$y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "建立微分方程",
@@ -37,7 +37,7 @@
         "text": "(2) 对①式两边求导，并将②式代入，得\n\n$\\frac{\\mathrm{d}^2x}{\\mathrm{d}t^2} = -\\omega \\frac{\\mathrm{d}y}{\\mathrm{d}t} = -\\omega^2 x$ ，即 $\\frac{\\mathrm{d}^2x}{\\mathrm{d}t^2} +\\omega^2 x = 0$\n\n它的解为 $x = A\\cos (\\omega t - \\phi)$ ，代入式①式，得 $y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。"
       }
     ],
-    "final_answer": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
+    "final_answer": "$y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
     "techniques_used": [
       "建立微分方程",
       "分离变量",
@@ -57,7 +57,7 @@
       "id": "c2",
       "prompt": "所求函数/轨迹/含盐量规律是什么？",
       "technique": "分离变量",
-      "expected": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。"
+      "expected": "$y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。"
     }
   ],
   "meta": {

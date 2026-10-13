@@ -9,7 +9,7 @@
   "item_form": "proof_outline",
   "difficulty": "hit",
   "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 连续且有界，又设 $\\int_{-\\infty}^{0} e^x f(x) \\mathrm{d}x$ 收敛. 求证：\n\n(1) 方程 $y' + y = f(x)$ 只有一个解在 $(-∞, +∞)$ 有界.\n\n(2) 若又有 $f(x)$ 且以 T 为周期，则上述方程只有一个解是以 T 为周期的.",
-  "answer": "C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{",
+  "answer": "$C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "一阶线性",
@@ -37,7 +37,7 @@
         "text": "(2) 若 $y(x)$ 是所给方程的以 $T$ 为周期的解，则它必是有界的，故只可能是 $y^*$ .\n\n下面验证如果 $f(x)$ 以 T 为周期，则 $y^{*}$ 也以 T 为周期.\n\n由于\n\n$$\n\\begin{array}{r l} y ^ {*} (x + T) & = \\mathrm{e} ^ {- (x + T)} \\int_ {- \\infty} ^ {x + T} \\mathrm{e} ^ {t} f (t) \\mathrm{d} t = \\mathrm{e} ^ {- x} \\int_ {- \\infty} ^ {x + T} \\mathrm{e} ^ {t - T} f (t) \\mathrm{d} t \\\\ & \\stackrel {u = t - T} {=} \\mathrm{e} ^ {- x} \\int_ {- \\infty} ^ {x} \\mathrm{e} ^ {u} f (u + T) \\mathrm{d} u = \\mathrm{e} ^ {- x} \\int_ {- \\infty} ^ {x} \\mathrm{e} ^ {u} f (u) \\mathrm{d} u = y ^ {*} (x), \\end{array}\n$$\n\n由 $y^{*}(x)$ 的唯一性知原方程只有一个以 $T$ 为周期的解."
       }
     ],
-    "final_answer": "C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{",
+    "final_answer": "$C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{$",
     "techniques_used": [
       "一阶线性",
       "全微分方程",
@@ -57,7 +57,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "全微分方程",
-      "expected": "C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{"
+      "expected": "$C = \\int_{-\\infty}^{0}\\mathbf{e}^{t}f(t)\\mathrm{d}t$ 时，对应解 $y = \\mathbf{e}^{-x}\\int_{-\\infty}^{x}\\mathbf{e}^{t}f(t)\\mathrm{$"
     }
   ],
   "meta": {

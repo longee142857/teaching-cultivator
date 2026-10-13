@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设函数 $y = f(x)$ 由参数方程 $\\left\\{ \\begin{array}{l} x = 2t + t^2 \\\\ y = \\psi(t) \\end{array} \\right. (t > -1)$ 所确定，且 $\\frac{\\mathrm{d}^2y}{\\mathrm{d}x^2} = \\frac{1}{4(1 + t)}$ ，其中 $\\psi(t)$ 具有二阶导数，曲线 $y = \\psi(t)$ 与曲线 $y + \\mathrm{e}^{-\\frac{1}{2}y} = t$ 在 $t = 1$ 处相切，求函数 $\\psi(t)$ .",
-  "answer": "\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ .",
+  "answer": "$\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ .",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -38,7 +38,7 @@
         "text": "$$\n\\dot {\\psi} (t) = \\int (1 + t) t \\mathrm{d} t = \\frac {1}{3} t ^ {3} + \\frac {1}{2} t ^ {2} + C _ {2}.\n$$\n\n由 $\\psi(1) = 0$ ，知 $C_2 = -\\frac{5}{6}$ ，故 $\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ ."
       }
     ],
-    "final_answer": "\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ .",
+    "final_answer": "$\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ .",
     "techniques_used": [
       "可降阶",
       "常系数线性"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "常系数线性",
-      "expected": "\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ ."
+      "expected": "$\\psi(t) = \\frac{1}{3} t^3 + \\frac{1}{2} t^2 - \\frac{5}{6} (t > -1)$ ."
     }
   ],
   "meta": {

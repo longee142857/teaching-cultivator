@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求 $y'' + 2y' - 3y = f(x)$ 满足 $y(0) = 0, y'(0) = 1$ 的特解，其中 $f(x) = \\begin{cases} x + 1, & x \\geqslant 0 \\\\ e^x, & x < 0 \\end{cases}$ .",
-  "answer": "y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge",
+  "answer": "$$y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge$$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -46,7 +46,7 @@
         "text": "$$\ny = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\geqslant 0, \\\\ - \\frac {3}{1 6} e ^ {- 3 x} + \\frac {3}{1 6} e ^ {x} + \\frac {1}{4} x e ^ {x}, & x <   0. \\end{array} \\right.\n$$"
       }
     ],
-    "final_answer": "y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge",
+    "final_answer": "$$y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge$$",
     "techniques_used": [
       "初值问题",
       "可降阶"
@@ -63,7 +63,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "可降阶",
-      "expected": "y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge"
+      "expected": "$$y = \\left\\{ \\begin{array}{l l} - \\frac {7}{3 6} e ^ {- 3 x} + \\frac {3}{4} e ^ {x} - \\frac {1}{3} x - \\frac {5}{9}, & x \\ge$$"
     }
   ],
   "meta": {

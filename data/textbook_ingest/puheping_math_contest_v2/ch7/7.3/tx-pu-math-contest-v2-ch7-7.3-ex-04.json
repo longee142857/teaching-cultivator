@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设函数 $y = f(x)$ 在 $\\left[\\frac{1}{2}, +\\infty\\right)$ 上连续，且 $f(2) = \\frac{4}{3}$ . 若曲线 $y = f(x)$ 与直线 $x = \\frac{1}{2}$ ， $x = t$ $\\left(t > \\frac{1}{2}\\right)$ 及 $x$ 轴围成的平面图形 $D_t$ 绕 $x$ 轴旋转一周而成的旋转体体积为 $V(t) = \\frac{\\pi}{2} \\left[ 4t^2 f(t) - f\\left(\\frac{1}{2}\\right) \\right]$ ，求 $D_t$ 绕 $y$ 轴旋转一周而成的旋转体体积 $V_y$ .",
-  "answer": "y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).",
+  "answer": "$y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "一阶线性",
@@ -35,7 +35,7 @@
         "text": "由 $f(2) = \\frac{4}{3}$ ，得 $C = \\frac{1}{6}$ ，代入上式得\n\n$$\ny = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).\n$$\n\n于是\n\n$$\nV _ {y} = 2 \\pi \\int_ {\\frac {1}{2}} ^ {t} x | f (x) | d x = 2 \\pi \\int_ {\\frac {1}{2}} ^ {t} \\frac {6 x ^ {2}}{1 + x ^ {3}} d x = 4 \\pi \\left[ \\ln \\left(1 + x ^ {3}\\right) \\right] _ {\\frac {1}{2}} ^ {t} = 4 \\pi \\left[ \\ln \\left(1 + t ^ {3}\\right) - \\ln \\frac {9}{8} \\right].\n$$"
       }
     ],
-    "final_answer": "y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).",
+    "final_answer": "$y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).$",
     "techniques_used": [
       "一阶线性",
       "几何/物理量",
@@ -53,7 +53,7 @@
       "id": "c2",
       "prompt": "所求函数/轨迹/含盐量规律是什么？",
       "technique": "几何/物理量",
-      "expected": "y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right)."
+      "expected": "$y = f (x) = \\frac {6 x}{1 + x ^ {3}} \\left(x \\geqslant \\frac {1}{2}\\right).$"
     }
   ],
   "meta": {

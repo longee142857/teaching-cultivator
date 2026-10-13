@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设级数 $\\frac{x^4}{2\\cdot 4} + \\frac{x^6}{2\\cdot 4\\cdot 6} + \\frac{x^8}{2\\cdot 4\\cdot 6\\cdot 8} + \\cdots (-\\infty < x < +\\infty)$ 的和函数为 $S(x)$ ，求 $S(x)$ 的表达式.",
-  "answer": "C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ .",
+  "answer": "$C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ .",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "初值问题",
@@ -43,7 +43,7 @@
         "text": "由初始条件 $y(0) = 0$ ，得 $C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ ."
       }
     ],
-    "final_answer": "C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ .",
+    "final_answer": "$C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ .",
     "techniques_used": [
       "初值问题",
       "级数与微分方程",
@@ -61,7 +61,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "级数与微分方程",
-      "expected": "C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ ."
+      "expected": "$C = 1$ . 故 $S(x) = -\\frac{x^2}{2} + e^{\\frac{x^2}{2}} - 1$ ."
     }
   ],
   "meta": {

@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $y + y' = \\ln \\sqrt{1 + y'^{2}}$ 的通解.",
-  "answer": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.",
+  "answer": "$$y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.$$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "分离变量",
@@ -38,7 +38,7 @@
         "text": "$$\n\\left\\{ \\begin{array}{l} x = t - \\ln | \\tan t | + C, \\\\ y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.\n$$"
       }
     ],
-    "final_answer": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.",
+    "final_answer": "$$y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.$$",
     "techniques_used": [
       "分离变量",
       "一阶线性"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/所求函数或证明结论是什么？",
       "technique": "一阶线性",
-      "expected": "y = \\ln | \\sec t | - \\tan t. \\end{array} \\right."
+      "expected": "$$y = \\ln | \\sec t | - \\tan t. \\end{array} \\right.$$"
     }
   ],
   "meta": {

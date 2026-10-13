@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "设桥墩的水平截面是圆，桥墩上方压力均匀分布，其总压力为 $P \\mathrm{kN}$ 。又设建桥材料的密度为 $\\mu \\mathrm{kg} / \\mathrm{m}^3$ ，每个截面圆上的允许压强为 $k \\mathrm{kN} / \\mathrm{m}^2$ ，求使材料最省的桥墩形状。",
-  "answer": "y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ .",
+  "answer": "$y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ .",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "几何/物理量",
@@ -34,7 +34,7 @@
         "text": "两边对 $x$ 求导得 $y' = \\frac{\\mu g}{2k} y$ ，解得 $y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ ."
       }
     ],
-    "final_answer": "y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ .",
+    "final_answer": "$y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ .",
     "techniques_used": [
       "几何/物理量",
       "建立微分方程"
@@ -51,7 +51,7 @@
       "id": "c2",
       "prompt": "所求函数/轨迹/含盐量规律是什么？",
       "technique": "建立微分方程",
-      "expected": "y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ ."
+      "expected": "$y = ce^{\\frac{\\mu g}{2k} x}$ ，由初始条件 $y(0) = \\sqrt{\\frac{P}{k\\pi}}$ ，代入得 $y = \\sqrt{\\frac{P}{k\\pi}} e^{\\frac{\\mu g}{2k} x}$ ."
     }
   ],
   "meta": {

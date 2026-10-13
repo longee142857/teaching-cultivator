@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求微分方程 $\\cos^4 x \\frac{\\mathrm{d}^2 y}{\\mathrm{d}x^2} + 2 \\cos^2 x (1 - \\sin x \\cos x) \\frac{\\mathrm{d}y}{\\mathrm{d}x} + y = \\tan x$ 的通解.",
-  "answer": "y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.",
+  "answer": "$y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -30,7 +30,7 @@
         "text": "化简得\n\n$$\n\\frac {\\mathrm{d} ^ {2} y}{\\mathrm{d} t ^ {2}} + 2 \\frac {\\mathrm{d} y}{\\mathrm{d} t} + y = t.\n$$\n\n易求得该方程的通解为 $y = (C_1 t + C_2) e^{-t} + t - 2$ . 将 $\\tan x = t$ 代入，得原微分方程的通解为\n\n$$\ny = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.\n$$"
       }
     ],
-    "final_answer": "y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.",
+    "final_answer": "$y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.$",
     "techniques_used": [
       "可降阶",
       "常系数线性"
@@ -47,7 +47,7 @@
       "id": "c2",
       "prompt": "通解/特解是什么？",
       "technique": "常系数线性",
-      "expected": "y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2."
+      "expected": "$y = \\left(C _ {1} \\tan x + C _ {2}\\right) e ^ {- \\tan x} + \\tan x - 2.$"
     }
   ],
   "meta": {

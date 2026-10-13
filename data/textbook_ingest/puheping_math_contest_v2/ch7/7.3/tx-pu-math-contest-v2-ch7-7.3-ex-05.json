@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "在上半平面求一条凹的曲线，其上任意一点 $P(x,y)$ 处的曲率等于此曲线在该点的法线段 $PQ$ 长度的倒数（ $Q$ 是法线与 $x$ 轴的交点），且曲线在点(1,1)处的切线与 $x$ 轴平行.",
-  "answer": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
+  "answer": "$y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -31,7 +31,7 @@
         "text": "令 $Y = 0$ ，得它与 $x$ 轴的交点为 $Q(x + yy', 0)$ ，则 $PQ = \\sqrt{(yy')^2 + y^2}$ ，由题设 $y > 0, y'' > 0$ ，且 $\\frac{|y''|}{\\sqrt{(1 + y'^2)^3}} = \\frac{1}{\\sqrt{(yy')^2 + y^2}}$ ，得 $\\left\\{ \\begin{array}{l} yy'' = 1 + (y')^2 \\\\ y(1) = 1, y'(1) = 0 \\end{array} \\right.$ （不显含 $x$ ）。解得 $y + \\sqrt{y^2 - 1} = e^{\\pm (x + 1)}$ 。"
       }
     ],
-    "final_answer": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
+    "final_answer": "$y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
     "techniques_used": [
       "可降阶",
       "几何建模",
@@ -49,7 +49,7 @@
       "id": "c2",
       "prompt": "所求曲线方程是什么？",
       "technique": "几何建模",
-      "expected": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ ."
+      "expected": "$y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ ."
     }
   ],
   "meta": {

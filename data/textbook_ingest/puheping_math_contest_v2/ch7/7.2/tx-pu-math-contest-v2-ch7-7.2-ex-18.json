@@ -9,7 +9,7 @@
   "item_form": "proof_outline",
   "difficulty": "hit",
   "question": "设 $h_1(x)$ 与 $h_2(x)$ 当 $x \\geqslant x_0$ 时连续，且 $h_1(x) \\geqslant h_2(x)$ ，若函数 $f(x)$ 与 $g(x)$ 分别是下列微分方程①与②满足初值条件 $y(x_0) = c_1$ ， $y'(x_0) = c_2$ 的解（其中 $p^2 - 4q \\geqslant 0$ ）。\n\n$$\ny ^ {\\prime \\prime} + p y ^ {\\prime} + q y = h _ {1} (x),\\tag{①}\n\ny ^ {\\prime \\prime} + p y ^ {\\prime} + q y = h _ {2} (x).\\tag{②}\n$$\n\n证明当 $x \\geqslant x_0$ 时，有 $f(x) \\geqslant g(x)$ .",
-  "answer": "y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),",
+  "answer": "$y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "常系数线性",
@@ -41,7 +41,7 @@
         "text": "显然 $u(x) = 0$ 是方程 $u'(x) - au(x) = 0$ 满足初值 $u(x_0) = 0$ 的解，再次利用一阶微分方程的比较定理得，当 $x \\geqslant x_0$ 时，有 $v(x) \\geqslant u(x) = 0$ ，即 $f(x) \\geqslant g(x)$ ."
       }
     ],
-    "final_answer": "y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),",
+    "final_answer": "$y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),$",
     "techniques_used": [
       "常系数线性",
       "初值问题",
@@ -61,7 +61,7 @@
       "id": "c2",
       "prompt": "通解/特解或证明结论是什么？",
       "technique": "初值问题",
-      "expected": "y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),"
+      "expected": "$y = (y ^ {\\prime} - a y) ^ {\\prime} - b (y ^ {\\prime} - a y),$"
     }
   ],
   "meta": {

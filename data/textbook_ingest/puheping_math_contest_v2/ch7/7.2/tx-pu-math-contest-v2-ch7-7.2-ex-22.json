@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "求方程 $(\\cos x - \\sin x)y'' + 2\\cos x \\cdot y' + (\\cos x + \\sin x)y = 0$ 的通解.",
-  "answer": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.",
+  "answer": "$y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "可降阶",
@@ -38,7 +38,7 @@
         "text": "$$\ny = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.\n$$"
       }
     ],
-    "final_answer": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.",
+    "final_answer": "$y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.$",
     "techniques_used": [
       "可降阶",
       "常系数线性"
@@ -55,7 +55,7 @@
       "id": "c2",
       "prompt": "通解/特解是什么？",
       "technique": "常系数线性",
-      "expected": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x."
+      "expected": "$y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.$"
     }
   ],
   "meta": {

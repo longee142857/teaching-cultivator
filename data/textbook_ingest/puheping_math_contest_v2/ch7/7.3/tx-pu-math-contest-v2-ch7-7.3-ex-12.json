@@ -9,7 +9,7 @@
   "item_form": "blank",
   "difficulty": "hit",
   "question": "一质量均匀的链条挂在一无摩擦的钉子上，运动开始时，链条的一边下垂 8 米，另一边下垂 10 米，如图 7.6 所示，试问整个链条滑过钉子需多少时间.",
-  "answer": "t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）.",
+  "answer": "$t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）.",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
     "牛顿定律建模",
@@ -46,7 +46,7 @@
         "text": "整个链条滑过钉子，即 $x = 8$ ，代入上式得 $t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）."
       }
     ],
-    "final_answer": "t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）.",
+    "final_answer": "$t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）.",
     "techniques_used": [
       "牛顿定律建模",
       "建立微分方程"
@@ -63,7 +63,7 @@
       "id": "c2",
       "prompt": "所求时间/位移或结论是什么？",
       "technique": "建立微分方程",
-      "expected": "t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）."
+      "expected": "$t = \\frac{3}{\\sqrt{g}}\\ln (9 + \\sqrt{80})($ 秒）."
     }
   ],
   "meta": {
