@@ -1,0 +1,88 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.3-ex-03",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求一曲线，使其上每一点的向径与切线的夹角等于切线斜角的 $\\frac{1}{3}$ .",
+  "answer": "曲线方程 $\\rho = C\\sin^2\\frac{\\theta}{2} = \\frac{1}{2} C(1 - \\cos \\theta)$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分离变量",
+    "几何建模",
+    "建立微分方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要刻画曲线上点的向径与角度，用极坐标表示更为方便。利用已知条件及导数的几何意义就可建立微分方程。"
+      },
+      {
+        "id": "s2",
+        "text": "设曲线的极坐标方程为 $\\rho = \\rho(\\theta)$ ， $\\varphi$ 表示曲线上点 $(\\rho, \\theta)$ 处极径与曲线切线的夹角，切线的斜角为 $\\alpha$ （如图7.1所示），则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\alpha = \\theta + \\varphi \\Rightarrow \\tan \\alpha = \\tan (\\theta + \\varphi) = \\frac {\\tan \\theta + \\tan \\varphi}{1 - \\tan \\theta \\cdot \\tan \\varphi}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\tan \\alpha = \\frac{\\mathrm{d}y}{\\mathrm{d}x} = \\frac{\\sin\\theta\\mathrm{d}\\rho + \\rho\\cos\\theta\\mathrm{d}\\theta}{\\cos\\theta\\mathrm{d}\\rho - \\rho\\sin\\theta\\mathrm{d}\\theta}$ ，代入上式化简得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\tan \\varphi = \\rho \\frac {\\mathrm{d} \\theta}{\\mathrm{d} \\rho}.\\tag{①}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "由题意 $\\varphi = \\frac{\\alpha}{3} = \\frac{\\varphi + \\theta}{3} \\Rightarrow \\varphi = \\frac{\\theta}{2}$ ，代入①式得微分方程"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\tan \\frac {\\theta}{2} = \\rho \\frac {\\mathrm{d} \\theta}{\\mathrm{d} \\rho}.\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "分离变量积分得曲线方程 $\\rho = C\\sin^2\\frac{\\theta}{2} = \\frac{1}{2} C(1 - \\cos \\theta)$"
+      }
+    ],
+    "final_answer": "曲线方程 $\\rho = C\\sin^2\\frac{\\theta}{2} = \\frac{1}{2} C(1 - \\cos \\theta)$",
+    "techniques_used": [
+      "分离变量",
+      "几何建模",
+      "建立微分方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "自变量、未知函数与几何/物理规律是什么？如何列出一阶方程？",
+      "technique": "分离变量",
+      "expected": "选定坐标系，由规律列出微分方程与定解条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或所求量是什么？",
+      "technique": "几何建模",
+      "expected": "曲线方程 $\\rho = C\\sin^2\\frac{\\theta}{2} = \\frac{1}{2} C(1 - \\cos \\theta)$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.3",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "微分方程应用",
+    "page": 380,
+    "syllabus_note": "极坐标几何条件→可分离方程"
+  }
+}

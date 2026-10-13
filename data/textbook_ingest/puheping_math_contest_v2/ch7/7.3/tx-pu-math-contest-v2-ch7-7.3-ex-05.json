@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.3-ex-05",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.reduce",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "在上半平面求一条凹的曲线，其上任意一点 $P(x,y)$ 处的曲率等于此曲线在该点的法线段 $PQ$ 长度的倒数（ $Q$ 是法线与 $x$ 轴的交点），且曲线在点(1,1)处的切线与 $x$ 轴平行.",
+  "answer": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "可降阶",
+    "几何建模",
+    "建立微分方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要计算 PQ 的长度，需知道点 Q 的坐标，从而需先写出曲线在点 P 处的法线方程."
+      },
+      {
+        "id": "s2",
+        "text": "设曲线方程为 $y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ ."
+      },
+      {
+        "id": "s3",
+        "text": "令 $Y = 0$ ，得它与 $x$ 轴的交点为 $Q(x + yy', 0)$ ，则 $PQ = \\sqrt{(yy')^2 + y^2}$ ，由题设 $y > 0, y'' > 0$ ，且 $\\frac{|y''|}{\\sqrt{(1 + y'^2)^3}} = \\frac{1}{\\sqrt{(yy')^2 + y^2}}$ ，得 $\\left\\{ \\begin{array}{l} yy'' = 1 + (y')^2 \\\\ y(1) = 1, y'(1) = 0 \\end{array} \\right.$ （不显含 $x$ ）。解得 $y + \\sqrt{y^2 - 1} = e^{\\pm (x + 1)}$ 。"
+      }
+    ],
+    "final_answer": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ .",
+    "techniques_used": [
+      "可降阶",
+      "几何建模",
+      "建立微分方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "几何条件如何得到高阶方程？缺自变量时如何降阶？",
+      "technique": "可降阶",
+      "expected": "由曲率/法线等条件列方程，令 p=y′ 降阶求解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求曲线方程是什么？",
+      "technique": "几何建模",
+      "expected": "y=f(x)$ ，则它在点 P 处的法线方程为 $Y-y=-\\frac{1}{y'}(X-x)$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.3",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "微分方程应用",
+    "page": 381,
+    "syllabus_note": "曲率=1/法线段：不显含 x 降阶",
+    "commentary": "评注 曲线 $y = f(x)$ 的曲率公式： $\\kappa = \\frac{|y''|}{\\sqrt{(1 + y'^2)^3}}$ ."
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.3-ex-11",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "某种飞机在机场降落时，为了减小滑行距离，在触地的瞬间，飞机尾部将打开减速伞，以增大阻力，使飞机迅速减速并停下。现有一质量为 9000kg 的飞机，着陆时的水平速度为 700km/h，经测试，减速伞打开后，飞机所受的总阻力与飞机的速度成正比（比例系数为 $k = 6.0 \\times 10^{6}$ ）。问从着陆点算起，飞机滑行的最长距离是多少？",
+  "answer": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "常系数线性",
+    "牛顿定律建模",
+    "建立微分方程"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 需先求得飞机滑行的运动方程. 由于飞机受到的外力仅有空气阻力, 根据牛顿第二定律很容易建立微分方程."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 由题设，飞机的质量 $m = 9000\\mathrm{kg}$ ，着陆时的水平速度 $v_{0} = 700\\mathrm{km / h}$ 。从飞机接触跑道时开始计时，设 $t$ 时刻飞机的滑行距离为 $x(t)$ ，速度为 $v(t)$ 。根据牛顿第二定律，得\n\n$$\nm \\frac {\\mathrm{d} v}{\\mathrm{d} t} = - k v.\n$$\n\n又 $\\frac{\\mathrm{d}\\nu}{\\mathrm{d}t} = \\frac{\\mathrm{d}\\nu}{\\mathrm{d}x}\\cdot \\frac{\\mathrm{d}x}{\\mathrm{d}t} = \\nu \\frac{\\mathrm{d}\\nu}{\\mathrm{d}x}$ ，代入上式得 $\\mathrm{d}x = -\\frac{m}{k}\\mathrm{d}\\nu$ ，积分得 $x(t) = -\\frac{m}{k}\\nu +C$ 由于 $\\nu (0) = \\nu_{0}$ ， $x(0) =$ 0，故得 $C = \\frac{m}{k}\\nu_0$ ，从而\n\n$$\nx (t) = \\frac {m}{k} [ v _ {0} - v (t) ].\n$$\n\n当 $v(t)\\rightarrow0$ 时， $x(t)\\rightarrow\\frac{mv_{0}}{k}=\\frac{9000\\times700}{6.0\\times10^{6}}=1.05\\mathrm{km}$ 。所以，飞机滑行的最长距离为1.05km。"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 根据牛顿第二定律，得 $m\\frac{\\mathrm{d}\\nu}{\\mathrm{d}t} = -k\\nu$ ，所以 $\\frac{\\mathrm{d}\\nu}{\\nu} = -\\frac{k}{m}\\mathrm{d}t$\n\n两端积分得通解 $v = C e^{\\frac{k}{m} t}$ ，代入初始条件 $v|_{t=0} = v_{0}$ ，解得 $C = v_{0}$ ，故 $v(t) = v_{0} e^{\\frac{k}{m} t}$ 。\n\n飞机滑行的最长距离为\n\n$$\nx = \\int_ {0} ^ {+ \\infty} v (t) \\mathrm{d} t = - \\frac {m v _ {0}}{k} \\mathrm{e} ^ {- \\frac {k}{m} t} \\Bigg | _ {0} ^ {+ \\infty} = \\frac {m v _ {0}}{k} = 1. 0 5 \\mathrm{km}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法3 根据牛顿第二定律, 得 $m \\frac{\\mathrm{d}^2 x}{\\mathrm{d} t} = -k \\frac{\\mathrm{d} x}{\\mathrm{d} t}$ , 即 $\\frac{\\mathrm{d}^2 x}{\\mathrm{d} t^2} + \\frac{k}{m} \\cdot \\frac{\\mathrm{d} x}{\\mathrm{d} t} = 0$ , 其特征方程为 $r^2 + \\frac{k}{m} r = 0$ ,\n\n解得 $r_1 = 0, r_2 = -\\frac{k}{m}$ ，故 $x = C_1 + C_2 \\mathrm{e}^{\\frac{k}{m} t}$ .\n\n由 $x\\Bigg|_{t = 0} = 0,\\nu \\Bigg|_{t = 0} = \\frac{\\mathrm{d}x}{\\mathrm{d}t}\\Bigg|_{t = 0} = -\\frac{kC_2}{m}\\mathrm{e}^{-\\frac{k}{m} t}\\Bigg|_{t = 0} = v_0$ ，得 $C_1 = -C_2 = \\frac{mv_0}{k}$ ，于是 $x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$"
+      }
+    ],
+    "final_answer": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$",
+    "techniques_used": [
+      "常系数线性",
+      "牛顿定律建模",
+      "建立微分方程"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "自变量、未知函数与几何/物理规律是什么？如何列出一阶方程？",
+      "technique": "牛顿定律建模",
+      "expected": "选定坐标系，由规律列出微分方程与定解条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或所求量是什么？",
+      "technique": "牛顿定律建模",
+      "expected": "x(t) = \\frac{mv_0}{k}(1 - \\mathrm{e}^{-\\frac{k}{m} t}).$ 当 $t\\to +\\infty$ 时， $x(t)\\rightarrow \\frac{mv_0}{k} = 1.05\\mathrm{km}.$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.3",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "微分方程应用",
+    "page": 384,
+    "syllabus_note": "减速伞阻力∝v：可分离求滑行距离"
+  }
+}
