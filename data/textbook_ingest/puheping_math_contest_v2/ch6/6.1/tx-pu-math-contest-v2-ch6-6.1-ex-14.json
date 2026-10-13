@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-14",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.green.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x, y)$ 为具有二阶连续偏导数的二次齐次函数，即对任何 $x, y, t$ 有 $f(tx, ty) = t^2 f(x, y)$ ，设 $D$ 是由 $L: x^2 + y^2 = 4$ 所围成的闭区域，证明：\n\n$$\n\\oint_ {L} f (x, y) \\mathrm{d} s = \\iint_ {D} \\operatorname{div} (\\operatorname{grad} f (x, y)) \\mathrm{d} \\sigma .\n$$",
+  "answer": "\\begin{array}{r l} & {\\oint_ {L} f (x, y) \\mathrm{d} s = \\frac {1}{2} \\oint_ {L} \\Big [ x f _ {x} (x, y) + y f _ {y} (x, y) \\Big ] \\mathrm{d} s = \\oint_ {L} f _ {x} (x, y) \\mathrm{d} y - f _ {y} (x, y) \\mathrm{d} x} \\\\ & {\\quad \\stackrel {\\text {格林公式}} {=} \\iint_ {D} \\left(\\frac {\\partial^ {2} f}{\\partial x ^ {2}} + \\frac {\\partial^ {2} f}{\\partial y ^ {2}}\\right) \\mathrm{d} x \\mathrm{d} y = \\iint",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "格林公式",
+    "齐次函数性质",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于 $\\operatorname{div}(\\operatorname{grad}f(x,y)) = \\frac{\\partial^2f}{\\partial x^2} +\\frac{\\partial^2f}{\\partial y^2}$ ，利用格林公式，有 $\\iint_{D}\\operatorname{div}\\bigl (\\operatorname {grad}f(x,y)\\bigr)\\mathrm{d}\\sigma =$\n\n$\\oint_{L} f_{x}(x, y) \\mathrm{d}y - f_{y}(x, y) \\mathrm{d}x$ ，所以只需证明 $\\oint_{L} f(x, y) \\mathrm{d}s = \\oint_{L} f_{x}(x, y) \\mathrm{d}y - f_{y}(x, y) \\mathrm{d}x$ ，这就需要将左边第一型曲线积分化为第二型曲线积分。"
+      },
+      {
+        "id": "s2",
+        "text": "在方程 $f(tx,ty) = t^2 f(x,y)$ 两边对 $t$ 求导，并取 $t = 1$ ，得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nx f _ {x} (x, y) + y f _ {y} (x, y) = 2 f (x, y).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "又 $L: \\left\\{ \\begin{array}{l} x = 2\\cos \\theta \\\\ y = 2\\sin \\theta \\end{array} \\right.$ ， $L$ 沿逆时针方向的单位切向量为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\ne _ {\\tau} = \\frac {1}{\\sqrt {\\dot {x} ^ {2} + \\dot {y} ^ {2}}} (\\dot {x}, \\dot {y}) = (- \\sin \\theta , \\cos \\theta) = \\frac {1}{2} (- y, x).\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "再由 $e_{r} \\mathrm{d}s = (\\mathrm{d}x, \\mathrm{d}y)$ ，可得"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\begin{array}{r l} & {\\oint_ {L} f (x, y) \\mathrm{d} s = \\frac {1}{2} \\oint_ {L} \\Big [ x f _ {x} (x, y) + y f _ {y} (x, y) \\Big ] \\mathrm{d} s = \\oint_ {L} f _ {x} (x, y) \\mathrm{d} y - f _ {y} (x, y) \\mathrm{d} x} \\\\ & {\\quad \\stackrel {\\text {格林公式}} {=} \\iint_ {D} \\left(\\frac {\\partial^ {2} f}{\\partial x ^ {2}} + \\frac {\\partial^ {2} f}{\\partial y ^ {2}}\\right) \\mathrm{d} x \\mathrm{d} y = \\iint_ {D} \\mathrm{div} \\big (\\operatorname{grad} f (x, y) \\big) \\mathrm{d} \\sigma .} \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "\\begin{array}{r l} & {\\oint_ {L} f (x, y) \\mathrm{d} s = \\frac {1}{2} \\oint_ {L} \\Big [ x f _ {x} (x, y) + y f _ {y} (x, y) \\Big ] \\mathrm{d} s = \\oint_ {L} f _ {x} (x, y) \\mathrm{d} y - f _ {y} (x, y) \\mathrm{d} x} \\\\ & {\\quad \\stackrel {\\text {格林公式}} {=} \\iint_ {D} \\left(\\frac {\\partial^ {2} f}{\\partial x ^ {2}} + \\frac {\\partial^ {2} f}{\\partial y ^ {2}}\\right) \\mathrm{d} x \\mathrm{d} y = \\iint",
+    "techniques_used": [
+      "格林公式",
+      "齐次函数性质",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用格林公式？区域是否含奇点？如何挖洞/补线？",
+      "technique": "格林公式",
+      "expected": "写出 ∂Q/∂x−∂P/∂y，处理奇点后化为二重积分或已知圆周积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲线积分（或证明结论）是什么？",
+      "technique": "齐次函数性质",
+      "expected": "\\begin{array}{r l} & {\\oint_ {L} f (x, y) \\mathrm{d} s = \\frac {1}{2} \\oint_ {L} \\Big [ x f _ {x} (x, y) + y f _ {y} (x, y) \\Big ] \\mathrm{d} s = \\oint_ {L} f _ {x} (x, y) \\mathrm{d} y - f _ {y} (x, y"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 326,
+    "syllabus_note": "二次齐次函数闭曲线证明",
+    "commentary": "评注 两类曲线积分的关系：设 $F = (P(x,y),Q(x,y))$ ， $e_{\\tau} = (\\cos \\theta ,\\sin \\theta)$ 是有向曲线 $L$ 的单位切向量，则\n\n$$\n\\int_ {L} \\pmb {F} \\cdot \\mathrm{d} s = \\int_ {L} \\pmb {F} \\cdot \\pmb {e} _ {\\tau} \\mathrm{d} s \\quad \\text {或} \\quad \\int_ {L} P \\mathrm{d} x + Q \\mathrm{d} y = \\int_ {L} (P \\cos \\theta + Q \\sin \\theta) \\mathrm{d} s .\n$$"
+  }
+}

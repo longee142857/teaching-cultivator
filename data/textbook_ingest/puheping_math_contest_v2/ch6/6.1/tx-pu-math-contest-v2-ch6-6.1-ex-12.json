@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-12",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.green.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "已知平面区域 $D = \\{(x, y) \\mid x^2 + y^2 \\leqslant 1\\}$ , $l$ 为 $D$ 的边界正向一周. 证明:\n\n(1) $\\oint_{l} \\frac{x e^{\\sin y} dy - y e^{-\\sin x} dx}{4x^{2} + 5y^{2}} = \\oint_{l} \\frac{x e^{-\\sin y} dy - y e^{\\sin x} dx}{5x^{2} + 4y^{2}};$\n\n(2) $I = \\oint_{l} \\frac{x e^{\\sin y} dy - y e^{-\\sin x} dx}{4x^{2} + 5y^{2}} \\geqslant \\frac{53}{120}\\pi.$",
+  "answer": "I = \\iint_ {D} \\left(\\frac {\\mathrm{e} ^ {\\sin y}}{4 + y ^ {2}} + \\frac {\\mathrm{e} ^ {- \\sin x}}{5 - x ^ {2}}\\right) \\math",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "格林公式",
+    "参数化",
+    "对称性",
+    "极坐标",
+    "积分估值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）只需将等式的左、右两边都化为定积分，再看它们的被积函数是否相等；也可利用格林公式将曲线积分化为二重积分，再看被积函数.\n\n（2）只需利用二重积分的不等式性质，关键是要对被积函数做适当的缩小，得到积分值 $\\frac{53}{120}\\pi$"
+      },
+      {
+        "id": "s2",
+        "text": "（1）方法 1 l 的参数方程为 $x = \\cos t$ ， $y = \\sin t$ ，于是，等式的左边\n\n等式的右边\n\n$$\nI _ {1} = \\int_ {0} ^ {2 \\pi} \\frac {\\cos^ {2} t \\cdot e ^ {\\sin (\\sin t)} + \\sin^ {2} t \\cdot e ^ {- \\sin (\\cos t)}}{4 + \\sin^ {2} t} d t;\n\n\\begin{array}{r l} I _ {2} & = \\oint_ {l} \\frac {x e ^ {- \\sin y} d y - y e ^ {\\sin x} d x}{5 x ^ {2} + 4 y ^ {2}} = \\int_ {\\frac {\\pi}{2}} ^ {\\frac {5 \\pi}{2}} \\frac {\\cos^ {2} t \\cdot e ^ {- \\sin (\\sin t)} + \\sin^ {2} t \\cdot e ^ {\\sin (\\cos t)}}{4 + \\cos^ {2} t} d t \\\\ & = \\int_ {0} ^ {2 \\pi} \\frac {\\sin^ {2} u \\cdot e ^ {- \\sin (\\cos u)} + \\cos^ {2} u \\cdot e ^ {- \\sin (\\sin u)}}{4 + \\sin^ {2} u} d u \\quad \\left(t = \\frac {\\pi}{2} + u\\right) \\\\ & = - \\int_ {0} ^ {- 2 \\pi} \\frac {\\sin^ {2} v \\cdot e ^ {- \\sin (\\cos v)} + \\cos^ {2} v \\cdot e ^ {\\sin (\\sin v)}}{4 + \\sin^ {2} v} d v \\quad (v = - u) \\\\ & = \\int_ {- 2 \\pi} ^ {0} \\frac {\\sin^ {2} v \\cdot e ^ {- \\sin (\\cos v)} + \\cos^ {2} v \\cdot e ^ {\\sin (\\sin v)}}{4 + \\sin^ {2} v} d v = I _ {1}. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 将 $l$ 的方程代入被积函数的分母变形后再用格林公式.\n\n等式的左边\n\n$$\nI _ {1} = \\oint_ {l} \\frac {x e ^ {\\sin y}}{4 + y ^ {2}} d y - \\frac {y e ^ {- \\sin x}}{5 - x ^ {2}} d x = \\iint_ {D} \\left[ \\frac {e ^ {\\sin y}}{4 + y ^ {2}} + \\frac {e ^ {- \\sin x}}{5 - x ^ {2}} \\right] d x d y;\n$$\n\n等式的右边\n\n$$\nI _ {2} = \\oint_ {l} \\frac {x e ^ {- \\sin y}}{5 - y ^ {2}} d y - \\frac {y e ^ {\\sin x}}{4 + x ^ {2}} d x = \\iint_ {D} \\left[ \\frac {e ^ {- \\sin y}}{5 - y ^ {2}} + \\frac {e ^ {\\sin x}}{4 + x ^ {2}} \\right] d x d y\n$$\n\n$= I_{1}$ （在区域 $D$ 上， $x$ 与 $y$ 轮换对称）."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 由于\n\n$$\n\\mathrm{e} ^ {t} + \\mathrm{e} ^ {- t} = \\sum_ {n = 0} ^ {\\infty} \\frac {t ^ {n}}{n !} + \\sum_ {n = 0} ^ {\\infty} \\frac {(- t) ^ {n}}{n !} = 2 \\sum_ {n = 0} ^ {\\infty} \\frac {t ^ {2 n}}{(2 n) !} \\geqslant 2 + t ^ {2},\n$$\n\n由（1）及二重积分的轮换对称性，知\n\n$$\n\\begin{array}{l} I = \\iint_ {D} \\left(\\frac {\\mathrm{e} ^ {\\sin y}}{4 + y ^ {2}} + \\frac {\\mathrm{e} ^ {- \\sin x}}{5 - x ^ {2}}\\right) \\mathrm{d} x \\mathrm{d} y \\geqslant \\frac {1}{5} \\left[ \\iint_ {D} \\mathrm{e} ^ {\\sin y} \\mathrm{d} \\sigma + \\iint_ {D} \\mathrm{e} ^ {- \\sin x} \\mathrm{d} x \\mathrm{d} y \\right] \\\\ = \\frac {1}{5} \\left[ \\iint_ {D} \\mathrm{e} ^ {\\sin x} \\mathrm{d} x \\mathrm{d} y + \\iint_ {D} \\mathrm{e} ^ {- \\sin x} \\mathrm{d} x \\mathrm{d} y \\right] = \\frac {1}{5} \\iint_ {D} (\\mathrm{e} ^ {\\sin x} + \\mathrm{e} ^ {- \\sin x}) \\mathrm{d} x \\mathrm{d} y \\\\ \\geqslant \\frac {1}{5} \\iint_ {D} (2 + \\sin^ {2} x) \\mathrm{d} x \\mathrm{d} y = \\frac {1}{5} \\iint_ {D} \\left[ 2 + \\frac {1}{2} (1 - \\cos 2 x) \\right] \\mathrm{d} x \\mathrm{d} y \\\\ \\geqslant \\frac {1}{5} \\iint_ {D} \\left[ 2 + \\frac {1}{2} (2 x ^ {2} - \\frac {2}{3} x ^ {4}) \\right] \\mathrm{d} x \\mathrm{d} y (\\because \\cos x \\leqslant 1 - \\frac {1}{2} x ^ {2} + \\frac {1}{4 !} x ^ {4}) \\\\ = \\frac {4}{5} \\int_ {0} ^ {\\frac {\\pi}{2}} \\mathrm{d} \\varphi \\int_ {0} ^ {1} (2 + \\rho^ {2} \\cos^ {2} \\varphi - \\frac {1}{3} \\rho^ {4} \\cos^ {4} \\varphi) \\rho \\mathrm{d} \\rho = \\frac {5 3}{1 2 0} \\pi . \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "I = \\iint_ {D} \\left(\\frac {\\mathrm{e} ^ {\\sin y}}{4 + y ^ {2}} + \\frac {\\mathrm{e} ^ {- \\sin x}}{5 - x ^ {2}}\\right) \\math",
+    "techniques_used": [
+      "格林公式",
+      "参数化",
+      "对称性",
+      "极坐标",
+      "积分估值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用格林公式？区域是否含奇点？如何挖洞/补线？",
+      "technique": "格林公式",
+      "expected": "写出 ∂Q/∂x−∂P/∂y，处理奇点后化为二重积分或已知圆周积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲线积分（或证明结论）是什么？",
+      "technique": "参数化",
+      "expected": "I = \\iint_ {D} \\left(\\frac {\\mathrm{e} ^ {\\sin y}}{4 + y ^ {2}} + \\frac {\\mathrm{e} ^ {- \\sin x}}{5 - x ^ {2}}\\right) \\math"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 324,
+    "syllabus_note": "单位圆格林不等式证明",
+    "commentary": "评注 证明第二型曲线（曲面）积分的不等式，常用的方法有：\n\n① 转化为第一型曲线（曲面）积分，再利用积分不等式性质；\n\n② 利用格林公式将曲线积分化为二重积分，或利用高斯公式将曲面积分化为三重积分，再利用积分不等式性质."
+  }
+}

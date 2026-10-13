@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-16",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.pathindep",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "如图 6.6 所示，设 $P(\\dot{x}, y), Q(x, y)$ 具有连续的偏导数，且对以任意点 $(x_0, y_0)$ 为圆心，以任意正数 $r$ 为半径的上半圆 $L: x = x_0 + r\\cos \\theta$ ， $y = y_0 + r\\sin \\theta (0 \\leqslant \\theta \\leqslant \\pi)$ ，恒有\n\n$$\n\\int_ {L} P (x, y) \\mathrm{d} x + Q (x, y) \\mathrm{d} y = 0.\n$$\n\n图6.6",
+  "answer": "到 $P(x_0, y_0) = 0$ ，由 $(x_0, y_0)$ 的任意性，知 $P(x, y) = 0$ ，再由①式可得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "格林公式",
+    "积分估值",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "$P(x,y) = 0$ ， $\\frac{\\partial Q(x,y)}{\\partial x}\\equiv 0.$\n\n分析 要从积分值得到函数值，最常用的方法是用积分中值定理。而积分中值定理只有数量值函数的积分才具备。因此，可考虑用格林公式将曲线积分转化为二重积分。\n\n证明 记上半圆周 $L$ 的直径为 $AB$ ，取 $AB + L$ 为逆时针方向；记 $D$ 为 $AB + L$ 所包围的区域。由于 $\\int_{L} P(x, y) \\mathrm{d}x + Q(x, y) \\mathrm{d}y = 0$ ，则有\n\n$$\n\\begin{array}{r l} & {\\int_ {A B} P (x, y) \\mathrm{d} x + Q (x, y) \\mathrm{d} y = \\oint_ {A B + L} P (x, y) \\mathrm{d} x + Q (x, y) \\mathrm{d} y} \\\\ & {\\underline {{{{\\underline {{{{\\text {格林公式}}}}}}}}} \\iint_ {D} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y \\underline {{{{\\underline {{{{\\text {积分中值定理}}}}}}}}} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\Bigg | _ {M _ {1}} \\iint_ {D} \\mathrm{d} x \\mathrm{d} y} \\\\ & {= \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\Bigg | _ {M _ {1}} \\cdot \\frac {\\pi r ^ {2}}{2} \\quad (\\text {其中} M _ {1} \\in D \\text {为某一点}).} \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "另一方面\n\n$$\n\\begin{array}{r l} & {\\int_ {A B} P (x, y) \\mathrm{d} x + Q (x, y) \\mathrm{d} y = \\int_ {x _ {n} - r} ^ {x _ {0} + r} P (x, y _ {0}) \\mathrm{d} x} \\\\ & {\\stackrel {\\text {积分中值定理}} {=} P (\\xi , y _ {0}) \\cdot 2 r \\quad (x _ {0} - r <   \\xi <   x _ {0} + r).} \\end{array}\n$$\n\n于是有\n\n$$\n\\left. \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\right| _ {M _ {1}} \\cdot \\frac {\\pi r ^ {2}}{2} = P (\\xi , y _ {0}) \\cdot 2 r, \\text {即} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\Bigg | _ {M _ {1}} \\cdot \\frac {\\pi r}{2} = 2 P (\\xi , y _ {0}).\\tag{①}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令 $r \\to 0$ ，两边取极限，得到 $P(x_0, y_0) = 0$ ，由 $(x_0, y_0)$ 的任意性，知 $P(x, y) = 0$ ，再由①式可得\n\n$\\left.\\frac{\\partial Q(x,y)}{\\partial x}\\right|_{M_1} = 0$ ，从而 $\\lim_{r\\to 0}\\frac{\\partial Q(x,y)}{\\partial x}\\Bigg|_{M_1} = 0$ ，即 $\\left.\\frac{\\partial Q(x,y)}{\\partial x}\\right|_{(x_0,y_0)} = 0$\n\n由 $(x_0, y_0)$ 的任意性知 $\\frac{\\partial Q(x, y)}{\\partial x} \\equiv 0$ ."
+      }
+    ],
+    "final_answer": "到 $P(x_0, y_0) = 0$ ，由 $(x_0, y_0)$ 的任意性，知 $P(x, y) = 0$ ，再由①式可得",
+    "techniques_used": [
+      "格林公式",
+      "积分估值",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何判断第二型曲线积分与路径无关？写出全微分条件或构造原函数的思路。",
+      "technique": "格林公式",
+      "expected": "验证 ∂Q/∂x=∂P/∂y（或题设等价条件），必要时求原函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分估值",
+      "expected": "到 $P(x_0, y_0) = 0$ ，由 $(x_0, y_0)$ 的任意性，知 $P(x, y) = 0$ ，再由①式可得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例16*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 327,
+    "starred": true,
+    "syllabus_note": "上半圆条件⇒路径无关*",
+    "commentary": "评注 第二型曲线积分不具有“积分中值公式”，若要利用相关性质，则需将其化为定积分或利用格林公式化为二重积分来处理."
+  }
+}

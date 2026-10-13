@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-09",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $L$ 是不经过点 $(2,0),(-2,0)$ 的分段光滑的简单闭曲线，试就 $L$ 的不同情形计算曲线积分\n\n$$\nI = \\oint_ {L} \\left[ \\frac {y}{(2 - x) ^ {2} + y ^ {2}} + \\frac {y}{(2 + x) ^ {2} + y ^ {2}} \\right] d x + \\left[ \\frac {2 - x}{(2 - x) ^ {2} + y ^ {2}} - \\frac {2 + x}{(2 + x) ^ {2} + y ^ {2}} \\right] d y,\n$$\n\nL 取正向.",
+  "answer": "I = -2\\pi$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "奇点处理",
+    "格林公式",
+    "路径无关/原函数"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 点(2,0),(-2,0)是被积函数的两个奇点,重新组合积分表达式,使每个积分表达式只有一个奇点,再判别是否有 $\\frac{\\partial P}{\\partial y}=\\frac{\\partial Q}{\\partial x}$ ，分别对点(2,0),(-2,0)在L所围区域的内、外情况计算曲线积分.\n\n$$\nI = \\oint_ {L} \\frac {y d x}{(2 - x) ^ {2} + y ^ {2}} + \\frac {2 - x}{(2 - x) ^ {2} + y ^ {2}} d y + \\oint_ {L} \\frac {y d x}{(2 + x) ^ {2} + y ^ {2}} - \\frac {(2 + x) d y}{(2 + x) ^ {2} + y ^ {2}} = I _ {1} + I _ {2}.\n$$\n\n不难验证，对 $I_{1}$ 有\n\n$$\n\\frac {\\partial}{\\partial y} \\left[ \\frac {y}{(2 - x) ^ {2} + y ^ {2}} \\right] = \\frac {\\partial}{\\partial x} \\left[ \\frac {2 - x}{(2 - x) ^ {2} + y ^ {2}} \\right] = \\frac {(2 - x) ^ {2} - y ^ {2}}{\\left[ (2 - x) ^ {2} + y ^ {2} \\right] ^ {2}};\n$$\n\n对 $I_{2}$ 有\n\n$$\n\\frac {\\partial}{\\partial y} \\left[ \\frac {y}{(2 + x) ^ {2} + y ^ {2}} \\right] = \\frac {\\partial}{\\partial x} \\left[ \\frac {- (2 + x)}{(2 + x) ^ {2} + y ^ {2}} \\right] = \\frac {(2 + x) ^ {2} - y ^ {2}}{[ (2 + x) ^ {2} + y ^ {2} ] ^ {2}}.\n$$\n\n即它们都分别满足 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ .\n\n以下就 $L$ 的位置情况做讨论：\n\n(1) 当点 $(2,0)$ , $(-2,0)$ 均在 L 所围区域的外部时， $I_{1}=0=I_{2}$ ，从而 I=0.\n\n(2) 当点 $(2,0), (-2,0)$ 均在 $L$ 所围区域的内部时，分别作以这两个点为圆心，以 $\\varepsilon_{1}, \\varepsilon_{2}$ 为半径的圆 $C_{1}, C_{2}$ （方向为顺时针方向），使它们也都在区域内部。记 $C_{i}$ 所围区域为 $D_{i} (i = 1,2)$ ，于是\n\n$$\nI _ {1} = \\oint_ {L} \\frac {y d x + (2 - x) d y}{(x - 2) ^ {2} + y ^ {2}} = - \\oint_ {C _ {1}} \\frac {y d x + (2 - x) d y}{\\varepsilon_ {1} ^ {2}} = - \\frac {2}{\\varepsilon_ {1} ^ {2}} \\iint_ {D _ {1}} d x d y = - 2 \\pi .\n$$\n\n同理 $I_{2} = -2\\pi$ ，所以 $I "
+      },
+      {
+        "id": "s2",
+        "text": "分析 点(2,0),(-2,0)是被积函数的两个奇点,重新组合积分表达式,使每个积分表达式只有一个奇点,再判别是否有 $\\frac{\\partial P}{\\partial y}=\\frac{\\partial Q}{\\partial x}$ ，分别对点(2,0),(-2,0)在L所围区域的内、外情况计算曲线积分.\n\n$$\nI = \\oint_ {L} \\frac {y d x}{(2 - x) ^ {2} + y ^ {2}} + \\frac {2 - x}{(2 - x) ^ {2} + y ^ {2}} d y + \\oint_ {L} \\frac {y d x}{(2 + x) ^ {2} + y ^ {2}} - \\frac {(2 + x) d y}{(2 + x) ^ {2} + y ^ {2}} = I _ {1} + I _ {2}.\n$$\n\n不难验证，对 $I_{1}$ 有\n\n$$\n\\frac {\\partial}{\\partial y} \\left[ \\frac {y}{(2 - x) ^ {2} + y ^ {2}} \\right] = \\frac {\\partial}{\\partial x} \\left[ \\frac {2 - x}{(2 - x) ^ {2} + y ^ {2}} \\right] = \\frac {(2 - x) ^ {2} - y ^ {2}}{\\left[ (2 - x) ^ {2} + y ^ {2} \\right] ^ {2}};\n$$\n\n对 $I_{2}$ 有\n\n$$\n\\frac {\\partial}{\\partial y} \\left[ \\frac {y}{(2 + x) ^ {2} + y ^ {2}} \\right] = \\frac {\\partial}{\\partial x} \\left[ \\frac {- (2 + x)}{(2 + x) ^ {2} + y ^ {2}} \\right] = \\frac {(2 + x) ^ {2} - y ^ {2}}{[ (2 + x) ^ {2} + y ^ {2} ] ^ {2}}.\n$$\n\n即它们都分别满足 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ .\n\n以下就 $L$ 的位置情况做讨论："
+      },
+      {
+        "id": "s3",
+        "text": "(1) 当点 $(2,0)$ , $(-2,0)$ 均在 L 所围区域的外部时， $I_{1}=0=I_{2}$ ，从而 I=0."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 当点 $(2,0), (-2,0)$ 均在 $L$ 所围区域的内部时，分别作以这两个点为圆心，以 $\\varepsilon_{1}, \\varepsilon_{2}$ 为半径的圆 $C_{1}, C_{2}$ （方向为顺时针方向），使它们也都在区域内部。记 $C_{i}$ 所围区域为 $D_{i} (i = 1,2)$ ，于是\n\n$$\nI _ {1} = \\oint_ {L} \\frac {y d x + (2 - x) d y}{(x - 2) ^ {2} + y ^ {2}} = - \\oint_ {C _ {1}} \\frac {y d x + (2 - x) d y}{\\varepsilon_ {1} ^ {2}} = - \\frac {2}{\\varepsilon_ {1} ^ {2}} \\iint_ {D _ {1}} d x d y = - 2 \\pi .\n$$\n\n同理 $I_{2} = -2\\pi$ ，所以 $I = -4\\pi .$"
+      },
+      {
+        "id": "s5",
+        "text": "(3) 当点 $(2,0)$ , $(-2,0)$ 有一个在 L 所围区域的内部，另一个在外部时，综合（1），（2）得 $I = -2\\pi$ .\n\n评注 将积分表达式重新组合，使每个积分表达式只有一个奇点，其目的是便于对积分路径 $L$ 的情况做出讨论，如果 $L$ 是一条确定的曲线，就没必要对积分表达式做这样的处理."
+      }
+    ],
+    "final_answer": "I = -2\\pi$ .",
+    "techniques_used": [
+      "奇点处理",
+      "格林公式",
+      "路径无关/原函数"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用参数化、补线、格林还是奇点分类？关键化简步骤是什么？",
+      "technique": "奇点处理",
+      "expected": "选定计算路线（参数化/补线/挖洞/分类），写出可积形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分结果是什么？",
+      "technique": "格林公式",
+      "expected": "I = -2\\pi$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 322,
+    "syllabus_note": "两奇点情形分类计算",
+    "commentary": "评注 将积分表达式重新组合，使每个积分表达式只有一个奇点，其目的是便于对积分路径 $L$ 的情况做出讨论，如果 $L$ 是一条确定的曲线，就没必要对积分表达式做这样的处理."
+  }
+}
