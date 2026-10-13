@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-27",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.concept",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明积分方程 $f(x, y) = 1 + \\int_{0}^{x} \\int_{0}^{y} f(u, v) \\, \\mathrm{d}u \\, \\mathrm{d}v$ 在 $0 \\leqslant x \\leqslant 1$ 和 $0 \\leqslant y \\leqslant 1$ 中至多有一个连续解.",
+  "answer": "$|g(x, y)| \\leqslant 0$ , 故 $g(x, y) = 0$ . 因而不可能存在两个不同的连续解.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分估值",
+    "证明技巧",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若命题不成立, 则两个解的差 $g(x, y)$ 是非零函数, 且满足方程: $g(x, y) = \\int_{0}^{x} \\int_{0}^{y} g(u, v) \\, \\mathrm{d}u \\, \\mathrm{d}v$ . 由 $g$ 的连续性可证, 这是不可能的.\n\n设存在两个连续解，令 $g$ 是它们的差，则 $g$ 连续且\n\n$$\ng (x, y) = \\int_ {0} ^ {x} \\int_ {0} ^ {y} g (u, v) d u d v.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因为 $g$ 连续，则它在给定的正方形上有界。设 $M$ 是它的一个界，则当 $0 \\leqslant x \\leqslant 1, 0 \\leqslant y \\leqslant 1$ 时，有\n\n$$\n\\mid g (x, y) \\mid \\leqslant \\int_ {0} ^ {x} \\int_ {0} ^ {y} \\mid g (u, v) \\mid \\mathrm{d} u \\mathrm{d} v \\leqslant \\int_ {0} ^ {x} \\int_ {0} ^ {y} M \\mathrm{d} u \\mathrm{d} v = M x y.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "下面证明对于任何正整数 $n$ ，有\n\n$$\n\\mid g (x, y) \\mid \\leqslant M \\frac {x ^ {n}}{n !} \\cdot \\frac {y ^ {n}}{n !}.\\tag{①}\n$$\n\n当 $n = 1$ 时的情况已证. 假定当 $n = k$ 时为真, 则\n\n$$\n\\mid g (x, y) \\mid \\leqslant \\int_ {0} ^ {x} \\int_ {0} ^ {y} \\mid g (u, v) \\mid \\mathrm{d} u \\mathrm{d} v \\leqslant \\int_ {0} ^ {x} \\int_ {0} ^ {y} M \\frac {u ^ {k}}{k !} \\cdot \\frac {v ^ {k}}{k !} \\mathrm{d} u \\mathrm{d} v = M \\frac {x ^ {k + 1}}{(k + 1) !} \\cdot \\frac {y ^ {k + 1}}{(k + 1) !}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由数学归纳法，知①式成立.\n\n由于对任意固定的 $x$ 与 $y$ , $\\lim_{n \\to \\infty} M \\frac{x^n}{n!} \\cdot \\frac{y^n}{n!} = 0$ , 所以 $|g(x, y)| \\leqslant 0$ , 故 $g(x, y) = 0$ . 因而不可能存在两个不同的连续解."
+      }
+    ],
+    "final_answer": "$|g(x, y)| \\leqslant 0$ , 故 $g(x, y) = 0$ . 因而不可能存在两个不同的连续解.",
+    "techniques_used": [
+      "积分估值",
+      "证明技巧",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用二重积分定义、性质、对称性或估值定理处理本题？",
+      "technique": "积分估值",
+      "expected": "建立二重积分表示或估值，必要时用对称性/分部/格林。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明或计算结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$|g(x, y)| \\leqslant 0$ , 故 $g(x, y) = 0$ . 因而不可能存在两个不同的连续解."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例27*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 286,
+    "starred": true,
+    "syllabus_note": "积分方程唯一性*"
+  }
+}

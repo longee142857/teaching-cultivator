@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-02",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $I = \\int_{1 / 4}^{1 / 2}\\mathrm{d}y\\int_{1 / 2}^{\\sqrt{y}}\\mathrm{e}^{\\frac{y}{x}}\\mathrm{d}x + \\int_{1 / 2}^{1}\\mathrm{d}y\\int_{y}^{\\sqrt{y}}\\mathrm{e}^{\\frac{y}{x}}\\mathrm{d}x.$",
+  "answer": "I = \\int_ {1 / 2} ^ {1} \\mathrm{d} x \\int_ {x ^ {2}} ^ {x} \\mathrm{e} ^ {\\frac {y}{x}} \\mathrm{d} y = \\int_ {1 / 2} ^ {1} x",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 先对 $x$ 积分有困难，交换积分次序再积分."
+      },
+      {
+        "id": "s2",
+        "text": "积分区域由两部分构成（如图 5.1 所示）:"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nD _ {1}: \\frac {1}{2} \\leqslant x \\leqslant \\sqrt {y}, \\frac {1}{4} \\leqslant y \\leqslant \\frac {1}{2}, D _ {2}: y \\leqslant x \\leqslant \\sqrt {y}, \\frac {1}{2} \\leqslant y \\leqslant 1.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "将它们表示为 $X$ 型区域为 $D: x^2 \\leqslant y \\leqslant x, \\frac{1}{2} \\leqslant x \\leqslant 1$ ."
+      },
+      {
+        "id": "s5",
+        "text": "图5.1"
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\nI = \\int_ {1 / 2} ^ {1} \\mathrm{d} x \\int_ {x ^ {2}} ^ {x} \\mathrm{e} ^ {\\frac {y}{x}} \\mathrm{d} y = \\int_ {1 / 2} ^ {1} x (\\mathrm{e} - \\mathrm{e} ^ {x}) \\mathrm{d} x = \\frac {3}{8} \\mathrm{e} - \\frac {1}{2} \\sqrt {\\mathrm{e}}.\n$$"
+      }
+    ],
+    "final_answer": "I = \\int_ {1 / 2} ^ {1} \\mathrm{d} x \\int_ {x ^ {2}} ^ {x} \\mathrm{e} ^ {\\frac {y}{x}} \\mathrm{d} y = \\int_ {1 / 2} ^ {1} x",
+    "techniques_used": [
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分次序（或是否需要交换次序）并写出累次积分上下限？",
+      "technique": "累次积分",
+      "expected": "根据区域形状选择 dxdy 或 dydx，必要时交换次序。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终计算结果是什么？",
+      "technique": "累次积分",
+      "expected": "I = \\int_ {1 / 2} ^ {1} \\mathrm{d} x \\int_ {x ^ {2}} ^ {x} \\mathrm{e} ^ {\\frac {y}{x}} \\mathrm{d} y = \\int_ {1 / 2} ^ {1} x"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 268,
+    "syllabus_note": "交换积分次序",
+    "commentary": "评注 （1）积分次序的选择原则：\n\n\\- 容易积分的先计算。如果被积函数出现以下形式之一，则必须先对 $x$ 积分，后对 $y$ 积分。\n\n$$\n\\mathrm{e} ^ {y ^ {2}}, \\mathrm{e} ^ {\\frac {x}{y}}, \\frac {\\mathrm{e} ^ {y}}{y}, \\sin y ^ {2}, \\sin \\frac {x}{y}, \\frac {\\sin y}{y}, \\frac {\\ln y}{1 + y}.\n$$\n\n\\- 使积分区域不分块或少分块为宜.\n\n(2) 交换积分次序的方法: 由已知二次积分的上、下限, 写出积分区域的不等式组, 画出对应区域, 确定交换次序后的积分上、下限, 有时需先改变坐标系, 再确定相应的二次积分的上、下限."
+  }
+}

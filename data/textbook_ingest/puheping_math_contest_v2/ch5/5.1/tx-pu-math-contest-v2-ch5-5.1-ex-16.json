@@ -1,0 +1,84 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-16",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.multi.int.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求曲线 $y^{2} = x$ 与直线 $x = 1$ 围成的均匀薄板关于通过原点的任意一直线的转动惯量，并讨论该转动惯量在何种情况下取得最大值、最小值？",
+  "answer": "最小，绕 $y$ 轴的转动惯量最大。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "物理应用",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 如图 5.13 所示，为求得薄板关于一直线的转动惯量，需求得薄板上的点到直线的距离，再用微元法得到该转动惯量."
+      },
+      {
+        "id": "s2",
+        "text": "设薄板的密度为 1，过原点的直线为 $l: y = kx$ ( $0 \\leqslant k < +\\infty$ )。薄片上任意一点 $(x, y)$ 到该直线 $l$ 的距离为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nd = \\frac {| y - k x |}{\\sqrt {1 + k ^ {2}}}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "薄片绕 $l$ 的转动惯量为"
+      },
+      {
+        "id": "s5",
+        "text": "图5.13"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\begin{array}{r l} I _ {I} & = \\iint_ {D} d ^ {2} \\mathrm{d} \\sigma = \\iint_ {D} \\frac {(y - k x) ^ {2}}{1 + k ^ {2}} \\mathrm{d} x \\mathrm{d} y = \\int_ {0} ^ {1} \\mathrm{d} x \\int_ {- \\sqrt {x}} ^ {\\sqrt {x}} \\frac {(y - k x) ^ {2}}{1 + k ^ {2}} \\mathrm{d} (y - k x) \\\\ & = \\frac {1}{3 (1 + k ^ {2})} \\int_ {0} ^ {1} (2 x ^ {3 / 2} + k ^ {2} x ^ {5 / 2}) \\mathrm{d} x = \\frac {2 8 + 6 0 k ^ {2}}{1 0 5 (1 + k ^ {2})}. \\end{array}\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "因为 $\\frac{\\mathrm{d}I_l}{\\mathrm{d}k} = \\frac{64k}{105(1 + k^2)^2} > 0$ ，所以当 $k = 0$ 时， $I_l = \\frac{4}{15}$ 为最小值；当 $k \\to \\infty$ 时， $I_l = \\frac{4}{7}$ 为最大值。即绕 $x$ 轴的转动惯量最小，绕 $y$ 轴的转动惯量最大。"
+      }
+    ],
+    "final_answer": "最小，绕 $y$ 轴的转动惯量最大。",
+    "techniques_used": [
+      "物理应用",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何把体积/转动惯量/侧压力问题化为二重积分？微元如何选取？",
+      "technique": "物理应用",
+      "expected": "写出对应的二重积分表达式并选定坐标系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终应用结论（体积/惯量/压力等）是什么？",
+      "technique": "积分估值",
+      "expected": "最小，绕 $y$ 轴的转动惯量最大。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 279,
+    "syllabus_note": "转动惯量"
+  }
+}

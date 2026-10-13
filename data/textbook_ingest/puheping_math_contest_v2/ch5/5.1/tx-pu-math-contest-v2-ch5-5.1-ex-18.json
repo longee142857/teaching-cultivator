@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-18",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.polar",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x, y)$ 在单位圆上有连续的偏导数，且在边界上取值为零，证明：\n\n$$\n\\lim _ {\\varepsilon \\rightarrow 0 ^ {+}} \\iint_ {D} \\frac {x \\frac {\\partial f}{\\partial x} + y \\frac {\\partial f}{\\partial y}}{x ^ {2} + y ^ {2}} d x d y = - 2 \\pi f (0, 0).\n$$\n\n其中 $D$ 为圆环域， $\\varepsilon^2\\leqslant x^2 +y^2\\leqslant 1.$",
+  "answer": "I = - 2 \\pi f (0, 0).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极坐标变换",
+    "积分估值",
+    "证明技巧",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需算出右边的积分. $D$ 为圆环域, 选极坐标为好. 关键是将被积函数的分子化为极坐标形式. 由于被积函数中有抽象函数符号, 因此当积分有困难时可考虑用积分中值定理."
+      },
+      {
+        "id": "s2",
+        "text": "令 $x = \\rho \\cos \\varphi, y = \\rho \\sin \\varphi$ ，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {\\partial f}{\\partial \\rho} = \\frac {\\partial f}{\\partial x} \\cdot \\frac {\\partial x}{\\partial \\rho} + \\frac {\\partial f}{\\partial y} \\cdot \\frac {\\partial y}{\\partial \\rho} = \\frac {\\partial f}{\\partial x} \\cos \\varphi + \\frac {\\partial f}{\\partial y} \\sin \\varphi , \\text {即} \\rho \\frac {\\partial f}{\\partial \\rho} = x \\frac {\\partial f}{\\partial x} + y \\frac {\\partial f}{\\partial y}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由已知，当 $\\rho = 1$ 时， $f(\\cos \\varphi, \\sin \\varphi) = 0$ ，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} I & = \\iint_ {D} \\frac {x f _ {x} + y f _ {y}}{x ^ {2} + y ^ {2}} \\mathrm{d} x \\mathrm{d} y = \\iint_ {D} \\frac {\\rho \\frac {\\partial f}{\\partial \\rho}}{\\rho^ {2}} \\rho \\mathrm{d} \\rho \\mathrm{d} \\varphi = \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {\\varepsilon} ^ {1} \\frac {\\partial f}{\\partial \\rho} \\mathrm{d} \\rho \\\\ & = \\int_ {0} ^ {2 \\pi} f (\\cos \\varphi , \\sin \\varphi) \\mathrm{d} \\varphi - \\int_ {0} ^ {2 \\pi} f (\\varepsilon \\cos \\varphi , \\varepsilon \\sin \\varphi) \\mathrm{d} \\varphi \\\\ & = 0 - 2 \\pi f (\\varepsilon \\cos \\varphi^ {*}, \\varepsilon \\sin \\varphi^ {*}) \\quad (\\text {积分中值定理，} \\varphi^ {*} \\in [ 0, 2 \\pi ]). \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "故"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\lim _ {\\varepsilon \\rightarrow 0 ^ {+}} I = - 2 \\pi f (0, 0).\n$$"
+      }
+    ],
+    "final_answer": "I = - 2 \\pi f (0, 0).",
+    "techniques_used": [
+      "极坐标变换",
+      "积分估值",
+      "证明技巧",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题积分区域/被积函数为何适合极坐标或极型换元？如何确定 ρ、φ 的上下限？",
+      "technique": "极坐标变换",
+      "expected": "画区域、写极坐标方程或雅可比，化为累次积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分结果是什么？",
+      "technique": "积分估值",
+      "expected": "I = - 2 \\pi f (0, 0)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 280,
+    "syllabus_note": "圆环域极限"
+  }
+}

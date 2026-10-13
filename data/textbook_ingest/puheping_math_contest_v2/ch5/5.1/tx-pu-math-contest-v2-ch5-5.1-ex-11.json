@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-11",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.polar",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算积分 $I = \\iint_{D} \\arctan\\left(\\sqrt{\\frac{x - c}{a}} + \\sqrt{\\frac{y - c}{b}}\\right) \\mathrm{d}x \\mathrm{~d}y$ ，其中 $D$ 由曲线 $\\sqrt{\\frac{x - c}{a}} + \\sqrt{\\frac{y - c}{b}} = 1$ 和 $x = c, y = c (a > 0, b > 0, c > 0)$ 所围成.",
+  "answer": "I = \\int_ {0} ^ {1} \\arctan t \\cdot \\frac {2}{3} a b t ^ {3} \\mathrm{d} t = \\frac {1}{6} a b \\int_ {0} ^ {1} \\arctan t \\mat",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极坐标变换",
+    "变量代换",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 为化简被积函数，作变量代换 $\\sqrt{\\frac{x - c}{a}} = \\rho \\cos^2\\varphi, \\sqrt{\\frac{y - c}{b}} = \\rho \\sin^2\\varphi$ 是较好的选择。但根据被积函数与积分区域的特点（ $D$ 的一条边界曲线是被积函数的等值线），改变面积微元的选取，会使积分更为简单。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 作变量代换： $x = c + a\\rho^2\\cos^4\\varphi ,y = c + b\\rho^2\\sin^4\\varphi$ ，则 $D$ 变为\n\n$$\nD ^ {\\prime} \\colon 0 \\leqslant \\varphi \\leqslant \\frac {\\pi}{2}, 0 \\leqslant \\rho \\leqslant 1.\n$$\n\n又\n\n$$\nJ = \\frac {\\partial (x , y)}{\\partial (\\rho , \\varphi)} = \\left| \\begin{array}{l l} 2 a \\rho \\cos^ {4} \\varphi & - 4 a \\rho^ {2} \\cos^ {3} \\varphi \\sin \\varphi \\\\ 2 b \\rho \\sin^ {4} \\varphi & 4 b \\rho^ {2} \\cos \\varphi \\sin^ {3} \\varphi \\end{array} \\right| = 8 a b \\rho^ {3} \\cos^ {3} \\varphi \\sin^ {3} \\varphi ,\n$$\n\n所以\n\n$$\nI = 8 a b \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos^ {3} \\varphi \\sin^ {3} \\varphi d \\varphi \\int_ {0} ^ {1} \\arctan \\rho \\cdot \\rho^ {3} d \\rho ;\\tag{①}\n$$\n\n其中\n\n$$\n\\int_ {0} ^ {\\frac {\\pi}{2}} \\cos^ {3} \\varphi \\sin^ {3} \\varphi d \\varphi = \\int_ {0} ^ {\\frac {\\pi}{2}} (1 - \\sin^ {2} \\varphi) \\sin^ {3} \\varphi d \\sin \\varphi = \\frac {1}{1 2},\n\n\\begin{array}{r l} \\int_ {0} ^ {1} \\arctan \\rho \\cdot \\rho^ {3} d \\rho & = \\frac {1}{4} \\rho^ {4} \\arctan \\rho \\Big | _ {0} ^ {1} - \\frac {1}{4} \\int_ {0} ^ {1} \\frac {\\rho^ {4}}{1 + \\rho^ {2}} d \\rho \\\\ & = \\frac {\\pi}{1 6} - \\frac {1}{4} \\int_ {0} ^ {1} \\left[ (\\rho^ {2} - 1) + \\frac {1}{1 + \\rho^ {2}} \\right] d \\rho = \\frac {1}{6}. \\end{array}\n$$\n\n上面结果代入①式，得 $I=\\frac{1}{9}ab.$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 设被积函数在 $D$ 中的等值线为 $l: \\sqrt{\\frac{x - c}{a}} + \\sqrt{\\frac{y - c}{b}} = t$ ，则 $0 \\leqslant t \\leqslant 1$ 。 $l$ 与直线 $x = c, y = c$ 所围成的面积\n\n$$\nS (t) = \\int_ {c} ^ {a t ^ {2} + c} d x \\int_ {c} ^ {b t ^ {2} + \\frac {b}{a} (x - c) + 2 b t \\sqrt {\\frac {x - c}{a}} + c} d y = \\int_ {c} ^ {a t ^ {2} + c} \\left[ b t ^ {2} + \\frac {b}{a} (x - c) + 2 b t \\sqrt {\\frac {x - c}{a}} \\right] d x = \\frac {1}{6} a b t ^ {4}.\n$$\n\n选面积微元 $\\mathrm{d}S = \\frac{2}{3} abt^3\\mathrm{d}t$ ，则\n\n$$\nI = \\int_ {0} ^ {1} \\arctan t \\cdot \\frac {2}{3} a b t ^ {3} \\mathrm{d} t = \\frac {1}{6} a b \\int_ {0} ^ {1} \\arctan t \\mathrm{d} t ^ {4} = \\frac {1}{6} a b \\left(t ^ {4} \\arctan t \\Big | _ {0} ^ {1} - \\int_ {0} ^ {1} \\frac {t ^ {4}}{1 + t ^ {2}} \\mathrm{d} t\\right) = \\frac {1}{9} a b.\n$$"
+      }
+    ],
+    "final_answer": "I = \\int_ {0} ^ {1} \\arctan t \\cdot \\frac {2}{3} a b t ^ {3} \\mathrm{d} t = \\frac {1}{6} a b \\int_ {0} ^ {1} \\arctan t \\mat",
+    "techniques_used": [
+      "极坐标变换",
+      "变量代换",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "本题积分区域/被积函数为何适合极坐标或极型换元？如何确定 ρ、φ 的上下限？",
+      "technique": "极坐标变换",
+      "expected": "画区域、写极坐标方程或雅可比，化为累次积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分结果是什么？",
+      "technique": "变量代换",
+      "expected": "I = \\int_ {0} ^ {1} \\arctan t \\cdot \\frac {2}{3} a b t ^ {3} \\mathrm{d} t = \\frac {1}{6} a b \\int_ {0} ^ {1} \\arctan t \\mat"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例11*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 275,
+    "starred": true,
+    "syllabus_note": "特殊极型换元*",
+    "commentary": "评注 若积分区域的一条边界曲线是被积函数的等值线，则采用这种改变面积微元选取的方法，可起到降维的作用，将二重积分化为定积分，使计算更简单。这种方法也可推广到三重积分的情形。"
+  }
+}

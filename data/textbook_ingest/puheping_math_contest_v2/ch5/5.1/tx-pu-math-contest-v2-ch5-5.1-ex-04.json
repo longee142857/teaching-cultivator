@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-04",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x,y) = \\begin{cases} 3xy\\max \\{x,y\\}, & 0 \\leqslant x \\leqslant 1, & 0 \\leqslant y \\leqslant 1 \\\\ 0, & \\text{其他} \\end{cases}$ ，求 $F(t) = \\iint_{x + y \\leqslant t} f(x,y)\\mathrm{d}\\sigma$ .",
+  "answer": "的轮换对称性:",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "对称性",
+    "积分估值",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于被积函数是分段函数，而积分区域与 $t$ 的取值有关，所以需对 $t$ 的取值进行分段讨论. 解 记 $D: x + y \\leqslant t$ ，对每个确定的 $t$ 值， $x + y = t$ 表示 $xOy$ 面上斜率为 -1 的直线.\n\n当 $t \\leqslant 0$ 时，如图5.3(a)所示，由于在 $D$ 上有 $f(x, y) = 0$ ，故 $F(t) = \\iint_{D} 0 \\mathrm{~d} x \\mathrm{~d} y = 0$ .\n\n当 $0 < t \\leqslant 1$ 时，如图5.3(b)所示，仅在 $D$ 的子集 $D_{1}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由于 $D_{1}$ 关于 $y = x$ 对称，且 $f(x,y) = f(y,x)$ ，所以积分等于其半区域（被直线 $y = x$ 对分）上积分的2倍，即\n\n$$\nF (t) = \\iint_ {D _ {1}} f (x, y) \\mathrm{d} x \\mathrm{d} y = 2 \\int_ {0} ^ {\\frac {t}{2}} \\mathrm{d} x \\int_ {x} ^ {t - x} 3 x y ^ {2} \\mathrm{d} y = \\frac {3}{3 2} t ^ {5}.\n$$\n\n当 $t > 2$ 时，如图5.3(d)所示，仅在 $D$ 的子集 $D_{3}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由对称性\n\n$$\nF (t) = \\iint_ {D _ {1}} f (x, y) \\mathrm{d} x \\mathrm{d} y = 2 \\int_ {0} ^ {1} \\mathrm{d} x \\int_ {x} ^ {1} 3 x y ^ {2} \\mathrm{d} y = \\frac {3}{5}.\n$$\n\n当 $1 < t \\leqslant 2$ 时，如图5.3(c)所示，仅在 $D$ 的子集 $D_{2}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由对称性\n\n$$\nF (t) = \\iint_ {D _ {2}} f (x, y) \\mathrm{d} x \\mathrm{d} y = \\iint_ {D _ {3}} f (x, y) \\mathrm{d} x \\mathrm{d} y - 2 \\int_ {\\frac {t}{2}} ^ {1} \\mathrm{d} y \\int_ {t - y} ^ {y} 3 x y ^ {2} \\mathrm{d} x = \\frac {5}{3} - \\frac {3}{2} t + t ^ {2} - \\frac {1}{3 2} t ^ {5}.\n$$\n\n(c)\n\n(a)\n\n(b)\n\n图"
+      },
+      {
+        "id": "s2",
+        "text": "分析 由于被积函数是分段函数，而积分区域与 $t$ 的取值有关，所以需对 $t$ 的取值进行分段讨论. 解 记 $D: x + y \\leqslant t$ ，对每个确定的 $t$ 值， $x + y = t$ 表示 $xOy$ 面上斜率为 -1 的直线.\n\n当 $t \\leqslant 0$ 时，如图5.3(a)所示，由于在 $D$ 上有 $f(x, y) = 0$ ，故 $F(t) = \\iint_{D} 0 \\mathrm{~d} x \\mathrm{~d} y = 0$ .\n\n当 $0 < t \\leqslant 1$ 时，如图5.3(b)所示，仅在 $D$ 的子集 $D_{1}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由于 $D_{1}$ 关于 $y = x$ 对称，且 $f(x,y) = f(y,x)$ ，所以积分等于其半区域（被直线 $y = x$ 对分）上积分的2倍，即\n\n$$\nF (t) = \\iint_ {D _ {1}} f (x, y) \\mathrm{d} x \\mathrm{d} y = 2 \\int_ {0} ^ {\\frac {t}{2}} \\mathrm{d} x \\int_ {x} ^ {t - x} 3 x y ^ {2} \\mathrm{d} y = \\frac {3}{3 2} t ^ {5}.\n$$\n\n当 $t > 2$ 时，如图5.3(d)所示，仅在 $D$ 的子集 $D_{3}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由对称性\n\n$$\nF (t) = \\iint_ {D _ {1}} f (x, y) \\mathrm{d} x \\mathrm{d} y = 2 \\int_ {0} ^ {1} \\mathrm{d} x \\int_ {x} ^ {1} 3 x y ^ {2} \\mathrm{d} y = \\frac {3}{5}.\n$$\n\n当 $1 < t \\leqslant 2$ 时，如图5.3(c)所示，仅在 $D$ 的子集 $D_{2}$ 上有\n\n$$\nf (x, y) = \\left\\{ \\begin{array}{l l} 3 x ^ {2} y, & y <   x, \\\\ 3 x y ^ {2}, & x \\leqslant y. \\end{array} \\right.\n$$\n\n由对称性\n\n$$\nF (t) = \\iint_ {D _ {2}} f (x, y) \\mathrm{d} x \\mathrm{d} y = \\iint_ {D _ {3}} f (x, y) \\mathrm{d} x \\mathrm{d} y - 2 \\int_ {\\frac {t}{2}} ^ {1} \\mathrm{d} y \\int_ {t - y} ^ {y} 3 x y ^ {2} \\mathrm{d} x = \\frac {5}{3} - \\frac {3}{2} t + t ^ {2} - \\frac {1}{3 2} t ^ {5}.\n$$\n\n(c)  \n![](images/c966af237f66bbf6baadc5b780178abe79e085f1d8c4c422ed15ee0a8b430e0b.jpg)  \n(a)\n\n![](images/7c5e60ab70a914641cd6c229d3a8dc07294d507f422e2891f8d318d6ce75fca4.jpg)  \n(b)\n\n![](images/58b010ca25a881f514eef459eb8aaa21875baa95ac67f4abc138b4586092e5d7.jpg)  \n图5.3\n\n![](images/f3423a5bf028f4304eef3e2d5503b22cb28d9376625eecbcb05c395ea21c697e.jpg)  \n(d)\n\n综上有\n\n$$\nF (t) = \\left\\{ \\begin{array}{c c} 0, & t \\leqslant 0, \\\\ \\frac {3}{3 2} t ^ {5}, & 0 <   t \\leqslant 1, \\\\ \\frac {5}{3} - \\frac {3}{2} t + t ^ {2} - \\frac {1}{3 2} t ^ {5}, & 1 <   t \\leqslant 2, \\\\ \\frac {3}{5}, & t > 2, \\end{array} . \\right.\n$$\n\n评注 （1）当被积函数为分段函数，而积分区域又依赖于某个参数变化时，就需要根据被积函数的分段情况对确定区域的参数进行相应的讨论."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 二重积分的轮换对称性:\n\n设平面区域 $D$ 关于直线 $y = x$ 对称， $D_{1}$ 是 $D$ 位于 $y = x$ 一侧的区域，则有\n\n$$\n\\iint_ {D} f (x, y) \\mathrm{d} \\sigma = \\left\\{ \\begin{array}{l l} 0, & \\text {若} f (x, y) = - f (y, x), \\\\ 2 \\iint_ {D _ {1}} f (x, y) \\mathrm{d} \\sigma , & \\text {若} f (x, y) = f (y, x). \\end{array} \\right..\n$$"
+      }
+    ],
+    "final_answer": "的轮换对称性:",
+    "techniques_used": [
+      "对称性",
+      "积分估值",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分次序（或是否需要交换次序）并写出累次积分上下限？",
+      "technique": "累次积分",
+      "expected": "根据区域形状选择 dxdy 或 dydx，必要时交换次序。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终计算结果是什么？",
+      "technique": "积分估值",
+      "expected": "的轮换对称性:"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 269,
+    "syllabus_note": "分段区域直角坐标",
+    "commentary": "评注 （1）当被积函数为分段函数，而积分区域又依赖于某个参数变化时，就需要根据被积函数的分段情况对确定区域的参数进行相应的讨论.\n\n(2) 二重积分的轮换对称性:\n\n设平面区域 $D$ 关于直线 $y = x$ 对称， $D_{1}$ 是 $D$ 位于 $y = x$ 一侧的区域，则有\n\n$$\n\\iint_ {D} f (x, y) \\mathrm{d} \\sigma = \\left\\{ \\begin{array}{l l} 0, & \\text {若} f (x, y) = - f (y, x), \\\\ 2 \\iint_ {D _ {1}} f (x, y) \\mathrm{d} \\sigma , & \\text {若} f (x, y) = f (y, x). \\end{array} \\right..\n$$"
+  }
+}

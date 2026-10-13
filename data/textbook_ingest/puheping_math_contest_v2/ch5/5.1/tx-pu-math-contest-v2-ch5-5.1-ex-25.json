@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.1-ex-25",
+  "subject": "math",
+  "l2": "二重积分与三重积分",
+  "l3_id": "math.calc.dbl.cart",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设四阶可微函数 $f(x, y)$ 在平面区域 $D: 0 \\leqslant x \\leqslant 1, 0 \\leqslant y \\leqslant 1$ 的边界为零，且在 $D$ 上有 $\\left|\\frac{\\partial^4 f}{\\partial x^2 \\partial y^2}\\right| \\leqslant b$ . 证明 $\\left|\\iint_{D} f(x, y) \\mathrm{d}x \\mathrm{d}y\\right| \\leqslant \\frac{b}{144}$ .",
+  "answer": "，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分估值",
+    "分部/格林",
+    "证明技巧",
+    "累次积分"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 从已知条件看，若能将二重积分中的函数转化为 $\\frac{\\partial^4 f}{\\partial x^2 \\partial y^2}$ 的形式，问题就容易解决了。实现这一目标的有效方法是做分部积分。为此需引入一个在 $D$ 的边界上取值为 0 的简单函数 $g(x, y)$ ，使之与 $\\frac{\\partial^4 f}{\\partial x^2 \\partial y^2}$ 做乘积来完成这一转换。显然取 $g(x, y) = x(1 - x)y(1 - y)$ 是最容易想到的。\n\n令 $g(x,y)=x(1-x)y(1-y)$ ，显然 g 在 D 的边界上为零。利用分部积分，有\n\n$$\n\\begin{array}{l} \\int_ {0} ^ {1} \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} g (x, y) d x = \\int_ {0} ^ {1} g (x, y) d \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\\\ = g (x, y) \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\Bigg | _ {0} ^ {1} - \\int_ {0} ^ {1} \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\cdot \\frac {\\partial g}{\\partial x} d x = - \\int_ {0} ^ {1} \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\cdot \\frac {\\partial g}{\\partial x} d x, \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "则\n\n$$\n\\begin{array}{r l} \\iint_ {D} \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} g (x, y) d x d y & = \\int_ {0} ^ {1} d y \\int_ {0} ^ {1} \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} g (x, y) d x = - \\int_ {0} ^ {1} d y \\int_ {0} ^ {1} \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\cdot \\frac {\\partial g}{\\partial x} d x \\\\ & = - \\int_ {0} ^ {1} d x \\int_ {0} ^ {1} \\frac {\\partial^ {3} f}{\\partial x \\partial y ^ {2}} \\cdot \\frac {\\partial g}{\\partial x} d y = \\int_ {0} ^ {1} d x \\int_ {0} ^ {1} \\frac {\\partial^ {2} f}{\\partial x \\partial y} \\cdot \\frac {\\partial^ {2} g}{\\partial x \\partial y} d y. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "同理得到\n\n$$\n\\iint_ {D} \\frac {\\partial^ {4} g}{\\partial x ^ {2} \\partial y ^ {2}} f (x, y) d x d y = \\int_ {0} ^ {1} d x \\int_ {0} ^ {1} \\frac {\\partial^ {2} f}{\\partial x \\partial y} \\cdot \\frac {\\partial^ {2} g}{\\partial x \\partial y} d y.\n$$\n\n从而\n\n$$\n\\iint_ {D} \\frac {\\partial^ {4} g}{\\partial x ^ {2} \\partial y ^ {2}} f (x, y) d x d y = \\iint_ {D} \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} g (x, y) d x d y.\n$$\n\n又因为 $\\frac{\\partial^4g}{\\partial x^2\\partial y^2} = 4$ ，所以"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\begin{array}{r l} \\left| \\iint_ {D} f (x, y) \\mathrm{d} x \\mathrm{d} y \\right| & = \\frac {1}{4} \\left| \\iint_ {D} \\frac {\\partial^ {4} g}{\\partial x ^ {2} \\partial y ^ {2}} f (x, y) \\mathrm{d} x \\mathrm{d} y \\right| = \\frac {1}{4} \\left| \\iint_ {D} \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} g (x, y) \\mathrm{d} x \\mathrm{d} y \\right| \\\\ & \\leqslant \\frac {1}{4} \\iint_ {D} \\left| \\frac {\\partial^ {4} f}{\\partial x ^ {2} \\partial y ^ {2}} \\right| g (x, y) \\mathrm{d} x \\mathrm{d} y \\leqslant \\frac {b}{4} \\iint_ {D} g (x, y) \\mathrm{d} x \\mathrm{d} y. \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "而 $\\iint_{D} g(x, y) \\mathrm{d}x \\mathrm{~d}y = \\left( \\int_{0}^{1} x(1 - x) \\mathrm{~d}x \\right)^{2} = \\frac{1}{36}$ ，所以原不等式成立."
+      }
+    ],
+    "final_answer": "，有",
+    "techniques_used": [
+      "积分估值",
+      "分部/格林",
+      "证明技巧",
+      "累次积分"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定积分次序（或是否需要交换次序）并写出累次积分上下限？",
+      "technique": "累次积分",
+      "expected": "根据区域形状选择 dxdy 或 dydx，必要时交换次序。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终计算结果是什么？",
+      "technique": "分部/格林",
+      "expected": "，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.1",
+    "example_id": "例25",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二重积分",
+    "page": 284,
+    "syllabus_note": "分部积分",
+    "commentary": "评注 该题的关键是利用被积函数在积分区域边界为零的特点，通过分部积分将被积函数转化为其偏导数的积分。实现这一转化的桥梁是找一个在区域边界取值也为零的最简多项式函数。"
+  }
+}
