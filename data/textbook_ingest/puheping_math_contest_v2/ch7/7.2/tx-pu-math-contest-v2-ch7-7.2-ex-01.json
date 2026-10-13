@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-01",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.reduce",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知 $z = xf\\left(\\frac{y}{x}\\right) + 2yf\\left(\\frac{x}{y}\\right)$ ，其中 $f$ 二次可微。若 $\\frac{\\partial^2 z}{\\partial x \\partial y}\\Bigg|_{x=a} = -by^2$ ，求函数 $f$ 。",
+  "answer": "y = au$ ，得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "可降阶",
+    "积分方程转化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $f$ 是一元函数，对 $z$ 的函数式求 $\\frac{\\partial^2 z}{\\partial x \\partial y}$ ，代入所给偏导数方程便可得到关于 $f$ 的微分方程.\n\n$\\frac{\\partial z}{\\partial x} = f\\left(\\frac{y}{x}\\right) - \\frac{y}{x} f'\\left(\\frac{y}{x}\\right) + 2f'\\left(\\frac{x}{y}\\right), \\quad \\frac{\\partial^2z}{\\partial x\\partial y} = -\\frac{y}{x^2} f''\\left(\\frac{y}{x}\\right) - \\frac{2x}{y^2} f''\\left(\\frac{x}{y}\\right).$"
+      },
+      {
+        "id": "s2",
+        "text": "由 $\\frac{\\partial^2z}{\\partial x\\partial y}\\Bigg|_{x = a} = -by^2$ ，可得到\n\n$$\n\\frac {y}{a ^ {2}} f ^ {\\prime \\prime} \\left(\\frac {y}{a}\\right) + \\frac {2 a}{y ^ {2}} f ^ {\\prime \\prime} \\left(\\frac {a}{y}\\right) = b y ^ {2}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令 $y = au$ ，得\n\n$$\nu ^ {3} f ^ {\\prime \\prime} (u) + 2 f ^ {\\prime \\prime} \\left(\\frac {1}{u}\\right) = a ^ {3} b u ^ {4},\n$$\n\n上式中以 $\\frac{1}{u}$ 换 $u$ 得\n\n$$\nf ^ {\\prime \\prime} \\left(\\frac {1}{u}\\right) + 2 u ^ {3} f ^ {\\prime \\prime} (u) = a ^ {3} b \\frac {1}{u}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "上面两式联立可解得\n\n$$\nf ^ {\\prime \\prime} (u) = \\frac {a ^ {3} b}{3} \\left(\\frac {2}{u ^ {4}} - u\\right).\n$$\n\n这是一个可降阶方程，积分两次得 $f(u) = \\frac{a^3b}{3}\\left(\\frac{1}{3u^2} -\\frac{1}{6} u^3\\right) + C_1u + C_2.$"
+      }
+    ],
+    "final_answer": "y = au$ ，得",
+    "techniques_used": [
+      "可降阶",
+      "积分方程转化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程缺 x、缺 y，还是齐次/反函数型？应令什么代换降阶？",
+      "technique": "可降阶",
+      "expected": "选取有效代换将高阶方程降为一阶后求解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "积分方程转化",
+      "expected": "y = au$ ，得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 363,
+    "syllabus_note": "偏导条件得可降阶方程求 f"
+  }
+}

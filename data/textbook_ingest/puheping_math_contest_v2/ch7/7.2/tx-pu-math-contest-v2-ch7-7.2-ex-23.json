@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-23",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设微分方程 $y'' - \\frac{1}{x} y' + q(x)y = 0$ 的两个特解 $y_1(x), y_2(x)$ 满足 $y_1y_2 = 1$ ，求该方程的通解。",
+  "answer": "C=1），则 $y_{2}=e^{-x^{2}}$ 。从而原微分方程的通解为 $y=C_{1}e^{x^{2}}+C_{2}e^{-x^{2}}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "可降阶",
+    "常系数线性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是二阶齐次线性微分方程。要求方程的通解，首先要确定方程中的未知函数 $q(x)$ ，再分别求得方程的两个线性无关的特解即可。显然 $q(x)$ 可由方程的任意一个非零解唯一确定。\n\n因为 $y_{1}y_{2} = 1$ ，若 $y_{1}, y_{2}$ 中有一个为常函数，则另一个也必为常函数，且均非0. 设 $y_{1} = a \\neq 0$ ，代入微分方程，可得 $q(x) = 0$ ，此时微分方程为\n\n$$\ny ^ {\\prime \\prime} - \\frac {1}{x} y ^ {\\prime} = 0.\n$$\n\n显然 $y = x^2$ 是该方程的一个解，且与 $y_1 = a$ 线性无关。此时所给方程的通解为"
+      },
+      {
+        "id": "s2",
+        "text": "$$\ny = C _ {1} + C _ {2} x ^ {2} \\left(C _ {1}, C _ {2} \\text {为任意常数}\\right).\n$$\n\n若 $y_{1}, y_{2}$ 中有一个不是常函数，则另一个也不会是常函数，且 $y_{1}, y_{2} = \\frac{1}{y_{1}}$ 线性无关。此时微分方程的通解为 $y = C_{1}y_{1} + C_{2}\\frac{1}{y_{1}}$ 。下面计算 $y_{1}$ 。\n\n将 $y_{1}$ 与 $\\frac{1}{y_1}$ 代入微分方程，得\n\n$$\ny _ {1} ^ {\\prime \\prime} - \\frac {1}{x} y _ {1} ^ {\\prime} + q (x) y _ {1} = 0,\\tag{①}"
+      },
+      {
+        "id": "s3",
+        "text": "\\left(\\frac {1}{y _ {1}}\\right) ^ {\\prime \\prime} - \\frac {1}{x} \\left(\\frac {1}{y _ {1}}\\right) ^ {\\prime} + q (x) \\frac {1}{y _ {1}} = 0.\\tag{②}\n$$\n\n②式即为\n\n$$\n- \\frac {y _ {1} ^ {\\prime \\prime} y _ {1} - 2 \\left(y _ {1} ^ {\\prime}\\right) ^ {2}}{y _ {1} ^ {3}} + \\frac {y _ {1} ^ {\\prime}}{x y _ {1} ^ {2}} + q (x) \\frac {1}{y _ {1}} = 0.\\tag{③}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由①式得 $y_{1}^{\\prime \\prime} = \\frac{1}{x} y_{1}^{\\prime} - q(x)y_{1}$ ，代入③式化简，得\n\n$$\n\\frac {2 \\left(y _ {1} ^ {\\prime}\\right) ^ {2}}{y _ {1} ^ {3}} + 2 q (x) \\frac {1}{y _ {1}} = 0 \\Rightarrow q (x) = - \\frac {\\left(y _ {1} ^ {\\prime}\\right) ^ {2}}{y _ {1} ^ {2}},\n$$\n\n则①式为\n\n$$\ny _ {1} ^ {\\prime \\prime} - \\frac {1}{x} y _ {1} ^ {\\prime} - \\frac {\\left(y _ {1} ^ {\\prime}\\right) ^ {2}}{y _ {1} ^ {2}} y _ {1} = 0, \\text {即} \\frac {y _ {1} ^ {\\prime \\prime}}{y _ {1}} - \\left(\\frac {y _ {1} ^ {\\prime}}{y _ {1}}\\right) ^ {2} - \\frac {1}{x} \\frac {y _ {1} ^ {\\prime}}{y _ {1}} = 0.\\tag{④}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "令 $z = \\frac{y_1'}{y_1}$ ，④式为\n\n$$\n\\frac {\\mathrm{d} z}{\\mathrm{d} x} - \\frac {1}{x} \\cdot z = 0,\n$$\n\n该方程的一个特解为 z=2x，由此得到 $y_{1}=Ce^{x^{2}}$ （可取 C=1），则 $y_{2}=e^{-x^{2}}$ 。从而原微分方程的通解为 $y=C_{1}e^{x^{2}}+C_{2}e^{-x^{2}}$"
+      }
+    ],
+    "final_answer": "C=1），则 $y_{2}=e^{-x^{2}}$ 。从而原微分方程的通解为 $y=C_{1}e^{x^{2}}+C_{2}e^{-x^{2}}$",
+    "techniques_used": [
+      "可降阶",
+      "常系数线性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程是欧拉型、需常数变易，还是变系数需凑微分/代换？关键转化是什么？",
+      "technique": "可降阶",
+      "expected": "识别欧拉/变系数结构，作代换或常数变易求出特解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解是什么？",
+      "technique": "常系数线性",
+      "expected": "C=1），则 $y_{2}=e^{-x^{2}}$ 。从而原微分方程的通解为 $y=C_{1}e^{x^{2}}+C_{2}e^{-x^{2}}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例23*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 375,
+    "starred": true,
+    "syllabus_note": "由特解积确定 q(x) 再求通解*",
+    "commentary": "评注 当方程的解是非常函数时，很难找到一个特解来确定 $q(x)$ ，只能在方程中代入两个形式特解 $y_{1}$ 与 $\\frac{1}{y_{1}}$ ，作为方程组来求解 $q(x)$ 与 $y_{1}$ 。作变量代换 $z = \\frac{y_1'}{y_1}$ 的目的是将微分方程降阶，便于求解。"
+  }
+}

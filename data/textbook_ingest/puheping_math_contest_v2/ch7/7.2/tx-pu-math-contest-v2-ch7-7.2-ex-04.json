@@ -1,0 +1,67 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-04",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.reduce",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求解微分方程 $y'y'' - 2(y'')^{2} = 0$ .",
+  "answer": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "可降阶",
+    "积分方程转化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 此方程不显含 $x$ ，也不显含 $y$ ，因此可按两种方法分别求解，但按不显含 $y$ 的方程求解更简单。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 按不显含 $y$ 的方程求解. 令 $y' = p$ , 则 $y'' = \\frac{\\mathrm{d}p}{\\mathrm{d}x}$ , $y''' = \\frac{\\mathrm{d}^2p}{\\mathrm{d}x^2}$ , 代入方程得\n\n$p\\frac{\\mathrm{d}^2p}{\\mathrm{d}x^2} - 2\\left(\\frac{\\mathrm{d}p}{\\mathrm{d}x}\\right)^2 = 0$ （不显含 $x$ ）.\n\n令 $\\frac{\\mathrm{d}p}{\\mathrm{d}x} = q$ ，代入上面方程得\n\n$$\np q \\frac {\\mathrm{d} q}{\\mathrm{d} p} - 2 q ^ {2} = 0.\n$$\n\n当 $q = \\frac{\\mathrm{d}p}{\\mathrm{d}x} = y'' \\neq 0$ 且 $p \\neq 0$ 时，方程为 $\\frac{\\mathrm{d}q}{q} = 2\\frac{\\mathrm{d}p}{p}$ . 其通解为\n\n$q = C_{1}p^{2}$ ，即 $\\frac{dp}{dx} = C_{1}p^{2}$ .\n\n解出 $p = \\frac{1}{\\tilde{C}_1x + C_2}$ （其中 $\\tilde{C}_1 = -C_1$ ），即 $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = \\frac{1}{\\tilde{C}_1x + C_2}$ ，积分得原方程的通解为\n\n$$\ny = \\frac {1}{\\tilde {C} _ {1}} \\ln \\left| \\tilde {C} _ {1} x + C _ {2} \\right| + C _ {3}.\n$$\n\n当 $q = \\frac{\\mathrm{d}p}{\\mathrm{d}x} = y'' = 0$ 时，有 $y = a_{1}x + a_{2}$ （ $a_{1}, a_{2}$ 为任意常数），也是方程的解.\n\n若 $p = y' = 0$ ，则有 $y = a$ ，它已包含在上面的解中。"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 $y^{\\prime}y^{\\prime \\prime} - 2(y^{\\prime \\prime})^{2} = 0\\Rightarrow \\frac{y^{\\prime}y^{\\prime\\prime} - 2(y^{\\prime\\prime})^{2}}{(y^{\\prime})^{3}} = 0$ （当 $y^\\prime \\neq 0$ 时），即\n\n$$\n\\left(\\frac {y ^ {\\prime \\prime}}{\\left(y ^ {\\prime}\\right) ^ {2}}\\right) ^ {\\prime} = 0 \\Rightarrow \\frac {y ^ {\\prime \\prime}}{\\left(y ^ {\\prime}\\right) ^ {2}} = C \\Rightarrow \\left(\\frac {1}{y ^ {\\prime}}\\right) ^ {\\prime} = C _ {1} \\Rightarrow \\frac {1}{y ^ {\\prime}} = C _ {1} x + C _ {2} \\Rightarrow y ^ {\\prime} = \\frac {1}{C _ {1} x + C _ {2}}.\n$$\n\n积分得通解 $y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程."
+      }
+    ],
+    "final_answer": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程.",
+    "techniques_used": [
+      "可降阶",
+      "积分方程转化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程缺 x、缺 y，还是齐次/反函数型？应令什么代换降阶？",
+      "technique": "可降阶",
+      "expected": "选取有效代换将高阶方程降为一阶后求解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "积分方程转化",
+      "expected": "y = \\frac{1}{C_1} \\ln |C_1 x + C_2| + C_3$ . 显然， $y'' = 0$ 的解 $y = a_1 x + a_2$ 也满足方程."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 364,
+    "syllabus_note": "缺自变量型降阶",
+    "commentary": "评注 方程变形时，可能会丢失某些解。只要求出的解中含有独立的任意常数的个数与方程的阶数相同，它就是通解。若题目是求通解，则无须考虑丢失的解。否则，还是应将丢失的解补上。"
+  }
+}

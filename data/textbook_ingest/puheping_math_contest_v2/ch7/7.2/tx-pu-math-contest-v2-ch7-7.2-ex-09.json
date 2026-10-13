@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-09",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.const2",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求 $y'' + 2ay' + a^2y = e^{bx}$ 的通解， $a > 0, a, b$ 为常数.",
+  "answer": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "常系数线性",
+    "可降阶",
+    "齐次降阶"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 常系数非齐次线性微分方程的解法是：由特征方程法写出对应齐次方程的通解，由待定系数法确定非齐次方程的特解，再由非齐次方程解的结构写出其通解."
+      },
+      {
+        "id": "s2",
+        "text": "对应齐次方程的特征方程为 $r^2 + 2ar + a^2 = 0$ ，特征根为二重根 $r_{1,2} = -a$ ，齐次方程通解为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nY = (C _ {1} + C _ {2} x) \\mathrm{e} ^ {- a x}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "① 当 $b \\neq -a$ 时， $\\lambda = b$ 不是特征根，设非齐次方程的特解为 $y^{*} = A e^{bx}$ ，代入方程得 $A = \\frac{1}{b^{2} + 2ab + a^{2}}$ ，所以原非齐次方程的通解为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\ny = \\left(C _ {1} + C _ {2} x\\right) e ^ {- a x} + \\frac {1}{b ^ {2} + 2 a b + a ^ {2}} e ^ {b x}.\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "② 当 $b = -a$ 时， $\\lambda = b$ 是二重特征根，设非齐次方程的特解为 $y^{*} = Bx^{2}\\mathrm{e}^{bx}$ ，代入方程得 $B = \\frac{1}{2}$ ，所以原非齐次方程的通解为"
+      },
+      {
+        "id": "s7",
+        "text": "$$\ny = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.\n$$"
+      }
+    ],
+    "final_answer": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}.",
+    "techniques_used": [
+      "常系数线性",
+      "可降阶",
+      "齐次降阶"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是二阶常系数线性方程吗？特征根与齐次通解是什么？非齐次特解如何设？",
+      "technique": "常系数线性",
+      "expected": "写出特征方程，求齐次通解；按自由项设特解或用已知特解组合。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "可降阶",
+      "expected": "y = \\left(C _ {1} + C _ {2} x\\right) \\mathrm{e} ^ {- a x} + \\frac {1}{2} x ^ {2} \\mathrm{e} ^ {- a x}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 368,
+    "syllabus_note": "二阶常系数非齐次通解",
+    "commentary": "评注 当方程中含有字母常数时，需留意它对特征根的影响，从而会影响到齐次方程的通解与非齐次方程的特解."
+  }
+}

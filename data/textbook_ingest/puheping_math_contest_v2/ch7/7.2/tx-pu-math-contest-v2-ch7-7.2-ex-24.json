@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-24",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求微分方程 $x^{2}y''(x) + 4(x + 1)y'(x) + 2y(x) = \\frac{2}{x^{3}}$ 满足初始条件 $y(1) = -\\frac{1}{6}$ , $y'(1) = 0$ 的特解.",
+  "answer": "y = - \\frac {1}{x ^ {4}}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "积分方程转化",
+    "可降阶"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是二阶非齐次线性微分方程，变系数，又不是欧拉方程，不便于求解。看是否能通过凑微分化为“恰当方程”来降阶。\n\n先看第1项，由于\n\n$$\n[ x ^ {2} y ^ {\\prime} (x) ] ^ {\\prime} = x ^ {2} y ^ {\\prime \\prime} (x) + 2 x y ^ {\\prime} (x),\n$$\n\n所以\n\n$$\nx ^ {2} y ^ {\\prime \\prime} (x) = [ x ^ {2} y ^ {\\prime} (x) ] ^ {\\prime} - 2 x y ^ {\\prime} (x),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "原方程成为\n\n$$\n[ x ^ {2} y ^ {\\prime} (x) ] ^ {\\prime} - 2 x y ^ {\\prime} (x) + 4 (x + 1) y ^ {\\prime} (x) + 2 y (x) = \\frac {2}{x ^ {3}},\n$$\n\n即\n\n$$\n[ x ^ {2} y ^ {\\prime} (x) ] ^ {\\prime} + 2 [ x y ^ {\\prime} (x) + y (x) ] + 4 y ^ {\\prime} (x) = \\frac {2}{x ^ {3}},\n\n[ x ^ {2} y ^ {\\prime} (x) + 2 x y (x) + 4 y (x) ] ^ {\\prime} = \\frac {2}{x ^ {3}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "两边从1到 $x$ 积分，得\n\n$$\nx ^ {2} y ^ {\\prime} (x) + 2 x y (x) + 4 y (x) - (- 1) = - \\frac {1}{x ^ {2}} + 1,\n$$\n\n即\n\n$$\ny ^ {\\prime} (x) + \\frac {2 (x + 2)}{x ^ {2}} y = - \\frac {1}{x ^ {4}}.\n$$\n\n满足 $y(1) = -\\frac{1}{6}$ 和 $y'(1) = 0$ 的解为\n\n$$\ny (x) = \\mathrm{e} ^ {- \\int_ {1} ^ {x} \\frac {2 (t + 2)}{t ^ {2}} \\mathrm{d} t} \\left[ - \\int_ {1} ^ {x} \\frac {1}{s ^ {4}} \\mathrm{e} ^ {\\int_ {1} ^ {s} \\frac {2 (t + 2)}{t ^ {2}} \\mathrm{d} t} \\mathrm{d} s + \\left(- \\frac {1}{6}\\right) \\right],\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\int_{1}^{x}\\frac{2(t + 2)}{t^2}\\mathrm{d}t = 2\\ln |x| - \\frac{4}{x} +4$ ，所以\n\n$$\ny (x) = \\frac {\\mathrm{e} ^ {\\frac {4}{x}}}{\\mathrm{e} ^ {4} x ^ {2}} \\left[ - \\int_ {1} ^ {x} \\mathrm{e} ^ {4} s ^ {- 2} \\mathrm{e} ^ {- \\frac {4}{s}} \\mathrm{d} s - \\frac {1}{6} \\right] = \\frac {\\mathrm{e} ^ {\\frac {4}{x}}}{\\mathrm{e} ^ {4} x ^ {2}} \\left[ - \\frac {\\mathrm{e} ^ {4}}{4} (\\mathrm{e} ^ {- \\frac {4}{x}} - \\mathrm{e} ^ {- 4}) - \\frac {1}{6} \\right] = - \\frac {1}{4 x ^ {2}} + \\frac {\\mathrm{e} ^ {\\frac {4}{x}}}{1 2 \\mathrm{e} ^ {4} x ^ {2}}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "此解的存在区间为 $(0, +\\infty)$ ."
+      }
+    ],
+    "final_answer": "y = - \\frac {1}{x ^ {4}}.",
+    "techniques_used": [
+      "积分方程转化",
+      "可降阶"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程是欧拉型、需常数变易，还是变系数需凑微分/代换？关键转化是什么？",
+      "technique": "积分方程转化",
+      "expected": "识别欧拉/变系数结构，作代换或常数变易求出特解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解是什么？",
+      "technique": "可降阶",
+      "expected": "y = - \\frac {1}{x ^ {4}}."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例24*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 376,
+    "starred": true,
+    "syllabus_note": "变系数非齐次初值问题*",
+    "commentary": "评注 该方程是一个二阶恰当线性微分方程, 可通过凑微分来降阶. 关于二阶恰当线性微分方程的判定有下面的定理:\n\n定理 设 $a_{k}(x)(k = 0,1,2)$ 在区间 $(a,b)$ 内具有二阶连续导数， $a_0(x) \\neq 0$ ， $f(x)$ 在 $(a,b)$ 内连续，则线性微分方程\n\n$$\na _ {0} (x) y ^ {\\prime \\prime} (x) + a _ {1} (x) y ^ {\\prime} (x) + a _ {2} (x) y (x) = f (x)\n$$\n\n是二阶恰当线性微分方程的充分必要条件是\n\n$$\na _ {0} ^ {\\prime \\prime} (x) - a _ {1} ^ {\\prime} (x) + a _ {2} (x) \\equiv 0, x \\in (a, b).\n$$\n\n证明 由于\n\n$$\na _ {0} (x) y ^ {\\prime \\prime} (x) = \\left[ a _ {0} (x) y ^ {\\prime} (x) \\right] ^ {\\prime} - a _ {0} ^ {\\prime} (x) y ^ {\\prime} (x) = \\left[ a _ {0} (x) y ^ {\\prime} (x) \\right] ^ {\\prime} - \\left[ a _ {0} ^ {\\prime} (x) y (x) \\right] ^ {\\prime} + a _ {0} ^ {\\prime \\prime} (x) y (x),\n\na _ {1} (x) y ^ {\\prime} (x) = \\left[ a _ {1} (x) y (x) \\right] ^ {\\prime} - a _ {1} ^ {\\prime} (x) y (x),\n$$\n\n代入方程可化为\n\n$$\n\\"
+  }
+}

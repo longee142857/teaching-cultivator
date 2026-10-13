@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-20",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x, y)$ 有二阶连续偏导数， $u(r) = \\int_{0}^{2\\pi} f(r \\cos \\theta, r \\sin \\theta) \\mathrm{d}\\theta$ ，若 $f_{11} + f_{22} = \\frac{1}{r}$ ，求函数 $u(r)$ 。",
+  "answer": "化为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "欧拉方程",
+    "可降阶"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需对函数 $u(r)$ 求导（一至二阶），将方程 $f_{11} + f_{22} = \\frac{1}{r}$ 转化为 $u(r)$ 的常微分方程求解。解 因为 $f(x, y)$ 有二阶连续偏导数，则\n\n$$\n\\begin{array}{c} \\frac {\\mathrm{d} u}{\\mathrm{d} r} = \\int_ {0} ^ {2 \\pi} \\frac {\\partial}{\\partial r} f (r \\cos \\theta , \\dot {r} \\sin \\theta) \\mathrm{d} \\theta = \\int_ {0} ^ {2 \\pi} (f _ {1} \\cdot \\cos \\theta + f _ {2} \\cdot \\sin \\theta) \\mathrm{d} \\theta , \\\\ \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} r ^ {2}} = \\int_ {0} ^ {2 \\pi} \\frac {\\partial^ {2}}{\\partial r ^ {2}} f (r \\cos \\theta , r \\sin \\theta) \\mathrm{d} \\theta = \\int_ {0} ^ {2 \\pi} (f _ {1 1} \\cdot \\cos^ {2} \\theta + 2 f _ {1 2} \\cdot \\sin \\theta \\cos \\theta + f _ {2 2} \\cdot \\sin^ {2} \\theta) \\mathrm{d} \\theta . \\end{array}\n$$\n\n又\n\n①\n\n$$\n\\begin{array}{r l} \\frac {\\mathrm{d} u}{\\mathrm{d} r} & = \\int_ {0} ^ {2 \\pi} f _ {1} \\mathrm{d} \\sin \\theta - \\int_ {0} ^ {2 \\pi} f _ {2} \\mathrm{d} \\cos \\theta \\\\ & = f _ {1} \\cdot \\sin \\theta \\big | _ {0} ^ {2 \\pi} - \\int_ {0} ^ {2 \\pi} [ f _ {1 1} (- r \\sin \\theta) + f _ {1 2} \\cdot r \\cos \\theta ] \\sin \\theta \\mathrm{d} \\theta - \\\\ & f _ {2} \\cdot \\cos \\theta \\big | _ {0} ^ {2 \\pi} + \\int_ {0} ^ {2 \\pi} [ f _ {2 1} (- r \\sin \\theta) + f _ {2 2} \\cdot r \\cos \\theta ] \\cos \\theta \\mathrm{d} \\theta \\\\ & = \\int_ {0} ^ {2 \\pi} r [ f _ {1 1} \\cdot \\sin^ {2} \\theta - 2 f _ {1 2} \\cdot \\sin \\theta \\cos \\theta + f _ {2 2} \\cdot \\cos^ {2} \\theta ] \\mathrm{d} \\theta . \\end{array}\\tag{②}\n$$\n\n由①，②两式可得\n\n$$\nr \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} r ^ {2}} + \\frac {\\mathrm{d} u}{\\math"
+      },
+      {
+        "id": "s2",
+        "text": "分析 只需对函数 $u(r)$ 求导（一至二阶），将方程 $f_{11} + f_{22} = \\frac{1}{r}$ 转化为 $u(r)$ 的常微分方程求解。解 因为 $f(x, y)$ 有二阶连续偏导数，则\n\n$$\n\\begin{array}{c} \\frac {\\mathrm{d} u}{\\mathrm{d} r} = \\int_ {0} ^ {2 \\pi} \\frac {\\partial}{\\partial r} f (r \\cos \\theta , \\dot {r} \\sin \\theta) \\mathrm{d} \\theta = \\int_ {0} ^ {2 \\pi} (f _ {1} \\cdot \\cos \\theta + f _ {2} \\cdot \\sin \\theta) \\mathrm{d} \\theta , \\\\ \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} r ^ {2}} = \\int_ {0} ^ {2 \\pi} \\frac {\\partial^ {2}}{\\partial r ^ {2}} f (r \\cos \\theta , r \\sin \\theta) \\mathrm{d} \\theta = \\int_ {0} ^ {2 \\pi} (f _ {1 1} \\cdot \\cos^ {2} \\theta + 2 f _ {1 2} \\cdot \\sin \\theta \\cos \\theta + f _ {2 2} \\cdot \\sin^ {2} \\theta) \\mathrm{d} \\theta . \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "又\n\n①\n\n$$\n\\begin{array}{r l} \\frac {\\mathrm{d} u}{\\mathrm{d} r} & = \\int_ {0} ^ {2 \\pi} f _ {1} \\mathrm{d} \\sin \\theta - \\int_ {0} ^ {2 \\pi} f _ {2} \\mathrm{d} \\cos \\theta \\\\ & = f _ {1} \\cdot \\sin \\theta \\big | _ {0} ^ {2 \\pi} - \\int_ {0} ^ {2 \\pi} [ f _ {1 1} (- r \\sin \\theta) + f _ {1 2} \\cdot r \\cos \\theta ] \\sin \\theta \\mathrm{d} \\theta - \\\\ & f _ {2} \\cdot \\cos \\theta \\big | _ {0} ^ {2 \\pi} + \\int_ {0} ^ {2 \\pi} [ f _ {2 1} (- r \\sin \\theta) + f _ {2 2} \\cdot r \\cos \\theta ] \\cos \\theta \\mathrm{d} \\theta \\\\ & = \\int_ {0} ^ {2 \\pi} r [ f _ {1 1} \\cdot \\sin^ {2} \\theta - 2 f _ {1 2} \\cdot \\sin \\theta \\cos \\theta + f _ {2 2} \\cdot \\cos^ {2} \\theta ] \\mathrm{d} \\theta . \\end{array}\\tag{②}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由①，②两式可得\n\n$$\nr \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} r ^ {2}} + \\frac {\\mathrm{d} u}{\\mathrm{d} r} = r \\int_ {0} ^ {2 \\pi} \\left(f _ {1 1} + f _ {2 2}\\right) \\mathrm{d} \\theta = \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\theta = 2 \\pi ,\n$$\n\n即\n\n$$\nr ^ {2} \\frac {\\mathrm{d} ^ {2} u}{\\mathrm{d} r ^ {2}} + r \\frac {\\mathrm{d} u}{\\mathrm{d} r} = 2 \\pi r (\\text {欧拉方程}).\n$$\n\n令 $r = \\mathbf{e}^t$ ，记 $D = \\frac{\\mathrm{d}}{\\mathrm{d}t}$ ，则原方程化为\n\n$$\nD (D - 1) u + D u = 2 \\pi \\mathrm{e} ^ {t}, \\text {即} D ^ {2} u = 2 \\pi \\mathrm{e} ^ {t}.\n$$\n\n方程通解为\n\n$$\nu = 2 \\pi e ^ {t} + C _ {1} t + C _ {2} = 2 \\pi r + C _ {1} \\ln r + C _ {2}.\n$$"
+      }
+    ],
+    "final_answer": "化为",
+    "techniques_used": [
+      "欧拉方程",
+      "可降阶"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程是欧拉型、需常数变易，还是变系数需凑微分/代换？关键转化是什么？",
+      "technique": "欧拉方程",
+      "expected": "识别欧拉/变系数结构，作代换或常数变易求出特解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解是什么？",
+      "technique": "可降阶",
+      "expected": "化为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例20*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 373,
+    "starred": true,
+    "syllabus_note": "径向积分平均→二阶 ODE 求 u(r)*"
+  }
+}

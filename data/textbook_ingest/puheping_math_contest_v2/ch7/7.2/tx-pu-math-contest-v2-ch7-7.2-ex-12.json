@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-12",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.const2",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x)$ 在 $(- \\infty, + \\infty)$ 二阶可导，且对任意 $x, y$ 有 $f^2(x) - f^2(y) = f(x + y)f(x - y)$ ，求 $f(x)$ .",
+  "answer": "C = 0, \\\\ C _ {1} \\sin \\sqrt {- C} u, & C < 0. \\end{array} \\right. (\\text {其中} C _ {1} \\text {为任意常数})",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "建立微分方程",
+    "可降阶"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 要建立微分方程，在方程两边需对 $x$ 或 $y$ 求偏导. 若求一阶导数不能化简方程，则可求二阶. 解 取 $x = y = 0$ ，可得 $f(0) = 0$ ，方程两边对 $x$ 求偏导得\n\n$$\n2 f (x) f ^ {\\prime} (x) = f ^ {\\prime} (x + y) f (x - y) + f (x + y) f ^ {\\prime} (x - y).\n$$\n\n上式两边对 $y$ 求偏导得"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n0 = f ^ {\\prime \\prime} (x + y) f (x - y) - f (x + y) f ^ {\\prime \\prime} (x - y),\n$$\n\n令 $u = x + y, v = x - y$ ，得\n\n$$\nf ^ {\\prime \\prime} (u) f (v) = f (u) f ^ {\\prime \\prime} (v) \\Rightarrow \\frac {f ^ {\\prime \\prime} (u)}{f (u)} = \\frac {f ^ {\\prime \\prime} (v)}{f (v)}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "这说明 $\\frac{f''(u)}{f(u)}$ 与变量取值无关，即 $\\frac{f''(u)}{f(u)} = C$ （ $C$ 为常数），有\n\n$$\nf ^ {\\prime \\prime} (u) - C f (u) = 0.\n$$\n\n解得\n\n$$\nf (u) = \\left\\{ \\begin{array}{l l} C _ {1} \\mathrm{e} ^ {\\sqrt {C} u} + C _ {2} \\mathrm{e} ^ {- \\sqrt {C} u}, & C > 0, \\\\ C _ {1} u + C _ {2}, & C = 0, \\\\ C _ {2} \\cos \\sqrt {- C} u + C _ {1} \\sin \\sqrt {- C} u, & C <   0. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $f(x)$ 连续，并注意到 $f(0) = 0$ ，可得到：当 $C > 0$ 时， $C_1 = -C_2$ ；当 $C = 0$ 时， $C_2 = 0$ ；当 $C < 0$ 时， $C_2 = 0$ 。所以\n\n$$\nf (u) = \\left\\{ \\begin{array}{l l} C _ {1} (\\mathbf {e} ^ {\\sqrt {C} x} - \\mathbf {e} ^ {- \\sqrt {C} x}), & C > 0, \\\\ C _ {1} x, & C = 0, \\\\ C _ {1} \\sin \\sqrt {- C} u, & C <   0. \\end{array} \\right. (\\text {其中} C _ {1} \\text {为任意常数})\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "评注 原方程中有两个自变量 $x, y$ ，求解中一定要将其转化成一个自变量的情形，才便于利用微分方程求解。"
+      }
+    ],
+    "final_answer": "C = 0, \\\\ C _ {1} \\sin \\sqrt {- C} u, & C < 0. \\end{array} \\right. (\\text {其中} C _ {1} \\text {为任意常数})",
+    "techniques_used": [
+      "建立微分方程",
+      "可降阶"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "这是二阶常系数线性方程吗？特征根与齐次通解是什么？非齐次特解如何设？",
+      "technique": "建立微分方程",
+      "expected": "写出特征方程，求齐次通解；按自由项设特解或用已知特解组合。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或证明结论是什么？",
+      "technique": "可降阶",
+      "expected": "C = 0, \\\\ C _ {1} \\sin \\sqrt {- C} u, & C < 0. \\end{array} \\right. (\\text {其中} C _ {1} \\text {为任意常数})"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 369,
+    "syllabus_note": "函数方程求导得常系数二阶",
+    "commentary": "评注 原方程中有两个自变量 $x, y$ ，求解中一定要将其转化成一个自变量的情形，才便于利用微分方程求解。"
+  }
+}

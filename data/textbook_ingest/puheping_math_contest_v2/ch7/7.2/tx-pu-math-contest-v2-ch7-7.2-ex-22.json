@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-22",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求方程 $(\\cos x - \\sin x)y'' + 2\\cos x \\cdot y' + (\\cos x + \\sin x)y = 0$ 的通解.",
+  "answer": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "可降阶",
+    "常系数线性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是二阶线性齐次方程，只需求得两个线性无关的的特解就可得到通解。由方程的系数 $(\\cos x - \\sin x) - 2\\cos x + (\\cos x + \\sin x) = 0$ ，知 $y = e^{-x}$ 是方程的一个解，方程的另一个解可通过常数变异法求得。\n\n易验证 $y = \\mathrm{e}^{-x}$ 是所给方程的一个解. 设 $y = u\\mathrm{e}^{-x}$ 是方程的另一个解, 则"
+      },
+      {
+        "id": "s2",
+        "text": "$$\ny ^ {\\prime} = u ^ {\\prime} \\mathrm{e} ^ {- x} - u \\mathrm{e} ^ {- x}, y ^ {\\prime \\prime} = u ^ {\\prime \\prime} \\mathrm{e} ^ {- x} - 2 u ^ {\\prime} \\mathrm{e} ^ {- x} + u \\mathrm{e} ^ {- x},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "代入方程得\n\n$$\n\\begin{array}{r l} & (\\cos x - \\sin x) u ^ {\\prime \\prime} + 2 \\sin x \\cdot u ^ {\\prime} = 0 \\Rightarrow \\frac {u ^ {\\prime \\prime}}{u ^ {\\prime}} = \\frac {2 \\sin x}{\\sin x - \\cos x} \\\\ & \\Rightarrow \\ln u ^ {\\prime} = \\int \\frac {2 \\sin x}{\\sin x - \\cos x} d x = \\int \\frac {(\\sin x - \\cos x) + (\\sin x + \\cos x)}{\\sin x - \\cos x} d x \\\\ & = x + \\ln (\\sin x - \\cos x) + C. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于只需求 $u$ 的一个特解，因此取 $C = 0$ ，得\n\n$$\nu ^ {\\prime} = \\mathrm{e} ^ {x} (\\sin x - \\cos x) \\Rightarrow u = - \\mathrm{e} ^ {x} \\cos x.\n$$\n\n所以方程的另一个特解为 $y = u\\mathrm{e}^{-x} = \\cos x$ 。所求方程的通解为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\ny = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.\n$$"
+      }
+    ],
+    "final_answer": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x.",
+    "techniques_used": [
+      "可降阶",
+      "常系数线性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程是欧拉型、需常数变易，还是变系数需凑微分/代换？关键转化是什么？",
+      "technique": "可降阶",
+      "expected": "识别欧拉/变系数结构，作代换或常数变易求出特解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解是什么？",
+      "technique": "常系数线性",
+      "expected": "y = C _ {1} \\mathrm{e} ^ {- x} + C _ {2} \\cos x."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例22*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 374,
+    "starred": true,
+    "syllabus_note": "变系数齐次：凑微分/代换*",
+    "commentary": "评注 若线性齐次方程 $a(x)y'' + b(x)y' + c(x)y = 0$ 的系数满足 $a(x) + b(x) + c(x) = 0$ ，则 $y = \\mathrm{e}^x$ 是方程的一个解；若系数满足 $a(x) - b(x) + c(x) = 0$ ，则 $y = \\mathrm{e}^{-x}$ 是方程的一个解."
+  }
+}

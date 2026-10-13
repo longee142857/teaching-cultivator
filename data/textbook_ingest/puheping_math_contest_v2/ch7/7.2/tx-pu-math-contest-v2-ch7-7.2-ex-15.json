@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.2-ex-15",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.euler",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求微分方程 $y'' + y = \\frac{1}{\\cos x}$ 的通解.",
+  "answer": "$C_1'(x) = -\\frac{\\sin x}{\\cos x}$ ， $C_2'(x) = 1$ ，积分得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "齐次降阶",
+    "常数变易法",
+    "积分方程转化",
+    "可降阶",
+    "线性方程组"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是二阶常系数非齐次线性微分方程，但自由项不属于用待定系数法的类型。由于对应齐次微分方程的通解易于求得，因此用常数变异法去求非齐次方程的特解。\n\n易知对应齐次方程的通解为\n\n$$\ny (x) = C _ {1} \\cos x + C _ {2} \\sin x.\\tag{①}\n$$\n\n用常数变易法求非齐次微分方程的特解:"
+      },
+      {
+        "id": "s2",
+        "text": "设非齐次方程的解为 $y(x) = C_1(x)\\cos x + C_2(x)\\sin x$ ，则\n\n$$\ny ^ {\\prime} = C _ {1} ^ {\\prime} (x) \\cos x + C _ {2} ^ {\\prime} (x) \\sin x - C _ {1} (x) \\sin x + C _ {2} (x) \\cos x,\\tag{②}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "令\n\n$$\nC _ {1} ^ {\\prime} (x) \\cos x + C _ {2} ^ {\\prime} (x) \\sin x = 0,\\tag{③}\n$$\n\n将③式代入②式再求导得\n\n$$\ny ^ {\\prime \\prime} = - C _ {1} ^ {\\prime} (x) \\sin x + C _ {2} ^ {\\prime} (x) \\cos x - C _ {1} (x) \\cos x - C _ {2} (x) \\sin x,\\tag{④}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "将①，④两式代入原方程得\n\n$$\n- C _ {1} ^ {\\prime} (x) \\sin x + C _ {2} ^ {\\prime} (x) \\cos x = \\frac {1}{\\cos x}.\\tag{⑤}\n$$\n\n方程组③，⑤联立求解得 $C_1'(x) = -\\frac{\\sin x}{\\cos x}$ ， $C_2'(x) = 1$ ，积分得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nC _ {1} (x) = \\ln | \\cos x | + C _ {1}, \\quad C _ {2} (x) = x + C _ {2}.\n$$\n\n所以，原方程的通解为\n\n$$\ny (x) = C _ {1} \\cos x + C _ {2} \\sin x + \\cos x \\ln | \\cos x | + x \\sin x.\n$$"
+      }
+    ],
+    "final_answer": "$C_1'(x) = -\\frac{\\sin x}{\\cos x}$ ， $C_2'(x) = 1$ ，积分得",
+    "techniques_used": [
+      "齐次降阶",
+      "常数变易法",
+      "积分方程转化",
+      "可降阶",
+      "线性方程组"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程是欧拉型、需常数变易，还是变系数需凑微分/代换？关键转化是什么？",
+      "technique": "常数变易法",
+      "expected": "识别欧拉/变系数结构，作代换或常数变易求出特解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解是什么？",
+      "technique": "常数变易法",
+      "expected": "$C_1'(x) = -\\frac{\\sin x}{\\cos x}$ ， $C_2'(x) = 1$ ，积分得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.2",
+    "example_id": "例15*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "高阶微分方程",
+    "page": 371,
+    "starred": true,
+    "syllabus_note": "常系数非齐次：常数变易法*",
+    "commentary": "评注 常数变易法求解二阶线性方程 $y'' + py' + qy = f(x)$ 的步骤为：\n\n(1) 求对应齐次方程的通解 $y(x)=C_{1}y_{1}(x)+C_{2}y_{2}(x)$ ;\n\n(2) 变换常数，令 $y(x) = C_1(x)y_1(x) + C_2(x)y_2(x)$ 是非齐次方程的解，计算\n\n$$\ny ^ {\\prime} (x) = C _ {1} ^ {\\prime} (x) y _ {1} (x) + C _ {2} ^ {\\prime} (x) y _ {2} (x) + C _ {1} (x) y _ {1} ^ {\\prime} (x) + C _ {2} (x) y _ {2} ^ {\\prime} (x),\n$$\n\n并设 $C_1'(x)y_1(x) + C_2'(x)y_2(x) = 0$ ，再求 $y''(x)$ .将 $y(x),y'(x),y''(x)$ 代入原非齐次方程得\n\n$$\nC _ {1} ^ {\\prime} (x) y _ {1} ^ {\\prime} (x) + C _ {2} ^ {\\prime} (x) y _ {2} ^ {\\prime} (x) = f (x);\n$$\n\n(3) 解方程组 $\\left\\{\\begin{aligned}C_{1}^{\\prime}(x)y_{1}(x)+C_{2}^{\\prime}(x)y_{2}(x)=0\\\\ C_{1}^{\\prime}(x)y_{1}^{\\prime}(x)+C_{2}^{\\prime}(x)y_{2}^{\\prime}(x)=f(x)\\end{aligned}\\right.$ ，得 $C_{1}^{\\prime}(x)$ ， $C_{2}^{\\prime}(x)$ ，积分后代入（2）中所设就得到非齐次方程的通解."
+  }
+}
