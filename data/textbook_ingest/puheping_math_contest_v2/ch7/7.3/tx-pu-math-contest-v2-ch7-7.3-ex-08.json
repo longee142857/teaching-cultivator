@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.3-ex-08",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.linear1",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "有一个直径为 3 寸水平放置的圆盘，正在按每分钟 4 周旋转。离圆盘较远但在同一平面上有一个点在发光。将一个昆虫放在圆盘的边上离光源最远处，头对光源。这时它立即惊起按每秒 1 寸爬行，而且总是头对着光源。试建立运动的微分方程，并求出昆虫再次到达圆盘的边上的点的坐标。",
+  "answer": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "建立微分方程",
+    "分离变量",
+    "一阶线性",
+    "几何建模",
+    "运动轨迹"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 昆虫的实际爬行速度是圆盘的转动速度与昆虫的爬行速度的合成，由此可建立昆虫运动的微分方程."
+      },
+      {
+        "id": "s2",
+        "text": "取圆盘的中心为原点, 如图 7.4 所示建立坐标系. 昆虫开始在点 $\\left(\\frac{3}{2},0\\right)$ 处, 光源在 $(- \\infty,0)$ 处. 圆盘按反时钟方向旋转. 假设在时间 $t$ 昆虫位于 $(x,y)$ , 即 $(r,\\theta)$ 处, 此时昆虫随圆盘转动的方向为 (圆周切线方向) $e_{\\tau} = \\left(\\frac{-y}{r}, \\frac{x}{r}\\right)$ , 昆虫的爬行方向为 $e_{s} = (-1,0)$ (当光源离圆盘较远时, 可视 $e_{s}$ 不变), 则昆虫的实际运动速度为 $\\omega r e_{\\tau} + e_{s} \\left( \\omega = \\frac{2\\pi}{15} \\right)$ , 即有 $\\frac{\\mathrm{d}x}{\\mathrm{d}t} = -\\omega y - 1$ ①, $\\frac{\\mathrm{d}y}{\\mathrm{d}t} = \\omega x$ ②,\n\n这是一阶线性微分方程组，除用方程组的知识求解外，还可用下面两种方法求解："
+      },
+      {
+        "id": "s3",
+        "text": "(1) 两式相除得\n\n$$\n\\frac {\\mathrm{d} y}{\\mathrm{d} x} = - \\frac {\\omega x}{1 + \\omega y}.\n$$\n\n分离变量积分，得昆虫的运动轨迹为 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ ，由初始条件 $x(0) = \\frac{3}{2}$ ， $y(0) = 0$ 得 $A^{2} = \\left(\\frac{3}{2}\\right)^{2} + \\left(\\frac{15}{2\\pi}\\right)^{2}$ 。这个圆周与圆盘的边界交于点 $\\left(-\\frac{3}{2}, 0\\right)$ ，即昆虫从这一点离开圆盘。"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 对①式两边求导，并将②式代入，得\n\n$\\frac{\\mathrm{d}^2x}{\\mathrm{d}t^2} = -\\omega \\frac{\\mathrm{d}y}{\\mathrm{d}t} = -\\omega^2 x$ ，即 $\\frac{\\mathrm{d}^2x}{\\mathrm{d}t^2} +\\omega^2 x = 0$\n\n它的解为 $x = A\\cos (\\omega t - \\phi)$ ，代入式①式，得 $y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。"
+      }
+    ],
+    "final_answer": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。",
+    "techniques_used": [
+      "建立微分方程",
+      "分离变量",
+      "一阶线性",
+      "几何建模",
+      "运动轨迹"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何建立一阶线性（或伯努利/线性组）方程？积分因子或标准形是什么？",
+      "technique": "建立微分方程",
+      "expected": "写出标准形 y′+P(x)y=Q(x)（或方程组），用积分因子/消元求解。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求函数/轨迹/含盐量规律是什么？",
+      "technique": "分离变量",
+      "expected": "y = A\\sin (\\omega t - \\phi) - \\frac{1}{\\omega}$ ，消去参数，得 $x^{2} + \\left(y + \\frac{1}{\\omega}\\right)^{2} = A^{2}$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.3",
+    "example_id": "例8*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "微分方程应用",
+    "page": 383,
+    "starred": true,
+    "syllabus_note": "昆虫圆盘：一阶线性微分方程组*",
+    "commentary": "评注（1） $e_{\\tau}$ 表达式的源由： $t$ 时刻圆周方程 $x = r\\cos \\theta, y = r\\sin \\theta$ ，切向量为 $(\\dot{x}, \\dot{y}) = (-r\\sin \\theta, r\\cos \\theta) = (-y, x)$ ，单位化即得 $e_{\\tau}$ 。\n\n(2) 将光源置于坐标轴上的无穷远点对方程的建立至关重要，否则方程形式会较复杂，难以求解."
+  }
+}

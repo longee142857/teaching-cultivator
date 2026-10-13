@@ -1,0 +1,74 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.3-ex-07",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "如图 7.3 所示，设河宽为 a，一条船从岸边一点 O 出发驶向对岸，船头总是指向对岸与点 O 相对的一点 B。假设船在静水中的船速为常数 $v_{1}$ ，河流中水的流速为常数 $v_{2}$ ，试求船过河所走的路线（曲线方程），并讨论在什么条件下船能到达对岸，以及船能到达点 B。",
+  "answer": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "建立微分方程",
+    "齐次方程",
+    "运动轨迹",
+    "初值问题"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 船的实际速度是其航行速度（大小为静水速度，方向指向\n\n点 $B$ ）及水流速度的合成，由此可建立其航迹的微分方程。若船的航迹方程为 $x = g(y)$ ，则船能到达对岸的标志是 $g(y)$ 在 $y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。\n\n解·如图建立坐标系，则点 $B$ 的坐标为 $(0, a)$ ，设在时刻 $t$ 船的位置为 $P(x, y)$ ，船实际速度 $\\vec{v}$ 是由船的航行速度 $\\pmb{v}_1 = \\left(-\\frac{v_1 x}{\\sqrt{x^2 + (a - y)^2}}, \\frac{v_1(a - y)}{\\sqrt{x^2 + (a - y)^2}}\\right)$ 与水流速度 $\\pmb{v}_2 = (v_2, 0)$ 的合成 $\\pmb{v} = v_1 + v_2$ ，所以有\n\n$$\n\\frac {\\mathrm{d} x}{\\mathrm{d} t} = v _ {2} - \\frac {v _ {1} x}{\\sqrt {x ^ {2} + (a - y) ^ {2}}}, \\quad \\frac {\\mathrm{d} y}{\\mathrm{d} t} = \\frac {v _ {1} (a - y)}{\\sqrt {x ^ {2} + (a - y) ^ {2}}}.\n$$\n\n两式做商，消去 $t$ 得\n\n$\\frac{\\mathrm{d}y}{\\mathrm{d}x} = \\frac{a - y}{k\\sqrt{x^2 + (a - y)^2} - x}\\left(k = \\frac{v_2}{v_1}\\right)$ ，初始条件 $y(0) = 0$ 。\n\n这是齐次方程，解此初值问题，得\n\n$$\n(a - y) ^ {k} = \\frac {a (a - y)}{x + \\sqrt {x ^ {2} + (y - a) ^ {2}}},\\tag{①}\n$$\n\n变形为\n\n$$\n(a - y) ^ {1 - k} = x + \\sqrt {x ^ {2} + (y - a) ^ {2}}.\\tag{②}\n$$\n\n再将①式分母有理化，变形得\n\n$$\n(a - y) ^ {1 + k} = x - \\sqrt {x ^ {2} + (y - a) ^ {2}}.\\tag{③}\n$$\n\n由②，③式可得\n\n$$\nx = \\frac {a}{2} \\left[ \\left(\\frac {a - y}{a}\\right) ^ {1 - k} - \\left(\\frac {a - y}{a}\\right) ^ {1 + k} \\right].\n$$\n\n讨论：（1）当 $k < 1$ ，即 $\\nu_{2} < \\nu_{1}$ 时，则 $\\lim_{y\\to a^{-}}x = 0$ ，即船可到达点 $B(0,a)$\n\n(2) 当 k=1，即 $v_{2}=v_{1}$ 时，则 $\\lim_{y\\to a^{-}}x=\\frac{a}{2}$ ，即船可到达对岸点 $\\left(\\frac{a}{2},a\\right)$\n\n(3) 当 k > 1，即 $v_{2} > v_{1}$ 时， $\\lim_{y \\to a^{-}} x$ 不存在，即船不能到达对岸."
+      },
+      {
+        "id": "s2",
+        "text": "![](images/f4ff9ec062346e37db898a8bea9301b5c16b675b33579b6bc8ef8b3c452cc8bd.jpg)  \n图7.3\n\n分析 船的实际速度是其航行速度（大小为静水速度，方向指向\n\n点 $B$ ）及水流速度的合成，由此可建立其航迹的微分方程。若船的航迹方程为 $x = g(y)$ ，则船能到达对岸的标志是 $g(y)$ 在 $y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。\n\n解·如图建立坐标系，则点 $B$ 的坐标为 $(0, a)$ ，设在时刻 $t$ 船的位置为 $P(x, y)$ ，船实际速度 $\\vec{v}$ 是由船的航行速度 $\\pmb{v}_1 = \\left(-\\frac{v_1 x}{\\sqrt{x^2 + (a - y)^2}}, \\frac{v_1(a - y)}{\\sqrt{x^2 + (a - y)^2}}\\right)$ 与水流速度 $\\pmb{v}_2 = (v_2, 0)$ 的合成 $\\pmb{v} = v_1 + v_2$ ，所以有\n\n$$\n\\frac {\\mathrm{d} x}{\\mathrm{d} t} = v _ {2} - \\frac {v _ {1} x}{\\sqrt {x ^ {2} + (a - y) ^ {2}}}, \\quad \\frac {\\mathrm{d} y}{\\mathrm{d} t} = \\frac {v _ {1} (a - y)}{\\sqrt {x ^ {2} + (a - y) ^ {2}}}.\n$$\n\n两式做商，消去 $t$ 得\n\n$\\frac{\\mathrm{d}y}{\\mathrm{d}x} = \\frac{a - y}{k\\sqrt{x^2 + (a - y)^2} - x}\\left(k = \\frac{v_2}{v_1}\\right)$ ，初始条件 $y(0) = 0$ 。\n\n这是齐次方程，解此初值问题，得\n\n$$\n(a - y) ^ {k} = \\frac {a (a - y)}{x + \\sqrt {x ^ {2} + (y - a) ^ {2}}},\\tag{①}\n$$\n\n变形为\n\n$$\n(a - y) ^ {1 - k} = x + \\sqrt {x ^ {2} + (y - a) ^ {2}}.\\tag{②}\n$$\n\n再将①式分母有理化，变形得\n\n$$\n(a - y) ^ {1 + k} = x - \\sqrt {x ^ {2} + (y - a) ^ {2}}.\\tag{③}\n$$\n\n由②，③式可得\n\n$$\nx = \\frac {a}{2} \\left[ \\left(\\frac {a - y}{a}\\right) ^ {1 - k} - \\left(\\frac {a - y}{a}\\right) ^ {1 + k} \\right].\n$$\n\n讨论：（1）当 $k < 1$ ，即 $\\nu_{2} < \\nu_{1}$ 时，则 $\\lim_{y\\to a^{-}}x = 0$ ，即船可到达点 $B(0,a)$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 k=1，即 $v_{2}=v_{1}$ 时，则 $\\lim_{y\\to a^{-}}x=\\frac{a}{2}$ ，即船可到达对岸点 $\\left(\\frac{a}{2},a\\right)$"
+      },
+      {
+        "id": "s4",
+        "text": "(3) 当 k > 1，即 $v_{2} > v_{1}$ 时， $\\lim_{y \\to a^{-}} x$ 不存在，即船不能到达对岸."
+      }
+    ],
+    "final_answer": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。",
+    "techniques_used": [
+      "建立微分方程",
+      "齐次方程",
+      "运动轨迹",
+      "初值问题"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "自变量、未知函数与几何/物理规律是什么？如何列出一阶方程？",
+      "technique": "建立微分方程",
+      "expected": "选定坐标系，由规律列出微分方程与定解条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/特解或所求量是什么？",
+      "technique": "齐次方程",
+      "expected": "y = a$ 有意义或 $\\lim_{y \\to a^{-}} g(y)$ 存在；船能到达点 $B$ 的标志是 $g(a) = 0$ 或 $\\lim_{y \\to a^{-}} g(y) = 0$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.3",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "微分方程应用",
+    "page": 382,
+    "syllabus_note": "过河偏航：一阶路线方程"
+  }
+}
