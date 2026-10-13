@@ -1,0 +1,80 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-05",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $u(x, y)$ 具有连续的一阶偏导数， $l_{OA}$ 为自点 $O(0, 0)$ 沿曲线 $y = \\sin x$ 至点 $A(2\\pi, 0)$ 的有向弧段，求曲线积分\n\n$$\n\\begin{array}{l} I = \\int_ {I _ {Q A}} (y u (x, y) + x y u _ {x} (x, y) + y + x \\sin x) d x \\\\ \\qquad + (x u (x, y) + x y u _ {y} (x, y) + e ^ {y ^ {2}} - x) d y. \\end{array}\n$$",
+  "answer": "I = \\int_ {l _ {a 4}} (y u (x, y) + x y u _ {x} (x, y)) d x + (x u (x, y) + x y u _ {y} (x, y)) d y \\\\ \\quad + \\int_ {l _ {",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "补线/分段",
+    "积分估值",
+    "格林公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 积分式中有未知函数，无法直接积分。若用格林公式，要出现 $\\frac{\\partial}{\\partial y} u_x(x, y)$ ，为 $u$ 的二阶偏导数，题中未设它存在。为避免该情况发生，可将 $I$ 拆成两项，一项直接积分，一项用格林公式。\n\n$$\n\\begin{array}{l} I = \\int_ {l _ {a 4}} (y u (x, y) + x y u _ {x} (x, y)) d x + (x u (x, y) + x y u _ {y} (x, y)) d y \\\\ \\quad + \\int_ {l _ {a 4}} (y + x \\sin x) d x + (e ^ {y ^ {2}} - x) d y. \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "其中第1项积分，利用凑微分法，\n\n$$\n\\begin{array}{l} I _ {1} = \\int_ {l _ {O A}} (y u (x, y) + x y u _ {x} (x, y)) d x + (x u (x, y) + x y u _ {y} (x, y)) d y \\\\ = \\int_ {l _ {O A}} u (x, y) (y d x + x d y) + x y d u (x, y) \\\\ = \\int_ {l _ {O A}} d (x y u (x, y)) = x y u (x, y) \\big | _ {(0, 0)} ^ {(2 \\pi , 0)} = 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "对于第2项积分，添加线段 $\\overline{AO}$ ，与原弧 $y = \\sin x (0 \\leqslant x \\leqslant 2\\pi)$ 构成8字形，围成两块区域（见图6.3）：\n\n$D_{1} = \\{(x,y)\\mid 0\\leqslant y\\leqslant \\sin x,0\\leqslant x\\leqslant \\pi \\} ,D_{2} = \\{(x,y)\\mid \\sin x\\leqslant y\\leqslant 0,$ $\\pi \\leqslant x\\leqslant 2\\pi \\} .$\n\n其中 $D_{1}$ 的边界 $\\widehat{OB} +\\overline{BO}$ 为顺时针方向， $D_{2}$ 的边界 $\\widehat{BA} +\\overline{AB}$ 为逆时针方向.在 $D_{1}$ 与 $D_{2}$ 上分别用格式公式，有"
+      },
+      {
+        "id": "s4",
+        "text": "图6.3\n\n$$\n\\begin{array}{r l} I _ {2} & = \\int_ {I _ {O A} + \\overline {{{A O}}}} - \\int_ {\\overline {{{A O}}}} (y + x \\sin x) d x + (e ^ {y ^ {2}} - x) d y \\\\ & = \\int_ {I _ {O B} + \\overline {{{B O}}}} (y + x \\sin x) d x + (e ^ {y ^ {2}} - x) d y + \\int_ {I _ {B A} + \\overline {{{A B}}}} (y + x \\sin x) d x + (e ^ {y ^ {2}} - x) d y - \\int_ {2 \\pi} ^ {0} x \\sin x d x \\end{array}"
+      },
+      {
+        "id": "s5",
+        "text": "\\begin{array}{l} = - \\iint_ {D _ {1}} (- 1 - 1) d \\sigma + \\iint_ {D _ {2}} (- 1 - 1) d \\sigma + \\int_ {0} ^ {2 \\pi} x \\sin x d x \\\\ = \\int_ {0} ^ {\\pi} d x \\int_ {0} ^ {\\sin x} 2 d y - \\int_ {\\pi} ^ {2 \\pi} d x \\int_ {\\sin x} ^ {0} 2 d y + [ - x \\cos x + \\sin x ] _ {0} ^ {2 \\pi} \\\\ = 2 \\int_ {0} ^ {2 \\pi} \\sin x d x - 2 \\pi = - 2 \\pi . \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以原积分为 $-2\\pi$ 。"
+      }
+    ],
+    "final_answer": "I = \\int_ {l _ {a 4}} (y u (x, y) + x y u _ {x} (x, y)) d x + (x u (x, y) + x y u _ {y} (x, y)) d y \\\\ \\quad + \\int_ {l _ {",
+    "techniques_used": [
+      "补线/分段",
+      "积分估值",
+      "格林公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用参数化、补线、格林还是奇点分类？关键化简步骤是什么？",
+      "technique": "补线/分段",
+      "expected": "选定计算路线（参数化/补线/挖洞/分类），写出可积形式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终积分结果是什么？",
+      "technique": "积分估值",
+      "expected": "I = \\int_ {l _ {a 4}} (y u (x, y) + x y u _ {x} (x, y)) d x + (x u (x, y) + x y u _ {y} (x, y)) d y \\\\ \\quad + \\int_ {l _ {"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 319,
+    "syllabus_note": "开弧补线+格林计算"
+  }
+}

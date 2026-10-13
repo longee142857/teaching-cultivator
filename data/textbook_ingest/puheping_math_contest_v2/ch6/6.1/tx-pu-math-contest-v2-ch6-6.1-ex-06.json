@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-06",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.green.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算曲线积分 $I = \\oint_{L} \\frac{y \\mathrm{~d} x - x \\mathrm{~d} y}{3 x^{2} - 2 x y + 3 y^{2}}$ ，其中 $L$ 为 $|x| + |y| = 1$ ，沿正向一周.",
+  "answer": "I = - \\frac {2}{a} \\cdot \\frac {\\sqrt {2}}{4} a \\pi = - \\frac {\\sqrt {2}}{2} \\pi .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "格林公式",
+    "参数化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $L$ 是由4条直线段构成的闭曲线，分别沿4条直线段做积分计算工作量较大。易验证当 $(x,y)\\neq (0,0)$ 时，有 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ ，所以在挖掉原点的复连通区域内利用格林公式计算会更简便。"
+      },
+      {
+        "id": "s2",
+        "text": "这里 $P(x,y) = \\frac{y}{3x^2 - 2xy + 3y^2}$ ， $Q(x,y) = \\frac{-x}{3x^2 - 2xy + 3y^2}$ ，当 $(x,y) \\neq (0,0)$ 时，有\n\n$$\n\\frac {\\partial P}{\\partial y} = \\frac {\\partial Q}{\\partial x} = \\frac {3 \\left(x ^ {2} - y ^ {2}\\right)}{\\left(3 x ^ {2} - 2 x y + 3 y ^ {2}\\right) ^ {2}}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法1 在曲线 $L$ 内作圆 $C: x = r \\cos \\theta, y = r \\sin \\theta$ （沿顺时针方向），记 $L$ 与 $C$ 围成的区域为 $D$ ，由格林公式，得\n\n$$\n\\oint_ {L + C} P \\mathrm{d} x + Q \\mathrm{d} y = \\iint_ {D} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y = 0.\n$$\n\n所以\n\n$$\n\\begin{array}{r l} I & = - \\oint_ {c} \\frac {y d x - x d y}{3 x ^ {2} - 2 x y + 3 y ^ {2}} = \\int_ {0} ^ {2 \\pi} - \\frac {d \\theta}{3 - \\sin 2 \\theta} = - \\int_ {0} ^ {2 \\pi} \\frac {d t}{3 - \\sin t} \\\\ & = - \\left(\\int_ {0} ^ {\\pi} \\frac {d t}{3 - \\sin t} + \\int_ {\\pi} ^ {2 \\pi} \\frac {d t}{3 - \\sin t}\\right) = - \\left(\\int_ {0} ^ {\\pi} \\frac {d t}{3 - \\sin t} + \\int_ {0} ^ {\\pi} \\frac {d u}{3 + \\sin u}\\right) (u = t - \\pi) \\\\ & = - \\int_ {0} ^ {\\pi} \\left(\\frac {1}{3 - \\sin t} + \\frac {1}{3 + \\sin t}\\right) d t = - 6 \\int_ {0} ^ {\\pi} \\frac {d t}{9 - \\sin^ {2} t} = - 1 2 \\int_ {0} ^ {\\frac {\\pi}{2}} \\frac {d t}{9 - \\sin^ {2} t} \\\\ & = - 1 2 \\int_ {0} ^ {+ \\infty} \\frac {d v}{9 + 8 v ^ {2}} = - \\frac {\\sqrt {2}}{2} \\pi . \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "方法2 在曲线 $L$ 内作闭曲线 $C: 3x^{2} - 2xy + 3y^{2} = a (a > 0)$ ，方向为顺时针方向。则\n\n$I = -\\oint_{C} \\frac{y \\, \\mathrm{d}x - x \\, \\mathrm{d}y}{3x^2 - 2xy + 3y^2} = -\\oint_{C} \\frac{y \\, \\mathrm{d}x - x \\, \\mathrm{d}y}{a} = -\\frac{2}{a} \\iint_{D} \\mathrm{d}x \\, \\mathrm{d}y \\quad (D \\text{为曲线} C \\text{围成的区域}).$\n\n由于二次型 $3x^{2} - 2xy + 3y^{2}$ 的矩阵为 $\\begin{pmatrix} 3 & -1 \\\\ -1 & 3 \\end{pmatrix}$ ，其特征值为2与4，所以曲线 $C$ 是椭圆。经正交变换可化为 $2\\tilde{x}^{2} + 4\\tilde{y}^{2} = a$ ，面积为\n\n$$\n\\iint_ {D} \\mathrm{d} x \\mathrm{d} y = \\pi \\frac {\\sqrt {a}}{\\sqrt {2}} \\cdot \\frac {\\sqrt {a}}{2} = \\frac {\\sqrt {2}}{4} a \\pi ,\n$$\n\n所以\n\n$$\nI = - \\frac {2}{a} \\cdot \\frac {\\sqrt {2}}{4} a \\pi = - \\frac {\\sqrt {2}}{2} \\pi .\n$$"
+      }
+    ],
+    "final_answer": "I = - \\frac {2}{a} \\cdot \\frac {\\sqrt {2}}{4} a \\pi = - \\frac {\\sqrt {2}}{2} \\pi .",
+    "techniques_used": [
+      "格林公式",
+      "参数化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用格林公式？区域是否含奇点？如何挖洞/补线？",
+      "technique": "格林公式",
+      "expected": "写出 ∂Q/∂x−∂P/∂y，处理奇点后化为二重积分或已知圆周积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲线积分（或证明结论）是什么？",
+      "technique": "参数化",
+      "expected": "I = - \\frac {2}{a} \\cdot \\frac {\\sqrt {2}}{4} a \\pi = - \\frac {\\sqrt {2}}{2} \\pi ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 320,
+    "syllabus_note": "菱形闭曲线含奇点格林",
+    "commentary": "评注 辅助曲线 $C$ （挖掉奇点）的选取与曲线积分值无关，但对积分的难易程度却有很大的影响，计算中要根据被积函数的特点选取适当的曲线，使积分容易计算."
+  }
+}

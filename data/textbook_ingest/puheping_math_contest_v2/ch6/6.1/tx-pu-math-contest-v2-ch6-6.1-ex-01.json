@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-01",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.green.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算曲线积分 $I = \\int_{L} \\frac{x \\, \\mathrm{d}y - y \\, \\mathrm{d}x}{4x^2 + y^2}$ ，其中曲线 $L$ 为以下几种情况：\n\n(1) L 沿圆周 $(x-1)^{2} + y^{2} = a^{2}$ (a > 0, $a \\neq 1$ )，其方向为逆时针方向；\n\n(2) L 是从点 $A(-1,0)$ 经点 $B(1,0)$ 到点 $C(-1,2)$ 的路径， $\\widehat{AB}$ 为下半圆周， $\\overline{BC}$ 为直线段.",
+  "answer": "I = \\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\left(\\int_ {\\overline {{A D}}} + \\int_ {\\over",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "格林公式",
+    "路径无关/原函数",
+    "奇点处理",
+    "补线/分段"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里 $P = \\frac{-y}{4x^2 + y^2}$ , $Q = \\frac{x}{4x^2 + y^2}$ , 易验证 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ , $(x, y) \\neq (0, 0)$ , 在不包含原点在内的单连通区域内, 积分与路径无关. 因而在第 (1) 小题中, 需讨论圆周 $(x - 1)^2 + y^2 = a^2$ 是否包围了原点, 并分情况计算; 在第 (2) 小题中, $L$ 是非闭的, 虽然积分与路径无关, 但不能选择直线段 $\\overline{AC}$ 为路径，因为由 $\\widehat{AB} +\\overline{BC} +\\overline{CA}$ 构成的闭曲线包围了原点．可以选取下面两种方法解决：一是添加有向线段 $\\overline{CA}$ 以及挖去原点的椭圆（充分小），使之构成一个复连通区域，用格林公式求解；二是选择平行于坐标轴的4条直线段（非闭路）作为路径，以简化计算.\n\n解（1）这里 $P = \\frac{-y}{4x^2 + y^2}$ ， $Q = \\frac{x}{4x^2 + y^2}$ ，有\n\n$$\n\\frac {\\partial P}{\\partial y} = \\frac {y ^ {2} - 4 x ^ {2}}{\\left(4 x ^ {2} + y ^ {2}\\right) ^ {2}} = \\frac {\\partial Q}{\\partial x}, (x, y) \\neq (0, 0).\n$$\n\n记 $L:(x - 1)^2 +y^2 = a^2$ 所围成的平面区域为 $D$\n\n当 $a < 1$ 时， $(0,0) \\notin D$ ，由格林公式，得\n\n$$\nI = \\oint_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\iint_ {D} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y = 0.\n$$\n\n当 $a > 1$ 时， $(0,0) \\in D$ ， $(0,0)$ 为奇点，在 $D$ 内作一小椭圆 $L_{1}: 4x^{2} + y^{2} = \\varepsilon^{2}$ ( $\\varepsilon > 0$ ，充分小)，其方向为顺时针方向，记 $L_{1}$ 与 $L$ 所围成的区域为 $D_{1}$ ，于是\n\n$$\n\\oint_ {L + L _ {1}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\iint_ {D _ {1}} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y = 0.\n$$\n\n从而\n\n$$\n\\oint_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\oint_ {L _ {1}} \\frac {x \\mathrm{d} y - y "
+      },
+      {
+        "id": "s2",
+        "text": "分析 这里 $P = \\frac{-y}{4x^2 + y^2}$ , $Q = \\frac{x}{4x^2 + y^2}$ , 易验证 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ , $(x, y) \\neq (0, 0)$ , 在不包含原点在内的单连通区域内, 积分与路径无关. 因而在第 (1) 小题中, 需讨论圆周 $(x - 1)^2 + y^2 = a^2$ 是否包围了原点, 并分情况计算; 在第 (2) 小题中, $L$ 是非闭的, 虽然积分与路径无关, 但不能选择直线段 $\\overline{AC}$ 为路径，因为由 $\\widehat{AB} +\\overline{BC} +\\overline{CA}$ 构成的闭曲线包围了原点．可以选取下面两种方法解决：一是添加有向线段 $\\overline{CA}$ 以及挖去原点的椭圆（充分小），使之构成一个复连通区域，用格林公式求解；二是选择平行于坐标轴的4条直线段（非闭路）作为路径，以简化计算.\n\n解（1）这里 $P = \\frac{-y}{4x^2 + y^2}$ ， $Q = \\frac{x}{4x^2 + y^2}$ ，有\n\n$$\n\\frac {\\partial P}{\\partial y} = \\frac {y ^ {2} - 4 x ^ {2}}{\\left(4 x ^ {2} + y ^ {2}\\right) ^ {2}} = \\frac {\\partial Q}{\\partial x}, (x, y) \\neq (0, 0).\n$$\n\n记 $L:(x - 1)^2 +y^2 = a^2$ 所围成的平面区域为 $D$\n\n当 $a < 1$ 时， $(0,0) \\notin D$ ，由格林公式，得\n\n$$\nI = \\oint_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\iint_ {D} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y = 0.\n$$\n\n当 $a > 1$ 时， $(0,0) \\in D$ ， $(0,0)$ 为奇点，在 $D$ 内作一小椭圆 $L_{1}: 4x^{2} + y^{2} = \\varepsilon^{2}$ ( $\\varepsilon > 0$ ，充分小)，其方向为顺时针方向，记 $L_{1}$ 与 $L$ 所围成的区域为 $D_{1}$ ，于是\n\n$$\n\\oint_ {L + L _ {1}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\iint_ {D _ {1}} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} x \\mathrm{d} y = 0.\n$$\n\n从而\n\n$$\n\\oint_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\oint_ {L _ {1}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\frac {1}{\\varepsilon^ {2}} \\oint_ {L _ {1}} x \\mathrm{d} y - y \\mathrm{d} x = \\frac {1}{\\varepsilon^ {2}} \\iint_ {D} 2 \\mathrm{d} \\sigma = \\frac {2}{\\varepsilon^ {2}} \\pi \\cdot \\frac {\\varepsilon}{2} \\cdot \\varepsilon = \\pi .\n$$\n\n（2）方法1 添加有向线段 $\\overline{CA}: x = -1 (y: 2 \\to 0)$ ，并在闭路 $L + \\overline{CA}$ 内作一小椭圆 $L_{\\varepsilon}: 4x^{2} + y^{2} = \\varepsilon^{2} (\\varepsilon > 0$ ，充分小），其方向为顺时针方向，如图6.1(a)所示，由 $L$ 、 $\\overline{CA}$ 与 $L_{\\varepsilon}$ 所围成的平面复连通区域记为 $D$ ，由格林公式，得\n\n$$\n\\oint_ {L + \\overline {{{C A}}} + L _ {e}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\iint_ {D} \\left(\\frac {\\partial Q}{\\partial x} - \\frac {\\partial P}{\\partial y}\\right) \\mathrm{d} \\sigma = 0.\n$$\n\n![](images/2a1b56f15199ddb7d4a6fc20c5e0956f4c67bf6d6128858d4ea568591e1f2689.jpg)\n\n![](images/e9dd67d9e9611e8b4715750160280c4f4a17f3d7c7c2516ae7011545cc9ebe60.jpg)  \n图6.1\n\n又\n\n$$\n\\int_ {\\overline {{{C A}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = - \\int_ {2} ^ {0} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = \\int_ {0} ^ {2} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = \\frac {\\pi}{8},\n$$\n\n$$\n\\oint_ {L _ {\\varepsilon}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\frac {1}{\\varepsilon^ {2}} \\oint_ {L _ {\\varepsilon}} x \\mathrm{d} y - y \\mathrm{d} x = - \\frac {2}{\\varepsilon^ {2}} \\iint_ {D _ {\\varepsilon}} \\mathrm{d} \\sigma = - \\frac {2}{\\varepsilon^ {2}} \\cdot \\pi \\cdot \\frac {\\varepsilon}{2} \\cdot \\varepsilon = - \\pi .\n$$\n\n故\n\n$$\nI = \\int_ {L} = \\oint_ {L + \\overline {{C A}} + L _ {\\epsilon}} - \\int_ {\\overline {{C A}}} - \\oint_ {L _ {\\epsilon}} = 0 - \\frac {\\pi}{8} - (- \\pi) = \\frac {7 \\pi}{8}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 由 $\\frac{\\partial P}{\\partial y} = \\frac{y^2 - 4x^2}{(4x^2 + y^2)^2} = \\frac{\\partial Q}{\\partial x}$ ， $(x, y) \\neq (0, 0)$ ，知曲线积分与路径无关，选择路径为直线段 $\\overrightarrow{AD} \\to \\overrightarrow{DE} \\to \\overrightarrow{EF} \\to \\overrightarrow{FC}$ ，如图6.1(b)所示.\n\n$\\overline{AD}: x = -1, y$ 从0到-1， $\\mathrm{dx} = 0$\n\n$$\n\\int_ {\\overline {{{A D}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = - \\int_ {0} ^ {- 1} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = \\frac {1}{2} \\arctan \\frac {1}{2};\n$$\n\n$\\overline{DE}: y = -1, x$ 从-1到1， $\\mathrm{dy} = 0$\n\n$$\n\\int_ {\\overline {{{D E}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\int_ {- 1} ^ {1} \\frac {1}{4 x ^ {2} + 1} \\mathrm{d} x = \\arctan 2;\n$$\n\n$\\overline{EF}:x=1,\\ y$ 从 -1 到 2，dx=0，\n\n$$\n\\int_ {\\overline {{{E F}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\int_ {- 1} ^ {2} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = \\frac {\\pi}{8} + \\frac {1}{2} \\arctan \\frac {1}{2};\n$$\n\n$\\overline{FC}: y=2, x$ 从 1 到 -1, dy=0,\n\n$$\n\\int_ {\\overline {{{F C}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\int_ {1} ^ {- 1} \\frac {- 2}{4 x ^ {2} + 4} \\mathrm{d} x = \\frac {\\pi}{4}.\n$$\n\n所以\n\n$$\n\\begin{array}{l} I = \\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\left(\\int_ {\\overline {{A D}}} + \\int_ {\\overline {{D E}}} + \\int_ {\\overline {{E F}}} + \\int_ {\\overline {{F C}}}\\right) \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} \\\\ = \\arctan 2 + \\arctan \\frac {1}{2} + \\frac {\\pi}{8} + \\frac {\\pi}{4} = \\frac {\\pi}{2} + \\frac {3 \\pi}{8} = \\frac {7 \\pi}{8}. \\end{array}\n$$\n\n评注（1）因为积分 $\\int_{L} \\frac{x \\, \\mathrm{d}y - y \\, \\mathrm{d}x}{4x^2 + y^2}$ 的分母为 $4x^2 + y^2$ ，所以作挖去奇点 $(0,0)$ 的辅助曲线，为椭圆 $L_{\\varepsilon}: 4x^2 + y^2 = \\varepsilon^2$ ，以便于积分计算。如果分母改变，则辅助曲线也要相应改变。"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 在第 (2) 小题的计算中，如果取 $\\overline{AC}: x = -1 (y: 0 \\to 2)$ ，则\n\n$$\n\\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\int_ {\\overline {{{A C}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = - \\int_ {0} ^ {2} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = - \\frac {\\pi}{8}.\n$$\n\n这样做是不对的. 原因是闭曲线 $L + \\overline{AC}$ 内包含了积分的奇点 $(0,0)$ , 在该区域内 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ 不恒成立."
+      }
+    ],
+    "final_answer": "I = \\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\left(\\int_ {\\overline {{A D}}} + \\int_ {\\over",
+    "techniques_used": [
+      "格林公式",
+      "路径无关/原函数",
+      "奇点处理",
+      "补线/分段"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用格林公式？区域是否含奇点？如何挖洞/补线？",
+      "technique": "格林公式",
+      "expected": "写出 ∂Q/∂x−∂P/∂y，处理奇点后化为二重积分或已知圆周积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲线积分（或证明结论）是什么？",
+      "technique": "路径无关/原函数",
+      "expected": "I = \\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\left(\\int_ {\\overline {{A D}}} + \\int_ {\\over"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 315,
+    "syllabus_note": "含奇点圆周族格林公式",
+    "commentary": "评注（1）因为积分 $\\int_{L} \\frac{x \\, \\mathrm{d}y - y \\, \\mathrm{d}x}{4x^2 + y^2}$ 的分母为 $4x^2 + y^2$ ，所以作挖去奇点 $(0,0)$ 的辅助曲线，为椭圆 $L_{\\varepsilon}: 4x^2 + y^2 = \\varepsilon^2$ ，以便于积分计算。如果分母改变，则辅助曲线也要相应改变。\n\n(2) 在第 (2) 小题的计算中，如果取 $\\overline{AC}: x = -1 (y: 0 \\to 2)$ ，则\n\n$$\n\\int_ {L} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = \\int_ {\\overline {{{A C}}}} \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{4 x ^ {2} + y ^ {2}} = - \\int_ {0} ^ {2} \\frac {1}{4 + y ^ {2}} \\mathrm{d} y = - \\frac {\\pi}{8}.\n$$\n\n这样做是不对的. 原因是闭曲线 $L + \\overline{AC}$ 内包含了积分的奇点 $(0,0)$ , 在该区域内 $\\frac{\\partial P}{\\partial y} = \\frac{\\partial Q}{\\partial x}$ 不恒成立."
+  }
+}

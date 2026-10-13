@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-15",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.green.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $u(x,y)$ 在有界闭区域 $D$ 上有二阶连续偏导数，且满足\n\n$$\n\\frac {\\partial^ {2} u}{\\partial x ^ {2}} + \\frac {\\partial^ {2} u}{\\partial y ^ {2}} = 0, (x, y) \\in D.\n$$\n\n记 $D$ 的正向边界曲线为 $\\partial D$ ， $\\partial D$ 的外法线向量为 $n$ 。若当 $(x, y) \\in \\partial D$ 时， $u(x, y) = A$ （常数）。\n\n(1) 求曲线积分 $\\oint_{\\partial D} u \\frac{\\partial u}{\\partial n} ds$ 的值;\n\n(2) 证明 $u(x, y) = A, (x, y) \\in D$ .",
+  "answer": "I = 0$ ，所以 $\\iint_{D}\\left[\\left(\\frac{\\partial u}{\\partial x}\\right)^2 +\\left(\\frac{\\partial u}{\\partial y}\\right)^2\\right",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "格林公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于（1）中积分涉及 $u(x,y)$ 的方向导数，且知道 $\\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} = 0$ ， $(x,y) \\in D$ ，因此用格林公式即可将被积函数转化为 $\\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2}$ 的形式；要证明（2）中的结论，只需证明在 $D$ 上有 $\\frac{\\partial u}{\\partial x} = 0$ ， $\\frac{\\partial u}{\\partial y} = 0$ ，这需利用（1）中的结论."
+      },
+      {
+        "id": "s2",
+        "text": "（1）令 $n = (\\cos \\alpha, \\cos \\beta)$ ，则 $\\frac{\\partial u}{\\partial n} = \\frac{\\partial u}{\\partial x} \\cos \\alpha + \\frac{\\partial u}{\\partial y} \\cos \\beta$ ， $\\partial D$ 的单位切向量 $\\tau = (-\\cos \\beta, \\cos \\alpha)$ ，于是\n\n$$\n\\begin{array}{l} I = \\int_ {\\partial D} u \\frac {\\partial u}{\\partial n} d s = A \\int_ {\\partial D} \\left(\\frac {\\partial u}{\\partial x} \\cos \\alpha + \\frac {\\partial u}{\\partial y} \\cos \\beta\\right) d s \\\\ = A \\int_ {\\partial D} \\frac {\\partial u}{\\partial x} d y - \\frac {\\partial u}{\\partial y} d x = A \\iint_ {D} \\left(\\frac {\\partial^ {2} u}{\\partial x ^ {2}} + \\frac {\\partial^ {2} u}{\\partial y ^ {2}}\\right) d x d y, \\end{array}\n$$\n\n因为 $\\frac{\\partial^2 u}{\\partial x^2} + \\frac{\\partial^2 u}{\\partial y^2} = 0$ ， $(x, y) \\in D$ ，所以 $I = 0$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 由于\n\n$$\n\\begin{array}{l} I = \\oint_ {\\partial D} u \\frac {\\partial u}{\\partial n} \\mathrm{d} s = \\oint_ {\\partial D} u \\frac {\\partial u}{\\partial x} \\mathrm{d} y - u \\frac {\\partial u}{\\partial y} \\mathrm{d} x \\\\ = \\iint_ {D} \\left[ u \\left(\\frac {\\partial^ {2} u}{\\partial x ^ {2}} + \\frac {\\partial^ {2} u}{\\partial y ^ {2}}\\right) + \\left(\\frac {\\partial u}{\\partial x}\\right) ^ {2} + \\left(\\frac {\\partial u}{\\partial y}\\right) ^ {2} \\right] \\mathrm{d} \\sigma \\\\ = \\iint_ {D} \\left[ \\left(\\frac {\\partial u}{\\partial x}\\right) ^ {2} + \\left(\\frac {\\partial u}{\\partial y}\\right) ^ {2} \\right] \\mathrm{d} \\sigma \\quad \\left(\\because \\frac {\\partial^ {2} u}{\\partial x ^ {2}} + \\frac {\\partial^ {2} u}{\\partial y ^ {2}} = 0, (x, y) \\in D\\right). \\end{array}\n$$\n\n由（1）知 $I = 0$ ，所以 $\\iint_{D}\\left[\\left(\\frac{\\partial u}{\\partial x}\\right)^2 +\\left(\\frac{\\partial u}{\\partial y}\\right)^2\\right]\\mathrm{d}\\sigma = 0.$ 由于 $\\left(\\frac{\\partial u}{\\partial x}\\right)^2 +\\left(\\frac{\\partial u}{\\partial y}\\right)^2$ 是 $D$ 上的非负连续函数，\n\n从而 $\\left(\\frac{\\partial u}{\\partial x}\\right)^{2}+\\left(\\frac{\\partial u}{\\partial y}\\right)^{2}=0$ ．于是， $\\frac{\\partial u}{\\partial x}=0,\\quad\\frac{\\partial u}{\\partial y}=0$ ．因此， $u(x,y)=$ 常数， $(x,y)\\in D$ ．又因为当 $(x,y)\\in\\partial D$ 时， $u(x,y)=A$ ，所以由连续性，知 $u(x,y)=A,\\quad(x,y)\\in D$ ．"
+      }
+    ],
+    "final_answer": "I = 0$ ，所以 $\\iint_{D}\\left[\\left(\\frac{\\partial u}{\\partial x}\\right)^2 +\\left(\\frac{\\partial u}{\\partial y}\\right)^2\\right",
+    "techniques_used": [
+      "证明技巧",
+      "格林公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用格林公式？区域是否含奇点？如何挖洞/补线？",
+      "technique": "格林公式",
+      "expected": "写出 ∂Q/∂x−∂P/∂y，处理奇点后化为二重积分或已知圆周积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲线积分（或证明结论）是什么？",
+      "technique": "格林公式",
+      "expected": "I = 0$ ，所以 $\\iint_{D}\\left[\\left(\\frac{\\partial u}{\\partial x}\\right)^2 +\\left(\\frac{\\partial u}{\\partial y}\\right)^2\\right"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 327,
+    "syllabus_note": "调和函数边界积分"
+  }
+}

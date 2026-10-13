@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-18",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.pathindep",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $f(x,y)$ 在全平面具有一阶连续偏导数，且 $f(0,0)=0$ ， $\\left|\\frac{\\partial f}{\\partial x}\\right|\\leqslant2|x-y|$ ， $\\left|\\frac{\\partial f}{\\partial y}\\right|\\leqslant2|x-y|$ ，证明 $|f(5,4)|\\leqslant1$ .",
+  "answer": "$\\int_{L} \\frac{\\partial f}{\\partial x} \\mathbf{d}x + \\frac{\\partial f}{\\partial y} \\mathbf{d}y$ 与路径无关.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "路径无关/原函数",
+    "积分估值",
+    "证明技巧",
+    "格林公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为 $f(5,4) - f(0,0) = \\int_{(0,0)}^{(5,4)}\\mathrm{d}f(x,y) = \\int_{(0,0)}^{(5,4)}\\frac{\\partial f}{\\partial x}\\mathrm{d}x + \\frac{\\partial f}{\\partial y}\\mathrm{d}y$ ，故只需证明 $\\left|\\int_{(0,0)}^{(5,4)}\\frac{\\partial f}{\\partial x}\\mathrm{d}x + \\frac{\\partial f}{\\partial y}\\mathrm{d}y\\right| \\leqslant 1$ ，对此可取积分路径为折线段： $O(0,0)\\rightarrow A(4,4)\\to B(5,4)$ ，如图6.8所示."
+      },
+      {
+        "id": "s2",
+        "text": "由题设条件知 $f(x, y)$ 在全平面可微，由于 $\\mathbf{d}f = \\frac{\\partial f}{\\partial x}\\mathbf{d}x + \\frac{\\partial f}{\\partial y}\\mathbf{d}y$ ，故曲线积分 $\\int_{L} \\frac{\\partial f}{\\partial x} \\mathbf{d}x + \\frac{\\partial f}{\\partial y} \\mathbf{d}y$ 与路径无关."
+      },
+      {
+        "id": "s3",
+        "text": "图6.8"
+      },
+      {
+        "id": "s4",
+        "text": "设 $O(0,0), A(4,4), B(5,4)$ ，由条件 $\\left|\\frac{\\partial f}{\\partial x}\\right| \\leqslant 2|x - y|$ ， $\\left|\\frac{\\partial f}{\\partial y}\\right| \\leqslant 2|x - y|$ ，在直线 $\\overline{OA}: y = x$ 上， $\\frac{\\partial f}{\\partial x} = \\frac{\\partial f}{\\partial y} = 0$ ，所以"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} f (5, 4) - f (0, 0) & = \\int_ {(0, 0)} ^ {(5, 4)} \\mathrm{d} f (x, y) = \\int_ {(0, 0)} ^ {(5, 4)} \\frac {\\partial f}{\\partial x} \\mathrm{d} x + \\frac {\\partial f}{\\partial y} \\mathrm{d} y \\\\ & = \\int_ {\\overline {{{O A}}}} \\frac {\\partial f}{\\partial x} \\mathrm{d} x + \\frac {\\partial f}{\\partial y} \\mathrm{d} y + \\int_ {\\overline {{{A B}}}} \\frac {\\partial f}{\\partial x} \\mathrm{d} x + \\frac {\\partial f}{\\partial y} \\mathrm{d} y = 0 + \\int_ {4} ^ {5} \\frac {\\partial f (x , 4)}{\\partial x} \\mathrm{d} x. \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "而 $f(0,0) = 0$ ，故"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\mid f (5, 4) \\mid = \\left| \\int_ {4} ^ {5} \\frac {\\partial f (x , 4)}{\\partial x} \\mathrm{d} x \\right| \\leqslant \\int_ {4} ^ {5} 2 \\mid x - 4 \\mid \\mathrm{d} x = 1.\n$$"
+      }
+    ],
+    "final_answer": "$\\int_{L} \\frac{\\partial f}{\\partial x} \\mathbf{d}x + \\frac{\\partial f}{\\partial y} \\mathbf{d}y$ 与路径无关.",
+    "techniques_used": [
+      "路径无关/原函数",
+      "积分估值",
+      "证明技巧",
+      "格林公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何判断第二型曲线积分与路径无关？写出全微分条件或构造原函数的思路。",
+      "technique": "路径无关/原函数",
+      "expected": "验证 ∂Q/∂x=∂P/∂y（或题设等价条件），必要时求原函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "积分估值",
+      "expected": "$\\int_{L} \\frac{\\partial f}{\\partial x} \\mathbf{d}x + \\frac{\\partial f}{\\partial y} \\mathbf{d}y$ 与路径无关."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 329,
+    "syllabus_note": "偏导界⇒|f|估值证明",
+    "commentary": "评注 由于 $f(x,y) - f(x_0,y_0) = \\int_{(x_0,y_0)}^{(x,y)}\\frac{\\partial f}{\\partial x}\\mathrm{d}x + \\frac{\\partial f}{\\partial y}\\mathrm{d}y$ ，借助于对偏导数的某些估计可得到对函数\n\n值一定程度的估计."
+  }
+}

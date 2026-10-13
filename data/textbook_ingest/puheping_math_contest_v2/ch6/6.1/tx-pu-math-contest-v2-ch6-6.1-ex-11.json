@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.1-ex-11",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.pathindep",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设函数 $\\varphi(y)$ 具有连续导数，在围绕原点的任意分段光滑简单闭曲线 $L$ 上，曲线积分\n\n$$\n\\oint_ {L} \\frac {\\varphi (y) d x + 2 x y d y}{2 x ^ {2} + y ^ {4}}\n$$\n\n的值恒为同一常数.\n\n（1）证明对右半平面 $x > 0$ 内的任意分段光滑简单闭曲线 $C$ ，有 $\\oint_{L} \\frac{\\varphi(y) \\, dx + 2xy \\, dy}{2x^2 + y^4} = 0$ ；\n\n## (2) 求函数 $\\varphi(y)$ 的表达式.",
+  "answer": "$\\varphi(y) = -y^2 + C$ ，将 $\\varphi(y)$ 代入②式，得 $2y^5 - 4Cy^3 = 2y^5$ ，所以 $C = 0$ ，从而 $\\varphi(y) = -y^2$ . 评注 本题证明的关键在于通过添加辅助线找到右半平面内的有向简单闭曲线与包围原点的有向简单闭曲线的关系，从而将右半平面内闭曲线上的积分转化为围绕原点的两闭曲线上积分的差，使问题得到解决.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "路径无关/原函数",
+    "奇点处理",
+    "补线/分段",
+    "极坐标",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于右半平面 $x > 0$ 内的任意有向简单闭曲线均可通过添加辅助线化为两条包围原点的有向简单闭曲线的差（如图6.5所示），从而结论（1）是显然的；再由结论（1）可知在右半平面内曲线积分与路径无关，由此可求得函数 $\\varphi(y)$ 的表达式."
+      },
+      {
+        "id": "s2",
+        "text": "（1）如图 6.5 所示，设 C 是右半平面 x > 0 内的任意分段光滑简单闭曲线，在 C 上任取两点 M 与 N，过 M 与 N 作围绕原点的曲线 $\\widehat{MQN}$ ，从而得到两条围绕原点的闭曲线 $\\widehat{MQNRM}$ 与 $\\widehat{MQNPM}$ ，根据题设可知\n\n所以\n\n$$\n\\begin{array}{r l} & {\\oint_ {\\widehat {M Q N R M}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} = \\oint_ {\\widehat {M Q N P M}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}},} \\\\ & {\\oint_ {C} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} = \\int_ {\\widehat {N R M}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} + \\int_ {\\widehat {M P N}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}}} \\\\ & {= \\oint_ {\\widehat {N R M} + \\widehat {M Q N}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} - \\oint_ {\\widehat {N P M} + \\widehat {M Q N}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}}} \\\\ & {= \\oint_ {\\widehat {M Q N R M}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} - \\oint_ {\\widehat {M Q N P M}} \\frac {\\varphi (y) \\mathrm{d} x + 2 x y \\mathrm{d} y}{2 x ^ {2} + y ^ {4}} = 0.} \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 设 $P = \\frac{\\varphi(y)}{2x^{2} + y^{4}}$ ， $Q = \\frac{2xy}{2x^{2} + y^{4}}$ ，P, Q 在单连通区域 x > 0 内具有一阶连续偏导数，由（1）知，曲线积分 $\\int_{C} \\frac{\\varphi(y) \\, dx + 2xy \\, dy}{2x^{2} + y^{4}}$ 与积分路径无关，所以当 x > 0 时，总有 $\\frac{\\partial Q}{\\partial x} = \\frac{\\partial P}{\\partial y}$ .\n\n经计算，有\n\n$$\n\\frac {\\partial Q}{\\partial x} = \\frac {- 4 x ^ {2} y + 2 y ^ {5}}{\\left(2 x ^ {2} + y ^ {4}\\right) ^ {2}}, \\quad \\frac {\\partial P}{\\partial y} = \\frac {2 x ^ {2} \\varphi^ {\\prime} (y) + \\varphi^ {\\prime} (y) y ^ {4} - 4 \\varphi (y) y ^ {3}}{\\left(2 x ^ {2} + y ^ {4}\\right) ^ {2}},\n$$\n\n图6.5\n\n由此可得\n\n$$\n\\left\\{ \\begin{array}{l} \\varphi^ {\\prime} (y) = - 2 y, \\\\ \\varphi^ {\\prime} (y) y ^ {4} - 4 \\varphi (y) y ^ {3} = 2 y ^ {5}. \\end{array} \\right.\\tag{①}\n$$\n\n②\n\n由①式，得 $\\varphi(y) = -y^2 + C$ ，将 $\\varphi(y)$ 代入②式，得 $2y^5 - 4Cy^3 = 2y^5$ ，所以 $C = 0$ ，从而 $\\varphi(y) = -y^2$ . 评注 本题证明的关键在于通过添加辅助线找到右半平面内的有向简单闭曲线与包围原点的有向简单闭曲线的关系，从而将右半平面内闭曲线上的积分转化为围绕原点的两闭曲线上积分的差，使问题得到解决."
+      }
+    ],
+    "final_answer": "$\\varphi(y) = -y^2 + C$ ，将 $\\varphi(y)$ 代入②式，得 $2y^5 - 4Cy^3 = 2y^5$ ，所以 $C = 0$ ，从而 $\\varphi(y) = -y^2$ . 评注 本题证明的关键在于通过添加辅助线找到右半平面内的有向简单闭曲线与包围原点的有向简单闭曲线的关系，从而将右半平面内闭曲线上的积分转化为围绕原点的两闭曲线上积分的差，使问题得到解决.",
+    "techniques_used": [
+      "路径无关/原函数",
+      "奇点处理",
+      "补线/分段",
+      "极坐标",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何判断第二型曲线积分与路径无关？写出全微分条件或构造原函数的思路。",
+      "technique": "路径无关/原函数",
+      "expected": "验证 ∂Q/∂x=∂P/∂y（或题设等价条件），必要时求原函数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论或积分值是什么？",
+      "technique": "奇点处理",
+      "expected": "$\\varphi(y) = -y^2 + C$ ，将 $\\varphi(y)$ 代入②式，得 $2y^5 - 4Cy^3 = 2y^5$ ，所以 $C = 0$ ，从而 $\\varphi(y) = -y^2$ . 评注 本题证明的关键在于通过添加辅助线找到右半平面内的有向简单闭曲线与包围原点的有向简单闭曲线的关系，从而将右半平面内闭曲线上的积分转化为围绕原点的两闭曲线上积分的差，使问题得到解决."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.1",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲线积分",
+    "page": 323,
+    "syllabus_note": "闭曲线常值⇒路径无关求 φ"
+  }
+}
