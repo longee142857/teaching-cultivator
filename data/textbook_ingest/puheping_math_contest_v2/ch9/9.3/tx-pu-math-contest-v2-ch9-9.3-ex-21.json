@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-21",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.sym",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A$ 是 $n$ 阶实对称矩阵，证明：\n\n（1）存在实对称矩阵 B，使得 $B^{2023} = A$ ，且 AB = BA；\n\n(2) 存在一个多项式 $p(x)$ ，使得上述矩阵 $B = p(A)$ ;\n\n(3) 上述矩阵 B 是唯一的.",
+  "answer": "得证",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "相似对角化",
+    "实对称正交对角化",
+    "可交换矩阵"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 （1）A 与对角矩阵相似，设 $A = Q \\text{diag}(\\lambda_1, \\lambda_2, \\cdots, \\lambda_n)Q^{-1}$ ，显然 $B = Q \\text{diag}(\\lambda_1^{1/2023}, \\lambda_2^{1/2023}, \\cdots, \\lambda_n^{1/2023})Q^{-1}$ ;\n\n（2）因为 $B = p(A) = Q \\operatorname{diag}(p(\\lambda_{1}), p(\\lambda_{2}), \\cdots, p(\\lambda_{n})) Q^{-1}$ ，所以 $p(x)$ 应满足方程组 $p(\\lambda_{i}) = \\lambda_{i}^{1/2023} (i = 1, 2, \\cdots, n)$ ;\n\n（3）设 $C^{2023} = A = B^{2023}$ ，若有可逆矩阵 $\\pmb{T}$ 使得 $T^{-1}BT, T^{-1}CT$ 同为对角矩阵，则可得到 $C = B$ 。证明 （1）因为 $\\pmb{A}$ 是实对称矩阵，所以存在正交矩阵 $\\pmb{Q}$ 使得\n\n$$\n\\boldsymbol {A} = \\boldsymbol {Q} \\boldsymbol {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}}, \\quad \\boldsymbol {\\Lambda} = \\operatorname{diag} \\left(\\lambda_ {1}, \\lambda_ {2}, \\dots , \\lambda_ {n}\\right),\n$$\n\n其中 $\\lambda_{i}(i=1,2,\\cdots,n)$ 是 A 的 n 个特征值.\n\n令 $B = Q \\overline{A} Q^{T}$ ，其中 $\\overline{A} = \\text{diag}(\\lambda_{1}^{1/2023}, \\lambda_{2}^{1/2023}, \\cdots, \\lambda_{n}^{1/2023})$ ，显然 B 是对称矩阵。且\n\n$$\n\\boldsymbol {B} ^ {2 0 2 3} = \\left(\\boldsymbol {Q} \\overline {{{\\boldsymbol {\\Lambda}}}} \\boldsymbol {Q} ^ {\\mathrm{T}}\\right) ^ {2 0 2 3} = \\boldsymbol {Q} \\overline {{{\\boldsymbol {\\Lambda}}}} ^ {2 0 2 3} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {Q} \\boldsymbol {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {A},\n\n\\boldsymbol {A} \\boldsymbol {B} = (\\boldsymbol {Q} \\Lambda \\boldsymbol {Q} ^ {\\mathrm{T}}) (\\boldsymbol {Q} \\bar {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}}) = \\boldsymbol {Q} \\Lambda \\bar {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {Q}"
+      },
+      {
+        "id": "s2",
+        "text": "分析 （1）A 与对角矩阵相似，设 $A = Q \\text{diag}(\\lambda_1, \\lambda_2, \\cdots, \\lambda_n)Q^{-1}$ ，显然 $B = Q \\text{diag}(\\lambda_1^{1/2023}, \\lambda_2^{1/2023}, \\cdots, \\lambda_n^{1/2023})Q^{-1}$ ;\n\n（2）因为 $B = p(A) = Q \\operatorname{diag}(p(\\lambda_{1}), p(\\lambda_{2}), \\cdots, p(\\lambda_{n})) Q^{-1}$ ，所以 $p(x)$ 应满足方程组 $p(\\lambda_{i}) = \\lambda_{i}^{1/2023} (i = 1, 2, \\cdots, n)$ ;\n\n（3）设 $C^{2023} = A = B^{2023}$ ，若有可逆矩阵 $\\pmb{T}$ 使得 $T^{-1}BT, T^{-1}CT$ 同为对角矩阵，则可得到 $C = B$ 。证明 （1）因为 $\\pmb{A}$ 是实对称矩阵，所以存在正交矩阵 $\\pmb{Q}$ 使得\n\n$$\n\\boldsymbol {A} = \\boldsymbol {Q} \\boldsymbol {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}}, \\quad \\boldsymbol {\\Lambda} = \\operatorname{diag} \\left(\\lambda_ {1}, \\lambda_ {2}, \\dots , \\lambda_ {n}\\right),\n$$\n\n其中 $\\lambda_{i}(i=1,2,\\cdots,n)$ 是 A 的 n 个特征值.\n\n令 $B = Q \\overline{A} Q^{T}$ ，其中 $\\overline{A} = \\text{diag}(\\lambda_{1}^{1/2023}, \\lambda_{2}^{1/2023}, \\cdots, \\lambda_{n}^{1/2023})$ ，显然 B 是对称矩阵。且\n\n$$\n\\boldsymbol {B} ^ {2 0 2 3} = \\left(\\boldsymbol {Q} \\overline {{{\\boldsymbol {\\Lambda}}}} \\boldsymbol {Q} ^ {\\mathrm{T}}\\right) ^ {2 0 2 3} = \\boldsymbol {Q} \\overline {{{\\boldsymbol {\\Lambda}}}} ^ {2 0 2 3} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {Q} \\boldsymbol {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {A},\n$$\n\n$$\n\\boldsymbol {A} \\boldsymbol {B} = (\\boldsymbol {Q} \\Lambda \\boldsymbol {Q} ^ {\\mathrm{T}}) (\\boldsymbol {Q} \\bar {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}}) = \\boldsymbol {Q} \\Lambda \\bar {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}} = \\boldsymbol {Q} \\bar {\\Lambda} \\Lambda \\boldsymbol {Q} ^ {\\mathrm{T}} = (\\boldsymbol {Q} \\bar {\\Lambda} \\boldsymbol {Q} ^ {\\mathrm{T}}) (\\boldsymbol {Q} \\Lambda \\boldsymbol {Q} ^ {\\mathrm{T}}) = \\boldsymbol {B} \\boldsymbol {A}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 设 $\\lambda_{1}, \\lambda_{2}, \\cdots, \\lambda_{s} (1 \\leqslant s \\leqslant n)$ 是矩阵 A 的所有两两互异的特征值. 做 s 次多项式\n\n$$\np (x) = x ^ {s} + a _ {1} x ^ {s - 1} + \\dots + a _ {s - 1} x + a _ {s},\n$$\n\n使得\n\n$$\np (\\lambda_ {i}) = \\lambda_ {i} ^ {1 / 2 0 2 3} \\quad (i = 1, 2, \\dots , s).\\tag{①}\n$$\n\n①式是关于未知元 $a_1, a_2, \\cdots, a_s$ 的线性方程组，其系数行列式（是范德蒙行列式）不等于0，根据克莱姆法则，方程组有唯一的解。即满足条件①的多项式 $p(x)$ 是唯一存在的。由于 $p(\\Lambda) = \\overline{\\Lambda}$ ，所以\n\n$$\np (A) = p \\left(Q A Q ^ {T}\\right) = Q p (A) Q ^ {T} = Q \\bar {A} Q ^ {T} = B.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "(3) 设另存在实对称矩阵 C，使得 $C^{2023} = A$ ，并设 $C\\alpha = \\lambda\\alpha$ 。则 $C^{2023}\\alpha = \\lambda^{2023}\\alpha$ ，即 $A\\alpha = \\lambda^{2023}\\alpha$ 。这说明 C 的特征向量都是 A 的特征向量；同样，B 的特征向量也都是 A 的特征向量。由于 B, C 都是实对称矩阵，它们都有 n 个线性无关的特征向量，而这些特征向量也都是 A 的特征向量，故 B 与 C 有 n 个共同的线性无关的特征向量，从而存在 n 阶可逆矩阵 T 及对角矩阵 $\\Lambda_{1}, \\Lambda_{2}$ 使得\n\n$$\n\\boldsymbol {B} = \\boldsymbol {T} \\boldsymbol {\\Lambda} _ {1} \\boldsymbol {T} ^ {- 1}, \\boldsymbol {C} = \\boldsymbol {T} \\boldsymbol {\\Lambda} _ {2} \\boldsymbol {T} ^ {- 1},\\tag{②}\n$$\n\n由 $B^{2023} = A = C^{2023}$ ，可得 $\\Lambda_1^{2023} = \\Lambda_2^{2023}$ ．所以 $\\Lambda_{1} = \\Lambda_{2}$ ，进而 $B = C$ .唯一性得证.\n\n评注 (1) ②式也可先验证 $CB = BC$ ，再根据综合题9\\*第24题的结论来得到."
+      },
+      {
+        "id": "s5",
+        "text": "(2) 注意, 由 $B^{2023} = C^{2023}$ 不能直接得到 $B = C$ , 因为矩阵没有开方运算. 当 $B, C$ 是对角矩阵时, 开方运算是可行的 (对角元相等, 可同时开方)."
+      },
+      {
+        "id": "s6",
+        "text": "(3) 问题 (2) 中多项式 $p(x)$ 是由 $\\pmb{A}$ 的互异特征值所唯一确定的；只有当 $\\pmb{A}$ 与对角矩阵相似时，才能实现从 $\\pmb{A}$ 到 $\\pmb{B}$ 的转换，即使 $p(A) = B$ 。"
+      }
+    ],
+    "final_answer": "得证",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "相似对角化",
+      "实对称正交对角化",
+      "可交换矩阵"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何利用实对称矩阵正交对角化？",
+      "technique": "特征值计算",
+      "expected": "写出正交对角化并代入。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终对称矩阵相关结论是什么？",
+      "technique": "特征向量",
+      "expected": "得证"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例21*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 506,
+    "starred": true,
+    "syllabus_note": "实对称矩阵开方与多项式表示*",
+    "commentary": "评注 (1) ②式也可先验证 $CB = BC$ ，再根据综合题9\\*第24题的结论来得到.\n\n(2) 注意, 由 $B^{2023} = C^{2023}$ 不能直接得到 $B = C$ , 因为矩阵没有开方运算. 当 $B, C$ 是对角矩阵时, 开方运算是可行的 (对角元相等, 可同时开方).\n\n(3) 问题 (2) 中多项式 $p(x)$ 是由 $\\pmb{A}$ 的互异特征值所唯一确定的；只有当 $\\pmb{A}$ 与对角矩阵相似时，才能实现从 $\\pmb{A}$ 到 $\\pmb{B}$ 的转换，即使 $p(A) = B$ 。"
+  }
+}

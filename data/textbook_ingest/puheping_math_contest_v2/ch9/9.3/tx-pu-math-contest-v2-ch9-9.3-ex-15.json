@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-15",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.diag",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设矩阵 $A = \\begin{pmatrix} 3 & 2 & -2 \\\\ k & -1 & -k \\\\ 4 & 2 & -3 \\end{pmatrix}$ ，问 $k$ 为何值时，存在可逆矩阵 $\\pmb{P}$ ，使 $\\pmb{P}^{-1}\\pmb{A}\\pmb{P}$ 为对角矩阵，并求出 $\\pmb{P}$ 及相应的对角矩阵.",
+  "answer": "$\\pmb{\\alpha}_{3} = (1,0,1)^{\\mathrm{T}}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "相似对角化",
+    "线性相关/无关",
+    "矩阵秩"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $A$ 已具体给出，可算出其特征值. 因为 $A$ 与对角矩阵相似，所以当 $A$ 有重特征值时，该特征值的代数重数一定与其几何重数相等，由此可定出 $k$ 的值.\n\n$\\pmb{A}$ 的特征多项式为\n\n$$\n| \\lambda I - A | = \\left| \\begin{array}{c c c} \\lambda - 3 & - 2 & 2 \\\\ - k & \\lambda + 1 & k \\\\ - 4 & - 2 & \\lambda + 3 \\end{array} \\right| = (\\lambda + 1) ^ {2} (\\lambda - 1),\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "特征值 $\\lambda_{1} = \\lambda_{2} = -1$ ， $\\lambda_{3} = 1$\n\n$\\lambda_{1} = \\lambda_{2} = -1$ 是一个二重特征值， $A$ 与对角矩阵相似，则该特征值要对应两个线性无关的特征向量，所以 $\\operatorname{rank}(-I - A) = 3 - 2 = 1$ ，由于\n\n$$\n- \\boldsymbol {I} - \\boldsymbol {A} = \\left(\\begin{array}{c c c}- 4&- 2&2\\\\- k&0&k\\\\- 4&- 2&2\\end{array}\\right)\\rightarrow \\left(\\begin{array}{c c c}- 4&- 2&2\\\\- k&0&k\\\\0&0&0\\end{array}\\right),\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "所以 $k$ 必须为0.\n\n当 $k = 0$ 时， $-I - A\\to \\begin{pmatrix} 2 & 1 & -1\\\\ 0 & 0 & 0\\\\ 0 & 0 & 0 \\end{pmatrix}$ ，对应于 $\\lambda_1 = \\lambda_2 = -1$ 的两个线性无关的特征向量为 $\\pmb {\\alpha}_{1} = (-1,2,0)^{\\mathrm{T}}$ ， $\\pmb {\\alpha}_{2} = (1,0,2)^{\\mathrm{T}}$"
+      },
+      {
+        "id": "s4",
+        "text": "当 $\\lambda_3 = 1$ 时， $I - A\\to \\left( \\begin{array}{lll}1 & 0 & -1\\\\ 0 & 1 & 0\\\\ 0 & 0 & 0 \\end{array} \\right)$ ，对应的特征向量为 $\\pmb{\\alpha}_{3} = (1,0,1)^{\\mathrm{T}}$\n\n所以，当 $k = 0$ 时，存在可逆矩阵 $\\pmb {P} = (\\pmb{\\alpha}_1,\\pmb{\\alpha}_2,\\pmb{\\alpha}_3) = \\begin{pmatrix} - 1 & 1 & 1\\\\ 2 & 0 & 0\\\\ 0 & 2 & 1 \\end{pmatrix}$ ，使 $P^{-1}AP = \\left( \\begin{array}{ccc} - 1 & 0 & 0\\\\ 0 & -1 & 0\\\\ 0 & 0 & 1 \\end{array} \\right).$"
+      }
+    ],
+    "final_answer": "$\\pmb{\\alpha}_{3} = (1,0,1)^{\\mathrm{T}}$",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "相似对角化",
+      "线性相关/无关",
+      "矩阵秩"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对角化条件、相似变换还是重数关系？如何切入？",
+      "technique": "特征值计算",
+      "expected": "选定对角化或相似论证路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "对角化结论（可否对角化/P与对角阵）是什么？",
+      "technique": "特征向量",
+      "expected": "$\\pmb{\\alpha}_{3} = (1,0,1)^{\\mathrm{T}}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 501,
+    "syllabus_note": "含参对角化条件与P,Λ",
+    "commentary": "评注 （1）特征值的代数重数是指它作为特征多项式根的重数；几何重数是指它对应线性无关的特征向量的个数。两者的关系：特征值的几何重数不大于它的代数重数（见例 16）。\n\n(2) $n$ 阶矩阵 $\\pmb{A}$ 相似于对角矩阵的条件：\n\n充要条件： $A$ 有 $n$ 个线性无关的特征向量 $\\Leftrightarrow$ 每个特征值的代数重数都等于它的几何重数 $\\Leftrightarrow$ 对每个重特征值 $\\lambda_{i}$ ，都有 $\\operatorname{rank}(\\lambda_i I - A) = n - k_i$ （ $k_{i}$ 为 $\\lambda_{i}$ 的代数重数）。\n\n充分条件：A 的特征值都是单根."
+  }
+}

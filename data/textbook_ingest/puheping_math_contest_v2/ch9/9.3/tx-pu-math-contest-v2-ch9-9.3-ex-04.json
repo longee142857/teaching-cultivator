@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-04",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.props",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A$ 是三阶矩阵， $|A| = 12$ ，且满足 $2A^3 - A^2 - 13A = 6I$ ， $A_{ij}$ 是 $A$ 中元素 $a_{ij}$ 的代数余子式，求 $A_{11} + A_{22} + A_{33}$ .",
+  "answer": "$\\frac{|A|}{\\lambda_1} = -6$ （二重）， $\\frac{|A|}{\\lambda_2} = 4$ .所以",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "伴随矩阵",
+    "迹与特征值"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为 $A_{11} + A_{22} + A_{33}$ 是 $\\pmb{A}$ 伴随矩阵 $\\pmb{A}^*$ 的迹，所以只需求出 $\\pmb{A}^*$ 的特征值，问题很快就解决了. 解 由于 $2A^{3} - A^{2} - 13A = 6I$ ，所以 $\\pmb{A}$ 的特征值必满足方程\n\n$$\n2 \\lambda^ {3} - \\lambda^ {2} - 1 3 \\lambda = 6 \\Rightarrow (\\lambda + 2) (\\lambda - 3) (2 \\lambda + 1) = 0.\n$$\n\n解得\n\n$$\n\\lambda_ {1} = - 2, \\lambda_ {2} = 3, \\lambda_ {3} = - \\frac {1}{2}.\n$$\n\n由于 $|A| = \\lambda_1\\lambda_2\\lambda_3 = 12$ ，所以 $\\lambda_{1} = -2$ 是 $A$ 的二重特征值， $\\lambda_{2} = 3$ 是单特征值， $\\lambda_{3} = -\\frac{1}{2}$ 不是 $A$ 的特征值.则 $A^{*}$ 的特征值为 $\\frac{|A|}{\\lambda_1} = -6$ （二重）， $\\frac{|A|}{\\lambda_2} = 4$ .所以\n\n$$\nA _ {1 1} + A _ {2 2} + A _ {3 3} = \\operatorname{tr} (A ^ {*}) = - 6 - 6 + 4 = - 8.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "分析 因为 $A_{11} + A_{22} + A_{33}$ 是 $\\pmb{A}$ 伴随矩阵 $\\pmb{A}^*$ 的迹，所以只需求出 $\\pmb{A}^*$ 的特征值，问题很快就解决了. 解 由于 $2A^{3} - A^{2} - 13A = 6I$ ，所以 $\\pmb{A}$ 的特征值必满足方程\n\n$$\n2 \\lambda^ {3} - \\lambda^ {2} - 1 3 \\lambda = 6 \\Rightarrow (\\lambda + 2) (\\lambda - 3) (2 \\lambda + 1) = 0.\n$$\n\n解得\n\n$$\n\\lambda_ {1} = - 2, \\lambda_ {2} = 3, \\lambda_ {3} = - \\frac {1}{2}.\n$$\n\n由于 $|A| = \\lambda_1\\lambda_2\\lambda_3 = 12$ ，所以 $\\lambda_{1} = -2$ 是 $A$ 的二重特征值， $\\lambda_{2} = 3$ 是单特征值， $\\lambda_{3} = -\\frac{1}{2}$ 不是 $A$ 的特征值.则 $A^{*}$ 的特征值为 $\\frac{|A|}{\\lambda_1} = -6$ （二重）， $\\frac{|A|}{\\lambda_2} = 4$ .所以\n\n$$\nA _ {1 1} + A _ {2 2} + A _ {3 3} = \\operatorname{tr} (A ^ {*}) = - 6 - 6 + 4 = - 8.\n$$\n\n评注（1）若矩阵 $A$ 满足方程 $\\varphi(A) = 0$ （ $\\varphi$ 为多项式），则 $A$ 的特征值必是方程 $\\varphi(\\lambda) = 0$ 的根。反之却不一定成立。例如，单位矩阵满足方程 $I^2 - I = 0$ ，但方程 $\\lambda^2 - \\lambda = 0$ 的根 $\\lambda = 0$ 却不是 $I$ 的特征值。"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 若 n 阶可逆矩阵 A 的特征为 $\\lambda_{i}(i=1,2,\\cdots,n)$ ，则 $A^{-1}$ 的特征为 $\\lambda_{i}^{-1}$ ， $A^{*}$ 的特征为 $\\lambda_{i}^{-1}|A|$ 。"
+      }
+    ],
+    "final_answer": "$\\frac{|A|}{\\lambda_1} = -6$ （二重）， $\\frac{|A|}{\\lambda_2} = 4$ .所以",
+    "techniques_used": [
+      "特征值计算",
+      "伴随矩阵",
+      "迹与特征值"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "用特征值性质、特征多项式还是矩阵多项式关系？",
+      "technique": "特征值计算",
+      "expected": "建立特征值或特征多项式关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求特征值/参数/行列式结论是什么？",
+      "technique": "伴随矩阵",
+      "expected": "$\\frac{|A|}{\\lambda_1} = -6$ （二重）， $\\frac{|A|}{\\lambda_2} = 4$ .所以"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 495,
+    "syllabus_note": "矩阵多项式约束下代数余子式和",
+    "commentary": "评注（1）若矩阵 $A$ 满足方程 $\\varphi(A) = 0$ （ $\\varphi$ 为多项式），则 $A$ 的特征值必是方程 $\\varphi(\\lambda) = 0$ 的根。反之却不一定成立。例如，单位矩阵满足方程 $I^2 - I = 0$ ，但方程 $\\lambda^2 - \\lambda = 0$ 的根 $\\lambda = 0$ 却不是 $I$ 的特征值。\n\n(2) 若 n 阶可逆矩阵 A 的特征为 $\\lambda_{i}(i=1,2,\\cdots,n)$ ，则 $A^{-1}$ 的特征为 $\\lambda_{i}^{-1}$ ， $A^{*}$ 的特征为 $\\lambda_{i}^{-1}|A|$ 。"
+  }
+}

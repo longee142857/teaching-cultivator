@@ -1,0 +1,70 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-11",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.props",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A$ 是 $m$ 阶方阵， $B$ 是 $n$ 阶方阵， $f_B(\\lambda)$ 是 $B$ 的特征多项式。证明 $f_B(A)$ 可逆的充分必要条件是 $A$ 与 $B$ 没有相同的特征值。",
+  "answer": "$f_{B}(A)$ 可逆的充分必要条件是",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需将 $f_{B}(\\lambda)$ 用 $\\pmb{B}$ 的特征值表示出来，就可找到 $f_{B}(A)$ 与 $\\pmb{B}$ 的特征值的关系。 $f_{B}(A)$ 可逆 $\\Leftrightarrow |f_{B}(A)| \\neq 0$ 。计算 $|f_{B}(A)|$ 还会用到 $\\pmb{A}$ 的特征多项式与特征值。\n\n设 $\\lambda_{1}, \\lambda_{2}, \\cdots, \\lambda_{m}$ 为 A 的特征值， $\\mu_{1}, \\mu_{2}, \\cdots, \\mu_{n}$ 为 B 的特征值，则"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{l} f _ {A} (\\lambda) = | \\lambda I - A | = (\\lambda - \\lambda_ {1}) (\\lambda - \\lambda_ {2}) \\dots (\\lambda - \\lambda_ {m}), \\\\ f _ {B} (\\lambda) = | \\lambda I - B | = (\\lambda - \\mu_ {1}) (\\lambda - \\mu_ {2}) \\dots (\\lambda - \\mu_ {n}), \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "所以\n\n$$\nf _ {B} (A) = \\left(A - \\mu_ {1} I\\right) \\left(A - \\mu_ {2} I\\right) \\dots \\left(A - \\mu_ {n} I\\right).\n$$\n\n由于\n\n$$\n\\left| A - \\mu_ {i} I \\right| = (- 1) ^ {m} \\left| \\mu_ {i} I - A \\right| = (- 1) ^ {m} f _ {A} (\\mu_ {i}) = (- 1) ^ {m} \\left(\\mu_ {i} - \\lambda_ {1}\\right) \\dots \\left(\\mu_ {i} - \\lambda_ {m}\\right) = \\prod_ {j = 1} ^ {m} \\left(\\lambda_ {j} - \\mu_ {i}\\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "因此\n\n$$\n\\left| f _ {B} (A) \\right| = \\prod_ {i = 1} ^ {n} \\left| A - \\mu_ {i} I \\right| = \\prod_ {i = 1} ^ {n} \\prod_ {j = 1} ^ {m} \\left(\\lambda_ {j} - \\mu_ {i}\\right).\n$$\n\n所以 $f_{B}(A)$ 可逆的充分必要条件是\n\n$$\n\\left| f _ {B} (A) \\right| \\neq 0 \\Leftrightarrow \\lambda_ {j} \\neq \\mu_ {i} (i = 1, 2, \\dots , n; j = 1, 2, \\dots , m).\n$$"
+      }
+    ],
+    "final_answer": "$f_{B}(A)$ 可逆的充分必要条件是",
+    "techniques_used": [
+      "特征值计算",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "用特征值性质、特征多项式还是矩阵多项式关系？",
+      "technique": "特征值计算",
+      "expected": "建立特征值或特征多项式关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求特征值/参数/行列式结论是什么？",
+      "technique": "证明技巧",
+      "expected": "$f_{B}(A)$ 可逆的充分必要条件是"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例11",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 498,
+    "syllabus_note": "f_B(A)可逆与无公共特征值"
+  }
+}

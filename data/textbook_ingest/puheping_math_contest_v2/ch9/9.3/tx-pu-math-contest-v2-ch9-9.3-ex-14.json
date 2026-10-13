@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-14",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $n$ 阶矩阵 $\\pmb{A}$ 有 $n$ 个互异的特征值，证明 $AB = BA$ 的充分必要条件是 $\\pmb{A}$ 与 $\\pmb{B}$ 有完全相同的特征向量.",
+  "answer": "$$ \\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {1} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "相似对角化",
+    "可交换矩阵",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 例13已给出必要性的证明；对于充分性，由于 $\\pmb{A}$ 与 $\\pmb{B}$ 有完全相同的特征向量，因而存在可逆矩阵 $P$ 使 $P^{-1}AP$ 与 $P^{-1}BP$ 同为对角矩阵，而对角矩阵的乘积是可交换的，问题就解决了.\n\n必要性：例 13 已给出必要性的证明，下面给出更简洁的证明.\n\n设有 $A\\alpha = \\lambda\\alpha (\\alpha \\neq 0)$ ，下证 $\\alpha$ 也是 B 的特征向量.\n\n$A\\alpha=\\lambda\\alpha$ 左乘以 B，并利用 AB=BA，有"
+      },
+      {
+        "id": "s2",
+        "text": "$$\nB A \\alpha = A B \\alpha = \\lambda B \\alpha \\Rightarrow A (B \\alpha) = \\lambda (B \\alpha).\n$$\n\n若 $B\\alpha \\neq 0$ ，则 $B\\alpha$ 也是 $A$ 的特征值 $\\lambda$ 对应的特征向量。由于 $A$ 的特征值全是单根，对应的线性无关的特征向量只有一个，所以 $B\\alpha$ 与 $\\alpha$ 线性相关，存在数 $\\mu$ 使 $B\\alpha = \\mu\\alpha$ 。所以 $\\alpha$ 也是 $B$ 的特征向量；若 $B\\alpha = 0$ ，则有 $B\\alpha = 0\\alpha$ ， $\\alpha$ 也是 $B$ 的特征向量。"
+      },
+      {
+        "id": "s3",
+        "text": "同理 B 的特征向量也是 A 的特征向量，故 A 与 B 有完全相同的特征向量.\n\n充分性：因为 $A$ 有 $n$ 个互不相同的特征值，故 $A$ 与对角矩阵相似，即存在可逆矩阵 $\\pmb{P}$ 使\n\n$$\n\\pmb {P} ^ {- 1} \\pmb {A} \\pmb {P} = \\pmb {\\Lambda} _ {1} (\\pmb {\\Lambda} _ {1} \\text {为对角矩阵}).\n$$\n\n由于 $\\mathbf{A}$ 与 $\\pmb{B}$ 有相同的特征向量，故有相同 $P$ 使"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\pmb {P} ^ {- 1} \\pmb {B} \\pmb {P} = \\pmb {\\Lambda} _ {2} (\\pmb {\\Lambda} _ {2} \\text {为对角矩阵}).\n$$\n\n于是\n\n$$\n\\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {1} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {B} \\boldsymbol {A}.\n$$"
+      }
+    ],
+    "final_answer": "$$ \\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {1} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} = \\boldsymbol",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "相似对角化",
+      "可交换矩阵",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明题宜从特征值定义、无关性还是特殊结构入手？",
+      "technique": "特征值计算",
+      "expected": "选定证明路径并写出关键条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "特征向量",
+      "expected": "$$ \\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {P} \\Lambda_ {1} \\boldsymbol {P} ^ {- 1} \\boldsymbol {P} \\Lambda_ {2} \\boldsymbol {P} ^ {- 1} = \\boldsymbol {P} \\Lambda_ {1} \\Lambda_ {2} \\boldsymbol {"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 500,
+    "syllabus_note": "互异特征值下可交换与同特征向量",
+    "commentary": "评注 (1)\n\n例 14 可视为例 13 的推论.\n\n(2) 对于实对称矩阵有如下结论（综合题9\\*第24题）：设 $A, B$ 是同阶实对称矩阵，则 $AB = BA$ 的充分必要条件是存在正交矩阵 $T$ ，使 $T^{-1}AT$ 与 $T^{-1}BT$ 同为对角矩阵."
+  }
+}

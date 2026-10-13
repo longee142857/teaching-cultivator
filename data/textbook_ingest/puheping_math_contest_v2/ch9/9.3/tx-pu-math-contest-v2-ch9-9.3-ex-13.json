@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-13",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "若 n 阶方阵 A, B 满足 AB = BA，则 A 与 B 一定有公共的特征向量.",
+  "answer": "方程组②一定有非零解 $(c_{1}, c_{2}, \\cdots, c_{k})^{\\mathrm{T}} \\neq 0$ ，代入①式，所确定的向量 $\\eta$ 就是矩阵 A 和 B 公共的特征向量。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "可交换矩阵",
+    "证明技巧",
+    "线性相关/无关"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 矩阵的特征向量都归属于某个特征子空间, 因此只需要证明 A 的特征子空间中也有 B 的特征向量即可.\n\n任取 A 的一个特征值 $\\lambda$ ，考虑 $\\lambda$ 的特征子空间 $V_{\\lambda} = \\{\\xi \\mid A\\xi = \\lambda\\xi\\}$ ，设 $\\dim V_{\\lambda} = k$ ， $\\varepsilon_{1}, \\varepsilon_{2}, \\cdots, \\varepsilon_{k}$ 是 $V_{\\lambda}$ 的一组基，则 $A\\varepsilon_{i} = \\lambda\\varepsilon_{i} (i = 1, 2, \\cdots, k)$ .\n\n对任意一组不全为零的数 $c_{1},c_{2},\\cdots,c_{k}$ ，做向量\n\n$$\n\\eta = c _ {1} \\varepsilon_ {1} + c _ {2} \\varepsilon_ {2} + \\dots + c _ {k} \\varepsilon_ {k},\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "显然 $\\pmb{\\eta}$ 也是 $A$ 的特征向量.\n\n由于 $A(B\\varepsilon_{i})=B(A\\varepsilon_{i})=\\lambda(B\\varepsilon_{i})$ ，故 $B\\varepsilon_{i}\\in V_{\\lambda}(i=1,2,\\cdots,k)$ ，从而存在数 $l_{ij}(i,j=1,2,\\cdots,k)$ 使得\n\n$$\n\\boldsymbol {B} \\varepsilon_ {i} = l _ {1 i} \\varepsilon_ {1} + l _ {2 i} \\varepsilon_ {2} + \\dots + l _ {k i} \\varepsilon_ {k} (i = 1, 2, \\dots , k).\n$$\n\n则\n\n$$\n\\begin{array}{r l} \\boldsymbol {B} \\eta & = c _ {1} \\boldsymbol {B} \\varepsilon_ {1} + c _ {2} \\boldsymbol {B} \\varepsilon_ {2} + \\dots + c _ {k} \\boldsymbol {B} \\varepsilon_ {k} \\\\ & = c _ {1} (l _ {1 1} \\varepsilon_ {1} + l _ {2 1} \\varepsilon_ {2} + \\dots + l _ {k 1} \\varepsilon_ {k}) + \\dots + c _ {k} (l _ {1 k} \\varepsilon_ {1} + l _ {2 k} \\varepsilon_ {2} + \\dots + l _ {k k} \\varepsilon_ {k}) \\\\ & = (c _ {1} l _ {1 1} + c _ {2} l _ {1 2} + \\dots + c _ {k} l _ {1 k}) \\varepsilon_ {1} + \\dots + (c _ {1} l _ {k 1} + c _ {2} l _ {k 2} + \\dots + c _ {k} l _ {k k}) \\varepsilon_ {k}. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "若 $\\eta$ 也是 B 的特征向量，则有 $B\\eta = \\mu\\eta$ ，由 $\\varepsilon_{1}, \\varepsilon_{2}, \\cdots, \\varepsilon_{k}$ 线性无关，得\n\n$$\n\\left\\{ \\begin{array} {l}c _ {1} l _ {1 1} + c _ {2} l _ {1 2} + \\dots + c _ {k} l _ {1 k} = \\mu c _ {1}, \\\\ c _ {1} l _ {2 1} + c _ {2} l _ {2 2} + \\dots + c _ {k} l _ {2 k} = \\mu c _ {2}, \\\\ \\vdots \\\\ c _ {1} l _ {k 1} + c _ {2} l _ {k 2} + \\dots + c _ {k} l _ {k k} = \\mu c _ {k}. \\\\ \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "记 $L=\\begin{pmatrix}l_{11}&l_{12}&\\cdots&l_{1k}\\\\l_{21}&l_{22}&\\cdots&l_{2k}\\\\\\vdots&\\vdots&&\\vdots\\\\l_{k1}&l_{k2}&\\cdots&l_{kk}\\end{pmatrix}$ ，上式写为 $(\\mu I-L)\\begin{pmatrix}c_{1}\\\\c_{2}\\\\ \\vdots \\\\c_{k}\\end{pmatrix}=0$ .\n\n②\n\n这说明 $\\mu$ 是矩阵 L 的特征值， $(c_{1}, c_{2}, \\cdots, c_{k})^{\\mathrm{T}}$ 是对应的特征向量。由于矩阵的特征向量一定存在，即方程组②一定有非零解 $(c_{1}, c_{2}, \\cdots, c_{k})^{\\mathrm{T}} \\neq 0$ ，代入①式，所确定的向量 $\\eta$ 就是矩阵 A 和 B 公共的特征向量。"
+      }
+    ],
+    "final_answer": "方程组②一定有非零解 $(c_{1}, c_{2}, \\cdots, c_{k})^{\\mathrm{T}} \\neq 0$ ，代入①式，所确定的向量 $\\eta$ 就是矩阵 A 和 B 公共的特征向量。",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "可交换矩阵",
+      "证明技巧",
+      "线性相关/无关"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明题宜从特征值定义、无关性还是特殊结构入手？",
+      "technique": "特征值计算",
+      "expected": "选定证明路径并写出关键条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "特征向量",
+      "expected": "方程组②一定有非零解 $(c_{1}, c_{2}, \\cdots, c_{k})^{\\mathrm{T}} \\neq 0$ ，代入①式，所确定的向量 $\\eta$ 就是矩阵 A 和 B 公共的特征向量。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例13*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 499,
+    "starred": true,
+    "syllabus_note": "可交换矩阵公共特征向量*",
+    "commentary": "评注 根据该题的证明，可得到结论：若 $n$ 阶方阵 $A, B$ 满足 $AB = BA$ ，且 $A$ 有 $r (r \\leqslant n)$ 个互不相同的特征值，则 $A$ 与 $B$ 至少有 $r$ 个线性无关的公共特征向量。"
+  }
+}

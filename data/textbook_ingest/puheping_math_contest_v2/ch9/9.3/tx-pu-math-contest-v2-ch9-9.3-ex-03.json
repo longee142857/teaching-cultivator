@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-03",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.def",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A = \\begin{pmatrix} 1 + b_1^2 & b_1b_2 & b_1b_3 \\\\ b_2b_1 & 1 + b_2^2 & b_2b_3 \\\\ b_3b_1 & b_3b_2 & 1 + b_3^2 \\end{pmatrix}$ ，常数 $b_i (i = 1,2,3)$ 满足 $b_1^2 + b_2^2 + b_3^2 = 1$ 。求 $A$ 的特征值与特\n\n征向量.",
+  "answer": "到 $\\lambda_{1}$ 对应的线性无关的特征向量 $\\pmb{\\alpha}_{1} = (-b_{2}, b_{1}, 0)^{\\mathrm{T}}$ , $\\pmb{\\alpha}_{2} = (-b_{3}, 0, b_{1})^{\\mathrm{T}}$ . 所以 $A$ 对应于 $\\lambda_{1}' = 1$ 的全部特征向量为 $k_{1}\\pmb{\\alpha}_{1} + k_{2}\\pmb{\\alpha}_{2}$ ( $k_{1}, k_{2}$ 不全为零).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "线性相关/无关",
+    "矩阵秩"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 直接计算 $|\\lambda I - A|$ 较困难，记 $\\alpha = (b_1, b_2, b_3)^{\\mathrm{T}}$ ，则 $A = I + \\alpha \\alpha^{\\mathrm{T}}$ ，由于 $\\alpha \\alpha^{\\mathrm{T}}$ 的特征值与特征向量容易计算，所以问题就容易解决了。\n\n记 $B = \\alpha \\alpha^{T}$ ，则 $A = I + B$ 。设 $B\\beta = \\lambda\\beta (\\beta \\neq 0)$ ，则 $A\\beta = (I + B)\\beta = (1 + \\lambda)\\beta$ ，即 $1 + \\lambda$ 是 A 的特征值， $\\beta$ 是对应的特征向量。"
+      },
+      {
+        "id": "s2",
+        "text": "下求 $\\pmb{B}$ 的特征值. 设\n\n$$\n\\mid \\lambda I - B \\mid = \\lambda^ {3} - a _ {1} \\lambda^ {2} + a _ {2} \\lambda - a _ {3},\\tag{①}\n$$\n\n因为 $\\operatorname{rank}(\\pmb{B}) = 1$ ， $\\operatorname{tr} \\pmb{B} = b_1^2 + b_2^2 + b_3^2 = 1$ ，则 $a_2 = a_3 = 0, a_1 = 1.$ ①式为\n\n$$\n\\mid \\lambda I - B \\mid = \\lambda^ {3} - \\lambda^ {2} = \\lambda^ {2} (\\lambda - 1).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "$\\pmb{B}$ 的特征值为 $\\lambda_1 = \\lambda_2 = 0$ ， $\\lambda_{3} = 1$ .所以 $\\pmb{A}$ 的特征值为 $\\lambda_1^{\\prime} = \\lambda_2^{\\prime} = 1$ ， $\\lambda_3^{\\prime} = 2$\n\n$$\n\\lambda_ {1} = 0,\n\n\\lambda_ {1} \\boldsymbol {I} - \\boldsymbol {B} = - \\boldsymbol {B} \\rightarrow \\left(\\begin{array}{c c c}b _ {1}&b _ {2}&b _ {3}\\\\0&0&0\\\\0&0&0\\end{array}\\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "得到 $\\lambda_{1}$ 对应的线性无关的特征向量 $\\pmb{\\alpha}_{1} = (-b_{2}, b_{1}, 0)^{\\mathrm{T}}$ , $\\pmb{\\alpha}_{2} = (-b_{3}, 0, b_{1})^{\\mathrm{T}}$ . 所以 $A$ 对应于 $\\lambda_{1}' = 1$ 的全部特征向量为 $k_{1}\\pmb{\\alpha}_{1} + k_{2}\\pmb{\\alpha}_{2}$ ( $k_{1}, k_{2}$ 不全为零).\n\n对 $\\lambda_{3} = 1$ ，由于\n\n$$\n\\boldsymbol {B} \\boldsymbol {\\alpha} = \\boldsymbol {\\alpha} \\boldsymbol {\\alpha} ^ {\\mathrm{T}} \\boldsymbol {\\alpha} = \\boldsymbol {\\alpha} (\\boldsymbol {\\alpha} ^ {\\mathrm{T}} \\boldsymbol {\\alpha}) = \\boldsymbol {\\alpha},\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\boldsymbol{\\alpha}=(b_{1},b_{2},b_{3})^{\\mathrm{T}}$ 是对应的特征向量. 故 A 对应于 $\\lambda_{3}^{\\prime}=2$ 的全部特征向量为 $k\\alpha(k\\neq0)$ ."
+      }
+    ],
+    "final_answer": "到 $\\lambda_{1}$ 对应的线性无关的特征向量 $\\pmb{\\alpha}_{1} = (-b_{2}, b_{1}, 0)^{\\mathrm{T}}$ , $\\pmb{\\alpha}_{2} = (-b_{3}, 0, b_{1})^{\\mathrm{T}}$ . 所以 $A$ 对应于 $\\lambda_{1}' = 1$ 的全部特征向量为 $k_{1}\\pmb{\\alpha}_{1} + k_{2}\\pmb{\\alpha}_{2}$ ( $k_{1}, k_{2}$ 不全为零).",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "线性相关/无关",
+      "矩阵秩"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何计算特征值与特征向量？",
+      "technique": "特征值计算",
+      "expected": "建立特征方程并求解特征向量。"
+    },
+    {
+      "id": "c2",
+      "prompt": "特征值与特征向量结果是什么？",
+      "technique": "特征向量",
+      "expected": "到 $\\lambda_{1}$ 对应的线性无关的特征向量 $\\pmb{\\alpha}_{1} = (-b_{2}, b_{1}, 0)^{\\mathrm{T}}$ , $\\pmb{\\alpha}_{2} = (-b_{3}, 0, b_{1})^{\\mathrm{T}}$ . 所以 $A$ 对应于 $\\lambda_{1}' = 1$ 的全部特征向量为 $k_{1}\\pmb{\\alpha}_{1}"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 494,
+    "syllabus_note": "秩一更新矩阵特征值与特征向量",
+    "commentary": "评注 （1）注意矩阵特征多项式中各项系数的意义：\n\n$$\n\\mid \\lambda I - A \\mid = \\lambda^ {n} - a _ {1} \\lambda^ {n - 1} + a _ {2} \\lambda^ {n - 2} - \\dots + (- 1) ^ {n - 1} a _ {n - 1} \\lambda + (- 1) ^ {n} a _ {n},\n$$\n\n其中 $a_{k}$ 是 $A$ 的所有 $k$ 阶主子式之和（主子式：行标与列标相同的子行列式）.\n\n(2) 若 $\\operatorname{rank}(A) = 1$ ，则 $A = \\alpha \\beta^{\\mathrm{T}}(\\alpha, \\beta \\in \\mathbb{R}^{n})$ ， $\\lambda = 0$ 是 $A$ 的 $n - 1$ 重特征值，其非零特征值为 $\\beta^{\\mathrm{T}}\\alpha = \\operatorname{tr} A$ ， $\\alpha$ 是对应的特征向量.\n\n(3) 该题中 $B = \\alpha \\alpha^{T}$ 的特征值也可用下面方法求得:\n\n$\\alpha \\alpha^{\\mathrm{T}}$ 与 $\\alpha^{\\mathrm{T}}\\alpha$ 有相同的非零特征值（见9.3例12），而 $\\alpha^{\\mathrm{T}}\\alpha = b_1^2 +b_2^2 +b_3^2$ 的特征值就是它自身，所以 $\\alpha \\alpha^{\\mathrm{T}}$ 的特征值为 $b_{1}^{2} + b_{2}^{2} + b_{3}^{2},0,0.$"
+  }
+}
