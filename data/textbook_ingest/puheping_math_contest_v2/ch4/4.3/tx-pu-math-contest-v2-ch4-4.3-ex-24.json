@@ -1,0 +1,90 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-24",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.dirgrad",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设一礼堂的顶部是一个半椭球面，其方程为 $z = 4\\sqrt{1 - \\frac{x^2}{16} - \\frac{y^2}{36}}$ ，求下雨时过房顶上点 $P(1,3,\\sqrt{11})$ 处的雨水流下的路线方程（不计摩擦）.",
+  "answer": "$y = Cx^{\\frac{4}{9}}$ 。以它为准线，母线平行于 $z$ 轴的柱面方程为 $y = Cx^{\\frac{4}{9}}$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "切平面/法向量",
+    "方向导数与梯度",
+    "偏导数与全微分",
+    "极值判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 雨水在椭球面上总是沿着 $z$ 值下降最快的方向下流，即沿着 $z$ 的梯 $\\operatorname{grad} z = \\left( \\frac{\\partial z}{\\partial x}, \\frac{\\partial z}{\\partial y} \\right)$ 的反方向向下流，因而雨水从椭球面上流下的路线在坐标面 $xOy$ 上的投影曲线上任意一点处的切线应与 $\\operatorname{grad} z$ 平行。由此可得到所求问题的解。"
+      },
+      {
+        "id": "s2",
+        "text": "由椭球方程 $z = 4\\sqrt{1 - \\frac{x^2}{16} - \\frac{y^2}{36}}$ ，得"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\operatorname{grad} z = \\left(\\frac {\\partial z}{\\partial x}, \\frac {\\partial z}{\\partial y}\\right) = \\left(- \\frac {x}{4 \\sqrt {1 - \\frac {x ^ {2}}{1 6} - \\frac {y ^ {2}}{3 6}}}, - \\frac {y}{9 \\sqrt {1 - \\frac {x ^ {2}}{1 6} - \\frac {y ^ {2}}{3 6}}}\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "设雨水从椭球面上流下的路线在坐标面 $xOy$ 上的投影曲线为 $C: f(x, y) = 0$ ，由于雨水总是沿着 $z$ 下降最快的方向向下流，即沿着 $\\operatorname{grad} z$ 的反方向向下流，因而 $C$ 上任一点处的切向量 $(\\mathrm{d}x, \\mathrm{d}y)$ 应与 $\\operatorname{grad} z$ 平行，由此得到"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\frac {\\mathrm{d} y}{\\mathrm{d} x} = \\frac {4 y}{9 x},\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "解之得 $y = Cx^{\\frac{4}{9}}$ 。以它为准线，母线平行于 $z$ 轴的柱面方程为 $y = Cx^{\\frac{4}{9}}$ 。"
+      },
+      {
+        "id": "s7",
+        "text": "令 $x = 1, y = 3$ ，知 $C = 3$ ，故过房顶上点 $P(1,3,\\sqrt{11})$ 的雨水流下的路线方程为"
+      },
+      {
+        "id": "s8",
+        "text": "$$\n\\left\\{ \\begin{array}{l} z = 4 \\sqrt {1 - \\frac {x ^ {2}}{1 6} - \\frac {y ^ {2}}{3 6}}, \\\\ y = 3 x ^ {\\frac {4}{9}}. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "$y = Cx^{\\frac{4}{9}}$ 。以它为准线，母线平行于 $z$ 轴的柱面方程为 $y = Cx^{\\frac{4}{9}}$ 。",
+    "techniques_used": [
+      "切平面/法向量",
+      "方向导数与梯度",
+      "偏导数与全微分",
+      "极值判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用梯度/法向量/方向导数处理本题几何关系？",
+      "technique": "切平面/法向量",
+      "expected": "计算 grad 或法向量，建立切平面/流线/夹角条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终几何结论是什么？",
+      "technique": "方向导数与梯度",
+      "expected": "$y = Cx^{\\frac{4}{9}}$ 。以它为准线，母线平行于 $z$ 轴的柱面方程为 $y = Cx^{\\frac{4}{9}}$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例24",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 262,
+    "syllabus_note": "半椭球面雨水沿负梯度流线"
+  }
+}

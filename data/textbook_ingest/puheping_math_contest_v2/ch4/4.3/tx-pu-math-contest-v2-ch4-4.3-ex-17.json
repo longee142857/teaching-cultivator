@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-17",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.dirgrad",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设有曲面 $S: \\mathrm{e}^{2x + y - z} = f(x - 2y + z)$ ， $f$ 可微，证明：\n\n(1) S 上任意一点处的切平面都平行于某一确定的直线;\n\n(2) 如果 $f(0)=1$ ，则 S 是过坐标原点的柱面，并写出它的一条母线与准线方程.",
+  "answer": "曲面经过坐标原点，直线 $l: \\frac{x}{1} = \\frac{y}{3} = \\frac{z}{5}$ 就是 $S$ 的一条母线。过原点，以 $n = (1,3,5)$ 为法向量的平面为 $\\pi: x + 3y + 5z = 0$ ，则 $\\pi$ 与 $S$ 的交线就是 $S$ 的一条准线，其方程为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "切平面/法向量",
+    "偏导数与全微分",
+    "证明技巧",
+    "极值判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）只需证明曲面上任意一点处的法向量都与一固定方向（直线的方向向量）垂直.\n\n（2）在（1）中找到的固定方向就是柱面的母线方向，只需验证过曲面上任意一点以固定方向为方向向量的直线都在曲面上，则 $S$ 就是一柱面.\n\n（1）令 $F(x,y,z)=\\mathrm{e}^{2x+y-z}-f(x-2y+z)$ ，则\n\n$$\nF _ {x} = 2 \\mathrm{e} ^ {2 x + y - z} - f ^ {\\prime} (x - 2 y + z), F _ {y} = \\mathrm{e} ^ {2 x + y - z} + 2 f ^ {\\prime} (x - 2 y + z),\n\nF _ {z} (x, y, z) = - \\mathrm{e} ^ {2 x + y - z} - f ^ {\\prime} (x - 2 y + z).\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "曲面上点 $(x, y, z)$ 处的法向量为\n\n$$\n\\begin{array}{l} \\boldsymbol {n} = (F _ {x}, F _ {y}, F _ {z}) \\\\ \\quad = \\left(2 \\mathrm{e} ^ {2 x + y - z} - f ^ {\\prime} (x - 2 y + z), \\mathrm{e} ^ {2 x + y - z} + 2 f ^ {\\prime} (x - 2 y + z), - \\mathrm{e} ^ {2 x + y - z} - f ^ {\\prime} (x - 2 y + z)\\right). \\end{array}\n$$\n\n取直线的方向向量为 $s = (1,3,5)$ ，由于"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\boldsymbol {s} \\cdot \\boldsymbol {n} = 2 \\mathrm{e} ^ {2 x + y - z} - f ^ {\\prime} (x - 2 y + z) + 3 \\mathrm{e} ^ {2 x + y - z} + 6 f ^ {\\prime} (x - 2 y + z) - 5 \\mathrm{e} ^ {2 x + y - z} - 5 f ^ {\\prime} (x - 2 y + z) = 0,\n$$\n\n所以曲面上任意一点处的切平面都平行于直线 $\\frac{x}{1} = \\frac{y}{3} = \\frac{z}{5}$ .\n\n（2）设 $(x_0, y_0, z_0)$ 是曲面 $S$ 上的任意一点，过该点作直线 $l: \\begin{cases} x = x_0 + t \\\\ y = y_0 + 3t \\\\ z = z_0 + 5t \\end{cases}$ ，将 $l$ 的方程分别代入曲面方程的左、右两边，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\text {左边} = \\mathrm{e} ^ {2 (x _ {0} + t) + (y _ {0} + 3 t) - (z _ {0} + 5 t)} = \\mathrm{e} ^ {2 x _ {0} + y _ {0} - z _ {0}},\n\n\\text {右边} = f \\big ((x _ {0} + t) - 2 (y _ {0} + 3 t) + (z _ {0} + 5 t) \\big) = f (x _ {0} - 2 y _ {0} + z _ {0}).\n$$\n\n因为 $(x_0, y_0, z_0)$ 是曲面 $S$ 上的点，所以\n\n$$\ne ^ {2 x _ {0} + y _ {0} - z _ {0}} = f (x _ {0} - 2 y _ {0} + z _ {0}).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "即曲线 $l$ 上的点都满足曲面 $S$ 的方程，这说明 $l$ 在曲面 $S$ 上，故 $S$ 是一柱面.\n\n由于 $f(0) = 1$ ，故曲面经过坐标原点，直线 $l: \\frac{x}{1} = \\frac{y}{3} = \\frac{z}{5}$ 就是 $S$ 的一条母线。过原点，以 $n = (1,3,5)$ 为法向量的平面为 $\\pi: x + 3y + 5z = 0$ ，则 $\\pi$ 与 $S$ 的交线就是 $S$ 的一条准线，其方程为\n\n$$\n\\left\\{ \\begin{array}{l} \\mathrm{e} ^ {2 x + y - z} = f (x - 2 y + z), \\\\ x + 3 y + 5 z = 0. \\end{array} \\right.\n$$"
+      }
+    ],
+    "final_answer": "曲面经过坐标原点，直线 $l: \\frac{x}{1} = \\frac{y}{3} = \\frac{z}{5}$ 就是 $S$ 的一条母线。过原点，以 $n = (1,3,5)$ 为法向量的平面为 $\\pi: x + 3y + 5z = 0$ ，则 $\\pi$ 与 $S$ 的交线就是 $S$ 的一条准线，其方程为",
+    "techniques_used": [
+      "切平面/法向量",
+      "偏导数与全微分",
+      "证明技巧",
+      "极值判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何用梯度/法向量/方向导数处理本题几何关系？",
+      "technique": "切平面/法向量",
+      "expected": "计算 grad 或法向量，建立切平面/流线/夹角条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终几何结论是什么？",
+      "technique": "偏导数与全微分",
+      "expected": "曲面经过坐标原点，直线 $l: \\frac{x}{1} = \\frac{y}{3} = \\frac{z}{5}$ 就是 $S$ 的一条母线。过原点，以 $n = (1,3,5)$ 为法向量的平面为 $\\pi: x + 3y + 5z = 0$ ，则 $\\pi$ 与 $S$ 的交线就是 $S$ 的一条准线，其方程为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例17",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 258,
+    "syllabus_note": "切平面平行定直线/柱面",
+    "commentary": "评注 一般而言，由方程 $F(a_{1}x + b_{1}y + c_{1}z, a_{2}x + b_{2}y + c_{2}z) = 0$ 所确定的曲面 $S$ 都是柱面。其原因如下：\n\n设 $P_{0}(x_{0},y_{0},z_{0})$ 是曲面 $S$ 上的任一点，记\n\n$$\n\\boldsymbol {n} _ {i} = \\left(a _ {i}, b _ {i}, c _ {i}\\right) (i = 1, 2)\n$$\n\n若 $n_1 // n_2$ ，取 $\\tau = (l, m, n) \\perp n_1$ ，则过 $P_0$ 点以 $\\tau$ 为方向向量的直线 $L$ 一定在曲面 $S$ 上；\n\n若 $n_1 \\times n_2$ ，取 $\\tau = n_1 \\times n_2$ ，则过 $P_0$ 点以 $\\tau$ 为方向向量的直线 $L$ 一定在曲面 $S$ 上.\n\n故无论何种情况，S都是柱面."
+  }
+}

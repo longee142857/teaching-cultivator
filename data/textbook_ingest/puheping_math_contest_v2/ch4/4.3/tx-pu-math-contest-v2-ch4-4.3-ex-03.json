@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-03",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "求函数 $f(x,y)=3(x-2y)^{2}+x^{3}-8y^{3}$ 的极值，并证明 $f(0,0)=0$ 不是 $f(x,y)$ 的极值.",
+  "answer": "，在 $P_{2}(0,0)$ 的任意小领域 $\\stackrel{\\circ}{U}_{\\delta}$ 内，既存在点 $(x_{n},y_{n})$ ，使得 $f(x_{n},y_{n}) > 0$ ，也存在点 $(x_{k},y_{k})$ ，使得 $f(x_{k},y_{k}) < 0$ ，故 $f(0,0) = 0$ 不是极值.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值判定",
+    "偏导数与全微分",
+    "证明技巧",
+    "定义法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 先求驻点，再判定驻点是否为极值点."
+      },
+      {
+        "id": "s2",
+        "text": "由 $\\left\\{ \\begin{array}{l} f_x = 6(x - 2y) + 3x^2 = 0 \\\\ f_y = -12(x - 2y) - 24y^2 = 0 \\end{array} \\right.$ 解得驻点 $P_{1}(-4,2)$ 和 $P_{2}(0,0)$ . 因为\n\n$$\nA = \\frac {\\partial^ {2} f}{\\partial x ^ {2}} = 6 x + 6, B = \\frac {\\partial^ {2} f}{\\partial x \\partial y} = - 1 2, C = \\frac {\\partial^ {2} f}{\\partial y ^ {2}} = - 4 8 y + 2 4,\n$$\n\n在 $P_{1}$ 处， $A = -18, B = -12, C = -72, AC - B^{2} = 1152 > 0$ ，且 $A < 0$ ，所以 $f(-4,2) = 64$ 为极大值；在 $P_{2}$ 处， $A = 6, B = -12, C = 24, AC - B^{2} = 0$ ，不能判定 $f(0,0)$ 是否为极值。\n\n下面用极值的定义来判断. 任取 $(0,0)$ 的去心领域 $\\stackrel{\\circ}{U}_{\\delta} = \\{(x,y) | 0 < \\sqrt{x^2 + y^2} < \\delta\\}$ .\n\n（1）在 $y = 0$ 上，取 $(x_{n},y_{n}) = \\left(\\frac{1}{n},0\\right)(n\\in \\mathbb{N}^{+})$ ，则当 $n$ 充分大时，显然有 $(x_{n},y_{n})\\in \\stackrel {o}{U}_{\\delta}$ ，且\n\n$$\nf \\left(x _ {n}, y _ {n}\\right) = f \\left(\\frac {1}{n}, 0\\right) = \\frac {1}{n ^ {2}} \\left(3 + \\frac {1}{n}\\right) > 0;\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 在 $x = ky (0 < k < 2)$ 处，有 $f(ky, y) = (k^3 - 8)y^2\\left(y - \\frac{3(2 - k)}{4 + 2k + k^2}\\right)$ ，取 $y = \\frac{4(2 - k)}{4 + 2k + k^2} > 0$ ，有 $f(ky, y) = (k^3 - 8)y^2\\frac{2 - k}{4 + 2k + k^2} < 0$ ，即取 $(x_k, y_k) = \\left(\\frac{4k(2 - k)}{4 + 2k + k^2}, \\frac{4(2 - k)}{4 + 2k + k^2}\\right)$ 时，有\n\n$$\nf \\left(x _ {k}, y _ {k}\\right) = f \\left(\\frac {4 k (2 - k)}{4 + 2 k + k ^ {2}}, \\frac {4 (2 - k)}{4 + 2 k + k ^ {2}}\\right) = \\left(k ^ {3} - 8\\right) \\frac {1 6 (2 - k) ^ {3}}{\\left(4 + 2 k + k ^ {2}\\right) ^ {3}} = - \\frac {1 6 (2 - k) ^ {4}}{\\left(4 + 2 k + k ^ {2}\\right) ^ {2}} <   0.\n$$\n\n又因为\n\n$$\n\\lim _ {k \\rightarrow 2 ^ {-}} \\left(x _ {k}, y _ {k}\\right) = \\lim _ {k \\rightarrow 2 ^ {-}} \\left(\\frac {4 k (2 - k)}{4 + 2 k + k ^ {2}}, \\frac {4 (2 - k)}{4 + 2 k + k ^ {2}}\\right) = (0, 0),\n$$\n\n所以当 $k$ 小于2且充分接近2时， $(x_{k},y_{k})\\in \\stackrel {\\circ}{U}_{\\delta}$\n\n由上述（1）和（2）可得，在 $P_{2}(0,0)$ 的任意小领域 $\\stackrel{\\circ}{U}_{\\delta}$ 内，既存在点 $(x_{n},y_{n})$ ，使得 $f(x_{n},y_{n}) > 0$ ，也存在点 $(x_{k},y_{k})$ ，使得 $f(x_{k},y_{k}) < 0$ ，故 $f(0,0) = 0$ 不是极值."
+      }
+    ],
+    "final_answer": "，在 $P_{2}(0,0)$ 的任意小领域 $\\stackrel{\\circ}{U}_{\\delta}$ 内，既存在点 $(x_{n},y_{n})$ ，使得 $f(x_{n},y_{n}) > 0$ ，也存在点 $(x_{k},y_{k})$ ，使得 $f(x_{k},y_{k}) < 0$ ，故 $f(0,0) = 0$ 不是极值.",
+    "techniques_used": [
+      "极值判定",
+      "偏导数与全微分",
+      "证明技巧",
+      "定义法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "偏导数与全微分",
+      "expected": "，在 $P_{2}(0,0)$ 的任意小领域 $\\stackrel{\\circ}{U}_{\\delta}$ 内，既存在点 $(x_{n},y_{n})$ ，使得 $f(x_{n},y_{n}) > 0$ ，也存在点 $(x_{k},y_{k})$ ，使得 $f(x_{k},y_{k}) < 0$ ，故 $f(0,0) = 0$ 不是极值."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例3*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 247,
+    "starred": true,
+    "syllabus_note": "驻点极值判定+非极值点*"
+  }
+}

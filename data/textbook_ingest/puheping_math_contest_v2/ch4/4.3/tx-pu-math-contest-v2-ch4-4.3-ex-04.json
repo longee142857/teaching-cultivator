@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch4-4.3-ex-04",
+  "subject": "math",
+  "l2": "多元函数微分学",
+  "l3_id": "math.calc.multi.ext",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $f(x, y)$ 有二阶连续偏导数，且 $f(x, y) = 1 - x - y + o(\\sqrt{(x - 1)^2 + y^2})$ ，若 $g(x, y) = f(e^{xy}, x^2 + y^2)$ ，则证明 $g(x, y)$ 在 $(0, 0)$ 取得极值，判断此极值是极大值还是极小值，并求出此极值.",
+  "answer": "知，在点 $(0,0)$ 附近总有 $g(x,y) \\leqslant 0$ ，故 $g(0,0) = 0$ 是函数的极大值.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极值判定",
+    "不等式估计",
+    "偏导数与全微分",
+    "证明技巧",
+    "定义法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 （1）只需证明(0,0)是函数 $g(x,y)$ 的驻点，且在该点处有 $AC-B^{2}>0$ 。为此需计算 $g(x,y)$ 在点(0,0)处的一阶与二阶偏导数，因而需先求得 f 在点(1,0)处的一阶偏导数值。\n\n(2) 根据函数 $g(x,y)$ 局部表达式看能否由极值的定义做出判断."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 由于 $f(x,y) = 1 - x - y + o(\\sqrt{(x - 1)^2 + y^2})$ ，由全微分的定义，知\n\n$$\nf (1, 0) = 0, f _ {1} (1, 0) = f _ {2} (1, 0) = - 1\n$$\n\n则\n\n$$\n\\begin{array}{c c} g _ {x} = f _ {1} \\cdot \\mathrm{e} ^ {x y} y + f _ {2} \\cdot 2 x, & g _ {y} = f _ {1} \\cdot \\mathrm{e} ^ {x y} x + f _ {2} \\cdot 2 y, \\\\ g _ {x} (0, 0) = 0, & g _ {y} (0, 0) = 0. \\end{array}\n$$\n\n又\n\n$$\ng _ {x x} = (f _ {1 1} \\cdot \\mathsf {e} ^ {x y} y + f _ {1 2} \\cdot 2 x) \\mathsf {e} ^ {x y} y + f _ {1} \\cdot \\mathsf {e} ^ {x y} y ^ {2} + (f _ {2 1} \\cdot \\mathsf {e} ^ {x y} y + f _ {2 2} \\cdot 2 x) 2 x + 2 f _ {2},\n\ng _ {x y} = \\left(f _ {1 1} \\cdot e ^ {x y} x + f _ {1 2} \\cdot 2 y\\right) e ^ {x y} y + f _ {1} \\cdot \\left(e ^ {x y} x y + e ^ {x y}\\right) + \\left(f _ {2 1} \\cdot e ^ {x y} x + f _ {2 2} \\cdot 2 y\\right) 2 x,\n\ng _ {y y} = \\left(f _ {1 1} \\cdot e ^ {x y} x + f _ {1 2} \\cdot 2 y\\right) e ^ {x y} x + f _ {1} \\cdot e ^ {x y} x ^ {2} + \\left(f _ {2 1} \\cdot e ^ {x y} x + f _ {2 2} \\cdot 2 y\\right) 2 y + 2 f _ {2},\n\nA = g _ {x x} (0, 0) = 2 f _ {2} (1, 0) = - 2, \\quad B = g _ {x y} (0, 0) = f _ {1} (1, 0) = - 1, \\quad C = g _ {y y} (0, 0) = 2 f _ {2} (1, 0) = - 2.\n$$\n\n因此 $AC - B^2 = 3 > 0$ ，且 $A < 0$ ，故 $g(0,0) = f(1,0) = 0$ 是极大值."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 由于\n\n$$\ng (x, y) = f \\left(\\mathrm{e} ^ {x y}, x ^ {2} + y ^ {2}\\right) = 1 - \\mathrm{e} ^ {x y} - \\left(x ^ {2} + y ^ {2}\\right) + o \\left(\\sqrt {\\left(\\mathrm{e} ^ {x y} - 1\\right) ^ {2} + \\left(x ^ {2} + y ^ {2}\\right) ^ {2}}\\right),\n$$\n\n显然 $g(0,0) = 0$ ；在点 $(0,0)$ 附近， $g(x,y)$ 的符号由 $h(x,y) = 1 - \\mathrm{e}^{xy} - (x^2 + y^2)$ 所确定.\n\n当 $xy = 0$ ，且 $x, y$ 不同时为0时，有\n\n$$\nh (x, y) = - \\left(x ^ {2} + y ^ {2}\\right) <   0 \\Rightarrow g (x, y) <   0;\n$$\n\n当 $xy \\neq 0$ 时，由于 $\\mathsf{e}^{xy} > 1 + xy, x^2 + y^2 \\geqslant 2|xy|$ ，所以\n\n$$\nh (x, y) <   - x y - 2 \\mid x y \\mid <   0 \\Rightarrow g (x, y) <   0.\n$$\n\n综上知，在点 $(0,0)$ 附近总有 $g(x,y) \\leqslant 0$ ，故 $g(0,0) = 0$ 是函数的极大值."
+      }
+    ],
+    "final_answer": "知，在点 $(0,0)$ 附近总有 $g(x,y) \\leqslant 0$ ，故 $g(0,0) = 0$ 是函数的极大值.",
+    "techniques_used": [
+      "极值判定",
+      "不等式估计",
+      "偏导数与全微分",
+      "证明技巧",
+      "定义法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何求驻点并用二阶/定义判定极值或最值？",
+      "technique": "极值判定",
+      "expected": "解一阶偏导=0，用 Hesse 或定义/边界比较判定。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终极值/最值/不等式结论是什么？",
+      "technique": "不等式估计",
+      "expected": "知，在点 $(0,0)$ 附近总有 $g(x,y) \\leqslant 0$ ，故 $g(0,0) = 0$ 是函数的极大值."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第4章 多元函数微分学",
+    "section": "4.3",
+    "example_id": "例4",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "多元函数微分学的应用",
+    "page": 248,
+    "syllabus_note": "复合函数 Hessian 判定极值",
+    "commentary": "评注 知道函数在一点附近的局部表达式，通常可从定义出发去判断函数是否在该点取得极值."
+  }
+}
