@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-06",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.gauss.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "记第二型曲面积分 $I_{t} = \\iint_{\\Sigma_{t}} P \\mathrm{d}y \\mathrm{d}z + Q \\mathrm{d}z \\mathrm{d}x + R \\mathrm{d}x \\mathrm{d}y$ ，其中 $P = Q = R = f((x^2 + y^2)z)$ ，有向曲面 $\\Sigma_{t}$ 是圆柱体 $x^{2} + y^{2} \\leqslant t^{2}$ ， $0 \\leqslant z \\leqslant 1$ 的表面外侧.\n\n(1) 若函数 $f(x)$ 连续可导，求极限 $\\lim_{t\\to0^{+}}\\frac{I_{t}}{t^{4}}$ ;\n\n(2) 若 $f(x)$ 仅在 x=0 可导，在其余点连续，求（1）中的极限.",
+  "answer": "中含有未知函数，则积分宜选用高斯公式、合一投影法或化为第一型曲面积分来计算，这样做有可能在合并计算中将含有未知函数的项消掉。否则就要充分利用积分的对称性，看含有未知函数的积分项是否为零。当积分曲面是母线平行于坐标轴的柱面或平面时宜选用分面投影法。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "高斯公式",
+    "投影法",
+    "对称性",
+    "极限/洛必达",
+    "化为第一型"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于积分式中的函数没有具体给出，所以不可能先算出积分再求极限。较好的办法是将积分化简成含有未知函数的定积分，求极限时可用洛必达法则。曲面积分可考虑用高斯公式或合一投影法、分面投影法。选取哪种方法要根据曲面积分的特点与所给条件来定，计算中要尽量利用积分的对称性来简化计算。本题（1）适宜选用高斯公式，（2）适宜选用分面投影法，因为积分曲面是柱面与平面。\n\n解（1）记 $\\Sigma_{t}$ 围成的区域为 $\\Omega$ ，由高斯公式\n\n$$\nI _ {t} = \\iiint_ {\\Omega} \\left(\\frac {\\partial P}{\\partial x} + \\frac {\\partial Q}{\\partial y} + \\frac {\\partial R}{\\partial z}\\right) d x d y d z = \\iiint_ {\\Omega} (2 x z + 2 y z + x ^ {2} + y ^ {2}) f ^ {\\prime} ((x ^ {2} + y ^ {2}) z) d x d y d z,\n$$\n\n由对称性 $\\iiint_{\\Omega}(2xz + 2yz)f^{\\prime}((x^{2} + y^{2})z)\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z = 0$ ，从而\n\n$$\n\\begin{array}{r l} I _ {t} & = \\iiint_ {V} (x ^ {2} + y ^ {2}) f ^ {\\prime} ((x ^ {2} + y ^ {2}) z) \\mathrm{d} x \\mathrm{d} y \\mathrm{d} z = \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} \\mathrm{d} \\rho \\right] \\mathrm{d} z \\\\ & = 2 \\pi \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} \\mathrm{d} \\rho \\right] \\mathrm{d} z. \\end{array}\n$$\n\n所以\n\n$$\n\\begin{array}{r l}\\lim _ {t \\rightarrow 0 ^ {+}} \\frac {I _ {t}}{t ^ {4}}&= \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {2 \\pi \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} d \\rho \\right] d z}{t ^ {4}} = \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {2 \\pi \\int_ {0} ^ {1} f ^ {\\prime} (t ^ {2} z) t ^ {3} d z}{4 t ^ {3}}\\\\&= \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {\\pi}{2} \\int_ {0} ^ {1} f ^ {\\prime} (t ^ {2} z) d z = \\frac {\\pi}{2} f ^ {\\prime} (0).\\"
+      },
+      {
+        "id": "s2",
+        "text": "分析 由于积分式中的函数没有具体给出，所以不可能先算出积分再求极限。较好的办法是将积分化简成含有未知函数的定积分，求极限时可用洛必达法则。曲面积分可考虑用高斯公式或合一投影法、分面投影法。选取哪种方法要根据曲面积分的特点与所给条件来定，计算中要尽量利用积分的对称性来简化计算。本题（1）适宜选用高斯公式，（2）适宜选用分面投影法，因为积分曲面是柱面与平面。\n\n解（1）记 $\\Sigma_{t}$ 围成的区域为 $\\Omega$ ，由高斯公式\n\n$$\nI _ {t} = \\iiint_ {\\Omega} \\left(\\frac {\\partial P}{\\partial x} + \\frac {\\partial Q}{\\partial y} + \\frac {\\partial R}{\\partial z}\\right) d x d y d z = \\iiint_ {\\Omega} (2 x z + 2 y z + x ^ {2} + y ^ {2}) f ^ {\\prime} ((x ^ {2} + y ^ {2}) z) d x d y d z,\n$$\n\n由对称性 $\\iiint_{\\Omega}(2xz + 2yz)f^{\\prime}((x^{2} + y^{2})z)\\mathrm{d}x\\mathrm{d}y\\mathrm{d}z = 0$ ，从而\n\n$$\n\\begin{array}{r l} I _ {t} & = \\iiint_ {V} (x ^ {2} + y ^ {2}) f ^ {\\prime} ((x ^ {2} + y ^ {2}) z) \\mathrm{d} x \\mathrm{d} y \\mathrm{d} z = \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} \\mathrm{d} \\rho \\right] \\mathrm{d} z \\\\ & = 2 \\pi \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} \\mathrm{d} \\rho \\right] \\mathrm{d} z. \\end{array}\n$$\n\n所以\n\n$$\n\\begin{array}{r l}\\lim _ {t \\rightarrow 0 ^ {+}} \\frac {I _ {t}}{t ^ {4}}&= \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {2 \\pi \\int_ {0} ^ {1} \\left[ \\int_ {0} ^ {t} f ^ {\\prime} (\\rho^ {2} z) \\rho^ {3} d \\rho \\right] d z}{t ^ {4}} = \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {2 \\pi \\int_ {0} ^ {1} f ^ {\\prime} (t ^ {2} z) t ^ {3} d z}{4 t ^ {3}}\\\\&= \\lim _ {t \\rightarrow 0 ^ {+}} \\frac {\\pi}{2} \\int_ {0} ^ {1} f ^ {\\prime} (t ^ {2} z) d z = \\frac {\\pi}{2} f ^ {\\prime} (0).\\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 若 $f(x)$ 仅在 x=0 处可导，在其余点连续，则不能用高斯公式，此时可分片计算曲面积分.\n\n把 $\\Sigma_{t}$ 分为下底面、上底面和侧面，分别记为 $\\Sigma_{t}^{b}$ 、 $\\Sigma_{t}^{u}$ 和 $\\Sigma_{t}^{s}$ 。由于下底、上底在 $yOz$ 面上的投影面积为零，故\n\n$$\n\\iint_ {\\Sigma_ {i} ^ {b}} P \\mathrm{d} y \\mathrm{d} z = \\iint_ {\\Sigma_ {i} ^ {a}} P \\mathrm{d} y \\mathrm{d} z = 0.\n$$\n\n而函数 $P$ 是关于变量 $x$ 的偶函数， $\\Sigma_{t}^{s}$ 关于平面 $x = 0$ 对称，故 $\\iint_{\\Sigma_{t}^{s}} P \\, \\mathrm{d}y \\, \\mathrm{d}z = 0$ ，从而 $\\iint_{\\Sigma_{t}} P \\, \\mathrm{d}y \\, \\mathrm{d}z = 0.$ 类似地， $\\iint_{\\Sigma_{t}} Q \\, \\mathrm{d}z \\, \\mathrm{d}x = 0$ ：\n\n由于侧面在 $xOy$ 面上的投影面积为零， $\\iint_{\\Sigma_t^s} R \\, \\mathrm{d}x \\, \\mathrm{d}y = 0$ 。故 $\\iint_{\\Sigma_t} R \\, \\mathrm{d}x \\, \\mathrm{d}y$ 等于在 $\\Sigma_t^b$ 和 $\\Sigma_t^u$ 上的积分之和，即有\n\n$$\n\\begin{array}{r l} {I _ {t}} & {= \\left(\\iint_ {\\Sigma_ {t} ^ {b}} + \\iint_ {\\Sigma_ {t} ^ {a}}\\right) f ((x ^ {2} + y ^ {2}) z)   \\mathrm{d} x   \\mathrm{d} y = - \\iint_ {D _ {b}} f (0)   \\mathrm{d} \\sigma + \\iint_ {D _ {a}} f (x ^ {2} + y ^ {2})   \\mathrm{d} \\sigma} \\\\ & {\\qquad = - \\pi f (0) t ^ {2} + 2 \\pi \\int_ {0} ^ {t} f (\\rho^ {2}) \\rho   \\mathrm{d} \\rho \\quad (D _ {b} \\text {与} D _ {a} \\text {是对应曲面在} x O y \\text {面的投影区域}).} \\end{array}\n$$\n\n所以\n\n$$\n\\begin{array}{r l} \\lim _ {t \\to 0 ^ {+}} \\frac {I _ {t}}{t ^ {4}} & = \\lim _ {t \\to 0 ^ {+}} \\frac {- \\pi f (0) t ^ {2} + 2 \\pi \\int_ {0} ^ {t} f (\\rho^ {2}) \\rho d \\rho}{t ^ {4}} \\\\ & = \\lim _ {t \\to 0 ^ {+}} \\frac {- 2 \\pi f (0) t + 2 \\pi f (t ^ {2}) t}{4 t ^ {3}} = \\frac {\\pi}{2} \\lim _ {t \\to 0 ^ {+}} \\frac {f (t ^ {2}) - f (0)}{t ^ {2}} = \\frac {\\pi}{2} f ^ {\\prime} (0). \\end{array}\n$$\n\n评注 若曲面积分中含有未知函数，则积分宜选用高斯公式、合一投影法或化为第一型曲面积分来计算，这样做有可能在合并计算中将含有未知函数的项消掉。否则就要充分利用积分的对称性，看含有未知函数的积分项是否为零。当积分曲面是母线平行于坐标轴的柱面或平面时宜选用分面投影法。"
+      }
+    ],
+    "final_answer": "中含有未知函数，则积分宜选用高斯公式、合一投影法或化为第一型曲面积分来计算，这样做有可能在合并计算中将含有未知函数的项消掉。否则就要充分利用积分的对称性，看含有未知函数的积分项是否为零。当积分曲面是母线平行于坐标轴的柱面或平面时宜选用分面投影法。",
+    "techniques_used": [
+      "高斯公式",
+      "投影法",
+      "对称性",
+      "极限/洛必达",
+      "化为第一型"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用高斯公式？是否需要补面？散度如何计算？",
+      "technique": "高斯公式",
+      "expected": "写出 div F，必要时补面构成闭曲面后化为三重积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分（或证明结论）是什么？",
+      "technique": "投影法",
+      "expected": "中含有未知函数，则积分宜选用高斯公式、合一投影法或化为第一型曲面积分来计算，这样做有可能在合并计算中将含有未知函数的项消掉。否则就要充分利用积分的对称性，看含有未知函数的积分项是否为零。当积分曲面是母线平行于坐标轴的柱面或平面时宜选用分面投影法。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 340,
+    "syllabus_note": "柱体表面含参·高斯与投影极限",
+    "commentary": "评注 若曲面积分中含有未知函数，则积分宜选用高斯公式、合一投影法或化为第一型曲面积分来计算，这样做有可能在合并计算中将含有未知函数的项消掉。否则就要充分利用积分的对称性，看含有未知函数的积分项是否为零。当积分曲面是母线平行于坐标轴的柱面或平面时宜选用分面投影法。"
+  }
+}

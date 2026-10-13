@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-07",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.second",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设曲面 $\\Sigma$ 是由空间曲线 $C: x = t, y = 2t, z = t^2 (0 \\leqslant t \\leqslant 1)$ 绕 $z$ 轴旋转一周生成的曲面，其法向量与 $z$ 轴正向成钝角，已知连续函数 $f(x, y, z)$ 满足\n\n$$\nf (x, y, z) = (x + y + z) ^ {2} + \\iint_ {\\Sigma} f (x, y, z) d y d z + x ^ {2} d x d y,\n$$\n\n求函数 $f(x,y,z)$ 的表达式.",
+  "answer": "，得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "补面",
+    "参数化/旋转曲面",
+    "高斯公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 关键是确定曲面积分 $\\iint_{\\Sigma} f(x, y, z) \\, \\mathrm{d}y \\, \\mathrm{d}z$ 。因此，需要先求出 $\\Sigma$ 的方程，再对所给等式两边在 $\\Sigma$ 上做曲面积分。\n\n曲线 $C$ 绕 $z$ 轴旋转一周生成的曲面方程为\n\n$$\n\\left\\{ \\begin{array}{l} x ^ {2} + y ^ {2} = 5 t ^ {2}, \\\\ z = t ^ {2}. \\end{array} \\right.\n$$\n\n即 $\\Sigma : x^{2} + y^{2} = 5z (0 \\leqslant z \\leqslant 1)$ ，于是"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\begin{array}{l} \\iint_ {\\Sigma} x ^ {2} \\mathrm{d} x \\mathrm{d} y = - \\iint_ {D _ {x y}} x ^ {2} \\mathrm{d} x \\mathrm{d} y \\quad (D _ {x y}: x ^ {2} + y ^ {2} \\leqslant 5) \\\\ = - \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\sqrt {5}} \\rho^ {2} \\cos^ {2} \\varphi \\cdot \\rho \\mathrm{d} \\rho = - \\frac {2 5}{4} \\pi . \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "记 $A = \\iint_{\\Sigma} f(x, y, z) \\, \\mathrm{d}y \\, \\mathrm{d}z$ ，则题设等式为\n\n$$\nf (x, y, z) = (x + y + z) ^ {2} + A - \\frac {2 5}{4} \\pi .\n$$\n\n两边在 $\\pmb{\\Sigma}$ 上做曲面积分，得\n\n$$\n\\iint_ {\\Sigma} f (x, y, z) \\mathrm{d} y \\mathrm{d} z = \\iint_ {\\Sigma} \\left[ (x + y + z) ^ {2} + A - \\frac {2 5}{4} \\pi \\right] \\mathrm{d} y \\mathrm{d} z,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "即\n\n$$\nA = \\iint_ {\\Sigma} \\left[ (x + y + z) ^ {2} + A - \\frac {2 5}{4} \\pi \\right] d y d z;\n$$\n\n添加平面 $S: z = 0 (x^2 + y^2 \\leqslant 5)$ ，取上侧，记 $\\Sigma + S$ 围成的区域为 $\\Omega$ ，则\n\n$$\n\\begin{array}{r l} A & = \\left(\\iint_ {\\Sigma + S} - \\iint_ {S}\\right) \\left[ (x + y + z) ^ {2} + A - \\frac {2 5}{4} \\pi \\right] d y d z \\\\ & = 2 \\iiint_ {\\Omega} (x + y + z) d x d y d z - 0 = 2 \\iiint_ {\\Omega} z d x d y d z \\\\ & = 2 \\int_ {0} ^ {2 \\pi} d \\varphi \\int_ {0} ^ {\\sqrt {5}} \\rho d \\rho \\int_ {\\frac {1}{2} \\rho^ {2}} ^ {1} z d z = \\frac {1 0}{3} \\pi . \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以 $f(x,y,z) = (x + y + z)^2 -\\frac{35}{12}\\pi .$"
+      }
+    ],
+    "final_answer": "，得",
+    "techniques_used": [
+      "补面",
+      "参数化/旋转曲面",
+      "高斯公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "宜用合一投影、分面投影还是参数化？法向符号如何取？",
+      "technique": "参数化/旋转曲面",
+      "expected": "选定投影/参数化路线，写出含法向符号的二重积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分结果是什么？",
+      "technique": "参数化/旋转曲面",
+      "expected": "，得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例7",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 341,
+    "syllabus_note": "旋转曲面积分方程求 f",
+    "commentary": "评注 该题的本质是通过积分来求解函数 $f$ 中的待定常数 $\\iint_{\\Sigma} f \\, \\mathrm{d}y \\, \\mathrm{d}z$ ，类似的例子前面已出现多次（见2.1节例2，3.2节例12，5.1节例1等）."
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch6-6.2-ex-10",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.gauss.formula",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明物体在水中所受的浮力等于物体排开水的重力.",
+  "answer": "得证",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "物理应用",
+    "证明技巧",
+    "高斯公式"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 物体在水中所受的浮力是物体表面受到水的压力的和，所以只需证明物体表面所受水的压力的和等于物体排开水的重力即可。水压力是矢量，求和时要沿不同坐标轴方向进行，即求各分力的和。\n\n在水平面上建立 $xOy$ 坐标面，垂直向下为 $z$ 轴，如图6.11所示，设物体 $\\Omega$ 的表面 $\\Sigma$ 是一个光滑的闭曲面，其方程为 $f(x,y,z) = 0$ .\n\n在曲面 $\\Sigma$ 上任取一包含点 $P(x,y,z)$ 的面积元素 dS， $\\Sigma$ 在点 P 处的单位外法向量为 $e_{n}$ ，由于在点 P 处的水压强为 $\\rho gz$ ，所以作用在 dS 上的压力元素为 dF = $\\rho gz \\, dS$ ，由于压力是一个向量，所以"
+      },
+      {
+        "id": "s2",
+        "text": "图6.11\n\n$$\n\\mathrm{d} F = - e _ {n} \\mathrm{d} F = - \\rho g z e _ {n} \\mathrm{d} S = - \\rho g z \\mathrm{d} S.\n$$\n\n$\\pmb{F}$ 在 $\\pmb{x}$ 轴方向的分力为\n\n$$\n\\begin{array}{l} F _ {x} = \\oiint_ {\\Sigma} \\boldsymbol {i} \\cdot \\mathrm{d} \\boldsymbol {F} = - \\oiint_ {\\Sigma} \\rho g z (1, 0, 0) \\cdot (\\mathrm{d} y \\mathrm{d} z, \\mathrm{d} z \\mathrm{d} x, \\mathrm{d} x \\mathrm{d} y) = - \\oiint_ {\\Sigma} \\rho g z \\mathrm{d} y \\mathrm{d} z \\\\ = - \\iiint_ {Q} \\frac {\\partial (\\rho g z)}{\\partial x} \\mathrm{d} x \\mathrm{d} y \\mathrm{d} z = 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "类似地，F 在 y 轴方向的分力也为零，在 z 轴方向的分力为\n\n$$\n\\begin{array}{l} F _ {z} = \\oiint_ {\\Sigma} \\boldsymbol {k} \\cdot \\mathrm{d} \\boldsymbol {F} = - \\oiint_ {\\Sigma} \\rho g z (0, 0, 1) \\cdot (\\mathrm{d} y \\mathrm{d} z, \\mathrm{d} z \\mathrm{d} x, \\mathrm{d} x \\mathrm{d} y) \\\\ = - \\oiint_ {\\Sigma} \\rho g z \\mathrm{d} x \\mathrm{d} y = - \\iiint_ {\\Omega} \\frac {\\partial (\\rho g z)}{\\partial z} \\mathrm{d} x \\mathrm{d} y \\mathrm{d} z = - \\rho g V. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "其中 $V$ 是 $\\Omega$ 的体积. 所以 $F = -\\rho g V k$ ，这就是物体排开水的重力，得证."
+      }
+    ],
+    "final_answer": "得证",
+    "techniques_used": [
+      "物理应用",
+      "证明技巧",
+      "高斯公式"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "能否直接用高斯公式？是否需要补面？散度如何计算？",
+      "technique": "物理应用",
+      "expected": "写出 div F，必要时补面构成闭曲面后化为三重积分。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第二型曲面积分（或证明结论）是什么？",
+      "technique": "证明技巧",
+      "expected": "得证"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第6章 多元向量值函数积分学",
+    "section": "6.2",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "对坐标的曲面积分",
+    "page": 344,
+    "syllabus_note": "浮力等于排开水重力"
+  }
+}
