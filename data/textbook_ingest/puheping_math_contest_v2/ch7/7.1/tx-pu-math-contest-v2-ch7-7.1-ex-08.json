@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch7-7.1-ex-08",
+  "subject": "math",
+  "l2": "常微分方程",
+  "l3_id": "math.calc.ode.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求微分方程 $y' = \\frac{\\cos y}{\\cos y \\sin 2y - x \\sin y}$ 的通解.",
+  "answer": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "初值问题",
+    "分离变量"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若把 $x$ 作为自变量，则这不属于我们熟悉的基本方程类型。由于方程中的 $x$ 是一次的，若把 $y$ 作为自变量， $x$ 作为未知函数，则它就是一阶线性微分方程。"
+      },
+      {
+        "id": "s2",
+        "text": "$\\frac{\\mathrm{d}x}{\\mathrm{d}y} = \\frac{\\cos y\\sin 2y - x\\sin y}{\\cos y} = \\sin 2y - x\\tan y,$ 方程为"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\frac {\\mathrm{d} x}{\\mathrm{d} y} + (\\tan y) \\cdot x = \\sin 2 y,\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "其通解为"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nx = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).\n$$"
+      }
+    ],
+    "final_answer": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y).",
+    "techniques_used": [
+      "初值问题",
+      "分离变量"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程属于可分离、齐次、全微分还是需变量代换？关键化简步骤是什么？",
+      "technique": "分离变量",
+      "expected": "判定类型后分离变量/齐次代换/求积分因子或建立方程。"
+    },
+    {
+      "id": "c2",
+      "prompt": "通解/所求函数或证明结论是什么？",
+      "technique": "分离变量",
+      "expected": "x = \\mathrm{e} ^ {\\ln \\cos y} \\left(\\int \\sin 2 y \\cdot \\mathrm{e} ^ {- \\ln \\cos y} \\mathrm{d} y + C\\right) = \\cos y (C - 2 \\cos y)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第7章 常微分方程",
+    "section": "7.1",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "一阶微分方程",
+    "page": 352,
+    "syllabus_note": "可分离/代换求通解",
+    "commentary": "评注 一阶微分方程中 $x, y$ 的地位是对等的，有时将 $x$ 视为 $y$ 的函数，方程可变为已知的类型."
+  }
+}
