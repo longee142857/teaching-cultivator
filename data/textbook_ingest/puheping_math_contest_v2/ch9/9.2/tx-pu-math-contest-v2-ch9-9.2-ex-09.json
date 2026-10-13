@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-09",
+  "subject": "math",
+  "l2": "向量与线性相关性",
+  "l3_id": "math.linalg.vec.maxindep",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A$ 是 $n$ 阶实对称矩阵，且 $\\operatorname{rank}(A) = r$ 。证明：\n\n(1) A 有 r 阶主子式（行号与列号相同的子式）不为零；\n\n(2) A 的 r 阶不为零的主子式的符号均相同.",
+  "answer": "$A\\left(\\begin{array}{l}i_{1},i_{2},\\cdots,i_{r}\\\\ i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)$ 与 $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)$ 同号.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极大无关组",
+    "向量组秩",
+    "证明技巧",
+    "线性相关/无关"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 （1）设 A 不为 0 的 r 阶子式的行号为 $i_{1}, i_{2}, \\cdots, i_{r}$ ，列号为 $j_{1}, j_{2}, \\cdots, j_{r}$ 。则这 r 个列向量是矩阵 A 列向量组的极大无关组。由 A 的对称性，列号为 $i_{1}, i_{2}, \\cdots, i_{r}$ 的向量组也是 A 列向量组的极大无关组，从而这两个向量组等价。由此就很容易得到这个 r 阶子式与对应主子式的关系。\n\n（2）与（1）的推理相同，两个非零主子式的列向量组等价，从而两个主子式的关系也就确定了."
+      },
+      {
+        "id": "s2",
+        "text": "（1）记 A 中由 $i_{1}, i_{2}, \\cdots, i_{r}$ 行与 $j_{1}, j_{2}, \\cdots, j_{r}$ 列交叉点元素组成的 r 阶子式为 $A\\left(\\begin{array}{c}i_{1}, i_{2}, \\cdots, i_{r}\\\\ j_{1}, j_{2}, \\cdots, j_{r}\\end{array}\\right)$ .\n由于 $\\operatorname{rank}(A)=r$ ，则存在 A 的一个 r 阶子式 $A\\left(\\begin{array}{c}i_{1},i_{2},\\cdots,i_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)\\neq0$ .\n\n由 A 对称知，又有 $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)\\neq0$ 。记 A 的第 i 个列向量为 $\\alpha_{i}(i=1,2,\\cdots,n)$ ，则 $\\alpha_{j_{1}},\\alpha_{j_{2}},\\cdots,\\alpha_{j_{r}}$ 与 $\\alpha_{i_{1}},\\alpha_{i_{2}},\\cdots,\\alpha_{i_{r}}$ 都是 A 的列向量组的极大无关组，从而是等价的，即存在 r 阶可逆矩阵 C 使得\n\n$$\n\\left(\\alpha_ {j _ {1}}, \\alpha_ {j _ {2}}, \\dots , \\alpha_ {j _ {r}}\\right) = \\left(\\alpha_ {i _ {1}}, \\alpha_ {i _ {2}}, \\dots , \\alpha_ {i _ {r}}\\right) C.\n$$\n\n等式左端矩阵的任意 $r$ 阶子式都是 $\\pmb{A}$ 的 $r$ 阶子式，因此有\n\n$$\n\\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {j _ {1}, j _ {2}, \\dots , j _ {r}} = \\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {i _ {1}, i _ {2}, \\dots , i _ {r}} | \\boldsymbol {C} | \\neq 0,\n$$\n\n即 A 有 r 阶主子式不为零."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 设 $A\\left(\\begin{array}{l}i_{1},i_{2},\\cdots,i_{r}\\\\ i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)\\neq0$ ， $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)\\neq0$ 是 A 的两个非零 r 阶主子式。据（1）中讨论知，存在 r 阶可逆矩阵 C 使得\n\n$$\n\\left(\\alpha_ {j _ {1}}, \\alpha_ {j _ {2}}, \\dots , \\alpha_ {j _ {r}}\\right) = \\left(\\alpha_ {i _ {1}}, \\alpha_ {i _ {2}}, \\dots , \\alpha_ {i _ {r}}\\right) C.\n$$\n\n等式左端矩阵的任意 $r$ 阶子式都是 $\\pmb{A}$ 的 $r$ 阶子式，因此有\n\n$$\n\\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {j _ {1}, j _ {2}, \\dots , j _ {r}} = \\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {i _ {1}, i _ {2}, \\dots , i _ {r}} | \\boldsymbol {C} |,\n\n\\boldsymbol {A} \\binom{i _ {1}, i _ {2}, \\dots , i _ {r}}{j _ {1}, j _ {2}, \\dots , j _ {r}} = \\boldsymbol {A} \\binom{i _ {1}, i _ {2}, \\dots , i _ {r}}{i _ {1}, i _ {2}, \\dots , i _ {r}} | \\boldsymbol {C} |.\n$$\n\n由 $\\pmb{A}$ 对称知\n\n$$\nA \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {i _ {1}, i _ {2}, \\dots , i _ {r}} = A \\binom {i _ {1}, i _ {2}, \\dots , i _ {r}} {j _ {1}, j _ {2}, \\dots , j _ {r}},\n$$\n\n所以\n\n$$\n\\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {j _ {1}, j _ {2}, \\dots , j _ {r}} = \\boldsymbol {A} \\binom {j _ {1}, j _ {2}, \\dots , j _ {r}} {i _ {1}, i _ {2}, \\dots , i _ {r}} | \\boldsymbol {C} | = \\boldsymbol {A} \\binom {i _ {1}, i _ {2}, \\dots , i _ {r}} {j _ {1}, j _ {2}, \\dots , j _ {r}} | \\boldsymbol {C} | = \\boldsymbol {A} \\binom {i _ {1}, i _ {2}, \\dots , i _ {r}} {i _ {1}, i _ {2}, \\dots , i _ {r}} | \\boldsymbol {C} | ^ {2}.\n$$\n\n由于 $|C|^{2}>0$ ，所以 $A\\left(\\begin{array}{l}i_{1},i_{2},\\cdots,i_{r}\\\\ i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)$ 与 $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)$ 同号."
+      }
+    ],
+    "final_answer": "$A\\left(\\begin{array}{l}i_{1},i_{2},\\cdots,i_{r}\\\\ i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)$ 与 $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)$ 同号.",
+    "techniques_used": [
+      "极大无关组",
+      "向量组秩",
+      "证明技巧",
+      "线性相关/无关"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "向量组问题宜用线性表示、秩、无关判定还是基/正交？",
+      "technique": "极大无关组",
+      "expected": "选定向量组方法并建立关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终向量组结论是什么？",
+      "technique": "向量组秩",
+      "expected": "$A\\left(\\begin{array}{l}i_{1},i_{2},\\cdots,i_{r}\\\\ i_{1},i_{2},\\cdots,i_{r}\\end{array}\\right)$ 与 $A\\left(\\begin{array}{l}j_{1},j_{2},\\cdots,j_{r}\\\\ j_{1},j_{2},\\cdots,j_{r}\\end{array}\\right)$ 同号."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 482,
+    "syllabus_note": "实对称矩阵主子式与极大无关组",
+    "commentary": "评注 通过该题可再次体会例8“评注（1）”的意义."
+  }
+}

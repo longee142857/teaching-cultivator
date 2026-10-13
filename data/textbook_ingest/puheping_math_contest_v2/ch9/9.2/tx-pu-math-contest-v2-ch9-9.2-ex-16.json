@@ -1,0 +1,84 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-16",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.fund",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A=(a_{ij})_{n\\times n}$ ，且 $\\sum_{j=1}^{n}a_{ij}=0(i=1,2,\\cdots,n)$ 。证明 A 的第 1 行元素的代数余子式全相等。",
+  "answer": "$A_{11}=A_{12}=\\cdots=A_{1n}=0$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "向量组秩",
+    "解的判定",
+    "证明技巧",
+    "线性相关/无关",
+    "非齐次通解"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由 $\\sum_{j=1}^{n} a_{ij} = 0 (i = 1,2,\\cdots,n)$ 易知 $\\operatorname{rank}(A) < n$ ，且 $\\pmb{\\xi} = (1,1,\\cdots,1)^{\\mathrm{T}}$ 是齐次方程组 $AX = 0$ 的解。若 $\\operatorname{rank}(A) < n-1$ ，则结论自然成立；若 $\\operatorname{rank}(A) = n-1$ ，只需证明 $A$ 的第 1 行元素的代数余子式做成的向量 $(A_{11}, A_{12}, \\cdots, A_{1n})^{\\mathrm{T}}$ 也是 $AX = 0$ 的解。"
+      },
+      {
+        "id": "s2",
+        "text": "由 $\\sum_{j=1}^{n} a_{ij} = 0 (i = 1, 2, \\cdots, n)$ 知 $|A| = 0$ ，且 $AX = 0$ 有解 $\\xi = (1, 1, \\cdots, 1)^{\\mathrm{T}}$ ."
+      },
+      {
+        "id": "s3",
+        "text": "又 $AA^{\\bullet}=|A|I=0$ ，所以 $A^{\\bullet}$ 的第 1 列 $(A_{11},A_{12},\\cdots,A_{1n})^{\\top}$ 是 AX=0 的解向量."
+      },
+      {
+        "id": "s4",
+        "text": "若存在 $A_{1j} \\neq 0$ ，则 $\\operatorname{rank}(A) = n - 1$ ， $(A_{11}, A_{12}, \\cdots, A_{1n})^{\\mathrm{T}}$ 是 AX = 0 的非零解，AX = 0 的通解是 $k(1, 1, \\cdots, 1)^{\\mathrm{T}}$ ，故有 $A_{11} = A_{12} = \\cdots = A_{1n}$ ."
+      },
+      {
+        "id": "s5",
+        "text": "若 $A_{1j}=0(j=1,2,\\cdots,n)$ ，则 A 的第 1 行的代数余子式全为零，即 $A_{11}=A_{12}=\\cdots=A_{1n}=0$ 。"
+      },
+      {
+        "id": "s6",
+        "text": "无论何种情况，都有 A 的第 1 行元素的代数余子式全相等."
+      }
+    ],
+    "final_answer": "$A_{11}=A_{12}=\\cdots=A_{1n}=0$ 。",
+    "techniques_used": [
+      "向量组秩",
+      "解的判定",
+      "证明技巧",
+      "线性相关/无关",
+      "非齐次通解"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "解的判定",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "解的判定",
+      "expected": "$A_{11}=A_{12}=\\cdots=A_{1n}=0$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 488,
+    "syllabus_note": "齐次解推代数余子式相等"
+  }
+}

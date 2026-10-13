@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-14",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.param",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设矩阵 $A = \\begin{pmatrix} 2 & 2 & a \\\\ 2 & 5 & -4 \\\\ -2 & -4 & 5 \\end{pmatrix}$ 有一个二重特征值，记 $\\lambda_{1}$ 是 $A$ 的最小特征值， $\\boldsymbol{\\beta} = (t, 1, -1)^{\\mathrm{T}}$ 。确定 $a$ 的值，并求解线性方程组 $(\\lambda_{1} I - A) X = \\boldsymbol{\\beta}$ 。",
+  "answer": "$a = -2$ 或 $a = \\frac{65}{8}$",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "向量组秩",
+    "基础解系",
+    "非齐次通解",
+    "含参方程组",
+    "解的判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 需求出 A 的特征值，才能确定 $\\lambda_{1}$ 与 a 的值；再求解线性方程组.\n\n$$\n\\begin{array}{r l} & {\\left| \\lambda I - A \\right| = \\left| \\begin{array}{c c c} \\lambda - 2 & - 2 & - a \\\\ - 2 & \\lambda - 5 & 4 \\\\ 2 & 4 & \\lambda - 5 \\end{array} \\right| = - \\left| \\begin{array}{c c c} 2 & 4 & \\lambda - 5 \\\\ - 2 & \\lambda - 5 & 4 \\\\ \\lambda - 2 & - 2 & - a \\end{array} \\right|} \\\\ & {\\quad = - \\left| \\begin{array}{c c c} 2 & 4 & \\lambda - 5 \\\\ 0 & \\lambda - 1 & \\lambda - 1 \\\\ 0 & - 2 (\\lambda - 1) & - \\frac {1}{2} (\\lambda - 5) (\\lambda - 2) - a \\end{array} \\right| = (\\lambda - 1) \\left| \\begin{array}{c c} 1 & \\lambda - 1 \\\\ 4 & (\\lambda - 5) (\\lambda - 2) + 2 a \\end{array} \\right|} \\\\ & {\\quad = (\\lambda - 1) \\left[ \\lambda^ {2} - 1 1 \\lambda + 2 (a + 7) \\right].} \\end{array}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "若 $a = -2$ ，则 $\\left|\\lambda I - A\\right| = (\\lambda -1)^2 (\\lambda -10)$ ， $A$ 有二重特征值 $\\lambda_{1} = 1$\n\n若 $a = \\frac{1}{2}\\left(\\frac{11}{2}\\right)^2 - 7 = \\frac{65}{8}$ ，则 $\\left|\\lambda I - A\\right| = (\\lambda - 1)\\left(\\lambda - \\frac{11}{2}\\right)^2$ ， $A$ 有二重特征值 $\\lambda_2 = \\frac{11}{2}$ .\n\n所以 $a = -2$ 或 $a = \\frac{65}{8}$\n\n当 $a = -2$ 时，\n\n$$\n\\left(\\lambda_ {1} \\boldsymbol {E} - \\boldsymbol {A}, \\boldsymbol {\\beta}\\right) = \\left( \\begin{array}{c c c c} - 1 & - 2 & 2 & t \\\\ - 2 & - 4 & 4 & 1 \\\\ 2 & 4 & - 4 & - 1 \\end{array} \\right).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "显然，当 $t \\neq \\frac{1}{2}$ 时， $\\operatorname{rank}(\\lambda_1 I - A, \\beta) = 2 \\neq \\operatorname{rank}(\\lambda_1 I - A) = 1$ ，所给方程组无解；\n\n当 $t = \\frac{1}{2}$ 时， $\\operatorname{rank}(\\lambda_1 I - A, \\beta) = \\operatorname{rank}(\\lambda_1 I - A) = 1$ ，方程组有无穷多解，其同解方程组为\n\n$$\nx _ {1} + 2 x _ {2} - 2 x _ {3} = - \\frac {1}{2}.\n$$\n\n对应齐次方程的通解为 $\\begin{pmatrix} x_1 \\\\ x_2 \\\\ x_3 \\end{pmatrix} = k_1 \\begin{pmatrix} -2 \\\\ 1 \\\\ 0 \\end{pmatrix} + k_2 \\begin{pmatrix} 2 \\\\ 0 \\\\ 1 \\end{pmatrix}$ ; 非齐次方程的一个特解为 $X_0 = \\begin{pmatrix} -1/2 \\\\ 0 \\\\ 0 \\end{pmatrix}$ ."
+      },
+      {
+        "id": "s4",
+        "text": "原方程组的通解为\n\n$$\n\\pmb {X} = k _ {1} \\left( \\begin{array}{c} {- 2} \\\\ {1} \\\\ {0} \\end{array} \\right) + k _ {2} \\left( \\begin{array}{c} {2} \\\\ {0} \\\\ {1} \\end{array} \\right) + \\left( \\begin{array}{c} {- 1 / 2} \\\\ {0} \\\\ {0} \\end{array} \\right) \\quad (k _ {1}, k _ {2} \\text {为任意常数}).\n$$\n\n当 $a = \\frac{65}{8}$ 时，\n\n$$\n\\left(\\lambda_ {1} \\boldsymbol {I} - \\boldsymbol {A}, \\boldsymbol {\\beta}\\right) = \\left( \\begin{array}{c c c c} - 1 & - 2 & - 6 5 / 8 & t \\\\ - 2 & - 4 & 4 & 1 \\\\ 2 & 4 & - 4 & - 1 \\end{array} \\right).\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "无论 $t$ 为何值，均有 $\\operatorname{rank}(\\lambda_1 I - A, \\beta) = \\operatorname{rank}(\\lambda_1 I - A) = 2$ ，方程组有无穷多解。其同解方程组为 $\\left\\{ \\begin{array}{l} 8x_1 + 16x_2 + 65x_3 = -8t, \\\\ 81x_3 = 4. \\end{array} \\right.$\n\n对应齐次方程组的通解为 $\\begin{pmatrix} x_1 \\\\ x_2 \\\\ x_3 \\end{pmatrix} = k \\begin{pmatrix} -2 \\\\ 1 \\\\ 0 \\end{pmatrix}$ ; 非齐次方程的一个特解为 $X_1 = \\begin{pmatrix} -\\frac{65}{162} - t \\\\ 0 \\\\ \\frac{4}{81} \\end{pmatrix}$ .\n\n原方程组的通解为\n\n$X = k\\left( \\begin{array}{c} - 2\\\\ 1\\\\ 0 \\end{array} \\right) + X_{1}$ （ $k$ 为任意常数)."
+      }
+    ],
+    "final_answer": "$a = -2$ 或 $a = \\frac{65}{8}$",
+    "techniques_used": [
+      "向量组秩",
+      "基础解系",
+      "非齐次通解",
+      "含参方程组",
+      "解的判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "基础解系",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "基础解系",
+      "expected": "$a = -2$ 或 $a = \\frac{65}{8}$"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例14",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 486,
+    "syllabus_note": "二重特征值含参方程组",
+    "commentary": "评注 若线性方程组中有参数，求解时一定要根据解的存在定理做必要的讨论."
+  }
+}
