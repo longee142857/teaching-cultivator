@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-16",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.diag",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\lambda_0$ 为 $n$ 阶矩阵 $A$ 的 $k$ 重特征根，证明 $A$ 对应于 $\\lambda_0$ 的线性无关特征向量的个数不大于 $k$",
+  "answer": "$\\alpha_{1},\\cdots,\\alpha_{l},\\alpha_{l+1},\\cdots,\\alpha_{n}$ 构成 $R^{n}$ 的一个基，则 $A\\alpha_{i}(i=1,2,\\cdots,n)$ 可由这个基线性表示。设有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "重数关系",
+    "证明技巧",
+    "线性相关/无关"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "设 $\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{l}$ 是 A 对应于特征值 $\\lambda_{0}$ 的线性无关特征向量，添加向量 $\\alpha_{l+1},\\alpha_{l+2},\\cdots,\\alpha_{n}$ ，使得 $\\alpha_{1},\\cdots,\\alpha_{l},\\alpha_{l+1},\\cdots,\\alpha_{n}$ 构成 $R^{n}$ 的一个基，则 $A\\alpha_{i}(i=1,2,\\cdots,n)$ 可由这个基线性表示。设有\n\n$$\n\\left\\{ \\begin{array}{l} A \\alpha_ {1} = \\lambda_ {0} \\alpha_ {1}, \\\\ \\vdots \\\\ A \\alpha_ {l} = \\lambda_ {0} \\alpha_ {l}, \\\\ A \\alpha_ {l + 1} = k _ {l + 1, l} \\alpha_ {1} + \\dots + k _ {l + 1, l} \\alpha_ {l} + \\dots + k _ {l + 1, n} \\alpha_ {n}, \\\\ \\vdots \\\\ A \\alpha_ {n} = k _ {n, l} \\alpha_ {1} + \\dots + k _ {n, l} \\alpha_ {l} + \\dots + k _ {n, n} \\alpha_ {n}. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "即\n\n$$\nA \\left(\\alpha_ {1}, \\dots , \\alpha_ {l}, \\alpha_ {l + 1}, \\dots , \\alpha_ {n}\\right) = \\left(\\alpha_ {1}, \\dots , \\alpha_ {l}, \\alpha_ {l + 1}, \\dots , \\alpha_ {n}\\right) \\left( \\begin{array}{c c c c c c} \\lambda_ {0} & & & k _ {1, l + 1} & \\dots & k _ {1, n} \\\\ & \\ddots & & \\vdots & & \\vdots \\\\ & & \\lambda_ {0} & k _ {l, l + 1} & \\dots & k _ {l, n} \\\\ 0 & \\dots & 0 & k _ {l + 1, l + 1} & \\dots & k _ {l + 1, n} \\\\ \\vdots & & \\vdots & \\vdots & & \\vdots \\\\ 0 & \\dots & 0 & k _ {n, l + 1} & \\dots & k _ {n, n} \\end{array} \\right).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "记 $(\\alpha_{1},\\cdots,\\alpha_{l},\\alpha_{l+1},\\cdots,\\alpha_{n})=P$ ，则P可逆，上式为\n\n$$\n\\boldsymbol {P} ^ {- 1} \\boldsymbol {A} \\boldsymbol {P} = \\left( \\begin{array}{c c c c} {\\lambda_ {0}} & & {0} & \\\\ & {\\ddots} & & {*} \\\\ {0} & & {\\lambda_ {0}} & \\\\ & & & {A _ {1}} \\end{array} \\right) (A _ {1} \\text {是} n - l \\text {阶矩阵}).\\tag{①}\n$$\n\n因此"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\lambda I - P ^ {- 1} A P = \\left( \\begin{array}{c c c c} \\lambda - \\lambda_ {0} & & & \\\\ & \\ddots & & * \\\\ & & \\lambda - \\lambda_ {0} & \\\\ & & & \\lambda I _ {1} - A _ {1} \\end{array} \\right).\n$$\n\n由于相似矩阵有相同的特征多项式，所以\n\n$$\n\\left| \\lambda I - A \\right| = \\left| \\lambda I - P ^ {- 1} A P \\right| = \\left(\\lambda - \\lambda_ {0}\\right) ^ {\\prime} \\left| \\lambda I _ {1} - A _ {1} \\right|.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "这说明 $(\\lambda - \\lambda_0)'$ 是矩阵 $A$ 的特征多项式的因式，而 $k$ 是特征根 $\\lambda_0$ 的代数重数，所以 $l \\leqslant k$ ."
+      }
+    ],
+    "final_answer": "$\\alpha_{1},\\cdots,\\alpha_{l},\\alpha_{l+1},\\cdots,\\alpha_{n}$ 构成 $R^{n}$ 的一个基，则 $A\\alpha_{i}(i=1,2,\\cdots,n)$ 可由这个基线性表示。设有",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "重数关系",
+      "证明技巧",
+      "线性相关/无关"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "对角化条件、相似变换还是重数关系？如何切入？",
+      "technique": "特征值计算",
+      "expected": "选定对角化或相似论证路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "对角化结论（可否对角化/P与对角阵）是什么？",
+      "technique": "特征向量",
+      "expected": "$\\alpha_{1},\\cdots,\\alpha_{l},\\alpha_{l+1},\\cdots,\\alpha_{n}$ 构成 $R^{n}$ 的一个基，则 $A\\alpha_{i}(i=1,2,\\cdots,n)$ 可由这个基线性表示。设有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例16*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 501,
+    "starred": true,
+    "syllabus_note": "几何重数不大于代数重数*",
+    "commentary": "评注（1）该题的结论即为“矩阵特征值的几何重数不大于它的代数重数”.\n\n(2) 由①式，用数学归纳法容易得到以下结论：\n\n①任一n阶方阵均与上三角矩阵相似.\n\n② 实对称矩阵一定相似于对角矩阵（取 $\\alpha_{1},\\cdots,\\alpha_{l},\\cdots,\\alpha_{n}$ 为正交基即可）。因而两实对称矩阵相似的充分必要条件是它们有相同的特征值。"
+  }
+}

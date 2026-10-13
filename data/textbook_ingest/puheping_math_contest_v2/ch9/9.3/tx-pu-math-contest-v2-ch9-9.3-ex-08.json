@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-08",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.props",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知三阶矩阵 $\\pmb{A}$ 满足 $|\\pmb {A} - \\pmb {I}| = |\\pmb {A} - 2\\pmb {I}| = |\\pmb {A} + \\pmb {I}| = 2$ ，求行列式 $|\\pmb {A} + 3\\pmb {I}|$ 的值.",
+  "answer": "到 A 的特征值为 $0, 1 \\pm \\sqrt{2}$ ; $A + 3I$ 的特征值为 $3, 4 \\pm \\sqrt{2}$ . 所以",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需求出 A 的 3 个特征值，因而只需求得 A 的特征多项式.\n\n由题设条件得\n\n$$\n\\vert I - A \\vert = \\vert 2 I - A \\vert = \\vert - I - A \\vert = - 2.\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "设 $\\pmb{A}$ 的特征多项式\n\n$$\n\\mid \\lambda I - A \\mid = \\lambda^ {3} + a \\lambda^ {2} + b \\lambda + c.\\tag{②}\n$$\n\n由①式知\n\n$$\n\\left\\{ \\begin{array}{l} 1 ^ {3} + 1 ^ {2} \\cdot a + 1 \\cdot b + c = - 2, \\\\ 2 ^ {3} + 2 ^ {2} \\cdot a + 2 \\cdot b + c = - 2, \\\\ (- 1) ^ {3} + (- 1) ^ {2} \\cdot a + (- 1) \\cdot b + c = - 2. \\end{array} \\right.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "解出 $a = -2, b = -1, c = 0$ .即\n\n$$\n\\left| \\lambda I - A \\right| = \\lambda^ {3} - 2 \\lambda^ {2} - \\lambda = \\lambda (\\lambda^ {2} - 2 \\lambda - 1),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "得到 A 的特征值为 $0, 1 \\pm \\sqrt{2}$ ; $A + 3I$ 的特征值为 $3, 4 \\pm \\sqrt{2}$ . 所以\n\n$$\n\\mid A + 3 I \\mid = 3 \\cdot (4 + \\sqrt {2}) \\cdot (4 - \\sqrt {2}) = 4 2.\n$$"
+      }
+    ],
+    "final_answer": "到 A 的特征值为 $0, 1 \\pm \\sqrt{2}$ ; $A + 3I$ 的特征值为 $3, 4 \\pm \\sqrt{2}$ . 所以",
+    "techniques_used": [
+      "特征值计算",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "用特征值性质、特征多项式还是矩阵多项式关系？",
+      "technique": "特征值计算",
+      "expected": "建立特征值或特征多项式关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所求特征值/参数/行列式结论是什么？",
+      "technique": "证明技巧",
+      "expected": "到 A 的特征值为 $0, 1 \\pm \\sqrt{2}$ ; $A + 3I$ 的特征值为 $3, 4 \\pm \\sqrt{2}$ . 所以"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 497,
+    "syllabus_note": "特征多项式取值求|A+3I|",
+    "commentary": "评注 该题的本质是已知（3次）特征多项式的3个取值，要确定该多项式的另一个函数值。求解方法是显然的。"
+  }
+}

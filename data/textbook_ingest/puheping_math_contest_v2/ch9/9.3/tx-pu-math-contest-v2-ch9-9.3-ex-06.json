@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-06",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 A, B 是 n 阶矩阵， $\\lambda_{1}, \\lambda_{2}, \\cdots, \\lambda_{n}$ 是 n 个互异的数，齐次线性方程组 $(A - \\lambda_{i}B)X = 0$ 有非零解 $X_{i}(i=1,2,\\cdots,n)$ ，证明：\n\n（1）若 B 可逆，则 $X_{1}, X_{2}, \\cdots, X_{n}$ 线性无关；\n\n(2) 若 A, B 都是对称矩阵，则 $X_{i}^{T}AX_{j}=X_{i}^{T}BX_{j}=0(i\\neq j)$ .",
+  "answer": "$X_i^{\\mathrm{T}} B X_j = 0$ 。 $X_i^{\\mathrm{T}} A X_j = \\lambda_j X_i^{\\mathrm{T}} B X_j = 0$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "特征向量",
+    "证明技巧",
+    "线性相关/无关",
+    "实对称正交对角化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）易看出 $\\lambda_{1},\\lambda_{2},\\cdots,\\lambda_{n}$ 是矩阵 $B^{-1}A$ 的 n 个互异特征根， $X_{1},X_{2},\\cdots,X_{n}$ 是对应的特征向量，所以结论显然成立.\n\n（2）注意到 $X_{i}^{\\mathrm{T}}AX_{j} = X_{j}^{\\mathrm{T}}AX_{i}$ （因为 $\\pmb{A}$ 对称），再由题设条件易知 $AX_{i} = \\lambda_{i}BX_{i}$ ，代入前式可得 $\\lambda_{j}X_{i}^{\\mathrm{T}}BX_{j} = \\lambda_{i}X_{j}^{\\mathrm{T}}BX_{i} = \\lambda_{i}X_{i}^{\\mathrm{T}}BX_{j}$ ，所证结论就显然了."
+      },
+      {
+        "id": "s2",
+        "text": "（1）由于 $(A - \\lambda_{i}B)X_{i} = 0$ ，因此\n\n$$\nA X _ {i} = \\lambda_ {i} B X _ {i} (i = 1, 2, \\dots , n).\\tag{①}\n$$\n\n若 $\\pmb{B}$ 可逆，①式左乘以 $B^{-1}$ 得\n\n$$\n(B ^ {- 1} A) X _ {i} = \\lambda_ {i} X _ {i}.\n$$\n\n这说明 $\\lambda_{i}$ 是 $B^{-1}A$ 的特征值， $X_{i}$ 是对应的特征向量 $(i=1,2,\\cdots,n)$ 。由于 $\\lambda_{1},\\lambda_{2},\\cdots,\\lambda_{n}$ 互异，所以 $X_{1},X_{2},\\cdots,X_{n}$ 线性无关。"
+      },
+      {
+        "id": "s3",
+        "text": "（2）由于 $\\pmb{A}$ 是对称矩阵，并注意 $X_{i}^{\\mathrm{T}}AX_{j}$ 是数，则有\n\n$$\n\\boldsymbol {X} _ {i} ^ {\\mathrm{T}} \\boldsymbol {A} \\boldsymbol {X} _ {j} = \\left(\\boldsymbol {X} _ {i} ^ {\\mathrm{T}} \\boldsymbol {A} \\boldsymbol {X} _ {j}\\right) ^ {\\mathrm{T}} = \\boldsymbol {X} _ {j} ^ {\\mathrm{T}} \\boldsymbol {A} \\boldsymbol {X} _ {i},\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "利用①式有\n\n$$\n\\lambda_ {j} \\boldsymbol {X} _ {i} ^ {\\mathrm{T}} \\boldsymbol {B} \\boldsymbol {X} _ {j} = \\lambda_ {i} \\boldsymbol {X} _ {j} ^ {\\mathrm{T}} \\boldsymbol {B} \\boldsymbol {X} _ {i}.\n$$\n\n注意到 B 对称，仍有 $X_{j}^{T}BX_{i}=X_{i}^{T}BX_{j}$ ，代入上式可得\n\n$$\n\\left(\\lambda_ {i} - \\lambda_ {j}\\right) \\boldsymbol {X} _ {i} ^ {\\mathrm{T}} \\boldsymbol {B} \\boldsymbol {X} _ {j} = 0.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "当 $i \\neq j$ 时， $\\lambda_i \\neq \\lambda_j$ ，所以 $X_i^{\\mathrm{T}} B X_j = 0$ 。 $X_i^{\\mathrm{T}} A X_j = \\lambda_j X_i^{\\mathrm{T}} B X_j = 0$ 。"
+      }
+    ],
+    "final_answer": "$X_i^{\\mathrm{T}} B X_j = 0$ 。 $X_i^{\\mathrm{T}} A X_j = \\lambda_j X_i^{\\mathrm{T}} B X_j = 0$ 。",
+    "techniques_used": [
+      "特征值计算",
+      "特征向量",
+      "证明技巧",
+      "线性相关/无关",
+      "实对称正交对角化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明题宜从特征值定义、无关性还是特殊结构入手？",
+      "technique": "特征值计算",
+      "expected": "选定证明路径并写出关键条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "特征向量",
+      "expected": "$X_i^{\\mathrm{T}} B X_j = 0$ 。 $X_i^{\\mathrm{T}} A X_j = \\lambda_j X_i^{\\mathrm{T}} B X_j = 0$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 496,
+    "syllabus_note": "广义特征方程无关与对称正交",
+    "commentary": "评注 证明（1）中用到了特征向量的性质：矩阵不同特征值所对应的特征向量是线性无关的."
+  }
+}

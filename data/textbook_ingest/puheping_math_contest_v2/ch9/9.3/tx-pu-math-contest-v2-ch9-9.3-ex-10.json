@@ -1,0 +1,85 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-10",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $n$ 阶矩阵 $\\pmb{A}, \\pmb{B}$ 满足关系式 $\\pmb{BA} = \\pmb{I} - \\pmb{A} - \\pmb{B}$ ，证明若 $\\pmb{A}$ 是实反对称矩阵，则 $\\pmb{B}$ 一定是正交矩阵，并且-1不是 $\\pmb{B}$ 的特征值.",
+  "answer": "$B=(I-A)(I+A)^{-1}$ ，下面验证 $BB^{T}=I$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "实对称正交对角化",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于实反对称矩阵的特征值只能是0或纯虚数，故 $I+A$ 可逆. 易知 $B=(I-A)(I+A)^{-1}$ ，只需验证 $BB^{T}=I$ 且 $|-I-B|\\neq0$ ."
+      },
+      {
+        "id": "s2",
+        "text": "由于实反对称矩阵的特征值只能是0或纯虚数，故 $|I+A|\\neq0$ ，从而 $I+A$ 可逆。求得 $B=(I-A)(I+A)^{-1}$ ，下面验证 $BB^{T}=I$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} \\boldsymbol {B B} ^ {\\mathrm{T}} & = (\\boldsymbol {I} - \\boldsymbol {A}) (\\boldsymbol {I} + \\boldsymbol {A}) ^ {- 1} \\left[ (\\boldsymbol {I} - \\boldsymbol {A}) (\\boldsymbol {I} + \\boldsymbol {A}) ^ {- 1} \\right] ^ {\\mathrm{T}} \\\\ & = (\\boldsymbol {I} - \\boldsymbol {A}) (\\boldsymbol {I} + \\boldsymbol {A}) ^ {- 1} \\left[ (\\boldsymbol {I} + \\boldsymbol {A}) ^ {- 1} \\right] ^ {\\mathrm{T}} (\\boldsymbol {I} - \\boldsymbol {A}) ^ {\\mathrm{T}} \\\\ & = (\\boldsymbol {I} - \\boldsymbol {A}) \\left[ (\\boldsymbol {I} + \\boldsymbol {A}) ^ {\\mathrm{T}} (\\boldsymbol {I} + \\boldsymbol {A}) \\right] ^ {- 1} (\\boldsymbol {I} - \\boldsymbol {A}) ^ {\\mathrm{T}} \\\\ & = (\\boldsymbol {I} - \\boldsymbol {A}) \\left[ (\\boldsymbol {I} - \\boldsymbol {A}) (\\boldsymbol {I} + \\boldsymbol {A}) \\right] ^ {- 1} (\\boldsymbol {I} + \\boldsymbol {A}) \\\\ & = (\\boldsymbol {I} - \\boldsymbol {A}) (\\boldsymbol {I} - \\boldsymbol {A}) ^ {- 1} (\\boldsymbol {I} + \\boldsymbol {A}) ^ {- 1} (\\boldsymbol {I} + \\boldsymbol {A}) = \\boldsymbol {I}. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\boldsymbol{B}=(\\boldsymbol{I}-\\boldsymbol{A})(\\boldsymbol{I}+\\boldsymbol{A})^{-1}$ 是正交矩阵."
+      },
+      {
+        "id": "s5",
+        "text": "又"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\left| - I - B \\right| = \\left| - (I + A) (I + A) ^ {- 1} - (I - A) (I + A) ^ {- 1} \\right| = \\left| - 2 I \\right| \\left| I + A \\right| ^ {- 1} \\neq 0.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "所以-1不是B的特征值，从而 $|\\dot{-}I-B|\\neq0.$"
+      }
+    ],
+    "final_answer": "$B=(I-A)(I+A)^{-1}$ ，下面验证 $BB^{T}=I$ 。",
+    "techniques_used": [
+      "特征值计算",
+      "实对称正交对角化",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明题宜从特征值定义、无关性还是特殊结构入手？",
+      "technique": "特征值计算",
+      "expected": "选定证明路径并写出关键条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "实对称正交对角化",
+      "expected": "$B=(I-A)(I+A)^{-1}$ ，下面验证 $BB^{T}=I$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 498,
+    "syllabus_note": "反对称条件下正交与特征值排除",
+    "commentary": "评注 注意正交矩阵的一些基本性质：\n\n(1) 两个正交矩阵的乘积也是正交矩阵；正交矩阵的转置矩阵、逆矩阵、伴随矩阵也是正交矩阵.\n\n(2) 正交矩阵的行列式只可能是±1.\n\n(3) 正交矩阵特征值的模等于 1（见习题 9.3 第 11 题证明）."
+  }
+}

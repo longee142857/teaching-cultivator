@@ -1,0 +1,83 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.3-ex-09",
+  "subject": "math",
+  "l2": "特征值与特征向量",
+  "l3_id": "math.linalg.eigen.app",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A=(a_{ij})$ 是 n 阶实矩阵，且对任意 $i=1,2,\\cdots,n$ 有 $\\sum_{j=1}^{n}|a_{ij}|<1$ 。证明行列式 $|I+A|>0$",
+  "answer": "矩阵 $I + A$ 的所有实特征根都大于零. 由于实矩阵的复特征根都成对（共轭）出现，故 $|I + A| > 0$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "特征值计算",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 由于实矩阵的复特征根都成对出现，所以只需证明矩阵 $I + A$ 的所有实特征根都大于零."
+      },
+      {
+        "id": "s2",
+        "text": "记 $B = I + A$ ，下证 $B = (b_{ij})$ 的所有实特征根都大于零."
+      },
+      {
+        "id": "s3",
+        "text": "设 $B\\alpha = \\lambda\\alpha$ ， $\\alpha = (x_{1}, \\cdots, x_{n})^{\\mathrm{T}} \\neq 0$ ， $\\lambda$ 为实数。记 $|x_{i}| = \\max_{1 \\leqslant j \\leqslant n} |x_{j}|$ ，考察等式 $B\\alpha = \\lambda\\alpha$ 中的第 i 个分量，有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\sum_ {j = 1} ^ {n} b _ {i j} x _ {j} = \\lambda x _ {i}, \\text{即} (1 + a _ {i i}) x _ {i} + \\sum_ {\\substack {1 \\leqslant j \\leqslant n \\\\ j \\neq i}} a _ {i j} x _ {j} = \\lambda x _ {i}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "由此可得到"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\lambda = 1 + a _ {i i} + \\sum_ {\\substack {1 \\leqslant j \\leqslant n \\\\ j \\neq i}} a _ {i j} \\frac {x _ {j}}{x _ {i}} \\geqslant 1 + a _ {i i} - \\sum_ {\\substack {1 \\leqslant j \\leqslant n \\\\ j \\neq i}} | a _ {i j} | > 0,\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "所以矩阵 $I + A$ 的所有实特征根都大于零. 由于实矩阵的复特征根都成对（共轭）出现，故 $|I + A| > 0$ ."
+      }
+    ],
+    "final_answer": "矩阵 $I + A$ 的所有实特征根都大于零. 由于实矩阵的复特征根都成对（共轭）出现，故 $|I + A| > 0$ .",
+    "techniques_used": [
+      "特征值计算",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "证明题宜从特征值定义、无关性还是特殊结构入手？",
+      "technique": "特征值计算",
+      "expected": "选定证明路径并写出关键条件。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终证明结论是什么？",
+      "technique": "证明技巧",
+      "expected": "矩阵 $I + A$ 的所有实特征根都大于零. 由于实矩阵的复特征根都成对（共轭）出现，故 $|I + A| > 0$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.3",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "特征值与特征向量",
+    "page": 497,
+    "syllabus_note": "行和范数约束下|I+A|>0",
+    "commentary": "评注 （1）若矩阵 $A=(a_{ij})_{n\\times n}$ 对 $\\forall i\\in\\{1,2,\\cdots,n\\}$ 都有 $\\left|a_{ii}\\right|>\\sum_{j\\neq i}\\left|a_{ij}\\right|$ ，则 A 称行严格对角占优矩阵；\n\n$A^{T}$ 称列严格对角占优矩阵. 该题中的矩阵 B 是行严格对角占优矩阵.\n\n(2) 用该题的证明方法可得到：若 $A = (a_{ij})$ 严格对角占优，且 $a_{ii} > 0 (i = 1,2,\\dots,n)$ ，则 $A$ 的实特征值全为正，因而行列式大于零，其顺序主子式也全大于零.\n\n(3) 严格对角占优矩阵还有许多其他性质，如“严格对角占优矩阵 $A=(a_{ij})$ 是非奇异的，且 $|A|$ 与 $a_{11}a_{22}\\cdots a_{nn}$ 同号”（综合题9第10题）；“行严格对角占优矩阵的逆矩阵是列严格对角占优的”等，有兴趣的读者可查阅相关书籍与文献学习."
+  }
+}
