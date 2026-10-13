@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-01",
+  "subject": "math",
+  "l2": "向量与线性相关性",
+  "l3_id": "math.linalg.vec.span",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "已知线性方程组\n\n$$\n\\left\\{ \\begin{array}{l} a _ {1 1} x _ {1} + a _ {1 2} x _ {2} + a _ {1 3} x _ {3} + a _ {1 4} x _ {4} = a _ {1 5} \\\\ a _ {2 1} x _ {1} + a _ {2 2} x _ {2} + a _ {2 3} x _ {3} + a _ {2 4} x _ {4} = a _ {2 5} \\\\ a _ {3 1} x _ {1} + a _ {3 2} x _ {2} + a _ {3 3} x _ {3} + a _ {3 4} x _ {4} = a _ {3 5} \\\\ a _ {4 1} x _ {1} + a _ {4 2} x _ {2} + a _ {4 3} x _ {3} + a _ {4 4} x _ {4} = a _ {4 5} \\end{array} \\right.\n$$\n\n的通解为 $(2,1,0,1)^{\\mathrm{T}} + k(1, - 1,2,0)^{\\mathrm{T}}$ 记 $\\alpha_{j} = (a_{1j},a_{2j},a_{3j},a_{4j})^{\\mathrm{T}}(j = 1,2,3,4,5)$ ，问：\n\n(1) $\\alpha_{4}$ 能否由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}, \\alpha_{5}$ 线性表示?\n\n(2) $\\alpha_{4}$ 能否由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示？",
+  "answer": "$\\alpha_{4}$ 不能由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "线性表示",
+    "线性相关/无关",
+    "向量组秩",
+    "基与坐标",
+    "基础解系"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将线性方程组写成向量形式，问题就容易解决了.\n\n（1）如果从方程组的通解中能找到一个解，使得向量方程中 $\\alpha_{4}$ 的系数不为0，则 $\\alpha_{4}$ 就能由其余的向量线性表示；否则就不能.\n\n(2) 不考虑 $\\alpha_{5}$ ，对应的方程组为齐次方程组，其通解为 $k(1, -1, 2, 0)^{\\mathrm{T}}$ 。由于 $\\alpha_{4}$ 的系数始终为零，故 $\\alpha_{4}$ 不能由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示。"
+      },
+      {
+        "id": "s2",
+        "text": "线性方程组表示为向量形式为\n\n$$\nx _ {1} \\alpha_ {1} + x _ {2} \\alpha_ {2} + x _ {3} \\alpha_ {3} + x _ {4} \\alpha_ {4} = \\alpha_ {5}.\n$$\n\n（1）在通解中取 $k = 0$ 知， $(2,1,0,1)^{\\mathrm{T}}$ 是方程组的解，即有\n\n$$\n2 \\alpha_ {1} + \\alpha_ {2} + 0 \\alpha_ {3} + \\alpha_ {4} = \\alpha_ {5} \\Rightarrow \\alpha_ {4} = - 2 \\alpha_ {1} - \\alpha_ {2} + 0 \\alpha_ {3} + \\alpha_ {5},\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "故 $\\alpha_{4}$ 可由 $\\alpha_{1},\\alpha_{2},\\alpha_{3},\\alpha_{5}$ 线性表示.\n\n（2）由通解知，对应齐次方程组的基础解系只有一个非零解向量，故\n\n$$\n\\operatorname{rank} \\left(\\alpha_ {1}, \\alpha_ {2}, \\alpha_ {3}, \\alpha_ {4}\\right) = \\operatorname{rank} \\left(\\alpha_ {1}, \\alpha_ {2}, \\alpha_ {3}, \\alpha_ {4}, \\alpha_ {5}\\right) = 4 - 1 = 3.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "若 $\\alpha_{4}$ 可由 $\\alpha_{1},\\alpha_{2},\\alpha_{3}$ 线性表示，则\n\n$$\n\\operatorname{rank} \\left(\\alpha_ {1}, \\alpha_ {2}, \\alpha_ {3}, \\alpha_ {4}\\right) = \\operatorname{rank} \\left(\\alpha_ {1}, \\alpha_ {2}, \\alpha_ {3}\\right) = 3,\n$$\n\n所以 $\\alpha_{1},\\alpha_{2},\\alpha_{3}$ 线性无关.但由于 $(1, - 1,2,0)^{\\mathrm{T}}$ 为齐次方程组的解向量，因此有 $\\alpha_{1} - \\alpha_{2} + 2\\alpha_{3} = 0$ ，即 $\\alpha_{1},\\alpha_{2},\\alpha_{3}$ 线性相关，矛盾."
+      },
+      {
+        "id": "s5",
+        "text": "所以 $\\alpha_{4}$ 不能由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示."
+      }
+    ],
+    "final_answer": "$\\alpha_{4}$ 不能由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示.",
+    "techniques_used": [
+      "线性表示",
+      "线性相关/无关",
+      "向量组秩",
+      "基与坐标",
+      "基础解系"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "向量组问题宜用线性表示、秩、无关判定还是基/正交？",
+      "technique": "线性表示",
+      "expected": "选定向量组方法并建立关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终向量组结论是什么？",
+      "technique": "线性相关/无关",
+      "expected": "$\\alpha_{4}$ 不能由 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性表示."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 478,
+    "syllabus_note": "通解下线性表示判定",
+    "commentary": "评注 证明线性表示的常用方法如下.\n\n(1) 定义法: $\\beta$ 能由 $\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}$ 线性表示 $\\Leftrightarrow$ 在 $k_{1} \\alpha_{1} + k_{2} \\alpha_{2} + \\cdots + k_{s} \\alpha_{s} + k_{s+1} \\beta = 0$ 中 $k_{s+1} \\neq 0$ .\n\n(2) 方程组法: 方程组 $x_{1}\\alpha_{1} + x_{2}\\alpha_{2} + \\cdots + x_{s}\\alpha_{s} = \\beta$ 有解 $\\Leftrightarrow \\operatorname{rank}(\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}, \\beta) = \\operatorname{rank}(\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s})$ .\n\n(3) 基本定理: 若 $\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}$ 无关, 而 $\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}, \\beta$ 相关 $\\Leftrightarrow \\beta$ 可由 $\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}$ 唯一线性表示. 特别地, 向量空间中的任一向量, 都可由空间的一组基唯一线性表示.\n\n(4) 反证法."
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-15",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.solvability",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设矩阵 $A = \\begin{pmatrix} 1 & 2 & 1 \\\\ 3 & 4 & a \\\\ 1 & 2 & 2 \\end{pmatrix}$ ，其中 $a$ 为常数，若存在矩阵 $B \\neq I$ 使得 $AB = A - B + I$ ，其中 $I$ 是单位矩阵。试求：（1）常数 $a$ 的值；（2）若矩阵 $B$ 的第1行为(540)，求矩阵 $B$ 。",
+  "answer": "到 3 个列向量构成矩阵 B 即为所求，即 $B=\\begin{pmatrix}5&4&0\\\\-5&-4&0\\\\2&2&1\\end{pmatrix}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "向量组秩",
+    "初等变换",
+    "矩阵运算",
+    "线性相关/无关",
+    "非齐次通解"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）若能确定矩阵的秩，通常就能确定其中的某些待定常数.\n\n(2) 矩阵 B 是矩阵方程 $(A+I)X = A + I$ 的解，当 $A + I$ 不可逆时，可转化为线性方程组来求解.\n\n解（1）由关系式 $AB = A - B + I$ ，得 $(A + I)(B - I) = 0$ ，则有\n\n$$\n\\operatorname{rank} (A + I) + \\operatorname{rank} (B - I) \\leqslant 3.\n$$\n\n又 $\\operatorname{rank}(A + I) \\geqslant 2$ ， $B \\neq I$ ，所以 $\\operatorname{rank}(B - I) \\geqslant 1$ ，因此只有 $\\operatorname{rank}(A + I) = 2$ 。\n\n做初等行变换，化 $A + I$ 为阶梯形.\n\n$$\n\\boldsymbol {A} + \\boldsymbol {I} = \\left(\\begin{array}{l l l}2&2&1\\\\3&5&a\\\\1&2&3\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\3&5&a\\\\2&2&1\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\0&- 1&a - 9\\\\0&- 2&- 5\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\0&- 1&a - 9\\\\0&0&1 3 - 2 a\\end{array}\\right),\\tag{①}\n$$\n\n从而 $a = \\frac{13}{2}$\n\n(2) 由 $AB = A - B + I$ 得 $(A + I)B = A + I$ ，可见 $B$ 是矩阵方程 $(A + I)X = A + I$ 的解。由①式可得增广矩阵 $(A + I, A + I)$ 的行等价阶梯形。\n\n$$\n(A + I, A + I) \\rightarrow \\left(\\begin{array}{c c c c c c}1&2&3&1&2&3\\\\0&2&5&0&2&5\\\\0&0&0&0&0&0\\end{array}\\right)\\rightarrow \\left(\\begin{array}{c c c c c c}1&0&- 2&1&0&- 2\\\\0&2&5&0&2&5\\\\0&0&0&0&0&0\\end{array}\\right).\n$$\n\n矩阵方程的解 $X$ 的3个列向量分别是线性方程组\n\n$$\n\\left( \\begin{array}{c c c} 1 & 0 & - 2 \\\\ 0 & 2 & 5 \\\\ 0 & 0 & 0 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = \\left( \\begin{array}{l} 1 \\\\ 0 \\\\ 0 \\end{array} \\right), \\quad \\left( \\begin{array}{c c c} 1 & 0 & - 2 \\\\ 0 & 2 & 5 \\\\ 0 & 0 & 0 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} "
+      },
+      {
+        "id": "s2",
+        "text": "分析（1）若能确定矩阵的秩，通常就能确定其中的某些待定常数."
+      },
+      {
+        "id": "s3",
+        "text": "(2) 矩阵 B 是矩阵方程 $(A+I)X = A + I$ 的解，当 $A + I$ 不可逆时，可转化为线性方程组来求解.\n\n解（1）由关系式 $AB = A - B + I$ ，得 $(A + I)(B - I) = 0$ ，则有\n\n$$\n\\operatorname{rank} (A + I) + \\operatorname{rank} (B - I) \\leqslant 3.\n$$\n\n又 $\\operatorname{rank}(A + I) \\geqslant 2$ ， $B \\neq I$ ，所以 $\\operatorname{rank}(B - I) \\geqslant 1$ ，因此只有 $\\operatorname{rank}(A + I) = 2$ 。\n\n做初等行变换，化 $A + I$ 为阶梯形.\n\n$$\n\\boldsymbol {A} + \\boldsymbol {I} = \\left(\\begin{array}{l l l}2&2&1\\\\3&5&a\\\\1&2&3\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\3&5&a\\\\2&2&1\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\0&- 1&a - 9\\\\0&- 2&- 5\\end{array}\\right)\\rightarrow \\left(\\begin{array}{l l l}1&2&3\\\\0&- 1&a - 9\\\\0&0&1 3 - 2 a\\end{array}\\right),\\tag{①}\n$$\n\n从而 $a = \\frac{13}{2}$"
+      },
+      {
+        "id": "s4",
+        "text": "(2) 由 $AB = A - B + I$ 得 $(A + I)B = A + I$ ，可见 $B$ 是矩阵方程 $(A + I)X = A + I$ 的解。由①式可得增广矩阵 $(A + I, A + I)$ 的行等价阶梯形。\n\n$$\n(A + I, A + I) \\rightarrow \\left(\\begin{array}{c c c c c c}1&2&3&1&2&3\\\\0&2&5&0&2&5\\\\0&0&0&0&0&0\\end{array}\\right)\\rightarrow \\left(\\begin{array}{c c c c c c}1&0&- 2&1&0&- 2\\\\0&2&5&0&2&5\\\\0&0&0&0&0&0\\end{array}\\right).\n$$\n\n矩阵方程的解 $X$ 的3个列向量分别是线性方程组\n\n$$\n\\left( \\begin{array}{c c c} 1 & 0 & - 2 \\\\ 0 & 2 & 5 \\\\ 0 & 0 & 0 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = \\left( \\begin{array}{l} 1 \\\\ 0 \\\\ 0 \\end{array} \\right), \\quad \\left( \\begin{array}{c c c} 1 & 0 & - 2 \\\\ 0 & 2 & 5 \\\\ 0 & 0 & 0 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = \\left( \\begin{array}{l} 0 \\\\ 2 \\\\ 0 \\end{array} \\right), \\quad \\left( \\begin{array}{c c c} 1 & 0 & - 2 \\\\ 0 & 2 & 5 \\\\ 0 & 0 & 0 \\end{array} \\right) \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = \\left(    \\begin{array}{l} - 2 \\\\ 5 \\\\ 0 \\end{array}    \\right)\n$$\n\n的解向量. 求得 3 个方程组的通解分别为\n\n$$\n\\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = k _ {1} \\left( \\begin{array}{l} 4 \\\\ - 5 \\\\ 2 \\end{array} \\right) + \\left( \\begin{array}{l} 1 \\\\ 0 \\\\ 0 \\end{array} \\right), \\quad \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = k _ {2} \\left( \\begin{array}{l} 4 \\\\ - 5 \\\\ 2 \\end{array} \\right) + \\left( \\begin{array}{l} 0 \\\\ 1 \\\\ 0 \\end{array} \\right), \\quad \\left( \\begin{array}{l} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = k _ {3} \\left( \\begin{array}{l} 4 \\\\ - 5 \\\\ 2 \\end{array} \\right) + \\left( \\begin{array}{l} - 2 \\\\ 5 / 2 \\\\ 0 \\end{array} \\right).\\tag{②}\n$$\n\n由于 B 的第 1 行为 (5 4 0)，所以 $k_{1}=1,\\quad k_{2}=1,\\quad k_{3}=\\frac{1}{2}$ ，因此得到 3 个列向量构成矩阵 B 即为所求，即 $B=\\begin{pmatrix}5&4&0\\\\-5&-4&0\\\\2&2&1\\end{pmatrix}$ .\n\n评注（1）由矩阵的秩确定矩阵中的待定常数是很常用的方法."
+      },
+      {
+        "id": "s5",
+        "text": "(2) 对于矩阵方程 AX = B （A, B 为已知矩阵），当 A 不可逆时，通常是将 X 与 B 按列分块，将矩阵方程转化为几个线性方程组来求解."
+      }
+    ],
+    "final_answer": "到 3 个列向量构成矩阵 B 即为所求，即 $B=\\begin{pmatrix}5&4&0\\\\-5&-4&0\\\\2&2&1\\end{pmatrix}$ .",
+    "techniques_used": [
+      "向量组秩",
+      "初等变换",
+      "矩阵运算",
+      "线性相关/无关",
+      "非齐次通解"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "非齐次通解",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "初等变换",
+      "expected": "到 3 个列向量构成矩阵 B 即为所求，即 $B=\\begin{pmatrix}5&4&0\\\\-5&-4&0\\\\2&2&1\\end{pmatrix}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例15",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 487,
+    "syllabus_note": "矩阵方程转线性方程组讨论",
+    "commentary": "评注（1）由矩阵的秩确定矩阵中的待定常数是很常用的方法.\n\n(2) 对于矩阵方程 AX = B （A, B 为已知矩阵），当 A 不可逆时，通常是将 X 与 B 按列分块，将矩阵方程转化为几个线性方程组来求解."
+  }
+}

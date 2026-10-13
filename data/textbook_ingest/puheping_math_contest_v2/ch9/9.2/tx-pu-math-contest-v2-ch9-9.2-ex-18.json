@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-18",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.nonhom",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设向量 $\\beta$ 为非齐次线性方程组 AX=b ( $b \\neq 0$ ) 的一个解， $\\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}$ 为其导出组 AX=0 的一个基础解系，证明 $\\beta, \\beta + \\alpha_{1}, \\beta + \\alpha_{2}, \\cdots, \\beta + \\alpha_{s}$ 为 AX=b 解向量组中的一个极大线性无关向量组.",
+  "answer": "$k\\beta=0$ 。因为 $\\beta\\neq0$ ，所以 k=0 。故 $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 线性无关。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "线性表示",
+    "线性相关/无关",
+    "极大无关组",
+    "基与坐标",
+    "基础解系"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需证明 $\\beta, \\beta + \\alpha_{1}, \\beta + \\alpha_{2}, \\cdots, \\beta + \\alpha_{s}$ 是 AX = b 的一组线性无关解，并且方程组的任意解都可由这组解向量线性表示.\n\n显然，向量组 $\\beta, \\beta + \\alpha_{1}, \\beta + \\alpha_{2}, \\cdots, \\beta + \\alpha_{s}$ 都是 AX = b 的解. 下证它是线性无关的. 设\n\n$$\nk \\beta + k _ {1} (\\beta + \\alpha_ {1}) + k _ {2} (\\beta + \\alpha_ {2}) + \\dots + k _ {s} (\\beta + \\alpha_ {s}) = 0,\\tag{①}\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "则\n\n$$\n(k + k _ {1} + k _ {2} + \\dots + k _ {s}) \\boldsymbol {\\beta} + k _ {1} \\boldsymbol {\\alpha} _ {1} + k _ {2} \\boldsymbol {\\alpha} _ {2} + \\dots + k _ {s} \\boldsymbol {\\alpha} _ {s} = \\mathbf {0}.\\tag{②}\n$$\n\n左乘 $A$ ，有\n\n$$\n\\left(k + k _ {1} + k _ {2} + \\dots + k _ {s}\\right) A \\beta + k _ {1} A \\alpha_ {1} + k _ {2} A \\alpha_ {2} + \\dots + k _ {s} A \\alpha_ {s} = 0,\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "即\n\n$$\n\\left(k + k _ {1} + k _ {2} + \\dots + k _ {s}\\right) A \\boldsymbol {\\beta} = \\mathbf {0} \\Rightarrow \\left(k + k _ {1} + k _ {2} + \\dots + k _ {s}\\right) \\boldsymbol {b} = \\mathbf {0}.\n$$\n\n因为 $b \\neq 0$ ，所以 $k + k_{1} + k_{2} + \\cdots + k_{s} = 0$ 。代入②式得\n\n$$\nk _ {1} \\alpha_ {1} + k _ {2} \\alpha_ {2} + \\dots + k _ {s} \\alpha_ {s} = 0.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{s}$ 线性无关，所以 $k_{1}=k_{2}=\\cdots=k_{s}=0$ 。代入①式得 $k\\beta=0$ 。因为 $\\beta\\neq0$ ，所以 k=0 。故 $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 线性无关。\n\n下证任一 AX=b 的解都可由 $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 线性表示.\n\n设 $\\pmb{\\gamma}$ 为 $AX = b$ 的任一解，则"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} \\gamma & = \\beta + k _ {1} \\alpha_ {1} + k _ {2} \\alpha_ {2} + \\dots + k _ {s} \\alpha_ {s} \\\\ & = (1 - k _ {1} - k _ {2} - \\dots - k _ {s}) \\beta + k _ {1} (\\alpha_ {1} + \\beta) + k _ {2} (\\alpha_ {2} + \\beta) + \\dots + k _ {s} (\\alpha_ {s} + \\beta). \\end{array}\n$$\n\n综上所述， $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 为 AX=b 解向量组中的一个极大线性无关向量组."
+      }
+    ],
+    "final_answer": "$k\\beta=0$ 。因为 $\\beta\\neq0$ ，所以 k=0 。故 $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 线性无关。",
+    "techniques_used": [
+      "线性表示",
+      "线性相关/无关",
+      "极大无关组",
+      "基与坐标",
+      "基础解系"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "基础解系",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "线性相关/无关",
+      "expected": "$k\\beta=0$ 。因为 $\\beta\\neq0$ ，所以 k=0 。故 $\\beta,\\beta+\\alpha_{1},\\beta+\\alpha_{2},\\cdots,\\beta+\\alpha_{s}$ 线性无关。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 489,
+    "syllabus_note": "非齐次解向量组极大无关组",
+    "commentary": "评注 该题结论表明：若 $\\operatorname{rank}(A) = r$ ，则 $\\operatorname{rank}\\left\\{X \\in \\mathbb{R}^n \\mid AX = b\\right\\} = n - r + 1$ ."
+  }
+}

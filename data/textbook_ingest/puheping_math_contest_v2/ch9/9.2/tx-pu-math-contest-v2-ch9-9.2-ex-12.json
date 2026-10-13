@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-12",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.nonhom",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设三阶矩阵 $A = (\\alpha_{1}, \\alpha_{2}, \\alpha_{3})$ 有3个不同的特征值，且 $\\alpha_{3} = \\alpha_{1} + 2\\alpha_{2}$ . 若 $\\beta = \\alpha_{1} + \\alpha_{2} + \\alpha_{3}$ ，则求方程组 $AX = \\beta$ 的通解.",
+  "answer": "通解",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "线性相关/无关",
+    "向量组秩",
+    "基与坐标",
+    "基础解系",
+    "非齐次通解"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 显然 $\\operatorname{rank}(A) = 2$ ，则方程组 $AX = 0$ 的任一非零解都是它的基础解系。将所给的向量等式写成矩阵形式就可得到 $AX = 0$ 与 $AX = \\beta$ 的特解，进而求得所需通解。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为 $\\alpha_{3} = \\alpha_{1} + 2\\alpha_{2}$ . 则 $\\alpha_{1}, \\alpha_{2}, \\alpha_{3}$ 线性相关, 所以 $\\operatorname{rank}(A) < 3$ .\n\n又 A 有 3 个不同的特征值，故有一个为 0，两个非 0。设为 $\\lambda_{1}, \\lambda_{2}, 0$ ，则 A 与 $\\begin{pmatrix} \\lambda_{1} & & \\\\ & \\lambda_{2} & \\\\ & & 0 \\end{pmatrix}$ 相似，所以 $\\operatorname{rank}(A) = 2$ 。\n\n由 $\\alpha_{3}=\\alpha_{1}+2\\alpha_{2}$ ，得 $\\alpha_{1}+2\\alpha_{2}-\\alpha_{3}=0$ ，即 $(\\alpha_{1},\\alpha_{2},\\alpha_{3})\\begin{pmatrix}1\\\\ 2\\\\ -1\\end{pmatrix}=0$ ．这说明 $\\boldsymbol{\\xi}=(1,2,-1)^{\\mathrm{T}}$ 是方程组 AX=0 的基础解系.\n\n又 $(\\alpha_{1},\\alpha_{2},\\alpha_{3})\\begin{pmatrix} 1\\\\ 1\\\\ 1 \\end{pmatrix} = \\alpha_{1} + \\alpha_{2} + \\alpha_{3} = \\beta$ ，这说明 $\\pmb {\\eta} = (1,1,1)^{\\mathrm{T}}$ 是方程组 $AX = \\beta$ 的一个特解.\n\n所以方程组 $AX = \\beta$ 的通解为 $X = k\\xi + \\eta$ (k 为任意常数)."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 将 $\\alpha_{3} = \\alpha_{1} + 2\\alpha_{2}$ ， $\\beta = \\alpha_{1} + \\alpha_{2} + \\alpha_{3}$ 代入方程 $AX = \\beta$ ，有\n\n$$\n\\begin{array}{l} \\left(\\alpha_ {1}, \\alpha_ {2}, \\alpha_ {1} + 2 \\alpha_ {2}\\right) \\left( \\begin{array}{c} x _ {1} \\\\ x _ {2} \\\\ x _ {3} \\end{array} \\right) = \\alpha_ {1} + \\alpha_ {2} + \\left(\\alpha_ {1} + 2 \\alpha_ {2}\\right) \\\\ \\Rightarrow (x _ {1} + x _ {3} - 2) \\alpha_ {1} + (x _ {2} + 2 x _ {3} - 3) \\alpha_ {2} = 0. \\end{array}\n$$\n\n由于 $\\operatorname{rank}(A) = 2$ ，则 $\\alpha_{1}, \\alpha_{2}$ 线性无关，所以 $\\left\\{ \\begin{array}{l} x_{1} + x_{3} - 2 = 0 \\\\ x_{2} + 2x_{3} - 3 = 0 \\end{array} \\right.$ . 解该方程组得通解\n\n$$\n\\pmb {X} = k (1, 2, - 1) ^ {\\mathsf {T}} + (1, 1, 1) ^ {\\mathsf {T}} \\quad (k \\text {为任意常数}).\n$$"
+      }
+    ],
+    "final_answer": "通解",
+    "techniques_used": [
+      "线性相关/无关",
+      "向量组秩",
+      "基与坐标",
+      "基础解系",
+      "非齐次通解"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "基础解系",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "向量组秩",
+      "expected": "通解"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 484,
+    "syllabus_note": "特征值条件下非齐次通解",
+    "commentary": "评注 题中以向量组线性组合的等式给出了线性方程组的特解，不认识这种隐蔽形式的解就会有困难。若读者熟知线性方程组的3种形式：联立方程形式、矩阵形式、向量形式，这种“隐蔽性”就显露了。"
+  }
+}

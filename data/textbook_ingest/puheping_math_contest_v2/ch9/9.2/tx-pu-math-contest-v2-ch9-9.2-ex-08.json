@@ -1,0 +1,87 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-08",
+  "subject": "math",
+  "l2": "向量与线性相关性",
+  "l3_id": "math.linalg.vec.indep",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设向量组 $B: \\beta_{1}, \\beta_{2}, \\cdots, \\beta_{r}$ 能由向量组 $A: \\alpha_{1}, \\alpha_{2}, \\cdots, \\alpha_{s}$ 线性表示为\n\n$$\n\\left(\\beta_ {1}, \\beta_ {2}, \\dots , \\beta_ {r}\\right) = \\left(\\alpha_ {1}, \\alpha_ {2}, \\dots , \\alpha_ {s}\\right) K.\n$$\n\n其中 K 为 $s \\times r$ 阶矩阵，且 A 组线性无关，证明：B 组线性无关的充要条件是 $\\operatorname{rank}(K) = r$ .",
+  "answer": "$KX_{0}=0$ 。这说明齐次方程组 KX=0 有非零解，这与 $\\operatorname{rank}(K)=r$ 矛盾。故 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性无关。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "线性表示",
+    "线性相关/无关",
+    "向量组秩",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 等式 $\\left(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}\\right)=\\left(\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{s}\\right)K$ 是向量组之间的关系式，也是矩阵之间的关系式. B 组线性无关 $\\Leftrightarrow\\operatorname{rank}(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r})=r$ . 所以只需弄清 $\\operatorname{rank}(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r})$ 与 $\\operatorname{rank}(K)$ 的关系."
+      },
+      {
+        "id": "s2",
+        "text": "必要性：记 $B=\\left(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}\\right)$ . 若 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性无关，则 $\\operatorname{rank}(B)=r$ . 由于"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nr \\geqslant \\operatorname{rank} (K) \\geqslant \\operatorname{rank} (B),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $\\operatorname{rank}(\\pmb{K}) = r$ ."
+      },
+      {
+        "id": "s5",
+        "text": "充分性：用反证法. 若 $\\operatorname{rank}(K)=r$ ，但 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性相关，则齐次方程组 BX=0 有非零解 $X_{0}\\neq0$ ．即有"
+      },
+      {
+        "id": "s6",
+        "text": "$$\n\\left(\\beta_ {1}, \\beta_ {2}, \\dots , \\beta_ {r}\\right) X _ {0} = \\left(\\alpha_ {1}, \\alpha_ {2}, \\dots , \\alpha_ {s}\\right) K X _ {0} = 0.\n$$"
+      },
+      {
+        "id": "s7",
+        "text": "由 $\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{s}$ 线性无关，得 $KX_{0}=0$ 。这说明齐次方程组 KX=0 有非零解，这与 $\\operatorname{rank}(K)=r$ 矛盾。故 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性无关。"
+      }
+    ],
+    "final_answer": "$KX_{0}=0$ 。这说明齐次方程组 KX=0 有非零解，这与 $\\operatorname{rank}(K)=r$ 矛盾。故 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性无关。",
+    "techniques_used": [
+      "线性表示",
+      "线性相关/无关",
+      "向量组秩",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "向量组问题宜用线性表示、秩、无关判定还是基/正交？",
+      "technique": "线性表示",
+      "expected": "选定向量组方法并建立关系。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终向量组结论是什么？",
+      "technique": "线性相关/无关",
+      "expected": "$KX_{0}=0$ 。这说明齐次方程组 KX=0 有非零解，这与 $\\operatorname{rank}(K)=r$ 矛盾。故 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 线性无关。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 481,
+    "syllabus_note": "线性表示矩阵K与线性无关",
+    "commentary": "评注 （1）关系式 $\\left(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}\\right)=\\left(\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{s}\\right)K$ 不仅刻画了向量组 $\\beta_{1},\\beta_{2},\\cdots,\\beta_{r}$ 能由向量组 $\\alpha_{1},\\alpha_{2},\\cdots,\\alpha_{s}$ 线性表示，而且还将向量组的线性关系转换成矩阵乘积的关系。这种转换，使我们可以借助矩阵来研究向量组，也可由向量组来研究矩阵。\n\n(2) 容易证明，该题的一般结论： $\\mathrm{rank}(\\beta_{1},\\beta_{2},\\cdots,\\beta_{r})=\\mathrm{rank}(K)$ （见习题9.2第9题）."
+  }
+}

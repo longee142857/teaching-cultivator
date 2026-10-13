@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.2-ex-13",
+  "subject": "math",
+  "l2": "线性方程组",
+  "l3_id": "math.linalg.sys.param",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求解 $n$ 元线性方程组 $AX = b$ ，其中\n\n$$\n\\boldsymbol {A} = \\left( \\begin{array}{c c c c c c} 2 a & 1 & & & & \\\\ a ^ {2} & 2 a & 1 & & & \\\\ & a ^ {2} & 2 a & 1 & & \\\\ & & \\ddots & \\ddots & \\ddots & \\\\ & & & a ^ {2} & 2 a & 1 \\\\ & & & & a ^ {2} & 2 a \\end{array} \\right), \\quad \\boldsymbol {X} = \\left( \\begin{array}{c} x _ {1} \\\\ x _ {2} \\\\ \\vdots \\\\ x _ {n} \\end{array} \\right), \\quad \\boldsymbol {b} = \\left( \\begin{array}{c} 1 \\\\ 0 \\\\ \\vdots \\\\ 0 \\end{array} \\right).\n$$",
+  "answer": "方程组的解为",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "向量组秩",
+    "基与坐标",
+    "基础解系",
+    "非齐次通解",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 方程组的系数矩阵是三对角线形，该矩阵的行列式容易计算，所以用克莱姆法则较好. 解 记 $D_{n} = |A|$ ，将行列式按第一行展开，有\n\n$$\n\\begin{array}{r l} D _ {n} & = 2 a \\left| \\begin{array}{c c c c c c} 2 a & 1 & & & & \\\\ a ^ {2} & 2 a & 1 & & & \\\\ & a ^ {2} & 2 a & 1 & & \\\\ & & \\ddots & \\ddots & \\ddots & \\\\ & & & a ^ {2} & 2 a & 1 \\\\ & & & & a ^ {2} & 2 a \\end{array} \\right| _ {n - 1} + a ^ {2} (- 1) ^ {2 + 1} \\left| \\begin{array}{c c c c c c} 1 & 0 & & & & \\\\ a ^ {2} & 2 a & 1 & & & \\\\ & a ^ {2} & 2 a & 1 & & \\\\ & & \\ddots & \\ddots & \\ddots & \\\\ & & & a ^ {2} & 2 a & 1 \\\\ & & & & a ^ {2} & 2 a \\end{array} \\right| _ {n - 1} \\\\ & = 2 a D _ {n - 1} - a ^ {2} D _ {n - 2}. \\end{array}\n$$\n\n变形再做递推，有\n\n$$\n\\begin{array}{r l} D _ {n} - a D _ {n - 1} & = a (D _ {n - 1} - a D _ {n - 2}) = \\dots = a ^ {n - 2} (D _ {2} - a D _ {1}) = a ^ {n} \\quad (D _ {1} = 2 a, D _ {2} = 3 a ^ {2}). \\\\ D _ {n} & = a D _ {n - 1} + a ^ {n} = a ^ {2} (D _ {n - 2} + a ^ {n - 1}) + a ^ {n} = a ^ {2} D _ {n - 2} + 2 a ^ {n} \\\\ & = \\dots = a ^ {n - 1} D _ {1} + (n - 1) a ^ {n} = (n + 1) a ^ {n}. \\end{array}\n$$\n\n（1）当 $a \\neq 0$ 时， $D_n \\neq 0$ ，方程组有唯一解。记 $A_i (i = 1,2,\\dots,n)$ 表示用 $b$ 去替换 $A$ 中的第 $i$ 列得到的矩阵。对行列式 $|A_i|$ 按第 $i$ 列展开可得到\n\n$$\n\\begin{array}{l} \\mid A _ {1} \\mid = (- 1) ^ {2} D _ {n - 1} = n a ^ {n - 1}, \\quad \\mid A _ {2} \\mid = (- 1) ^ {3} a ^ {2} D _ {n - 2} = - (n - 1) a ^ {n}, \\quad \\dots \\\\ \\mid A _ {i} \\mid = (- 1) ^ {i + 1} (a ^ {2}) ^ {i - 1} D _ {n - i} = (- 1) ^ {i + 1} (n - i + 1) a ^ {n + i - 2} \\quad (i = 1, 2, \\dots , n). \\end{array}\n$$\n\n由克"
+      },
+      {
+        "id": "s2",
+        "text": "分析 方程组的系数矩阵是三对角线形，该矩阵的行列式容易计算，所以用克莱姆法则较好. 解 记 $D_{n} = |A|$ ，将行列式按第一行展开，有\n\n$$\n\\begin{array}{r l} D _ {n} & = 2 a \\left| \\begin{array}{c c c c c c} 2 a & 1 & & & & \\\\ a ^ {2} & 2 a & 1 & & & \\\\ & a ^ {2} & 2 a & 1 & & \\\\ & & \\ddots & \\ddots & \\ddots & \\\\ & & & a ^ {2} & 2 a & 1 \\\\ & & & & a ^ {2} & 2 a \\end{array} \\right| _ {n - 1} + a ^ {2} (- 1) ^ {2 + 1} \\left| \\begin{array}{c c c c c c} 1 & 0 & & & & \\\\ a ^ {2} & 2 a & 1 & & & \\\\ & a ^ {2} & 2 a & 1 & & \\\\ & & \\ddots & \\ddots & \\ddots & \\\\ & & & a ^ {2} & 2 a & 1 \\\\ & & & & a ^ {2} & 2 a \\end{array} \\right| _ {n - 1} \\\\ & = 2 a D _ {n - 1} - a ^ {2} D _ {n - 2}. \\end{array}\n$$\n\n变形再做递推，有\n\n$$\n\\begin{array}{r l} D _ {n} - a D _ {n - 1} & = a (D _ {n - 1} - a D _ {n - 2}) = \\dots = a ^ {n - 2} (D _ {2} - a D _ {1}) = a ^ {n} \\quad (D _ {1} = 2 a, D _ {2} = 3 a ^ {2}). \\\\ D _ {n} & = a D _ {n - 1} + a ^ {n} = a ^ {2} (D _ {n - 2} + a ^ {n - 1}) + a ^ {n} = a ^ {2} D _ {n - 2} + 2 a ^ {n} \\\\ & = \\dots = a ^ {n - 1} D _ {1} + (n - 1) a ^ {n} = (n + 1) a ^ {n}. \\end{array}\n$$\n\n（1）当 $a \\neq 0$ 时， $D_n \\neq 0$ ，方程组有唯一解。记 $A_i (i = 1,2,\\dots,n)$ 表示用 $b$ 去替换 $A$ 中的第 $i$ 列得到的矩阵。对行列式 $|A_i|$ 按第 $i$ 列展开可得到\n\n$$\n\\begin{array}{l} \\mid A _ {1} \\mid = (- 1) ^ {2} D _ {n - 1} = n a ^ {n - 1}, \\quad \\mid A _ {2} \\mid = (- 1) ^ {3} a ^ {2} D _ {n - 2} = - (n - 1) a ^ {n}, \\quad \\dots \\\\ \\mid A _ {i} \\mid = (- 1) ^ {i + 1} (a ^ {2}) ^ {i - 1} D _ {n - i} = (- 1) ^ {i + 1} (n - i + 1) a ^ {n + i - 2} \\quad (i = 1, 2, \\dots , n). \\end{array}\n$$\n\n由克莱姆法则得方程组的解为\n\n$$\nx _ {i} = \\frac {\\left| A _ {i} \\right|}{\\left| A \\right|} = \\frac {(- 1) ^ {i + 1} (n - i + 1) a ^ {n + i - 2}}{(n + 1) a ^ {n}} = (- 1) ^ {i + 1} \\left(1 - \\frac {i}{n + 1}\\right) a ^ {i - 2} \\quad (i = 1, 2, \\dots , n).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "(2) 当 a=0 时，方程组为\n\n$$\n\\cdot \\left( \\begin{array}{c c c c c} 0 & 1 & & & \\\\ & 0 & 1 & & \\\\ & & 0 & \\ddots & \\\\ & & & \\ddots & 1 \\\\ & & & & 0 \\end{array} \\right) \\left( \\begin{array}{c} x _ {1} \\\\ x _ {2} \\\\ \\vdots \\\\ x _ {n} \\end{array} \\right) = \\left( \\begin{array}{c} 1 \\\\ 0 \\\\ \\vdots \\\\ 0 \\end{array} \\right).\n$$\n\n由于 $\\operatorname{rank}(A) = \\operatorname{rank}(\\overline{A}) = n - 1$ ，因此方程组有无穷多解.\n\n对应齐次方程组的基础解系为 $\\boldsymbol{\\xi}=(1,0,0,\\cdots,0)^{\\mathrm{T}}$ ，非齐次方程组的一个特解为 $\\boldsymbol{\\eta}=(0,1,0,\\cdots,0)^{\\mathrm{T}}$ .\n\n方程组 AX = b 的通解为\n\n$X=(0,1,0,\\cdots,0)^{\\mathrm{T}}+k(1,0,0,\\cdots,0)^{\\mathrm{T}}$ (k为任意常数).\n\n评注（1）三对角线形行列式的计算通常有两种方法：①递推法；②归纳法证明."
+      },
+      {
+        "id": "s4",
+        "text": "(2) 该题也可以用高斯消元法求解，但要困难些."
+      }
+    ],
+    "final_answer": "方程组的解为",
+    "techniques_used": [
+      "向量组秩",
+      "基与坐标",
+      "基础解系",
+      "非齐次通解",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "方程组宜用基础解系、通解结构、含参讨论还是可解判定？",
+      "technique": "基础解系",
+      "expected": "选定解法并写出结构。"
+    },
+    {
+      "id": "c2",
+      "prompt": "方程组的解或判定结论是什么？",
+      "technique": "基与坐标",
+      "expected": "方程组的解为"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.2",
+    "example_id": "例13",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "向量组与线性方程组",
+    "page": 485,
+    "syllabus_note": "三对角含参方程组求解",
+    "commentary": "评注（1）三对角线形行列式的计算通常有两种方法：①递推法；②归纳法证明.\n\n(2) 该题也可以用高斯消元法求解，但要困难些."
+  }
+}
