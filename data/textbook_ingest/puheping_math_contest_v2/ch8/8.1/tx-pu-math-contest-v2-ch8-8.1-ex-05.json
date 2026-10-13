@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-05",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.ops",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设有级数 $\\sum_{n=1}^{\\infty} \\frac{x^n}{(1+x)(1+x^2) \\cdots (1+x^n)} (x > 0)$ . (1) 判别级数的敛散性. (2) 求 $x \\geqslant 1$ 时级数的和.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比较判别法",
+    "比值审敛法",
+    "部分和/缩项求和",
+    "单调有界准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析（1）这是一个正项级数，将 $x$ 视为参变量，其敛散性可能与 $x$ 有关。可考虑用比值法或比较法。\n\n(2) 级数的和是部分和的极限. 将部分和缩项是解决问题的关键."
+      },
+      {
+        "id": "s2",
+        "text": "（1）方法 1 因为 x > 0，所以该级数是正项级数。记 $a_{n} = \\frac{x^{n}}{(1 + x)(1 + x^{2}) \\cdots (1 + x^{n})}$ ，\n\n$$\n\\lim _ {n \\rightarrow \\infty} \\frac {a _ {n + 1}}{a _ {n}} = \\lim _ {n \\rightarrow \\infty} \\frac {x}{1 + x ^ {n + 1}} = \\left\\{\\begin{array}{l l}x,&0 <   x <   1,\\\\\\frac {1}{2},&x = 1,\\\\0,&x > 1.\\end{array}\\right.\n$$\n\n即对任意 $x > 0$ ，均有 $\\lim_{n\\to \\infty}\\frac{a_{n + 1}}{a_n} = \\rho$ 存在，且 $\\rho < 1$ .由比值法知级数收敛."
+      },
+      {
+        "id": "s3",
+        "text": "方法2 因为有\n\n$$\na _ {n} = \\frac {x ^ {n}}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {n})} \\leqslant \\left\\{ \\begin{array}{l l} x ^ {n}, & 0 <   x <   1 \\\\ \\frac {1}{2 ^ {n}}, & x = 1, \\triangleq b _ {n}. \\\\ \\left(\\frac {x}{1 + x}\\right) ^ {n}, & x > 1. \\end{array} \\right.\n$$\n\n对任意 $x > 0$ ，由于级数 $\\sum_{n=1}^{\\infty} b_n$ 均收敛，由比较法知原级数收敛."
+      },
+      {
+        "id": "s4",
+        "text": "方法3\n\n$$\na _ {n} = \\frac {(x ^ {n} + 1) - 1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {n})} = \\frac {1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {n - 1})} - \\frac {1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {n})}.\n$$\n\n级数的部分和为\n\n$$\n\\begin{array}{r l} S _ {n} & = \\sum_ {k = 1} ^ {n} a _ {k} = \\sum_ {k = 1} ^ {n} \\left[ \\frac {1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {k - 1})} - \\frac {1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {k})} \\right] \\\\ & = 1 - \\frac {1}{(1 + x) (1 + x ^ {2}) \\cdots (1 + x ^ {n})} <   1. \\end{array}\n$$\n\n即该级数的部分和有上界，所以级数对一切 $x > 0$ 均收敛."
+      },
+      {
+        "id": "s5",
+        "text": "(2) 由 $S_{n} = \\sum_{k=1}^{n} a_{k} = 1 - \\frac{1}{(1 + x)(1 + x^{2}) \\cdots (1 + x^{n})}$ , 当 $x \\geqslant 1$ 时级数的和为 $S = \\lim_{n \\to \\infty} S_{n} = 1$ ."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "比较判别法",
+      "比值审敛法",
+      "部分和/缩项求和",
+      "单调有界准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项如何化简或裂项？部分和能否写成望远镜形式？",
+      "technique": "比较判别法",
+      "expected": "写出通项或差分形式，求部分和极限得到级数和。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数的和或敛散性结论是什么？",
+      "technique": "比值审敛法",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例5",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 393,
+    "syllabus_note": "参变正项级数敛散性与求和",
+    "commentary": "评注 （1）由方法3可看出，本题结论可推广为：设 $x_{n}>0(n=1,2,\\cdots)$ ，则下面级数收敛，\n\n$$\n\\sum_ {n = 1} ^ {\\infty} \\frac {x _ {n}}{(1 + x _ {1}) (1 + x _ {2}) \\cdots (1 + x _ {n})}.\n$$\n\n(2) 求数项级数的和通常有以下 4 种方式:\n\n① 利用级数和的定义，即求级数部分和的极限（常用缩项法、夹逼法则等）；\n\n② 转化为定积分计算（见 1.2 节）；\n\n③ 利用已知的级数和公式（见8.3节“几个常用的麦克劳林展开式”）；\n\n④ 利用幂级数的和函数来计算（见8.3节例11、12、13）."
+  }
+}

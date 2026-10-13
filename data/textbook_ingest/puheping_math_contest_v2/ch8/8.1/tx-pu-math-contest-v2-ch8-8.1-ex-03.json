@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-03",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "研究级数 $\\sqrt{2} + \\sqrt{2 - \\sqrt{2}} + \\sqrt{2 - \\sqrt{2 + \\sqrt{2}}} + \\sqrt{2 - \\sqrt{2 + \\sqrt{2 + \\sqrt{2}}}} + \\cdots$ 的收敛性.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比值审敛法",
+    "单调有界准则",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该级数的通项难以表示成 $n$ 的显函数形式，但很容易找到相邻两项之间的关系，所以用比值法是首选."
+      },
+      {
+        "id": "s2",
+        "text": "令 $A_{1} = \\sqrt{2}$ ， $A_{n} = \\sqrt{2 + A_{n - 1}} (n = 1,2,\\dots)$ ，则原级数可表示为 $\\sqrt{2} + \\sum_{n=1}^{\\infty} \\sqrt{2 - A_n}$ ."
+      },
+      {
+        "id": "s3",
+        "text": "$\\{A_{n}\\}$ 单调递增且有上界2，则存在极限，设 $\\lim_{n\\to \\infty}A_n = a$ ，在 $A_{n} = \\sqrt{2 + A_{n - 1}}$ 的两边取极限得 $a = \\sqrt{2 + a}\\Rightarrow a = 2$"
+      },
+      {
+        "id": "s4",
+        "text": "由比值法可知 $\\lim_{n\\to \\infty}\\frac{\\sqrt{2 - A_{n + 1}}}{\\sqrt{2 - A_n}} = \\lim_{n\\to \\infty}\\frac{\\sqrt{2 - \\sqrt{2 + A_n}}}{\\sqrt{2 - A_n}} = \\lim_{n\\to \\infty}\\frac{1}{\\sqrt{2 + \\sqrt{2 + A_n}}} = \\frac{1}{2} < 1$ ，原级数收敛."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "比值审敛法",
+      "单调有界准则",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比值审敛法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "单调有界准则",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 392,
+    "syllabus_note": "嵌套根式通项与比较"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-18",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $a > 1$ ，数列 $\\{p_n\\}$ 满足 $p_n > 0$ ， $p_{n+1} \\geqslant p_n$ 。证明级数 $\\sum_{n=1}^{\\infty} \\frac{p_n - p_{n-1}}{p_n p_{n-1}^a}$ 收敛。",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "部分和/缩项求和",
+    "证明技巧",
+    "单调有界准则",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若用比较法，当 $p_n \\to \\infty$ 时，难以找到相比较的标准。将级数的通项视为两项和，则级数成为交错级数，可用莱布尼茨准则判定其收敛性。也可将级数的通项适当放大，使其部分和易于估计（有上界），来得到收敛。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 因为 $p_{n+1} \\geqslant p_n > 0$ ，则 $p_n \\to A$ （ $A$ 为正数），或 $p_n \\to \\infty$ .\n\n若 $p_n \\to A$ ，则 $\\exists N > 0$ ，当 $n > N$ 时，有 $p_n > \\frac{A}{2}$ ，从而有\n\n$$\n0 <   \\frac {p _ {n} - p _ {n - 1}}{p _ {n} p _ {n - 1} ^ {a}} <   \\left(\\frac {2}{A}\\right) ^ {a + 1} \\left(p _ {n} - p _ {n - 1}\\right).\n$$\n\n由于级数 $\\sum_{n=1}^{\\infty}(p_n - p_{n-1}) = A - p_0$ 收敛，所以原级数 $\\sum_{n=1}^{\\infty}\\frac{p_n - p_{n-1}}{p_np_{n-1}^a}$ 收敛.\n\n若 $p_n \\to \\infty$ ，将级数变形为\n\n$$\n\\sum_ {n = 1} ^ {\\infty} \\frac {p _ {n} - p _ {n - 1}}{p _ {n} p _ {n - 1} ^ {a}} = \\sum_ {n = 1} ^ {\\infty} \\left(\\frac {1}{p _ {n - 1} ^ {a}} - \\frac {p _ {n - 1}}{p _ {n}} \\cdot \\frac {1}{p _ {n - 1} ^ {a}}\\right).\n$$\n\n考虑交错级数\n\n$$\n\\frac {1}{p _ {0} ^ {a}} - \\frac {p _ {0}}{p _ {1}} \\cdot \\frac {1}{p _ {0} ^ {a}} + \\frac {1}{p _ {1} ^ {a}} - \\frac {p _ {1}}{p _ {2}} \\cdot \\frac {1}{p _ {1} ^ {a}} + \\dots + \\frac {1}{p _ {n - 1} ^ {a}} - \\frac {p _ {n - 1}}{p _ {n}} \\cdot \\frac {1}{p _ {n - 1} ^ {a}} + \\dots\\tag{①}\n$$\n\n因 $\\left(\\frac{p_{n-1}}{p_n} \\cdot \\frac{1}{p_{n-1}^a} / \\frac{1}{p_n^a}\\right) = \\left(\\frac{p_{n-1}}{p_n}\\right)^{1-a} > 1$ ，则\n\n$$\n\\frac {p _ {n - 1}}{p _ {n}} \\cdot \\frac {1}{p _ {n - 1} ^ {a}} \\geqslant \\frac {1}{p _ {n} ^ {a}}, \\text {并有} \\frac {1}{p _ {n - 1} ^ {a}} \\geqslant \\frac {p _ {n - 1}}{p _ {n}} \\cdot \\frac {1}{p _ {n - 1} ^ {a}}.\n$$\n\n这说明级数①的一般项是单调递减的。又因 $\\lim_{n\\to \\infty}\\frac{1}{p_{n - 1}^a} = 0$ ， $\\lim_{n\\to \\infty}\\frac{p_{n - 1}}{p_n}\\cdot \\frac{1}{p_{n - 1}^a} = 0$ ，根据莱布尼茨准则知交错级数①收敛，故原级数收敛。"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 由 $p_n > 0$ ， $p_{n + 1} \\geqslant p_n$ 知原级数是正项级数，且\n\n$$\n\\frac {p _ {n} - p _ {n - 1}}{p _ {n} p _ {n - 1} ^ {a}} = \\frac {1}{p _ {n - 1} ^ {a}} - \\frac {1}{p _ {n} p _ {n - 1} ^ {a - 1}} \\leqslant \\frac {1}{p _ {n - 1} ^ {a}} - \\frac {1}{p _ {n} ^ {a}}.\n$$\n\n则\n\n$$\nS _ {n} = \\sum_ {k = 1} ^ {n} \\frac {p _ {k} - p _ {k - 1}}{p _ {k} p _ {k - 1} ^ {a}} \\leqslant \\sum_ {k = 1} ^ {n} \\left(\\frac {1}{p _ {k - 1} ^ {a}} - \\frac {1}{p _ {k} ^ {a}}\\right) = \\frac {1}{p _ {0} ^ {a}} - \\frac {1}{p _ {n} ^ {a}} <   \\frac {1}{p _ {0} ^ {a}}.\n$$\n\n这说明原级数的部分和有上界，所以级数收敛."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "部分和/缩项求和",
+      "证明技巧",
+      "单调有界准则",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例18",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 402,
+    "syllabus_note": "单调正项差分缩项收敛",
+    "commentary": "评注（1）方法1中用到了“收敛级数任意添加括号也收敛”的性质.\n\n(2) 部分和有上界是正项级数收敛的充分必要条件."
+  }
+}

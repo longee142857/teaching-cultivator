@@ -1,0 +1,86 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-14",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\sum_{n=1}^{\\infty} a_n$ 为正项级数， $a_n$ 单调递减，证明 $\\sum_{n=1}^{\\infty} a_n$ 收敛的充分必要条件是 $\\sum_{n=1}^{\\infty} 2^n a_{2^n}$ 收敛.",
+  "answer": "收敛的充分必要条件是 $\\sum_{n=1}^{\\infty} 2^{n} a_{2^{n}}$ 收敛。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "柯西凝聚判别法",
+    "部分和/缩项求和",
+    "通项必要条件",
+    "证明技巧",
+    "单调有界准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这里难以判断 $a_{n}$ 与 $2^{n}a_{2^{n}}$ 的大小，直接用比较法有困难，可考察两级数部分和的大小。证明两级数部分和的大小关系仅取决于不同的正常数因子。"
+      },
+      {
+        "id": "s2",
+        "text": "设 $\\sum_{n=1}^{\\infty} a_n$ 与 $\\sum_{n=1}^{\\infty} 2^n a_{2^n}$ 的部分和分别为 $S_n$ 与 $\\sigma_n$ 。由于 $a_n$ 单调递减且非负，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\nS _ {2 ^ {n}} <   a _ {1} + \\left(a _ {2} + a _ {3}\\right) + \\dots + \\left(a _ {2 ^ {n}} + \\dots + a _ {2 ^ {n + 1} - 1}\\right) <   a _ {1} + 2 a _ {2} + \\dots + 2 ^ {n} a _ {2 ^ {n}} = \\sigma_ {n};\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "又"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\begin{array}{r l} S _ {2 ^ {n}} & = a _ {1} + a _ {2} + (a _ {3} + a _ {4}) + \\dots + (a _ {2 ^ {n - 1} + 1} + \\dots + a _ {2 ^ {n}}) > \\frac {1}{2} a _ {1} + a _ {2} + 2 a _ {4} + \\dots + 2 ^ {n - 1} a _ {2 ^ {n}} \\\\ & = \\frac {1}{2} (a _ {1} + 2 a _ {2} + 2 ^ {2} a _ {4} + \\dots + 2 ^ {n} a _ {2 ^ {n}}) = \\frac {1}{2} \\sigma_ {n}. \\end{array}\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "因此， $S_{2^{n}}$ 有界 $\\Leftrightarrow \\sigma_{n}$ 有界，而 $S_{n}$ 有界 $\\Leftrightarrow S_{2^{n}}$ 有界，故 $S_{n}$ 有界 $\\Leftrightarrow \\sigma_{n}$ 有界。所以 $\\sum_{n=1}^{\\infty} a_{n}$ 收敛的充分必要条件是 $\\sum_{n=1}^{\\infty} 2^{n} a_{2^{n}}$ 收敛。"
+      }
+    ],
+    "final_answer": "收敛的充分必要条件是 $\\sum_{n=1}^{\\infty} 2^{n} a_{2^{n}}$ 收敛。",
+    "techniques_used": [
+      "柯西凝聚判别法",
+      "部分和/缩项求和",
+      "通项必要条件",
+      "证明技巧",
+      "单调有界准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "柯西凝聚判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "部分和/缩项求和",
+      "expected": "收敛的充分必要条件是 $\\sum_{n=1}^{\\infty} 2^{n} a_{2^{n}}$ 收敛。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例14*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 400,
+    "starred": true,
+    "syllabus_note": "柯西凝聚判别法*",
+    "commentary": "评注 证明两正项级数有相同的敛散性最常用的方法是比较法，即证明两级数通项的大小关系仅取决于不同的正常数因子，或两通项之比有非零极限。当两级数通项直接比较有困难时，可考虑其部分和的大小。"
+  }
+}

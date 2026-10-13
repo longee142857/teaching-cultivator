@@ -1,0 +1,91 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-20",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明若正项级数 $\\sum_{n=1}^{\\infty} \\frac{1}{p_n}$ 收敛，则级数 $\\sum_{n=1}^{\\infty} \\frac{n^2}{(p_1 + p_2 + \\cdots + p_n)^2} p_n$ 收敛.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "部分和/缩项求和",
+    "证明技巧",
+    "单调有界准则",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 用比较法难以找到有效的比较标准，可考虑其部分和的有界性。为便于部分和的化简，可令 $q_{n}=p_{1}+p_{2}+\\cdots+p_{n}$ ，则 $p_{n}=q_{n}-q_{n-1}$ 。部分和的放大要充分利用 $\\sum_{n=1}^{\\infty}\\frac{1}{p_{n}}$ 的收敛性（有界）。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $q_{n} = p_{1} + p_{2} + \\dots +p_{n}$ ，由级数 $\\sum_{n = 1}^{\\infty}\\frac{1}{p_n}$ 收敛，设 $\\sum_{n = 1}^{\\infty}\\frac{1}{p_n} = T$ ，则所讨论级数的部分和"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} S _ {N} & = \\sum_ {n = 1} ^ {N} \\frac {n ^ {2}}{\\left(p _ {1} + p _ {2} + \\cdots + p _ {n}\\right) ^ {2}} p _ {n} = \\sum_ {n = 1} ^ {N} \\frac {n ^ {2}}{q _ {n} ^ {2}} (q _ {n} - q _ {n - 1}) \\quad (q _ {0} = 0) \\\\ & \\leqslant \\frac {1}{p _ {1}} + \\sum_ {n = 2} ^ {N} \\frac {n ^ {2}}{q _ {n} q _ {n - 1}} (q _ {n} - q _ {n - 1}) = \\frac {1}{p _ {1}} + \\sum_ {n = 2} ^ {N} \\frac {n ^ {2}}{q _ {n - 1}} - \\sum_ {n = 2} ^ {N} \\frac {n ^ {2}}{q _ {n}} \\\\ & = \\frac {1}{p _ {1}} + \\sum_ {n = 1} ^ {N} \\frac {(n + 1) ^ {2}}{q _ {n}} - \\sum_ {n = 2} ^ {N} \\frac {n ^ {2}}{q _ {n}} \\leqslant \\frac {5}{p _ {1}} + \\sum_ {n = 2} ^ {N} \\frac {2 n}{q _ {n}} + \\sum_ {n = 2} ^ {N} \\frac {1}{q _ {n}}. \\end{array}\\tag{①}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "利用柯西不等式，有"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\left(\\sum_ {n = 2} ^ {N} \\frac {n}{q _ {n}}\\right) ^ {2} \\leqslant \\left(\\sum_ {n = 2} ^ {N} \\frac {n ^ {2}}{q _ {n} ^ {2}} p _ {n}\\right) \\left(\\sum_ {n = 2} ^ {N} \\frac {1}{p _ {n}}\\right),\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "①式化为"
+      },
+      {
+        "id": "s7",
+        "text": "$$\nS _ {N} \\leqslant \\frac {5}{p _ {1}} + 2 \\sqrt {S _ {N} T} + T \\quad (\\text {注意} \\sum_ {n = 2} ^ {N} \\frac {1}{q _ {n}} <   \\sum_ {n = 2} ^ {N} \\frac {1}{p _ {n}} <   T).\\tag{②}\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "②式是关于 $\\sqrt{S_{N}}$ 的 2 次不等式，解之得 $0 < \\sqrt{S_{N}} \\leqslant \\sqrt{T} + \\sqrt{2T + \\frac{5}{p_{1}}}$ . 级数部分和 $S_{N}$ 有上界，收敛."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "部分和/缩项求和",
+      "证明技巧",
+      "单调有界准则",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例20*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 404,
+    "starred": true,
+    "syllabus_note": "1/p_n 收敛⇒加权平方型收敛*"
+  }
+}

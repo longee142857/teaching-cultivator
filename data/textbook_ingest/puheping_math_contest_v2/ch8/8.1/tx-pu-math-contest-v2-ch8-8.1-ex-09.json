@@ -1,0 +1,69 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-09",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $\\sum_{n=1}^{\\infty} \\ln \\left[ n(n+1)^a (n+2)^b \\right]$ ，问 $a$ 和 $b$ 取何值时该级数收敛.",
+  "answer": "收敛的充要条件是 $1 + a + b = 0$ ， $a + 2b = 0$ 。即 $a = -2$ ， $b = 1$ 。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比较判别法",
+    "证明技巧",
+    "通项必要条件"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 容易想到的方法: (1) 利用对数的性质化简部分和, 再讨论其收敛性; (2) 利用泰勒公式将级数的通项展开, 然后讨论其收敛性."
+      },
+      {
+        "id": "s2",
+        "text": "方法1 若级数收敛，则 $a_{n} = \\ln \\left[n(n + 1)^{a}(n + 2)^{b}\\right] \\to 0$ ， $(n\\to \\infty)$ ，必有 $a + b = -1$ 从而\n\n$$\n\\begin{array}{l}\\sum_ {n = 1} ^ {\\infty} \\ln \\left[ n (n + 1) ^ {a} (n + 2) ^ {b} \\right] = \\sum_ {n = 1} ^ {\\infty} \\ln \\frac {n}{n + 1} \\left(\\frac {n + 2}{n + 1}\\right) ^ {b}\\\\= \\lim _ {n \\rightarrow \\infty} \\ln \\left(\\frac {1}{2} \\cdot \\frac {2}{3} \\cdot \\dots \\cdot \\frac {n}{n + 1}\\right)\\left(\\frac {3}{2} \\cdot \\frac {4}{3} \\cdot \\dots \\cdot \\frac {n + 2}{n + 1}\\right) ^ {b} = \\lim _ {n \\rightarrow \\infty} \\ln \\left(\\frac {1}{n + 1}\\right)\\left(\\frac {n + 2}{2}\\right) ^ {b}.\\end{array}\n$$\n\n上面极限存在的充要条件是 $b = 1$ ，代入①式得 $a = -2$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 将级数的通项变形，并由泰勒公式得\n\n$$\n\\begin{array}{r l} & {u _ {n} = \\ln \\Big [ n (n + 1) ^ {a} (n + 2) ^ {b} \\Big ] = \\ln n + a \\ln (n + 1) + b \\ln (n + 2)} \\\\ & {\\qquad = (1 + a + b) \\ln n + a \\ln \\left(1 + \\frac {1}{n}\\right) + b \\ln \\left(1 + \\frac {2}{n}\\right)} \\\\ & {\\qquad = (1 + a + b) \\ln n + a \\left(\\frac {1}{n} - \\frac {1}{2 n ^ {2}} + o \\left(\\frac {1}{n ^ {2}}\\right)\\right) + b \\left(\\frac {2}{n} - \\frac {1}{2} \\left(\\frac {2}{n}\\right) ^ {2} + o \\left(\\frac {1}{n ^ {2}}\\right)\\right)} \\\\ & {\\qquad = (1 + a + b) \\ln n + (a + 2 b) \\frac {1}{n} - \\frac {1}{2} (a + 4 b) \\frac {1}{n ^ {2}} + o \\left(\\frac {1}{n ^ {2}}\\right).} \\end{array}\n$$\n\n则级数 $\\sum_{n=1}^{\\infty} u_n$ 收敛的充要条件是 $1 + a + b = 0$ ， $a + 2b = 0$ 。即 $a = -2$ ， $b = 1$ 。"
+      }
+    ],
+    "final_answer": "收敛的充要条件是 $1 + a + b = 0$ ， $a + 2b = 0$ 。即 $a = -2$ ， $b = 1$ 。",
+    "techniques_used": [
+      "比较判别法",
+      "证明技巧",
+      "通项必要条件"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛的充要条件是 $1 + a + b = 0$ ， $a + 2b = 0$ 。即 $a = -2$ ， $b = 1$ 。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例9",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 396,
+    "syllabus_note": "对数通项等价与参数范围",
+    "commentary": "评注 利用泰勒公式展开的目的是找到通项 $u_{n}$ 关于无穷小 $\\frac{1}{n}$ 的阶数 $p$ ，以便于与 $\\frac{1}{n^p}$ 比较。确定 $u_{n}$ 阶的常用方法：一些常用的等价无穷小或泰勒公式。"
+  }
+}

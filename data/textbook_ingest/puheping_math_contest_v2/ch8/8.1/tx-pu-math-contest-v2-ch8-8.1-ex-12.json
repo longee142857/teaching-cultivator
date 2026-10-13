@@ -1,0 +1,71 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-12",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.positive",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设实数列 $\\{a_{n}\\}, \\{b_{n}\\}$ 满足 $\\mathbf{e}^{a_n} = a_n + \\mathbf{e}^{b_n} (n \\geqslant 1)$ . 已知 $a_{n} > 0$ ，且 $\\sum_{n=1}^{\\infty} a_{n}$ 收敛. 证明 $\\sum_{n=1}^{\\infty} \\frac{b_n}{a_n}$ 也收敛.",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "比较判别法"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 易判断 $\\sum_{n=1}^{\\infty} \\frac{b_n}{a_n}$ 是正项级数，利用比较法只需证明 $\\lim_{n \\to \\infty} \\left( \\frac{b_n}{a_n} / a_n \\right)$ 存在，或 $\\frac{b_n}{a_n} \\leqslant a_n$ 。"
+      },
+      {
+        "id": "s2",
+        "text": "令 $f(x) = \\mathrm{e}^x - x$ ( $x > 0$ )，则 $f(0) = 1$ ， $f'(x) = \\mathrm{e}^x - 1 > 0$ ，所以 $\\mathrm{e}^{b_n} = \\mathrm{e}^{a_n} - a_n > 1$ ， $b_n = \\ln(\\mathrm{e}^{a_n} - a_n) > 0$ . $\\sum_{n=1}^{\\infty} \\frac{b_n}{a_n}$ 是正项级数."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 证明 $\\lim_{n\\to \\infty}\\left(\\frac{b_n}{a_n} / a_n\\right)$ 存在. $\\lim_{n\\to \\infty}\\left(\\frac{b_n}{a_n} / a_n\\right) = \\lim_{n\\to \\infty}\\frac{b_n}{a_n^2} = \\lim_{n\\to \\infty}\\frac{\\ln(e^{a_n} - a_n)}{a_n^2}$ , 由 $\\sum_{n=1}^{\\infty}a_n$ 收敛知, $\\lim_{n\\to \\infty}a_n = 0$ . 而\n\n$$\n\\lim _ {x \\rightarrow 0 ^ {+}} \\frac {\\ln \\left(\\mathrm{e} ^ {x} - x\\right)}{x ^ {2}} = \\lim _ {x \\rightarrow 0 ^ {+}} \\frac {\\mathrm{e} ^ {x} - 1}{2 x \\left(\\mathrm{e} ^ {x} - x\\right)} = \\frac {1}{2},\n$$\n\n所以 $\\lim_{n\\to \\infty}\\left(\\frac{b_n}{a_n} /a_n\\right) = \\frac{1}{2}$ . 故 $\\sum_{n = 1}^{\\infty}\\frac{b_n}{a_n}$ 收敛."
+      },
+      {
+        "id": "s4",
+        "text": "方法2 证明 $\\frac{b_n}{a_n} \\leqslant a_n$ ，即证明 $b_n \\leqslant a_n^2$ .\n\n令 $f(x) = \\mathrm{e}^{x} - x$ ， $g(x) = \\mathrm{e}^{x^2}$ （ $0 \\leqslant x \\leqslant \\ln 2$ ），则\n\n$$\nf ^ {\\prime} (x) = \\mathrm{e} ^ {x} - 1, \\quad g ^ {\\prime} (x) = 2 x \\mathrm{e} ^ {x ^ {2}}, \\quad f ^ {\\prime \\prime} (x) = \\mathrm{e} ^ {x}, \\quad g ^ {\\prime \\prime} (x) = (2 + 4 x ^ {2}) \\mathrm{e} ^ {x ^ {2}}.\n$$\n\n由于 $f(0) = g(0) = 1$ ， $f^{\\prime}(0) = g^{\\prime}(0) = 0$ ， $f''(x)\\leqslant g''(x)$ ，所以 $f(x)\\leqslant g(x)$ ，从而当 $n$ 较大时有\n\n$$\n\\mathrm{e} ^ {a _ {n} ^ {2}} \\geqslant \\mathrm{e} ^ {a _ {n}} - a _ {n} = \\mathrm{e} ^ {b _ {n}} \\Rightarrow b _ {n} \\leqslant a _ {n} ^ {2}.\n$$"
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "证明技巧",
+      "比较判别法"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项性态如何？宜用比较/比值/根值/凝聚中的哪一种审敛法？",
+      "technique": "比较判别法",
+      "expected": "根据通项选择审敛法，并与几何级数或p级数等标准级数挂钩。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛还是发散？关键估计或极限是什么？",
+      "technique": "比较判别法",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 397,
+    "syllabus_note": "指数关系下的比较收敛",
+    "commentary": "评注 要判断通项为抽象形式的正项级数的敛散性，常用方法：\n\n(1) 比较法. 其比较的标准除了常用的等比级数、 $p$ 级数, 还有就是题设中的已知级数;\n\n(2) 用缩项法确定部分和是否有极限；\n\n(3) 确定部分和是否有（上）界."
+  }
+}

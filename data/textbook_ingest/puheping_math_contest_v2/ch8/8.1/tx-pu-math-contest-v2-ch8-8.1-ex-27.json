@@ -1,0 +1,72 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.1-ex-27",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.ops",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $B(n)$ 为正整数 $n$ 的二进制表达式中 1 的数目。例如， $B(6) = B(110_2) = 2, B(15) = B(1111_2) = 4$ 。判定 $\\exp\\left(\\sum_{n=1}^{\\infty} \\frac{B(n)}{n(n+1)}\\right)$ 是否为一个有理数。",
+  "answer": "收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "比较判别法",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 若能算出级数 $\\sum_{n=1}^{\\infty} \\frac{B(n)}{n(n+1)}$ 的和, 则问题自然解决. 要求出级数的和必须要知道 $B(n)$ 与 $n$ 的关系或者 $B(n)$ 的递推式."
+      },
+      {
+        "id": "s2",
+        "text": "首先证明级数是收敛的.\n\n如果在二进制表示中 $n$ 共有 $d$ 位，那么 $2^{d - 1} \\leqslant n$ ，因而 $B(n) \\leqslant d \\leqslant 1 + \\ln_2 n$ ，由比较法知，级数\n\n$\\sum_{n=1}^{\\infty}\\frac{B(n)}{n(n+1)}$ 收敛.\n\n下面用两种方法来计算级数的和."
+      },
+      {
+        "id": "s3",
+        "text": "方法1 每个 $n$ 都可以唯一表示为 $n_0 + 2n_1 + 2^2 n_2 + \\dots$ ，其中 $n_i \\in \\{0,1\\}$ （除有限多个 $i$ 以外， $n_i = 0$ ）。由于 $1 + 2 + 2^2 + \\dots + 2^{i-1} = 2^i - 1$ ，可知，当且仅当 $n$ 具有 $k + 2^i + 2^{i+1}j$ 的形式时， $n_i = 1$ （这里 $k$ 是 $\\{0,1,2,\\dots,2^i - 1\\}$ 中的某个数，而 $j \\in \\{0,1,2,\\dots\\}$ ）。于是\n\n$$\n\\begin{array}{l} S = \\sum_ {n = 1} ^ {\\infty} \\frac {1}{n (n + 1)} \\sum_ {i = 1} ^ {\\infty} n _ {i} = \\sum_ {i = 0} ^ {\\infty} \\sum_ {j = 0} ^ {\\infty} \\sum_ {k = 0} ^ {2 ^ {i} - 1} \\frac {1}{(k + 2 ^ {i} + 2 ^ {i + 1} j) (1 + k + 2 ^ {i} + 2 ^ {i + 1} j)} \\\\ = \\sum_ {i = 0} ^ {\\infty} \\sum_ {j = 0} ^ {\\infty} \\left(\\frac {1}{2 ^ {i} (1 + 2 j)} - \\frac {1}{2 ^ {i} (2 + 2 j)}\\right) = \\sum_ {i = 0} ^ {\\infty} \\frac {1}{2 ^ {i}} \\sum_ {j = 1} ^ {\\infty} (- 1) ^ {j - 1} \\frac {1}{j}. \\end{array}\n$$\n\n由于 $1 - \\frac{1}{2} +\\frac{1}{3} -\\frac{1}{4} +\\dots = \\ln 2$ ，所以 $S = \\ln 2\\sum_{i = 0}^{\\infty}\\frac{1}{2^i} = 2\\ln 2 = \\ln 4$ ，故 $\\mathbf{e}^s = 4$ 是有理数."
+      },
+      {
+        "id": "s4",
+        "text": "方法2 由于 $B(2m) = B(m)$ ， $B(2m + 1) = 1 + B(2m) = 1 + B(m)$ ，于是\n\n$$\n\\begin{array}{r l} S & = \\sum_ {n = 1} ^ {\\infty} \\frac {B (n)}{n (n + 1)} = \\sum_ {m = 0} ^ {\\infty} \\frac {B (2 m + 1)}{(2 m + 1) (2 m + 2)} + \\sum_ {m = 1} ^ {\\infty} \\frac {B (2 m)}{2 m (2 m + 1)} \\\\ & = \\sum_ {m = 0} ^ {\\infty} \\frac {1 + B (m)}{(2 m + 1) (2 m + 2)} + \\sum_ {m = 1} ^ {\\infty} \\frac {B (m)}{2 m (2 m + 1)} \\\\ & = \\sum_ {m = 0} ^ {\\infty} \\frac {1}{(2 m + 1) (2 m + 2)} + \\sum_ {m = 1} ^ {\\infty} B (m) \\left(\\frac {1}{2 m (2 m + 1)} + \\frac {1}{(2 m + 1) (2 m + 2)}\\right) \\\\ & = \\sum_ {m = 0} ^ {\\infty} \\left(\\frac {1}{2 m + 1} - \\frac {1}{2 m + 2}\\right) + \\sum_ {m = 1} ^ {\\infty} B (m) \\left(\\frac {1}{2 m} - \\frac {1}{2 m + 2}\\right) \\\\ & = \\ln 2 + \\frac {1}{2} \\sum_ {m = 1} ^ {\\infty} \\frac {B (m)}{m (m + 1)} = \\ln 2 + \\frac {1}{2} S. \\end{array}\n$$\n\n所以 $S = \\ln 4$ ， $\\mathbf{e}^s = 4$ 是有理数."
+      }
+    ],
+    "final_answer": "收敛.",
+    "techniques_used": [
+      "比较判别法",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "通项如何化简或裂项？部分和能否写成望远镜形式？",
+      "technique": "比较判别法",
+      "expected": "写出通项或差分形式，求部分和极限得到级数和。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数的和或敛散性结论是什么？",
+      "technique": "证明技巧",
+      "expected": "收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.1",
+    "example_id": "例27*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "正项级数",
+    "page": 408,
+    "starred": true,
+    "syllabus_note": "二进制1的个数级数与有理判断*",
+    "commentary": "评注 方法2中的计算必须要以级数收敛为前提，所以先证明级数收敛是必要的."
+  }
+}
