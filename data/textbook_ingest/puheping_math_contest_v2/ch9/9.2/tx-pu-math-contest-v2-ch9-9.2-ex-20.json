@@ -8,7 +8,7 @@
   "ability_goal": "construct",
   "item_form": "proof_outline",
   "difficulty": "hit",
-  "question": "设 A, B, C 分别是 $m \\times n, s \\times t$ 与 $m \\times t$ 阶矩阵，X 是 $n \\times s$ 阶未知矩阵。证明矩阵方程 AXB = C 有解的充分必要条件是 $\\operatorname{rank}(A) = \\operatorname{rank}(A \\quad C)$ ， $\\operatorname{rank}(B) = \\operatorname{rank}\\begin{pmatrix} B \\\\ C \\end{pmatrix}$ 。",
+  "question": "设 A, B, C 分别是 $m \\times n, s \\times t$ 与 $m \\times t$ 阶矩阵，X 是 $n \\times s$ 阶未知矩阵。证明矩阵方程 AXB = C 有解的充分必要条件是 $\\mathrm{rank}\\left(A\\right) = \\mathrm{rank}(A \\quad C)$ ， $\\mathrm{rank}\\left(B\\right) = \\mathrm{rank}\\begin{pmatrix} B \\\\ C \\end{pmatrix}$ 。",
   "answer": "$$ \\boldsymbol {A} \\boldsymbol {K} _ {1} = \\boldsymbol {C}, \\quad \\boldsymbol {K} _ {2} \\boldsymbol {B} = \\boldsymbol {C}.\\tag{②} $$",
   "ref_source": "textbook:puheping_math_contest_v2",
   "techniques": [
@@ -22,11 +22,11 @@
     "steps": [
       {
         "id": "s1",
-        "text": "分析 我们知道，矩阵方程 AX = C 有解的充分必要条件是 $\\text{rank}(A) = \\text{rank}(A \\cdot C)$ ，所以只需将题目中的矩阵方程做适当的变形.\n\n若 $AXB = C$ 有解，设 $X = K$ 是它的一个解，则有\n\n$$\n\\boldsymbol {A} (\\boldsymbol {K B}) = \\boldsymbol {C}, \\quad (\\boldsymbol {A K}) \\boldsymbol {B} = \\boldsymbol {C},\n$$"
+        "text": "分析 我们知道，矩阵方程 AX = C 有解的充分必要条件是 $\\mathrm{rank}\\left(A\\right) = \\mathrm{rank}(A \\cdot C)$ ，所以只需将题目中的矩阵方程做适当的变形.\n\n若 $AXB = C$ 有解，设 $X = K$ 是它的一个解，则有\n\n$$\n\\boldsymbol {A} (\\boldsymbol {K B}) = \\boldsymbol {C}, \\quad (\\boldsymbol {A K}) \\boldsymbol {B} = \\boldsymbol {C},\n$$"
       },
       {
         "id": "s2",
-        "text": "这说明矩阵方程 AX = C 与 XB = C 均有解，从而\n\n$$\n\\operatorname{rank} (A) = \\operatorname{rank} (A C), \\quad \\operatorname{rank} (B) = \\operatorname{rank} \\binom {B} {C}.\\tag{①}\n$$\n\n反之，若①式成立，则矩阵方程 AX = C 与 XB = C 均有解，设 $X = K_{1}$ 与 $X = K_{2}$ 分别是它们的解，即"
+        "text": "这说明矩阵方程 AX = C 与 XB = C 均有解，从而\n\n$$\n\\mathrm{rank}\\left(A\\right) = \\mathrm{rank} (A C), \\quad \\mathrm{rank}\\left(B\\right) = \\mathrm{rank} \\binom {B} {C}.\\tag{①}\n$$\n\n反之，若①式成立，则矩阵方程 AX = C 与 XB = C 均有解，设 $X = K_{1}$ 与 $X = K_{2}$ 分别是它们的解，即"
       },
       {
         "id": "s3",
