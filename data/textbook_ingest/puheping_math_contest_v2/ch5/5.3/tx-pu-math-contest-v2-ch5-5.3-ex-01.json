@@ -1,0 +1,66 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-01",
+  "subject": "math",
+  "l2": "曲线积分与格林公式",
+  "l3_id": "math.calc.line.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "求空间曲线 $\\Gamma: \\begin{cases} x^2 + y^2 = z \\\\ y = x \\tan z \\end{cases}$ 从原点到第一卦限中的点 $(a, b, c)$ 的一段弧长.",
+  "answer": "L = \\int_ {\\Gamma} d s = \\int_ {0} ^ {c} \\frac {2 z + 1}{2 \\sqrt {z}} d z = \\frac {1}{3} \\sqrt {c} (3 + 2 c).",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "参数化",
+    "弧长元"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 曲线弧长为 $\\int_{\\Gamma} \\mathrm{d}s$ ，关键是要求得 $\\mathrm{d}s$ 的一元表达式。为此可将曲线方程参数化，或由 $\\Gamma$ 的方程通过微分运算来得到。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 取曲线的参数方程 $x = \\sqrt{z}\\cos z, y = \\sqrt{z}\\sin z, z = z$ ，则\n\n$$\nx _ {z} = \\frac {1}{2 \\sqrt {z}} \\cos z - \\sqrt {z} \\sin z, y _ {z} = \\frac {1}{2 \\sqrt {z}} \\sin z + \\sqrt {z} \\cos z, z _ {z} = 1.\n$$\n\n弧长微元为\n\n$$\n\\begin{array}{l} \\mathrm{d} s = \\sqrt {1 + (x _ {z}) ^ {2} + (y _ {z}) ^ {2}} \\mathrm{d} z = \\sqrt {1 + \\left(\\frac {1}{2 \\sqrt {z}} \\cos z - \\sqrt {z} \\sin z\\right) ^ {2} + \\left(\\frac {1}{2 \\sqrt {z}} \\sin z + \\sqrt {z} \\cos z\\right) ^ {2}} \\mathrm{d} z \\\\ = \\sqrt {1 + \\frac {1}{4 z} + z} \\mathrm{d} z = \\sqrt {\\frac {1 + 4 z + 4 z ^ {2}}{4 z}} \\mathrm{d} z = \\frac {2 z + 1}{2 \\sqrt {z}} \\mathrm{d} z. \\end{array}\n$$\n\n所求弧长为\n\n$$\nL = \\int_ {\\Gamma} d s = \\int_ {0} ^ {c} \\frac {2 z + 1}{2 \\sqrt {z}} d z = \\frac {1}{3} \\sqrt {c} (3 + 2 c).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 曲线方程变形为 $\\left\\{ \\begin{array}{l} x^2 + y^2 = z \\\\ \\arctan \\frac{y}{x} = z \\end{array} \\right.$ ，两边求微分得\n\n$$\n\\left\\{ \\begin{array}{l} 2 x \\mathrm{d} x + 2 y \\mathrm{d} y = \\mathrm{d} z \\\\ \\frac {x \\mathrm{d} y - y \\mathrm{d} x}{x ^ {2} + y ^ {2}} = \\mathrm{d} z \\end{array} \\right. \\xrightarrow {x ^ {2} + y ^ {2} = z} (\\mathrm{d} x) ^ {2} + (\\mathrm{d} y) ^ {2} = \\left(\\frac {1}{4 z} + z\\right) (\\mathrm{d} z) ^ {2},\n\n\\mathrm{d} s = \\sqrt {(\\mathrm{d} x) ^ {2} + (\\mathrm{d} y) ^ {2} + (\\mathrm{d} z) ^ {2}} = \\sqrt {1 + \\frac {1}{4 z} + z} \\mathrm{d} z \\quad (\\text {后略}).\n$$"
+      }
+    ],
+    "final_answer": "L = \\int_ {\\Gamma} d s = \\int_ {0} ^ {c} \\frac {2 z + 1}{2 \\sqrt {z}} d z = \\frac {1}{3} \\sqrt {c} (3 + 2 c).",
+    "techniques_used": [
+      "参数化",
+      "弧长元"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲线参数化或写出弧长元 ds？对称性能否化简被积函数？",
+      "technique": "参数化",
+      "expected": "写出参数方程与 ds，必要时用对称性化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲线积分（或弧长）结果是什么？",
+      "technique": "弧长元",
+      "expected": "L = \\int_ {\\Gamma} d s = \\int_ {0} ^ {c} \\frac {2 z + 1}{2 \\sqrt {z}} d z = \\frac {1}{3} \\sqrt {c} (3 + 2 c)."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 301,
+    "syllabus_note": "空间曲线弧长/参数化"
+  }
+}

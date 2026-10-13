@@ -1,0 +1,82 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-12",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\Sigma$ 是曲面 $z = \\frac{1}{2} (x^2 + y^2)$ 在椭球面 $x^2 + y^2 + 4z^2 = 2$ 内的部分，证明：\n\n$$\n\\frac {2 \\pi}{3} \\left(2 - \\frac {\\sqrt {2}}{2}\\right) <   \\iint_ {\\Sigma} \\sqrt {x + y + 2 z + 1} d S \\leqslant \\frac {3 \\pi}{2}.\n$$",
+  "answer": "S = \\iint_ {D _ {x y}} \\sqrt {x + y + x ^ {2} + y ^ {2} + 1} \\sqrt {1 + x ^ {2} + y ^ {2}} d x d y",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "面积元/投影",
+    "极坐标",
+    "积分估值",
+    "证明技巧",
+    "参数化"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 直接计算曲面积分有困难，可考虑对被积函数做估计或利用一些已知不等式.\n\n记 $f(x,y,z) = \\sqrt{x + y + 2z + 1}$ ，先求 $f(x,y,z)$ 满足条件 $(x,y,z) \\in \\Sigma$ 的极值.\n\n由于在 $\\Sigma$ 上， $x + y + 2z + 1 = \\left(x + \\frac{1}{2}\\right)^2 + \\left(y + \\frac{1}{2}\\right)^2 + \\frac{1}{2}$ ，所以当且仅当 $x = -\\frac{1}{2}$ ， $y = -\\frac{1}{2}$ 时， $f = \\frac{\\sqrt{2}}{2}$ 为最小值，则有"
+      },
+      {
+        "id": "s2",
+        "text": "$$\n\\iint_ {\\Sigma} \\sqrt {x + y + 2 z + 1} d S \\geqslant \\frac {\\sqrt {2}}{2} \\iint_ {\\Sigma} d S.\n$$\n\n由 $\\left\\{ \\begin{array}{l} z = \\frac{1}{2} (x^2 + y^2) \\\\ x^2 + y^2 + 4z^2 = 2 \\end{array} \\right.$ 消去 $z$ ，得 $\\Sigma$ 在 $xOy$ 平面的投影区域 $D_{xy}: x^2 + y^2 \\leqslant 1$ ，\n\n$$\n\\begin{array}{r l} \\iint_ {\\Sigma} \\mathrm{d} S & = \\iint_ {D _ {x y}} \\sqrt {1 + \\left(\\frac {\\partial z}{\\partial x}\\right) ^ {2} + \\left(\\frac {\\partial z}{\\partial y}\\right) ^ {2}} \\mathrm{d} x \\mathrm{d} y = \\iint_ {D _ {x y}} \\sqrt {1 + x ^ {2} + y ^ {2}} \\mathrm{d} x \\mathrm{d} y \\\\ & = \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {1} \\sqrt {1 + \\rho^ {2}} \\rho \\mathrm{d} \\rho = \\frac {2 \\pi}{3} (2 \\sqrt {2} - 1). \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "所以\n\n$$\n\\iint_ {\\Sigma} \\sqrt {x + y + 2 z + 1} d S \\geqslant \\frac {2 \\pi}{3} \\left(2 - \\frac {\\sqrt {2}}{2}\\right).\n$$\n\n另一方面，由柯西不等式\n\n$$\n\\iint_ {\\Sigma} \\sqrt {x + y + 2 z + 1} d S = \\iint_ {D _ {x y}} \\sqrt {x + y + x ^ {2} + y ^ {2} + 1} \\sqrt {1 + x ^ {2} + y ^ {2}} d x d y"
+      },
+      {
+        "id": "s4",
+        "text": "\\begin{array}{l} \\leqslant \\left[ \\iint_ {D _ {x y}} (x + y + x ^ {2} + y ^ {2} + 1) \\mathrm{d} x \\mathrm{d} y \\right] ^ {\\frac {1}{2}} \\left[ \\iint_ {D _ {x y}} (x ^ {2} + y ^ {2} + 1) \\mathrm{d} x \\mathrm{d} y \\right] ^ {\\frac {1}{2}} \\\\ = \\iint_ {D _ {x y}} (x ^ {2} + y ^ {2} + 1) \\mathrm{d} x \\mathrm{d} y = \\frac {3 \\pi}{2}, \\end{array}\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以原不等式成立."
+      }
+    ],
+    "final_answer": "S = \\iint_ {D _ {x y}} \\sqrt {x + y + x ^ {2} + y ^ {2} + 1} \\sqrt {1 + x ^ {2} + y ^ {2}} d x d y",
+    "techniques_used": [
+      "面积元/投影",
+      "极坐标",
+      "积分估值",
+      "证明技巧",
+      "参数化"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "面积元/投影",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "极坐标",
+      "expected": "S = \\iint_ {D _ {x y}} \\sqrt {x + y + x ^ {2} + y ^ {2} + 1} \\sqrt {1 + x ^ {2} + y ^ {2}} d x d y"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例12*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 308,
+    "starred": true,
+    "syllabus_note": "抛物面片曲面积分估值*",
+    "commentary": "评注（1）由于曲面积分的被积函数是定义在曲面块上的，所以其最大值与最小值都应该是条件极值问题（曲线积分也一样）.\n\n(2) 积分的柯西不等式: $\\left|\\int_{\\Omega} f \\cdot g \\, \\mathrm{d}\\Omega\\right| \\leqslant \\left(\\int_{\\Omega} f^{2} \\, \\mathrm{d}\\Omega\\right)^{\\frac{1}{2}} \\left(\\int_{\\Omega} g^{2} \\, \\mathrm{d}\\Omega\\right)^{\\frac{1}{2}}$ . 这里的积分可以是重积分或线面积分."
+  }
+}

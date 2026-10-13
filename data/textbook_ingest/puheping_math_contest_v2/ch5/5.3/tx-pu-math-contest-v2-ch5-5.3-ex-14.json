@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-14",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "证明一个薄的均匀的球壳对一个在球外的质点产生的引力，相当于这个球壳的质量全部集中于它的几何中心时所产生的引力.",
+  "answer": "S = \\iint_ {D} \\frac {G (R \\cos \\theta - a)}{\\left[ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta \\right] ^ {3 / 2}} R ^ {2} \\sin \\",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "极坐标",
+    "球面坐标",
+    "对称性",
+    "积分估值",
+    "物理应用"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需计算球壳对质点的引力，再验证结果。为便于计算，可设球心为原点，质点在某坐标轴上。"
+      },
+      {
+        "id": "s2",
+        "text": "设球面的方程为 $\\Sigma: x^2 + y^2 + z^2 = R^2$ ，单位质点在 $z$ 轴上，其坐标为 $(0, 0, a) (a > R)$ 。设球壳对质点的引力为 $F = (F_x, F_y, F_z)$ ，由对称性，知 $F_x = F_y = 0$ ，利用球面坐标，有"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\Sigma : \\left\\{ \\begin{array}{l} x = R \\sin \\theta \\cos \\varphi \\\\ y = R \\sin \\theta \\sin \\varphi (0 \\leqslant \\theta \\leqslant \\pi , 0 \\leqslant \\varphi \\leqslant 2 \\pi), \\quad \\mathrm{d} S = R ^ {2} \\sin \\theta \\mathrm{d} \\theta \\mathrm{d} \\varphi . \\\\ z = R \\cos \\theta \\end{array} \\right."
+      },
+      {
+        "id": "s4",
+        "text": "\\begin{array}{r l} & {F _ {z} = \\iint_ {\\Sigma} \\frac {G (z - a)}{\\left[ x ^ {2} + y ^ {2} - (z - a) ^ {2} \\right] ^ {3 / 2}} \\mathrm{d} S = \\iint_ {D} \\frac {G (R \\cos \\theta - a)}{\\left[ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta \\right] ^ {3 / 2}} R ^ {2} \\sin \\theta \\mathrm{d} \\theta \\mathrm{d} \\varphi} \\\\ & {\\quad = - G R ^ {2} \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\pi} \\frac {(R \\cos \\theta - a)}{\\left[ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta \\right] ^ {3 / 2}} \\mathrm{d} \\cos \\theta} \\\\ & {\\quad = - G \\frac {2 \\pi R}{a} \\int_ {0} ^ {\\pi} (R \\cos \\theta - a) \\mathrm{d} [ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta ] ^ {- 1 / 2}} \\\\ & {\\quad = - G \\frac {2 \\pi R}{a} \\Bigg [ (R \\cos \\theta - a) (R ^ {2} + a ^ {2} - 2 a R \\cos \\theta) ^ {- 1 / 2} ] _ {0} ^ {\\pi} - \\int_ {0} ^ {\\pi} [ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta ] ^ {- 1 / 2}   \\mathrm{d} (R \\cos \\theta - a) \\Bigg ]} \\\\ & {\\quad = - G \\frac {2 \\pi R}{a} \\Bigg [ 0 + \\frac {1}{2 a} \\int_ {0} ^ {\\pi} [ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta ] ^ {- 1 / 2}   \\mathrm{d} (R ^ {2} + a ^ {2} - 2 a R \\cos \\theta) \\Bigg ]} \\\\ & {\\quad = - G \\frac {2 \\pi R}{a ^ {2}} [ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta ] ^ {1 / 2}   | _ {0} ^ {\\pi} = - G \\frac {4 \\pi R ^ {2}}{a ^ {2}} (G   \\text {为引力系数，负号表示引力的方向}).} \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "S = \\iint_ {D} \\frac {G (R \\cos \\theta - a)}{\\left[ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta \\right] ^ {3 / 2}} R ^ {2} \\sin \\",
+    "techniques_used": [
+      "极坐标",
+      "球面坐标",
+      "对称性",
+      "积分估值",
+      "物理应用"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "极坐标",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "球面坐标",
+      "expected": "S = \\iint_ {D} \\frac {G (R \\cos \\theta - a)}{\\left[ R ^ {2} + a ^ {2} - 2 a R \\cos \\theta \\right] ^ {3 / 2}} R ^ {2} \\sin \\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例14*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 309,
+    "starred": true,
+    "syllabus_note": "均匀球壳对质点引力*",
+    "commentary": "评注 若该题用直角坐标系计算，则较为困难。一是直角坐标系中球面必须要分块才便于写出曲面的显函数方程；二是积分计算也相对困难。对大于半球的球冠都适宜选球面坐标系计算积分。"
+  }
+}

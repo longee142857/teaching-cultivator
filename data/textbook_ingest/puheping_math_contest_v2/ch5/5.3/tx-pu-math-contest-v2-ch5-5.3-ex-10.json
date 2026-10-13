@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch5-5.3-ex-10",
+  "subject": "math",
+  "l2": "曲面积分与高斯斯托克斯",
+  "l3_id": "math.calc.surf.first",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $f(x, y, z) = 2x^4 - y^4 + 3z^4 + x^2y^2 - 2x^2z^2 + y^2z^2$ ，求 $\\oiint_{\\Sigma} f(x, y, z) \\mathrm{d}S$ ，其中 $\\Sigma$ 为球心在原点，半径为2的球面。",
+  "answer": "t = 1$ ，可得",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "弧长元",
+    "面积元/投影",
+    "极坐标",
+    "球面坐标",
+    "对称性"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 被积函数是 $x, y, z$ 的齐次函数，利用齐次函数的性质可将该积分转化为第二型曲面积分，再用高斯公式计算会更为简便。直接积分计算量较大，若利用曲面的对称性，其计算量能够大幅减小。"
+      },
+      {
+        "id": "s2",
+        "text": "方法1 方程 $f(tx,ty,tz) = t^4 f(x,y,z)$ 两边对 $t$ 求导，并取 $t = 1$ ，可得\n\n$$\nx \\frac {\\partial f}{\\partial x} + y \\frac {\\partial f}{\\partial y} + z \\frac {\\partial f}{\\partial z} = 4 f (x, y, z).\n$$\n\n注意到 $\\Sigma$ 的外侧单位法向量为 $\\left(\\frac{x}{2}, \\frac{y}{2}, \\frac{z}{2}\\right)$ ，记 $\\Sigma$ 所围空间区域为 $\\Omega$ ，则有\n\n$$\n\\begin{array}{r l} & {\\oint_ {\\Sigma} f (x, y, z) \\mathrm{d} S = \\frac {1}{4} \\oint_ {\\Sigma} \\left(x \\frac {\\partial f}{\\partial x} + y \\frac {\\partial f}{\\partial y} + z \\frac {\\partial f}{\\partial z}\\right) \\mathrm{d} S = \\frac {1}{2} \\oint_ {\\Sigma} \\frac {\\partial f}{\\partial x} \\mathrm{d} y \\mathrm{d} z + \\frac {\\partial f}{\\partial y} \\mathrm{d} z \\mathrm{d} x + \\frac {\\partial f}{\\partial z} \\mathrm{d} x \\mathrm{d} y} \\\\ & {\\quad \\stackrel {\\text {高斯公式}} {=} \\frac {1}{2} \\iiint_ {\\Omega} \\left(\\frac {\\partial^ {2} f}{\\partial x ^ {2}} + \\frac {\\partial^ {2} f}{\\partial y ^ {2}} + \\frac {\\partial^ {2} f}{\\partial z ^ {2}}\\right) \\mathrm{d} V = \\iiint_ {\\Omega} (1 1 x ^ {2} - 4 y ^ {2} + 1 7 z ^ {2}) \\mathrm{d} V.} \\end{array}\n$$\n\n由于 $\\Omega$ 关于 $x, y, z$ 轮换对称，有\n\n$$\n\\begin{array}{r l} \\iiint_ {\\Omega} x ^ {2} \\mathrm{d} V & = \\iiint_ {\\Omega} y ^ {2} \\mathrm{d} V = \\iiint_ {\\Omega} z ^ {2} \\mathrm{d} V = \\frac {1}{3} \\iiint_ {\\Omega} (x ^ {2} + y ^ {2} + z ^ {2}) \\mathrm{d} V \\\\ & = \\frac {1}{3} \\int_ {0} ^ {2 \\pi} \\mathrm{d} \\varphi \\int_ {0} ^ {\\pi} \\mathrm{d} \\theta \\int_ {0} ^ {2} r ^ {4} \\sin \\theta \\mathrm{d} r = \\frac {1 2 8}{1 5} \\pi , \\end{array}\n$$\n\n所以\n\n$$\n\\oiint_ {\\Sigma} f (x, y, z) \\mathrm{d} S = (1 1 - 4 + 1 7) \\cdot \\frac {1 2 8}{1 5} \\pi = \\frac {1 0 2 4 \\pi}{5}.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法2 由球面的对称性，知\n\n$$\n\\oiint_ {\\Sigma} x ^ {4} \\mathrm{d} S = \\oiint_ {\\Sigma} y ^ {4} \\mathrm{d} S = \\oiint_ {\\Sigma} z ^ {4} \\mathrm{d} S, \\quad \\oiint_ {\\Sigma} x ^ {2} y ^ {2} \\mathrm{d} S = \\oiint_ {\\Sigma} x ^ {2} z ^ {2} \\mathrm{d} S = \\oiint_ {\\Sigma} y ^ {2} z ^ {2} \\mathrm{d} S.\n$$\n\n所以\n\n$$\n\\oiint_ {\\Sigma} f (x, y, z) \\mathrm{d} S = 4 \\oiint_ {\\Sigma} x ^ {4} \\mathrm{d} S.\n$$\n\n取球面坐标，在 $\\Sigma$ 上有 $x = 2\\sin \\theta \\cos \\varphi, \\mathrm{d}S = 2^2\\sin \\theta \\mathrm{d}\\theta \\mathrm{d}\\varphi,$ 所以\n\n$$\n\\begin{array}{r l} \\iint_ {\\Sigma} f (x, y, z) \\mathrm{d} S & = 4 \\iint_ {\\Sigma} x ^ {4} \\mathrm{d} S = 4 \\cdot 2 ^ {6} \\int_ {0} ^ {2 \\pi} \\cos^ {4} \\varphi \\mathrm{d} \\varphi \\int_ {0} ^ {\\pi} \\sin^ {5} \\theta \\mathrm{d} \\theta \\\\ & = 4 \\cdot 2 ^ {6} \\cdot 4 \\cdot 2 \\int_ {0} ^ {\\frac {\\pi}{2}} \\cos^ {4} \\varphi \\mathrm{d} \\varphi \\int_ {0} ^ {\\frac {\\pi}{2}} \\sin^ {5} \\theta \\mathrm{d} \\theta \\\\ & = 2 ^ {1 1} \\cdot \\frac {3 \\cdot 1}{4 \\cdot 2} \\cdot \\frac {\\pi}{2} \\cdot \\frac {4 \\cdot 2}{5 \\cdot 3 \\cdot 1} = \\frac {1 0 2 4}{5} \\pi . \\end{array}\n$$"
+      }
+    ],
+    "final_answer": "t = 1$ ，可得",
+    "techniques_used": [
+      "弧长元",
+      "面积元/投影",
+      "极坐标",
+      "球面坐标",
+      "对称性"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何将曲面投影并写出面积元 dS？宜用直角/极/球面参数吗？对称性如何用？",
+      "technique": "面积元/投影",
+      "expected": "选定投影域与参数，写出 dS 并利用对称/形心等化简。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终第一型曲面积分（或面积/物理量）结果是什么？",
+      "technique": "面积元/投影",
+      "expected": "t = 1$ ，可得"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第5章 多元数量值函数积分学",
+    "section": "5.3",
+    "example_id": "例10",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "第一型曲线与曲面积分",
+    "page": 306,
+    "syllabus_note": "齐次被积→第二型/高斯",
+    "commentary": "评注（1）若 f 是 n 元 k 次齐次函数，即 $f(tx_{1}, tx_{2}, \\cdots, tx_{n}) = t^{k} f(x_{1}, x_{2}, \\cdots, x_{n})$ ，则有\n\n$x_{1}f_{x_{1}} + x_{1}f_{x_{2}} + \\dots +x_{n}f_{x_{n}} = k f(x_{1},x_{2},\\dots ,x_{n})$ （称为欧拉齐次函数定理）.\n\n利用该结论可较方便地将齐次函数在球面上的第一型曲面积分化为第二型曲面积分.\n\n(2) 球面坐标下的面积微元 $\\mathrm{d}S = R^2\\sin \\theta \\mathrm{d}\\theta \\mathrm{d}\\varphi$ （ $R$ 是已知球的半径），这可从几何意义去理解，对照球面坐标下的体积微元 $\\mathrm{d}V = r^2\\sin \\theta \\mathrm{d}\\theta \\mathrm{d}\\varphi \\mathrm{d}r = \\mathrm{d}S \\mathrm{d}r$ ，就容易理解面积微元了。"
+  }
+}
