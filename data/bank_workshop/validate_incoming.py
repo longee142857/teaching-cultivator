@@ -15,13 +15,41 @@ DEFAULT_MATH = "https://raw.githubusercontent.com/longee142857/teaching-cultivat
 ALLOWED_FORMS = {"blank", "proof_outline"}
 ALLOWED_GOALS = {"compute", "construct"}
 # Keywords only. Do NOT casefold \(A-D\): math args like pf(c) / f(x) are not options.
-_MCQ_KEYWORD_RE = re.compile(r"(?i)(选择题|单选|多选|选项[ABCD]|recognize)")
+# `recognize` matches as a whole Latin word, not as a letter fragment.
+_MCQ_KEYWORD_RE = re.compile(
+    r"(?i)(选择题|单选|多选|选项[ABCD]|(?<![A-Za-z])recognize(?![A-Za-z]))"
+)
 # Inline A. … B. (or A) … B)) pair — letters stay case-sensitive.
-_MCQ_AB_PAIR_RE = re.compile(r"\bA[\.．、\)]\s*.+\bB[\.．、\)]", re.DOTALL)
+# `(A)` is a grouped argument, not an `A)` label (`\operatorname{rank}(A)`).
+_MCQ_AB_PAIR_RE = re.compile(
+    r"(?<![\(（])\bA[\.．、\)]\s*.+(?<![\(（])\bB[\.．、\)]",
+    re.DOTALL,
+)
 # Option at line start: (A) / （A） / A. / A、
 _MCQ_OPTION_LINE_RE = re.compile(r"(?m)^\s*(?:\([A-D]\)|（[A-D]）|[A-D][\.．、])")
-# Standalone uppercase (A)–(D); not after an identifier so f(C) / pf(c) do not count.
-_MCQ_OPTION_TOKEN_RE = re.compile(r"(?<![A-Za-z\\])(?:\([A-D]\)|（[A-D]）)")
+# Standalone uppercase (A)–(D); not after an identifier, backslash, or TeX `}`
+# so f(C) / pf(c) / \operatorname{rank}(A) do not count.
+_MCQ_OPTION_TOKEN_RE = re.compile(r"(?<![A-Za-z\\}])(?:\([A-D]\)|（[A-D]）)")
+# Math regions, then \command{...}(arg). The paren is part of the command only
+# when a braced argument precedes it, so `\sin (A)` stays an option token.
+_TEX_MATH_RE = re.compile(
+    r"\$\$(?:\\.|[^$])*?\$\$|\\\[.*?\\\]|\\\(.*?\\\)|\$(?:\\.|[^$])*?\$",
+    re.DOTALL,
+)
+_TEX_CMD_RE = re.compile(
+    r"\\[A-Za-z]+(?:[ \t]*\{[^{}]*\})+(?:[ \t]*\([^()\n]{0,80}\))?"
+    r"|\\[A-Za-z]+"
+)
+
+
+def _mask_tex_for_mcq(text: str) -> str:
+    """Drop TeX math and commands before option-marker scans.
+
+    ``\\operatorname{rank}(A)`` is a function argument, not choice ``(A)``.
+    Keywords are scanned on the raw stem so 选择题 / recognize still count.
+    """
+    masked = _TEX_MATH_RE.sub(" ", text)
+    return _TEX_CMD_RE.sub(" ", masked)
 
 
 def question_looks_like_mcq(question: str) -> bool:
@@ -29,17 +57,19 @@ def question_looks_like_mcq(question: str) -> bool:
 
     A single ``(A)`` / ``(c)`` is not enough. Need a keyword, an A…B pair,
     ≥2 option-start lines, or ≥2 standalone uppercase ``(A)``–``(D)`` tokens.
+    Option scans ignore TeX math and commands.
     """
     q = str(question or "")
     if not q.strip():
         return False
     if _MCQ_KEYWORD_RE.search(q):
         return True
-    if _MCQ_AB_PAIR_RE.search(q):
+    scanned = _mask_tex_for_mcq(q)
+    if _MCQ_AB_PAIR_RE.search(scanned):
         return True
-    if len(_MCQ_OPTION_LINE_RE.findall(q)) >= 2:
+    if len(_MCQ_OPTION_LINE_RE.findall(scanned)) >= 2:
         return True
-    if len(_MCQ_OPTION_TOKEN_RE.findall(q)) >= 2:
+    if len(_MCQ_OPTION_TOKEN_RE.findall(scanned)) >= 2:
         return True
     return False
 

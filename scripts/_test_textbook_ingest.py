@@ -128,6 +128,45 @@ def test_ex07_dry_run_not_mcq() -> None:
     check("DRY" in out and "tx-pu-math-contest-v2-ch1-1.3-ex-07" in out, f"ex-07 DRY {out}")
 
 
+def test_ex20_dry_run_not_mcq() -> None:
+    """Regression: \\operatorname{rank}(A) must not trip the MCQ gate (§9.2 例20)."""
+    path = (
+        TEXTBOOK_DIR
+        / "ch9"
+        / "9.2"
+        / "tx-pu-math-contest-v2-ch9-9.2-ex-20.json"
+    )
+    check(path.is_file(), f"ex-20 exists {path}")
+    item = json.loads(path.read_text(encoding="utf-8"))
+    q = str(item.get("question") or "")
+    check(r"\operatorname{rank}" in q, "ex-20 keeps operatorname")
+    check(item.get("item_form") == "proof_outline", item.get("item_form"))
+    with tempfile.TemporaryDirectory() as td:
+        dest = Path(td) / path.name
+        dest.write_text(path.read_text(encoding="utf-8"), encoding="utf-8")
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(WRAPPER),
+                "--incoming",
+                td,
+                "--syllabus-math",
+                str(SYLL_MATH),
+                "--syllabus-comm",
+                str(SYLL_COMM),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    out = (proc.stdout or "") + (proc.stderr or "")
+    check(proc.returncode == 0, f"ex-20 dry-run rc={proc.returncode} {out[-800:]}")
+    check("MCQ" not in out, f"ex-20 must not fail MCQ {out}")
+    check("FAIL" not in out, f"ex-20 dry-run no FAIL {out}")
+    check("DRY" in out and "tx-pu-math-contest-v2-ch9-9.2-ex-20" in out, f"ex-20 DRY {out}")
+
+
 def test_catalog_dir_dry_run_scans() -> None:
     check(TEXTBOOK_DIR.is_dir(), f"catalog dir exists {TEXTBOOK_DIR}")
     check((TEXTBOOK_DIR / "schema.example.json").is_file(), "schema.example.json present")
@@ -152,7 +191,7 @@ def test_catalog_dir_dry_run_scans() -> None:
     check("mode=dry-run" in out, f"dry-run banner {out[:400]}")
     check(str(TEXTBOOK_DIR) in out, f"incoming path printed {out[:400]}")
     check("failed=0" in out, f"catalog dry-run no fail {out[-400:]}")
-    check("imported=85" in out, f"85 textbook items dry-ok {out[-200:]}")
+    check("imported=627" in out, f"textbook items dry-ok {out[-200:]}")
     check("catalog example" in out, f"notes skipped example {out}")
 
 
@@ -276,6 +315,7 @@ def test_cli_dry_run_and_temp_apply() -> None:
 
 def main() -> int:
     test_ex07_dry_run_not_mcq()
+    test_ex20_dry_run_not_mcq()
     test_catalog_dir_dry_run_scans()
     test_mapping_tags_and_keeps_ref_source()
     test_workshop_without_judge_is_not_auto_pass()
