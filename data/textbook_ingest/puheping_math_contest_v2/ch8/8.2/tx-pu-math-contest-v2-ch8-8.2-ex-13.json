@@ -1,0 +1,76 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-13",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.alt",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设收敛级数 $\\sum_{n=1}^{\\infty} \\frac{(-1)^{n-1}}{n^p}$ 的和为 $S(p)$ ，证明 $\\frac{1}{2} < S(p) < 1$ .",
+  "answer": "收敛，所以必有 $p > 0$ 。将级数加括号有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "证明技巧",
+    "莱布尼兹准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 $S(p) < 1$ 是比较显然的；要证明不等式左端，可将级数适当缩小（化为积分形式），以利于求得和函数。和函数找到了，问题就容易解决了。\n\n因为 $\\sum_{n=1}^{\\infty} \\frac{(-1)^{n-1}}{n^p}$ 收敛，所以必有 $p > 0$ 。将级数加括号有\n\n$$\nS (p) = 1 - \\left[ \\left(\\frac {1}{2 ^ {p}} - \\frac {1}{3 ^ {p}}\\right) + \\left(\\frac {1}{4 ^ {p}} - \\frac {1}{5 ^ {p}}\\right) + \\dots \\right],\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "因为正项级数 $\\left(\\frac{1}{2^{p}}-\\frac{1}{3^{p}}\\right)+\\left(\\frac{1}{4^{p}}-\\frac{1}{5^{p}}\\right)+\\cdots>0$ ，所以 $S(p)<1$ .\n\n又\n\n$$\nS (p) = \\left(1 - \\frac {1}{2 ^ {p}}\\right) + \\sum_ {n = 2} ^ {\\infty} \\left(\\frac {1}{(2 n - 1) ^ {p}} - \\frac {1}{(2 n) ^ {p}}\\right),\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "由拉格朗日中值定理，\n\n$$\n\\frac {1}{(2 n - 1) ^ {p}} - \\frac {1}{(2 n) ^ {p}} = \\frac {p}{\\xi_ {n} ^ {p + 1}} > \\frac {p}{(2 n) ^ {p + 1}} (2 n - 1 <   \\xi_ {n} <   2 n),\n$$\n\n于是\n\n$$\nS (p) > \\left(1 - \\frac {1}{2 ^ {p}}\\right) + \\sum_ {n = 2} ^ {\\infty} \\frac {p}{(2 n) ^ {p + 1}} = \\left(1 - \\frac {1}{2 ^ {p}}\\right) + \\frac {p}{2 ^ {p + 1}} \\sum_ {n = 2} ^ {\\infty} \\frac {1}{n ^ {p + 1}}.\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "由于 $\\frac{1}{n^{p + 1}} >\\int_{n}^{n + 1}\\frac{1}{x^{p + 1}}\\mathrm{d}x$ ，得 $\\sum_{n = 2}^{\\infty}\\frac{1}{n^{p + 1}} >\\int_{2}^{+\\infty}\\frac{1}{x^{p + 1}}\\mathrm{d}x = -\\frac{1}{px^p}\\Bigg|_{2}^{+\\infty} = \\frac{1}{p2^p}$ ，于是\n\n$$\nS (p) > \\left(1 - \\frac {1}{2 ^ {p}}\\right) + \\frac {p}{2 ^ {p + 1}} \\cdot \\frac {1}{p 2 ^ {p}} = 1 - \\frac {1}{2 ^ {p}} + \\frac {1}{2 ^ {2 p + 1}}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "令 $f(p) = 1 - \\frac{1}{2^p} + \\frac{1}{2^{2p+1}}$ ，则 $f'(p) = \\frac{\\ln 2}{2^p} - \\frac{\\ln 2}{2^{2p}} > 0$ ， $f(p)$ 是严格单调递增函数，当 $p > 0$ 时，有 $f(p) > f(0) = \\frac{1}{2}$ ，即 $S(p) > \\frac{1}{2}$ ."
+      }
+    ],
+    "final_answer": "收敛，所以必有 $p > 0$ 。将级数加括号有",
+    "techniques_used": [
+      "证明技巧",
+      "莱布尼兹准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "是否交错？通项绝对值是否单调趋于0？可否用莱布尼兹准则？",
+      "technique": "莱布尼兹准则",
+      "expected": "验证交错、单调递减、极限为0，应用莱布尼兹准则。"
+    },
+    {
+      "id": "c2",
+      "prompt": "级数收敛性结论是什么？",
+      "technique": "莱布尼兹准则",
+      "expected": "收敛，所以必有 $p > 0$ 。将级数加括号有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例13*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 420,
+    "starred": true,
+    "syllabus_note": "交错p级数和 S(p) 的上下界*",
+    "commentary": "评注 因为 $p$ 级数 $\\sum_{n=1}^{\\infty} \\frac{1}{n^p}$ 可通过不等式 $\\frac{1}{n^p} > \\int_n^{n+1} \\frac{1}{x^p} \\mathrm{d}x$ 去缩小，从而得到下界，所以消去级数中相邻两项的符号差异是解决问题的关键，拉格朗日中值定理刚好起到了这样的作用。"
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "section": "8.2",
+  "chapter": "第8章 无穷级数",
+  "title": "任意项级数",
+  "page_range": [
+    412,
+    423
+  ],
+  "page_note": "merged MD 「## 8.2 任意项级数」→ 「## 习题8.2」; OCR PDF pages 412–423",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 17,
+  "starred_count": 8,
+  "starred": [
+    "例10*",
+    "例11*",
+    "例12*",
+    "例13*",
+    "例14*",
+    "例15*",
+    "例16*",
+    "例17*"
+  ],
+  "l3_counts": {
+    "math.calc.series.ops": 2,
+    "math.calc.series.abscond": 9,
+    "math.calc.series.alt": 6
+  },
+  "l2_counts": {
+    "常数项级数": 17
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch8-8.2-ex-01",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-02",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-03",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-04",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-05",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-06",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-07",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-08",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-09",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-10",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-11",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-12",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-13",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-14",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-15",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-16",
+    "tx-pu-math-contest-v2-ch8-8.2-ex-17"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-01",
+      "example_id": "例1",
+      "page": 412,
+      "l3_id": "math.calc.series.ops",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-02",
+      "example_id": "例2",
+      "page": 412,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-03",
+      "example_id": "例3",
+      "page": 413,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-04",
+      "example_id": "例4",
+      "page": 413,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-05",
+      "example_id": "例5",
+      "page": 414,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-06",
+      "example_id": "例6",
+      "page": 415,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-07",
+      "example_id": "例7",
+      "page": 416,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-08",
+      "example_id": "例8",
+      "page": 416,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-09",
+      "example_id": "例9",
+      "page": 417,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-10",
+      "example_id": "例10*",
+      "page": 418,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-11",
+      "example_id": "例11*",
+      "page": 419,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-12",
+      "example_id": "例12*",
+      "page": 419,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-13",
+      "example_id": "例13*",
+      "page": 420,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-14",
+      "example_id": "例14*",
+      "page": 421,
+      "l3_id": "math.calc.series.abscond",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-15",
+      "example_id": "例15*",
+      "page": 421,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-16",
+      "example_id": "例16*",
+      "page": 422,
+      "l3_id": "math.calc.series.ops",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch8-8.2-ex-17",
+      "example_id": "例17*",
+      "page": 423,
+      "l3_id": "math.calc.series.alt",
+      "l2": "常数项级数",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

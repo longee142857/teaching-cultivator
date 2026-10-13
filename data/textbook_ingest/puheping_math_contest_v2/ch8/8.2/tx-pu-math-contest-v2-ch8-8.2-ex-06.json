@@ -1,0 +1,81 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-06",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.abscond",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "讨论级数 $\\sum_{n=2}^{\\infty} \\frac{(-1)^n}{[n+(-1)^n]^p} (p > 0)$ 的敛散性.",
+  "answer": "收敛，从而原级数①式收敛.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "莱布尼兹准则",
+    "绝对收敛判别",
+    "部分和/缩项求和",
+    "通项必要条件",
+    "级数运算性质"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 这是交错级数，且通项趋于0，但通项不单调，不适用莱布尼兹准则。可考虑用添加括号的方式来讨论，也可用交换相邻两项顺序的方式使通项满足单调性。"
+      },
+      {
+        "id": "s2",
+        "text": "$|a_{n}| = \\left|\\frac{(-1)^{n}}{\\left[n + (-1)^{n}\\right]^{p}}\\right| = \\frac{1}{n^{p}}\\cdot \\frac{1}{\\left[1 + \\frac{(-1)^{n}}{n}\\right]^{p}}\\sim \\frac{1}{n^{p}} (n\\to \\infty).$\n\n当 $p > 1$ 时，级数绝对收敛；当 $0 < p \\leqslant 1$ 时，级数不绝对收敛.\n\n下面讨论当 $0 < p \\leqslant 1$ 时，级数的收敛性.\n\n首先，级数的通项 $a_{n} \\rightarrow 0$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "方法 1 将原级数按如下方式添加括号:\n\n$$\n\\left(\\frac {1}{3 ^ {p}} - \\frac {1}{2 ^ {p}}\\right) + \\left(\\frac {1}{5 ^ {p}} - \\frac {1}{4 ^ {p}}\\right) + \\dots + \\left(\\frac {1}{(2 n + 1) ^ {p}} - \\frac {1}{(2 n) ^ {p}}\\right) + \\dots ,\n$$\n\n记 $b_{n} = \\frac{1}{(2n + 1)^{p}} -\\frac{1}{(2n)^{p}}$ ，则 $b_{n} <   0$ ， $\\sum_{n = 2}^{\\infty}(-b_n)$ 是正项级数.由于\n\n$$\n- b _ {n} = \\frac {1}{(2 n) ^ {p}} - \\frac {1}{(2 n + 1) ^ {p}} = \\frac {1}{(2 n + 1) ^ {p}} \\left[ \\left(1 + \\frac {1}{2 n}\\right) ^ {p} - 1 \\right] \\sim \\frac {1}{(2 n + 1) ^ {p}} \\cdot \\frac {p}{2 n} \\sim \\frac {p}{(2 n) ^ {p + 1}},\n$$\n\n而 $p + 1 > 1$ ，所以 $\\sum_{n=2}^{\\infty} (-b_n)$ 收敛，由上题评注中去括号的讨论知，原级数收敛."
+      },
+      {
+        "id": "s4",
+        "text": "方法2 同样考虑方法1中的级数 $\\sum_{n=2}^{\\infty} (-b_n)$ ，其部分和为\n\n$$\n\\begin{array}{r l} S _ {n} & = \\left(\\frac {1}{2 ^ {p}} - \\frac {1}{3 ^ {p}}\\right) + \\left(\\frac {1}{4 ^ {p}} - \\frac {1}{5 ^ {p}}\\right) + \\dots + \\left(\\frac {1}{(2 n) ^ {p}} - \\frac {1}{(2 n + 1) ^ {p}}\\right) \\\\ & = \\frac {1}{2 ^ {p}} - \\left(\\frac {1}{3 ^ {p}} - \\frac {1}{4 ^ {p}}\\right) - \\left(\\frac {1}{5 ^ {p}} - \\frac {1}{6 ^ {p}}\\right) - \\dots - \\left(\\frac {1}{(2 n - 1) ^ {p}} - \\frac {1}{(2 n) ^ {p}}\\right) - \\frac {1}{(2 n + 1) ^ {p}} <   \\frac {1}{2 ^ {p}}. \\end{array}\n$$\n\n正项级数部分和数列有界，级数收敛，从而原级数收敛."
+      },
+      {
+        "id": "s5",
+        "text": "方法3 原级数为\n\n$$\n\\frac {1}{3 ^ {p}} - \\frac {1}{2 ^ {p}} + \\frac {1}{5 ^ {p}} - \\frac {1}{4 ^ {p}} + \\dots + \\frac {1}{(2 n + 1) ^ {p}} - \\frac {1}{(2 n) ^ {p}} + \\dots .\\tag{①}\n$$\n\n奇偶项互换后的新级数为\n\n$$\n\\frac {1}{2 ^ {p}} - \\frac {1}{3 ^ {p}} + \\frac {1}{4 ^ {p}} - \\frac {1}{5 ^ {p}} + \\dots + \\frac {1}{(2 n) ^ {p}} - \\frac {1}{(2 n + 1) ^ {p}} + \\dots .\\tag{②}\n$$\n\n记 $c_{n} = \\frac{1}{n^{p}}$ ，②式为 $\\sum_{n=2}^{\\infty}(-1)^{n}c_{n}$ ，由于 $c_{n}$ 单调递减趋于0，由莱布尼兹准则知，该交错级数收敛，从而原级数①式收敛."
+      }
+    ],
+    "final_answer": "收敛，从而原级数①式收敛.",
+    "techniques_used": [
+      "莱布尼兹准则",
+      "绝对收敛判别",
+      "部分和/缩项求和",
+      "通项必要条件",
+      "级数运算性质"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "先看绝对收敛（比较/比值）还是条件收敛（莱布尼兹/阿贝尔）？",
+      "technique": "莱布尼兹准则",
+      "expected": "先判绝对收敛；若不绝对，再判条件收敛或发散。"
+    },
+    {
+      "id": "c2",
+      "prompt": "绝对收敛、条件收敛还是发散？关键依据是什么？",
+      "technique": "绝对收敛判别",
+      "expected": "收敛，从而原级数①式收敛."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例6",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 415,
+    "syllabus_note": "带(-1)^n分母幂：绝对与条件收敛分界",
+    "commentary": "评注 方法 3 用到了收敛级数的性质：收敛级数交换相邻两项的位置后的级数仍收敛，且和不变.\n\n证明如下:\n\n设 $a_1 + a_2 + a_3 + a_4 + \\cdots + a_{2n-1} + a_{2n} + \\cdots$ 收敛于 $S$ ，其部分和为 $S_n$ 。交换相邻两项的位置后的级数为 $a_2 + a_1 + a_4 + a_3 + \\cdots + a_{2n} + a_{2n-1} + \\cdots$ ，其部分和为 $T_n$ 。则\n\n$$\nT _ {2 n} = S _ {2 n} \\Rightarrow \\lim _ {n \\rightarrow \\infty} T _ {2 n} = \\lim _ {n \\rightarrow \\infty} S _ {2 n} = S, \\quad \\lim _ {n \\rightarrow \\infty} T _ {2 n + 1} = \\lim _ {n \\rightarrow \\infty} T _ {2 n} + \\lim _ {n \\rightarrow \\infty} a _ {2 n + 2} = S, \\text {所以} \\lim _ {n \\rightarrow \\infty} T _ {n} = S.\n$$"
+  }
+}

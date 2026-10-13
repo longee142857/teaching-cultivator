@@ -1,0 +1,79 @@
+{
+  "id": "tx-pu-math-contest-v2-ch8-8.2-ex-02",
+  "subject": "math",
+  "l2": "常数项级数",
+  "l3_id": "math.calc.series.abscond",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "判断级数 $\\sum_{n=1}^{\\infty} (-1)^n \\frac{n^{n+1}}{(n+1)!}$ 的敛散性.",
+  "answer": "发散.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "绝对收敛判别",
+    "莱布尼兹准则"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 交错级数，先考虑绝对收敛性."
+      },
+      {
+        "id": "s2",
+        "text": "考察 $\\sum_{n=1}^{\\infty}|u_n| = \\sum_{n=1}^{\\infty}\\frac{n^{n+1}}{(n+1)!}$ ."
+      },
+      {
+        "id": "s3",
+        "text": "因为"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n\\lim _ {n \\rightarrow \\infty} \\frac {\\left| u _ {n + 1} \\right|}{\\left| u _ {n} \\right|} = \\lim _ {n \\rightarrow \\infty} \\frac {(n + 1) ^ {n + 2}}{(n + 2) !} \\cdot \\frac {(n + 1) !}{n ^ {n + 1}} = \\lim _ {n \\rightarrow \\infty} \\left(1 + \\frac {1}{n}\\right) ^ {n} \\frac {(n + 1) ^ {2}}{n (n + 2)} = e > 1,\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "所以原级数不绝对收敛."
+      },
+      {
+        "id": "s6",
+        "text": "由 $\\lim_{n\\to \\infty}\\frac{|u_{n + 1}|}{|u_n|} >1$ 知，当 $n$ 充分大时，有 $|u_{n + 1}| > |u_n| > 0$ ，故 $\\lim_{n\\to \\infty}|u_n|\\neq 0$ ，即 $\\lim_{n\\to \\infty}u_n\\neq 0$ .所以原级数发散."
+      }
+    ],
+    "final_answer": "发散.",
+    "techniques_used": [
+      "绝对收敛判别",
+      "莱布尼兹准则"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "先看绝对收敛（比较/比值）还是条件收敛（莱布尼兹/阿贝尔）？",
+      "technique": "绝对收敛判别",
+      "expected": "先判绝对收敛；若不绝对，再判条件收敛或发散。"
+    },
+    {
+      "id": "c2",
+      "prompt": "绝对收敛、条件收敛还是发散？关键依据是什么？",
+      "technique": "莱布尼兹准则",
+      "expected": "发散."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第8章 无穷级数",
+    "section": "8.2",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "任意项级数",
+    "page": 412,
+    "syllabus_note": "交错级数比值法：不绝对且通项不→0⇒发散",
+    "commentary": "评注 一般来说，若 $\\sum_{n=1}^{\\infty}|u_n|$ 发散，则 $\\sum_{n=1}^{\\infty} u_n$ 未必发散；但如果是用比值法或根值法判定 $\\sum_{n=1}^{\\infty}|u_n|$ 发散，则 $\\sum_{n=1}^{\\infty} u_n$ 必发散（因为此时必有 $u_n \\neq 0$ ）。"
+  }
+}
