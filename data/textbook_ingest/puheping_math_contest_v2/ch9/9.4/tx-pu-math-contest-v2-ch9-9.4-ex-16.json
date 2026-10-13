@@ -1,0 +1,78 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-16",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.posdef",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $\\pmb{A}$ 是 $n$ 阶实对称可逆矩阵. 证明 $\\pmb{A}$ 正定的充分必要条件是对任意同阶正定矩阵 $\\pmb{B}$ , 都有 $\\operatorname{tr}(\\pmb{AB}) > 0$ .",
+  "answer": "$A = CC^{T}$ 。从而",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "正交变换化二次型",
+    "正定性判定",
+    "特征值符号",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 矩阵的正定性、矩阵的迹都与特征值有关，所以应该以特征值为桥梁来思考.\n\n必要性：要证 $\\operatorname{tr}(AB) > 0$ ，只需证明 $AB$ 的特征值全大于零。如果能证明 $AB$ 与一个正定矩阵相似问题就解决了。\n\n充分性：要证 $\\pmb{A}$ 正定，只需证明 $\\pmb{A}$ 的特征值全大于零。这可通过正定矩阵 $\\pmb{B}$ 的选取，使 $\\operatorname{tr}(\\pmb{AB})$ 等于（或趋于） $\\pmb{A}$ 的特征值即可。"
+      },
+      {
+        "id": "s2",
+        "text": "必要性 若 A 正定，则存在 n 阶可逆矩阵 C，使得 $A = CC^{T}$ 。从而\n\n$$\n\\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {C} \\boldsymbol {C} ^ {\\mathrm{T}} \\boldsymbol {B} \\boldsymbol {C} \\boldsymbol {C} ^ {- 1}.\n$$\n\n这说明 AB 与 $C^{T}BC$ 相似，因而有相同的特征值。当 B 正定时， $C^{T}BC$ 也正定，其特征值全大于零，所以 AB 的特征值全大于零。故 $\\operatorname{tr}(AB)>0$ 。"
+      },
+      {
+        "id": "s3",
+        "text": "充分性 因为 $A$ 是 $n$ 阶实对称可逆矩阵，则存在正交矩阵 $\\pmb{Q}$ ，使得\n\n$$\nA = Q \\operatorname{diag} \\left(\\lambda_ {1}, \\lambda_ {2}, \\dots , \\lambda_ {n}\\right) Q ^ {- 1} \\left(\\lambda_ {i} \\neq 0, i = 1, 2, \\dots , n\\right).\n$$\n\n取 $B = Q \\text{diag}(t, \\cdots t, 1, t, \\cdots, t)Q^{-1}$ （1为第i个对角元），显然，当t > 0时，B正定，且有"
+      },
+      {
+        "id": "s4",
+        "text": "$$\n0 <   \\operatorname{tr} (A B) = \\operatorname{tr} \\left(Q ^ {- 1} A Q Q ^ {- 1} B Q\\right) = \\operatorname{tr} \\left(\\operatorname{diag} \\left(\\lambda_ {1} t, \\dots \\lambda_ {i - 1} t, \\lambda_ {i}, \\lambda_ {i + 1} t \\dots , \\lambda_ {n} t\\right)\\right) = \\lambda_ {i} + t \\sum_ {j \\neq i} \\lambda_ {j}.\n$$"
+      },
+      {
+        "id": "s5",
+        "text": "让 $t \\to 0^{+}$ ，有 $\\lambda_{i} \\geqslant 0$ ，再由 $\\lambda_{i} \\neq 0$ ，知 $\\lambda_{i} > 0$ ，所以 $A$ 正定."
+      }
+    ],
+    "final_answer": "$A = CC^{T}$ 。从而",
+    "techniques_used": [
+      "正交变换化二次型",
+      "正定性判定",
+      "特征值符号",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "正定性判定宜用特征值、顺序主子式还是合同？",
+      "technique": "正定性判定",
+      "expected": "选定正定性判定路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正定性相关结论是什么？",
+      "technique": "正定性判定",
+      "expected": "$A = CC^{T}$ 。从而"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例16",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 519,
+    "syllabus_note": "正定充要迹条件"
+  }
+}

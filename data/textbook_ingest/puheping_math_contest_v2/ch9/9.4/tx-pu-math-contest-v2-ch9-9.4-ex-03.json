@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-03",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.norm",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设实二次型 $f(x_{1}, x_{2}, \\cdots, x_{n}) = \\sum_{i=1}^{n} (x_{i} - x)^{2}$ ，其中 $x = \\frac{1}{n} (x_{1} + x_{2} + \\cdots + x_{n})$ ，求 f 的秩和正、负惯性指数.",
+  "answer": "均等于 n - 1，负惯性指数等于 0。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "正定性判定",
+    "惯性指数",
+    "特征值符号",
+    "矩阵秩"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 显然 $f \\geqslant 0$ ，是半正定的。所以二次型的正惯性指数等于它的秩，故需要先写出二次型的矩阵并求其秩；另外，可计算二次型矩阵的特征值或将二次型化为标准形来做判断。"
+      },
+      {
+        "id": "s2",
+        "text": "$f = \\sum_{i=1}^{n}(x_i - x)^2 = \\sum_{i=1}^{n} x_i^2 + \\sum_{i=1}^{n} x^2 - 2x\\sum_{i=1}^{n} x_i = \\sum_{i=1}^{n} x_i^2 - nx^2 = \\sum_{i=1}^{n} x_i^2 - \\frac{1}{n}\\sum_{i=1}^{n}\\sum_{j=1}^{n} x_i x_j.$\n\n二次型的矩阵为\n\n$$\nA = \\left( \\begin{array}{c c c c c} \\frac {n - 1}{n} & - \\frac {1}{n} & - \\frac {1}{n} & \\dots & - \\frac {1}{n} \\\\ - \\frac {1}{n} & \\frac {n - 1}{n} & - \\frac {1}{n} & \\dots & - \\frac {1}{n} \\\\ - \\frac {1}{n} & - \\frac {1}{n} & \\frac {n - 1}{n} & \\dots & - \\frac {1}{n} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ - \\frac {1}{n} & - \\frac {1}{n} & - \\frac {1}{n} & \\dots & \\frac {n - 1}{n} \\end{array} \\right).\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "方法1 求矩阵 A 的秩.\n\n由于矩阵 A 的各行元素之和均为 0，所以其行列式 $|A|=0$ .\n\n$A$ 的 $n - 1$ 阶顺序主子式 $P_{n - 1}$ 是严格对角占优的（见9.3节例9，综合题 $9^{\\bullet}$ 第10题），所以 $P_{n - 1} \\neq 0$ 。也可直接计算 $P_{n - 1}$ 如下：\n\n$$\nP _ {n - 1} = \\left|\\begin{array}{c c c c c}\\frac {n - 1}{n}&- \\frac {1}{n}&- \\frac {1}{n}&\\dots&- \\frac {1}{n}\\\\- \\frac {1}{n}&\\frac {n - 1}{n}&- \\frac {1}{n}&\\dots&- \\frac {1}{n}\\\\- \\frac {1}{n}&- \\frac {1}{n}&\\frac {n - 1}{n}&\\dots&- \\frac {1}{n}\\\\\\vdots&\\vdots&\\vdots&&\\vdots\\\\- \\frac {1}{n}&- \\frac {1}{n}&- \\frac {1}{n}&\\dots&\\frac {n - 1}{n}\\end{array}\\right| \\overset {c _ {j} + c _ {1}} {\\underset {j = 2, \\dots , n} {\\rightleftharpoons}} \\left|\\begin{array}{c c c c c}\\frac {1}{n}&- \\frac {1}{n}&- \\frac {1}{n}&\\dots&- \\frac {1}{n}\\\\\\frac {1}{n}&\\frac {n - 1}{n}&- \\frac {1}{n}&\\dots&- \\frac {1}{n}\\\\\\frac {1}{n}&- \\frac {1}{n}&\\frac {n - 1}{n}&\\dots&- \\frac {1}{n}\\\\\\vdots&\\vdots&\\vdots&&\\vdots\\\\\\frac {1}{n}&- \\frac {1}{n}&- \\frac {1}{n}&\\dots&\\frac {n - 1}{n}\\end{array}\\right| \\overset {c _ {i} + c _ {j}} {\\underset {j = 2, \\dots , n} {\\rightleftharpoons}} \\left|\\begin{array}{c c c c c}\\frac {1}{n}&0&0&\\dots&0\\\\\\frac {1}{n}&1&0&\\dots&0\\\\\\frac {1}{n}&0&1&\\dots&0\\\\\\vdots&\\vdots&\\vdots&&\\vdots\\\\\\frac {1}{n}&0&0&\\dots&1\\end{array}\\right| = \\frac {1}{n}.\n$$\n\n所以 $\\operatorname{rank} A = n - 1$ 。显然 $f \\geqslant 0$ ，是半正定的。所以二次型的正惯性指数等于 $\\operatorname{rank} A = n - 1$ ，负惯性指数等于 0。"
+      },
+      {
+        "id": "s4",
+        "text": "方法 2 求矩阵 A 的特征值.\n\n$$\n\\begin{array}{r l} & | \\lambda I - A | = \\left| \\begin{array}{c c c c c} \\lambda - \\frac {n - 1}{n} & \\frac {1}{n} & \\frac {1}{n} & \\dots & \\frac {1}{n} \\\\ \\frac {1}{n} & \\lambda - \\frac {n - 1}{n} & - \\frac {1}{n} & \\dots & \\frac {1}{n} \\\\ \\frac {1}{n} & \\frac {1}{n} & \\lambda - \\frac {n - 1}{n} & \\dots & \\frac {1}{n} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ \\frac {1}{n} & \\frac {1}{n} & \\frac {1}{n} & \\dots & \\lambda - \\frac {n - 1}{n} \\end{array} \\right| _ {\\overline {{\\overline {{j = 2 , \\cdots , n}}}}} ^ {\\underline {{c _ {j} + c _ {1}}}} \\left| \\begin{array}{c c c c c} \\lambda & \\frac {1}{n} & \\frac {1}{n} & \\dots & \\frac {1}{n} \\\\ \\lambda & \\lambda - \\frac {n - 1}{n} & \\frac {1}{n} & \\dots & \\frac {1}{n} \\\\ \\lambda & \\frac {1}{n} & \\lambda - \\frac {n - 1}{n} & \\dots & \\frac {1}{n} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ \\lambda & \\frac {1}{n} & \\frac {1}{n} & \\dots & \\lambda - \\frac {n - 1}{n} \\end{array} \\right| \\\\ & = \\frac {\\lambda}{n ^ {n - 1}} \\left| \\begin{array}{c c c c c} 1 & 1 & 1 & \\dots & 1 \\\\ 1 & n \\lambda - n + 1 & 1 & \\dots & 1 \\\\ 1 & 1 & n \\lambda - n + 1 & \\dots & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 1 & 1 & 1 & \\dots & n \\lambda - n + 1 \\end{array} \\right| = \\frac {\\lambda}{n ^ {n - 1}} \\left| \\begin{array}{c c c c c} 1 & 0 & 0 & \\dots & 0 \\\\ 1 & n \\lambda - n & 0 & \\dots & 0 \\\\ 1 & 0 & n \\lambda - n & \\dots & 0 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots \\\\ 1 & 0 & 0 & \\dots & n \\lambda - n \\end{array} \\right| \\\\ & = \\lambda (\\lambda - 1) ^ {n - 1}. \\end{array}\n$$\n\n所以 A 的特征值为 $\\lambda = 0$ （单根）与 $\\lambda = 1 > 0$ （n - 1 重根）。故 f 的秩与正惯性指数均等于 n - 1，负惯性指数等于 0。"
+      }
+    ],
+    "final_answer": "均等于 n - 1，负惯性指数等于 0。",
+    "techniques_used": [
+      "正定性判定",
+      "惯性指数",
+      "特征值符号",
+      "矩阵秩"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定秩与正、负惯性指数（半正定/特征值/配方）？",
+      "technique": "正定性判定",
+      "expected": "写出二次型矩阵并判断惯性指数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "秩与正、负惯性指数各是多少？",
+      "technique": "惯性指数",
+      "expected": "均等于 n - 1，负惯性指数等于 0。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例3",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 510,
+    "syllabus_note": "半正定二次型秩与惯性指数",
+    "commentary": "评注 做线性变换 $T: y_{i} = x_{i} - x (i = 1,2,\\cdots,n)$ 将二次型化为标准形 $f = \\sum_{i=1}^{n} y_{i}^{2}$ 的做法是不对的. 因为该变换系数矩阵的行列式为0，不是可逆线性变换."
+  }
+}

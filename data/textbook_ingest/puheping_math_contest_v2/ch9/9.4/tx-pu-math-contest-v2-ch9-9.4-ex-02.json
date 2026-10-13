@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-02",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.norm",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "假定 $n \\geqslant 2$ ， $a, d_{i} (i = 1, 2, \\cdots, n)$ 均为常数。当 $d_{1} \\neq 0$ 时，求二次型\n\n$$\n\\begin{array}{r l} f (x _ {1}, x _ {2}, x _ {3}) & = \\left(x _ {1} + x _ {2} + x _ {3}\\right) ^ {2} + \\left(a x _ {1} + (a + d _ {1}) x _ {2} + (a + 2 d _ {1}) x _ {3}\\right) ^ {2} \\\\ & \\quad + \\sum_ {i = 2} ^ {n} \\left((a + d _ {i}) x _ {1} + (a + 2 d _ {i}) x _ {2} + (a + 3 d _ {i}) x _ {3}\\right) ^ {2} \\end{array}\n$$\n\n的秩与正、负惯性指数..",
+  "answer": "到标准形. 因为该线性变换显然是不可逆的. 较好的方法是通过二次型的矩阵去求它的秩, 再确定正、负惯性指数. 若将平方项展开后化简来写出二次型的矩阵, 则较为麻烦; 若将平方和看成一个向量的内积, 二次型的矩阵就容易得到了.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "配方法",
+    "标准形/合同",
+    "正定性判定",
+    "惯性指数",
+    "特征值符号"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 虽然 $f$ 已经是平方和的形式，但我们不能通过线性变换\n\n$$\n\\left\\{ \\begin{array}{l} y _ {1} = x _ {1} + x _ {2} + x _ {3} \\\\ y _ {2} = a x _ {1} + (a + d _ {1}) x _ {2} + (a + 2 d _ {1}) x _ {3} \\\\ \\vdots \\\\ y _ {n} = (a + d _ {n}) x _ {1} + (a + 2 d _ {n}) x _ {2} + (a + 3 d _ {n}) x _ {3} \\end{array} \\right.\n$$\n\n来得到标准形. 因为该线性变换显然是不可逆的. 较好的方法是通过二次型的矩阵去求它的秩, 再确定正、负惯性指数. 若将平方项展开后化简来写出二次型的矩阵, 则较为麻烦; 若将平方和看成一个向量的内积, 二次型的矩阵就容易得到了.\n\n解记\n\n$$\n\\left\\{ \\begin{array}{l l} {y _ {1} = x _ {1} + x _ {2} + x _ {3}} \\\\ {y _ {2} = a x _ {1} + (a + d _ {1}) x _ {2} + (a + 2 d _ {1}) x _ {3}} \\\\ {\\vdots} \\\\ {y _ {n} = (a + d _ {n}) x _ {1} + (a + 2 d _ {n}) x _ {2} + (a + 3 d _ {n}) x _ {3}} \\end{array} \\right. \\text {或} Y = A X ,\n$$\n\n其中 $A=\\begin{pmatrix}1&1&1\\\\a&a+d_{1}&a+2d_{1}\\\\a+d_{2}&a+2d_{2}&a+3d_{2}\\\\\\vdots&\\vdots&\\vdots\\\\a+d_{n}&a+2d_{n}&a+3d_{n}\\end{pmatrix},\\quad Y=(y_{1},y_{2},\\cdots,y_{n})^{\\mathrm{T}},\\quad X=(x_{1},x_{2},x_{3})^{\\mathrm{T}}$ ，则 $f(x_{1},x_{2},x_{3})=Y^{T}Y=(AX)^{T}(AX)=X^{T}(A^{T}A)X,$\n\n二次型的矩阵为 $A^{\\mathrm{T}}A$ ，且有 $\\operatorname {rank}(A^{\\mathrm{T}}A) = \\operatorname {rank}(A)$ .对矩阵 $\\pmb{A}$ 做行初等变换，得\n\n$$\n\\boldsymbol {A} \\rightarrow \\left(\\begin{array}{c c c}1&1&1\\\\0&d _ {1}&2 d _ {1}\\\\0&0&0\\\\\\vdots&\\vdots&\\vdots\\\\0&0&0\\end{array}\\right).\n$$\n\n因为 $d_{1} \\neq 0$ ，所以 $A$ 的秩为2，即 $f(x_{1}, x_{2}, x_{3})$ 的秩为2。显然 $f(x_{1}, x_{2}, x_{3}) \\geqslant 0$ ，二次型是半正定的，它\n\n的正惯性指数 $p = \\mathrm{rank}(A) = 2$ ，负惯性指数为0."
+      },
+      {
+        "id": "s2",
+        "text": "分析 虽然 $f$ 已经是平方和的形式，但我们不能通过线性变换\n\n$$\n\\left\\{ \\begin{array}{l} y _ {1} = x _ {1} + x _ {2} + x _ {3} \\\\ y _ {2} = a x _ {1} + (a + d _ {1}) x _ {2} + (a + 2 d _ {1}) x _ {3} \\\\ \\vdots \\\\ y _ {n} = (a + d _ {n}) x _ {1} + (a + 2 d _ {n}) x _ {2} + (a + 3 d _ {n}) x _ {3} \\end{array} \\right.\n$$\n\n来得到标准形. 因为该线性变换显然是不可逆的. 较好的方法是通过二次型的矩阵去求它的秩, 再确定正、负惯性指数. 若将平方项展开后化简来写出二次型的矩阵, 则较为麻烦; 若将平方和看成一个向量的内积, 二次型的矩阵就容易得到了.\n\n解记\n\n$$\n\\left\\{ \\begin{array}{l l} {y _ {1} = x _ {1} + x _ {2} + x _ {3}} \\\\ {y _ {2} = a x _ {1} + (a + d _ {1}) x _ {2} + (a + 2 d _ {1}) x _ {3}} \\\\ {\\vdots} \\\\ {y _ {n} = (a + d _ {n}) x _ {1} + (a + 2 d _ {n}) x _ {2} + (a + 3 d _ {n}) x _ {3}} \\end{array} \\right. \\text {或} Y = A X ,\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "其中 $A=\\begin{pmatrix}1&1&1\\\\a&a+d_{1}&a+2d_{1}\\\\a+d_{2}&a+2d_{2}&a+3d_{2}\\\\\\vdots&\\vdots&\\vdots\\\\a+d_{n}&a+2d_{n}&a+3d_{n}\\end{pmatrix},\\quad Y=(y_{1},y_{2},\\cdots,y_{n})^{\\mathrm{T}},\\quad X=(x_{1},x_{2},x_{3})^{\\mathrm{T}}$ ，则 $f(x_{1},x_{2},x_{3})=Y^{T}Y=(AX)^{T}(AX)=X^{T}(A^{T}A)X,$\n\n二次型的矩阵为 $A^{\\mathrm{T}}A$ ，且有 $\\operatorname {rank}(A^{\\mathrm{T}}A) = \\operatorname {rank}(A)$ .对矩阵 $\\pmb{A}$ 做行初等变换，得\n\n$$\n\\boldsymbol {A} \\rightarrow \\left(\\begin{array}{c c c}1&1&1\\\\0&d _ {1}&2 d _ {1}\\\\0&0&0\\\\\\vdots&\\vdots&\\vdots\\\\0&0&0\\end{array}\\right).\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "因为 $d_{1} \\neq 0$ ，所以 $A$ 的秩为2，即 $f(x_{1}, x_{2}, x_{3})$ 的秩为2。显然 $f(x_{1}, x_{2}, x_{3}) \\geqslant 0$ ，二次型是半正定的，它\n\n的正惯性指数 $p = \\mathrm{rank}(A) = 2$ ，负惯性指数为0.\n\n评注 确定二次型的正、负惯性指数的方法通常有3种：\n\n① 考察二次型是否正（负）定，是否半正（半负）定；\n\n② 配方，由正、负平方项的项数来确定；\n\n③ 求矩阵的特征值，由特征值的符号来确定."
+      }
+    ],
+    "final_answer": "到标准形. 因为该线性变换显然是不可逆的. 较好的方法是通过二次型的矩阵去求它的秩, 再确定正、负惯性指数. 若将平方项展开后化简来写出二次型的矩阵, 则较为麻烦; 若将平方和看成一个向量的内积, 二次型的矩阵就容易得到了.",
+    "techniques_used": [
+      "配方法",
+      "标准形/合同",
+      "正定性判定",
+      "惯性指数",
+      "特征值符号"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "如何确定秩与正、负惯性指数（半正定/特征值/配方）？",
+      "technique": "正定性判定",
+      "expected": "写出二次型矩阵并判断惯性指数。"
+    },
+    {
+      "id": "c2",
+      "prompt": "秩与正、负惯性指数各是多少？",
+      "technique": "标准形/合同",
+      "expected": "到标准形. 因为该线性变换显然是不可逆的. 较好的方法是通过二次型的矩阵去求它的秩, 再确定正、负惯性指数. 若将平方项展开后化简来写出二次型的矩阵, 则较为麻烦; 若将平方和看成一个向量的内积, 二次型的矩阵就容易得到了."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 509,
+    "syllabus_note": "平方和表示求秩与惯性指数",
+    "commentary": "评注 确定二次型的正、负惯性指数的方法通常有3种：\n\n① 考察二次型是否正（负）定，是否半正（半负）定；\n\n② 配方，由正、负平方项的项数来确定；\n\n③ 求矩阵的特征值，由特征值的符号来确定."
+  }
+}

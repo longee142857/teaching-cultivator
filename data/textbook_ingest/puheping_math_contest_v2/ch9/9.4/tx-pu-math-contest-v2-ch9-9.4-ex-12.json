@@ -1,0 +1,89 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-12",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.posdef",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A, B$ 为两个 $n$ 阶正定矩阵，求证 $AB$ 为正定矩阵的充要条件是 $AB = BA$ .",
+  "answer": "$(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ 是正定矩阵，它的特征值全为正实数。而 $AB$ 相似于 $(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ ，所以 $AB$ 的特征值全为正实数。即 $AB$ 为正定矩阵。",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "正定性判定",
+    "特征值符号",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 必要性是显然的；对于充分性，由于题设没给出矩阵元素的任何信息，所以只能通过判断是否与单位矩阵合同或特征值全为正来确定正定性."
+      },
+      {
+        "id": "s2",
+        "text": "必要性：若 AB 为正定矩阵，从而为对称矩阵，即 $(AB)^{\\mathrm{T}} = AB$ 。又 $A^{T} = A, B^{T} = B$ ，所以 $(AB)^{\\mathrm{T}} = B^{\\mathrm{T}} A^{\\mathrm{T}} = BA$ ，所以 AB = BA 。"
+      },
+      {
+        "id": "s3",
+        "text": "充分性：因为 AB = BA，则 $(AB)^{\\mathrm{T}} = B^{\\mathrm{T}} A^{\\mathrm{T}} = BA = AB$ ，所以 AB 为实对称矩阵."
+      },
+      {
+        "id": "s4",
+        "text": "因为 A, B 为正定矩阵，存在可逆阵 P, Q，使 $A = P^{T}P$ ， $B = Q^{T}Q$ ，于是"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\boldsymbol {A} \\boldsymbol {B} = \\boldsymbol {P} ^ {\\mathrm{T}} \\boldsymbol {P} \\boldsymbol {Q} ^ {\\mathrm{T}} \\boldsymbol {Q},\n$$"
+      },
+      {
+        "id": "s6",
+        "text": "所以"
+      },
+      {
+        "id": "s7",
+        "text": "$$\n\\left(\\boldsymbol {P} ^ {\\mathrm{T}}\\right) ^ {- 1} \\boldsymbol {A B P} ^ {\\mathrm{T}} = \\boldsymbol {P Q} ^ {\\mathrm{T}} \\boldsymbol {Q P} ^ {\\mathrm{T}} = \\left(\\boldsymbol {Q P} ^ {\\mathrm{T}}\\right) ^ {\\mathrm{T}} \\left(\\boldsymbol {Q P} ^ {\\mathrm{T}}\\right).\n$$"
+      },
+      {
+        "id": "s8",
+        "text": "即 $(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ 是正定矩阵，它的特征值全为正实数。而 $AB$ 相似于 $(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ ，所以 $AB$ 的特征值全为正实数。即 $AB$ 为正定矩阵。"
+      }
+    ],
+    "final_answer": "$(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ 是正定矩阵，它的特征值全为正实数。而 $AB$ 相似于 $(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ ，所以 $AB$ 的特征值全为正实数。即 $AB$ 为正定矩阵。",
+    "techniques_used": [
+      "正定性判定",
+      "特征值符号",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "正定性判定宜用特征值、顺序主子式还是合同？",
+      "technique": "正定性判定",
+      "expected": "选定正定性判定路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正定性相关结论是什么？",
+      "technique": "特征值符号",
+      "expected": "$(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ 是正定矩阵，它的特征值全为正实数。而 $AB$ 相似于 $(\\pmb{P}^{\\mathrm{T}})^{-1}\\pmb{ABP}^{\\mathrm{T}}$ ，所以 $AB$ 的特征值全为正实数。即 $AB$ 为正定矩阵。"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例12",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 517,
+    "syllabus_note": "AB正定充要条件可交换",
+    "commentary": "评注 从证明过程可看出，当正定矩阵 $A, B$ 乘积不可交换时， $AB$ 就不是对称矩阵，也就不是正定矩阵，但 $AB$ 却与正定矩阵相似，其特征值全大于零."
+  }
+}

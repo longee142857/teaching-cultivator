@@ -1,0 +1,251 @@
+{
+  "section": "9.4",
+  "chapter": "第9章 线性代数",
+  "title": "二次型",
+  "page_range": [
+    508,
+    520
+  ],
+  "page_note": "merged MD 「## 9.4 二次型」→ 「## 习题9.4」; OCR PDF pages 508–520 (习题 on 521); skip 习题/附录模拟题",
+  "source_md": "/workspace/knowledge-books/done/pu-heping-math-contest-tutorial-2e/大学生数学竞赛教程-第2版-蒲和平.md",
+  "count": 18,
+  "starred_count": 4,
+  "starred": [
+    "例7*",
+    "例9*",
+    "例13*",
+    "例14*"
+  ],
+  "l3_counts": {
+    "math.linalg.quad.complete": 1,
+    "math.linalg.quad.norm": 2,
+    "math.linalg.quad.std": 2,
+    "math.linalg.quad.ortho": 4,
+    "math.linalg.quad.posdef": 9
+  },
+  "l2_counts": {
+    "二次型": 18
+  },
+  "ids": [
+    "tx-pu-math-contest-v2-ch9-9.4-ex-01",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-02",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-03",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-04",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-05",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-06",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-07",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-08",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-09",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-10",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-11",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-12",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-13",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-14",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-15",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-16",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-17",
+    "tx-pu-math-contest-v2-ch9-9.4-ex-18"
+  ],
+  "examples": [
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-01",
+      "example_id": "例1",
+      "page": 508,
+      "l3_id": "math.linalg.quad.complete",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-02",
+      "example_id": "例2",
+      "page": 509,
+      "l3_id": "math.linalg.quad.norm",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-03",
+      "example_id": "例3",
+      "page": 510,
+      "l3_id": "math.linalg.quad.norm",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-04",
+      "example_id": "例4",
+      "page": 511,
+      "l3_id": "math.linalg.quad.std",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-05",
+      "example_id": "例5",
+      "page": 512,
+      "l3_id": "math.linalg.quad.ortho",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-06",
+      "example_id": "例6",
+      "page": 513,
+      "l3_id": "math.linalg.quad.ortho",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-07",
+      "example_id": "例7*",
+      "page": 513,
+      "l3_id": "math.linalg.quad.ortho",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-08",
+      "example_id": "例8",
+      "page": 515,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-09",
+      "example_id": "例9*",
+      "page": 515,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-10",
+      "example_id": "例10",
+      "page": 516,
+      "l3_id": "math.linalg.quad.std",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-11",
+      "example_id": "例11",
+      "page": 516,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-12",
+      "example_id": "例12",
+      "page": 517,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-13",
+      "example_id": "例13*",
+      "page": 517,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "blank",
+      "ability_goal": "compute"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-14",
+      "example_id": "例14*",
+      "page": 518,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": true,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-15",
+      "example_id": "例15",
+      "page": 519,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-16",
+      "example_id": "例16",
+      "page": 519,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-17",
+      "example_id": "例17",
+      "page": 519,
+      "l3_id": "math.linalg.quad.posdef",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    },
+    {
+      "id": "tx-pu-math-contest-v2-ch9-9.4-ex-18",
+      "example_id": "例18",
+      "page": 520,
+      "l3_id": "math.linalg.quad.ortho",
+      "l2": "二次型",
+      "difficulty": "hit",
+      "starred": false,
+      "item_form": "proof_outline",
+      "ability_goal": "construct"
+    }
+  ],
+  "skipped": [],
+  "gaps": []
+}

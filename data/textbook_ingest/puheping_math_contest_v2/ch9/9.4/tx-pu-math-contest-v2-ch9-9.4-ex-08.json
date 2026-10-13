@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-08",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.posdef",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $A, C$ 为 $n$ 阶正定矩阵，且矩阵方程 $AX + X A = C$ 有唯一的解 $B$ ，证明 $B$ 也是正定矩阵.",
+  "answer": "$B = B^{T}$ ，即 B 是对称矩阵.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "正定性判定",
+    "特征值符号",
+    "证明技巧"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 只需验证 B 是对称矩阵，且特征值全大于 0.\n\n由于 B 是所给矩阵方程的解，则有 $AB + BA = C$ ，两边取转置并注意 A, C 为对称矩阵，得\n\n$$\n\\boldsymbol {B} ^ {\\mathrm{T}} \\boldsymbol {A} + \\boldsymbol {A} \\boldsymbol {B} ^ {\\mathrm{T}} = \\boldsymbol {C}.\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "这说明 $B^{T}$ 也是矩阵方程的解，由解的唯一性得 $B = B^{T}$ ，即 B 是对称矩阵.\n\n下面证明 B 的特征值全大于 0.\n\n设 $\\lambda$ 是 $B$ 的特征值， $B\\alpha = \\lambda \\alpha$ ，由 $C$ 的正定性知\n\n$$\n\\boldsymbol {\\alpha} ^ {T} (\\boldsymbol {A B} + \\boldsymbol {B A}) \\boldsymbol {\\alpha} = \\boldsymbol {\\alpha} ^ {T} \\boldsymbol {C} \\boldsymbol {\\alpha} > 0.\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "又\n\n$$\n\\boldsymbol {\\alpha} ^ {T} (\\boldsymbol {A B} + \\boldsymbol {B A}) \\boldsymbol {\\alpha} = \\boldsymbol {\\alpha} ^ {T} \\boldsymbol {A B} \\boldsymbol {\\alpha} + (\\boldsymbol {B \\alpha}) ^ {T} \\boldsymbol {A \\alpha} = 2 \\lambda \\boldsymbol {\\alpha} ^ {T} \\boldsymbol {A \\alpha},\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以\n\n$$\n2 \\lambda \\alpha^ {T} A \\alpha > 0.\n$$\n\n由于 A 是正定矩阵， $\\alpha^{T}A\\alpha>0$ ，故 $\\lambda>0$ 。所以 B 是正定矩阵。"
+      }
+    ],
+    "final_answer": "$B = B^{T}$ ，即 B 是对称矩阵.",
+    "techniques_used": [
+      "正定性判定",
+      "特征值符号",
+      "证明技巧"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "正定性判定宜用特征值、顺序主子式还是合同？",
+      "technique": "正定性判定",
+      "expected": "选定正定性判定路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正定性相关结论是什么？",
+      "technique": "特征值符号",
+      "expected": "$B = B^{T}$ ，即 B 是对称矩阵."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例8",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 515,
+    "syllabus_note": "矩阵方程唯一解的正定性",
+    "commentary": "评注 实对称矩阵正定的充分必要条件：\n\nA 正定 $\\Leftrightarrow$ A 的特征值全大于零 $\\Leftrightarrow$ A 与单位矩阵合同 $\\Leftrightarrow$ A 的各阶顺序主子式全大于零."
+  }
+}

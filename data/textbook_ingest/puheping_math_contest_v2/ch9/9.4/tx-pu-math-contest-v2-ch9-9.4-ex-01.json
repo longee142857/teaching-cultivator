@@ -1,0 +1,73 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-01",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.complete",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设二次型 $f(x_{1},x_{2},x_{3}) = (x_{1},x_{2},x_{3}) \\left( \\begin{array}{ccc} 1 & 2 & 3 \\\\ 0 & 1 & 2 \\\\ 1 & 0 & -3 \\end{array} \\right) \\left( \\begin{array}{c} x_{1} \\\\ x_{2} \\\\ x_{3} \\end{array} \\right)$ ，求 $f$ 的规范形.",
+  "answer": "规范形 $f = y_{1}^{2} + y_{2}^{2} - y_{3}^{2}$ .",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "配方法",
+    "规范形",
+    "正定性判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 二次型的规范形由其正、负惯性指数唯一确定，可用配方法或由矩阵的特征值的符号来确定.题中的二次型矩阵不是对称的，如果求特征值，那么要先化矩阵为对称形式."
+      },
+      {
+        "id": "s2",
+        "text": "将二次型配方"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} f (x _ {1}, x _ {2}, x _ {3}) & = x _ {1} ^ {2} + x _ {2} ^ {2} - 3 x _ {3} ^ {2} + 2 x _ {1} x _ {2} + 4 x _ {1} x _ {3} + 2 x _ {2} x _ {3} \\\\ & = x _ {1} ^ {2} + 2 x _ {1} (x _ {2} + 2 x _ {3}) + x _ {2} ^ {2} - 3 x _ {3} ^ {2} + 2 x _ {2} x _ {3} \\\\ & = (x _ {1} + x _ {2} + 2 x _ {3}) ^ {2} - (x _ {2} + 2 x _ {3}) ^ {2} + x _ {2} ^ {2} - 3 x _ {3} ^ {2} + 2 x _ {2} x _ {3} \\\\ & = (x _ {1} + x _ {2} + 2 x _ {3}) ^ {2} - 2 x _ {2} x _ {3} + x _ {3} ^ {2} \\\\ & = (x _ {1} + x _ {2} + 2 x _ {3}) ^ {2} + (x _ {2} - x _ {3}) ^ {2} - x _ {2} ^ {2}. \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "做可逆线性变换 $\\left\\{ \\begin{array}{l} y_{1} = x_{1} + x_{2} + 2x_{3} \\\\ y_{2} = x_{2} - x_{3} \\\\ y_{3} = x_{2} \\end{array} \\right.$ ，得规范形 $f = y_{1}^{2} + y_{2}^{2} - y_{3}^{2}$ ."
+      }
+    ],
+    "final_answer": "规范形 $f = y_{1}^{2} + y_{2}^{2} - y_{3}^{2}$ .",
+    "techniques_used": [
+      "配方法",
+      "规范形",
+      "正定性判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "用配方法还是先对称化再求特征值？如何配方？",
+      "technique": "配方法",
+      "expected": "选定配方法并写出可逆线性变换。"
+    },
+    {
+      "id": "c2",
+      "prompt": "所得规范形是什么？",
+      "technique": "规范形",
+      "expected": "规范形 $f = y_{1}^{2} + y_{2}^{2} - y_{3}^{2}$ ."
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例1",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 508,
+    "syllabus_note": "配方法求规范形",
+    "commentary": "评注 (1) 二次型 $X^{\\mathrm{T}}AX$ 的矩阵一定是对称矩阵，当 $\\pmb{A}$ 不对称时，要用 $\\frac{1}{2} (\\pmb {A} + \\pmb{A}^{\\mathrm{T}})$ 去替换.\n\n(2) 化二次型为标准形通常有两种方式: 配方法和正交变换法. 一般情况下配方法更简单. 该题二次型的矩阵为 $A = \\begin{pmatrix} 1 & 1 & 2 \\\\ 1 & 1 & 1 \\\\ 2 & 1 & -3 \\end{pmatrix}$ , 做正交变换会困难些.\n\n(3) 化二次型为标准形有以下两个基本定理(惯性定理):\n\n定理1 任意 $n$ 元实二次型 $f = X^{\\mathrm{T}}AX$ ，都存在可逆线性变换将其化为标准形：\n\n$$\nf = d _ {1} y _ {1} ^ {2} + \\dots + d _ {p} y _ {p} ^ {2} - d _ {p + 1} y _ {p + 1} ^ {2} \\dots - d _ {r} y _ {r} ^ {2} (d _ {i} > 0, i = 1, 2, \\dots , r).\n$$\n\np 叫 f 的正惯性指数， $r = \\text{rank}(A)$ 叫 f 的秩，r - p 叫 f 的负惯性指数，2p - r 叫符号差. $d_{i}=1(i=1,2,\\cdots,r)$ 的标准形叫规范形，规范形是唯一的.\n\n定理2 任意 $n$ 元实二次型 $f = X^{\\mathrm{T}}AX$ ，都存在正交变换将其化为标准形：\n\n$$\nf = \\lambda_ {1} y _ {1} ^ {2} + \\lambda_ {2} y _ {2} ^ {2} + \\dots + \\lambda_ {n} y _ {n} ^ {2}.\n$$\n\n其中 $\\lambd"
+  }
+}

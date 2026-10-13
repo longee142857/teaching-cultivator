@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.4-ex-14",
+  "subject": "math",
+  "l2": "二次型",
+  "l3_id": "math.linalg.quad.posdef",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "construct",
+  "item_form": "proof_outline",
+  "difficulty": "hit",
+  "question": "设 $B_{1}, B_{2}, \\cdots, B_{n}$ 为空间 $\\mathbb{R}^{3}$ 中半径不为零的 $n$ 个球， $A = (a_{ij})$ 为 $n$ 阶非零矩阵，其 $(i, j)$ 元 $a_{ij}$ 为球 $B_{i}$ 与 $B_{j}$ 相交部分的体积。证明行列式 $|A + I| > 1$ ，其中 $I$ 为单位矩阵。",
+  "answer": "$\\lambda_{i} \\geqslant 0 (i = 1, 2, \\cdots, n)$ 。从而 $A + I$ 的特征值 $\\lambda_{i} + 1 \\geqslant 1 (i = 1, 2, \\cdots, n)$ 。由于 A 是非零矩阵，所以至少有一个特征值 $\\lambda_{i} > 0$ ，故",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "标准形/合同",
+    "正交变换化二次型",
+    "特征值符号",
+    "证明技巧",
+    "正定性判定"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 因为矩阵的行列式等于其特征值的乘积, 所以只要 A 的特征值非负, 即 A 半正定 $(X^{\\mathrm{T}}AX \\geqslant 0)$ , 则问题就解决了. 求体积 $a_{ij}$ 要用到三重积分.\n\n显然 A 是一个对称矩阵. 记 $\\Omega$ 是以坐标原点为球心且包含 $B_{1}, B_{2}, \\cdots, B_{n}$ 在内的球，定义函数\n\n$$\n\\mu_ {i} (x, y, z) = \\left\\{ \\begin{array}{l l} 1, & (x, y, z) \\in B _ {i} \\\\ 0, & (x, y, z) \\in \\Omega \\setminus B _ {i} \\end{array} (i = 1, 2, \\dots , n) \\right.,\n$$"
+      },
+      {
+        "id": "s2",
+        "text": "则\n\n$$\na _ {i j} = \\iiint_ {\\Omega} \\mu_ {i} (x, y, z) \\mu_ {j} (x, y, z) d x d y d z.\n$$\n\n以 $A=(a_{ij})$ 为矩阵做二次型 $f(T)=\\sum_{j=1}^{n}\\sum_{i=1}^{n}a_{ij}t_{i}t_{j},\\quad T=(t_{1},t_{2},\\cdots,t_{n})^{\\mathrm{T}}$ ，则\n\n$$\n\\begin{array}{l} f = \\sum_ {j = 1} ^ {n} \\sum_ {i = 1} ^ {n} \\iiint_ {\\Omega} \\mu_ {i} (x, y, z) \\mu_ {j} (x, y, z) t _ {i} t _ {j} d x d y d z \\\\ = \\iiint_ {\\Omega} \\left[ \\sum_ {i = 1} ^ {n} \\mu_ {i} (x, y, z) t _ {i} \\right] \\left[ \\sum_ {j = 1} ^ {n} \\mu_ {j} (x, y, z) t _ {j} \\right] d x d y d z \\\\ = \\iiint_ {\\Omega} \\left[ \\sum_ {i = 1} ^ {n} \\mu_ {i} (x, y, z) t _ {i} \\right] ^ {2} d x d y d z \\geqslant 0. \\end{array}\n$$"
+      },
+      {
+        "id": "s3",
+        "text": "存在正交变换 $T = Q V \\left( Q \\text{为正交矩阵，} V = (v_{1}, v_{2}, \\cdots, v_{n})^{\\mathrm{T}} \\right)$ 使 f 化为标准形：\n\n$$\nf = \\lambda_ {1} v _ {1} ^ {2} + \\lambda_ {2} v _ {2} ^ {2} + \\dots + \\lambda_ {n} v _ {n} ^ {2},\n$$\n\n其中 $\\lambda_{i}(i=1,2,\\cdots,n)$ 是 A 的特征值."
+      },
+      {
+        "id": "s4",
+        "text": "因为 $f \\geqslant 0$ ，所以 $\\lambda_{i} \\geqslant 0 (i = 1, 2, \\cdots, n)$ 。从而 $A + I$ 的特征值 $\\lambda_{i} + 1 \\geqslant 1 (i = 1, 2, \\cdots, n)$ 。由于 A 是非零矩阵，所以至少有一个特征值 $\\lambda_{i} > 0$ ，故\n\n$$\n\\mid A + I \\mid = \\prod_ {i = 1} ^ {n} \\left(\\lambda_ {i} + 1\\right) > 1.\n$$"
+      }
+    ],
+    "final_answer": "$\\lambda_{i} \\geqslant 0 (i = 1, 2, \\cdots, n)$ 。从而 $A + I$ 的特征值 $\\lambda_{i} + 1 \\geqslant 1 (i = 1, 2, \\cdots, n)$ 。由于 A 是非零矩阵，所以至少有一个特征值 $\\lambda_{i} > 0$ ，故",
+    "techniques_used": [
+      "标准形/合同",
+      "正交变换化二次型",
+      "特征值符号",
+      "证明技巧",
+      "正定性判定"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "正定性判定宜用特征值、顺序主子式还是合同？",
+      "technique": "特征值符号",
+      "expected": "选定正定性判定路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "正定性相关结论是什么？",
+      "technique": "正交变换化二次型",
+      "expected": "$\\lambda_{i} \\geqslant 0 (i = 1, 2, \\cdots, n)$ 。从而 $A + I$ 的特征值 $\\lambda_{i} + 1 \\geqslant 1 (i = 1, 2, \\cdots, n)$ 。由于 A 是非零矩阵，所以至少有一个特征值 $\\lambda_{i} > 0$ ，故"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.4",
+    "example_id": "例14*",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "二次型",
+    "page": 518,
+    "starred": true,
+    "syllabus_note": "球相交体积矩阵半正定*"
+  }
+}
