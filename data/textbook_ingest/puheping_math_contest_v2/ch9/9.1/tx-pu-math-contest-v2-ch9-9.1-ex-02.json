@@ -1,0 +1,77 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-02",
+  "subject": "math",
+  "l2": "行列式",
+  "l3_id": "math.linalg.det.compute",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "计算 $n$ 阶行列式 $D = \\left| \\begin{array}{cccccc}1 & 2 & 3 & \\cdots & n - 1 & n\\\\ x & 1 & 2 & \\cdots & n - 2 & n - 1\\\\ x & x & 1 & \\cdots & n - 3 & n - 2\\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ x & x & x & \\cdots & 1 & 2\\\\ x & x & x & \\cdots & x & 1 \\end{array} \\right|$",
+  "answer": "D = (1 - x) ^ {n} + \\left| \\begin{array}{c c c c c c} - x & 0 & 0 & \\dots & 0 & 1 \\\\ - 1 & - x & 0 & \\dots & 0 & 1 \\\\ - 1 & - 1 & - x & \\dots & 0 & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ - 1 & - 1 & - 1 & \\dots & - x & 1 \\\\ 0 & 0 & 0 & \\dots & 0 & x \\end{array} \\right| = (1 - x) ^ {n} + (- 1) ^ {n - 1} x ^ {n}.",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "矩阵运算",
+    "证明技巧",
+    "按行按列展开"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 该行列式主对角线以下的元素都相同，可用上行减下行的方式使下三角的0元素增多，最后化为三角形行列式来计算."
+      },
+      {
+        "id": "s2",
+        "text": "从第1行开始，将下行乘以-1加到上一行，则"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\begin{array}{r l} & {D = \\left| \\begin{array}{c c c c c c} {1 - x} & {1} & {1} & {\\dots} & {1} & {1} \\\\ {0} & {1 - x} & {1} & {\\dots} & {1} & {1} \\\\ {0} & {0} & {1 - x} & {\\dots} & {1} & {1} \\\\ {\\vdots} & {\\vdots} & {\\vdots} & & {\\vdots} & {\\vdots} \\\\ {0} & {0} & {0} & {\\dots} & {1 - x} & {1} \\\\ {x} & {x} & {x} & {\\dots} & {x} & {1} \\end{array} \\right|} \\\\ & {\\frac {\\text {按第} n \\text {列}}{\\overline {{\\text {拆分}}}} \\left| \\begin{array}{c c c c c c} {1 - x} & {1} & {1} & {\\dots} & {1} & {0} \\\\ {0} & {1 - x} & {1} & {\\dots} & {1} & {0} \\\\ {0} & {0} & {1 - x} & {\\dots} & {1} & {0} \\\\ {\\vdots} & {\\vdots} & {\\vdots} & & {\\vdots} & {\\vdots} \\\\ {0} & {0} & {0} & {\\dots} & {1 - x} & {0} \\\\ {x} & {x} & {x} & {\\dots} & {x} & {1 - x} \\end{array} \\right| + \\left| \\begin{array}{c c c c c c} {1 - x} & {1} & {1} & {\\dots} & {1} & {1} \\\\ {0} & {1 - x} & {1} & {\\dots} & {1} & {1} \\\\ {0} & {0} & {1 - x} & {\\dots} & {1} & {1} \\\\ {\\vdots} & {\\dotsc} & {\\dotsc} & & {\\dotsc} & {\\dotsc} \\\\ {0} & {0} & {0} & {\\dots} & {1 - x} & {1} \\\\ {x} & {x} & {x} & {\\dots} & {x} & {x} \\end{array} \\right|.} \\end{array}\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "将第1个行列式按最后一列展开，第2个行列式的最后一列乘以-1加到其余各列，得"
+      },
+      {
+        "id": "s5",
+        "text": "$$\nD = (1 - x) ^ {n} + \\left| \\begin{array}{c c c c c c} - x & 0 & 0 & \\dots & 0 & 1 \\\\ - 1 & - x & 0 & \\dots & 0 & 1 \\\\ - 1 & - 1 & - x & \\dots & 0 & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ - 1 & - 1 & - 1 & \\dots & - x & 1 \\\\ 0 & 0 & 0 & \\dots & 0 & x \\end{array} \\right| = (1 - x) ^ {n} + (- 1) ^ {n - 1} x ^ {n}.\n$$"
+      }
+    ],
+    "final_answer": "D = (1 - x) ^ {n} + \\left| \\begin{array}{c c c c c c} - x & 0 & 0 & \\dots & 0 & 1 \\\\ - 1 & - x & 0 & \\dots & 0 & 1 \\\\ - 1 & - 1 & - x & \\dots & 0 & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ - 1 & - 1 & - 1 & \\dots & - x & 1 \\\\ 0 & 0 & 0 & \\dots & 0 & x \\end{array} \\right| = (1 - x) ^ {n} + (- 1) ^ {n - 1} x ^ {n}.",
+    "techniques_used": [
+      "矩阵运算",
+      "证明技巧",
+      "按行按列展开"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "行列式宜用展开、行变换化三角、加边还是特殊结构？",
+      "technique": "按行按列展开",
+      "expected": "选定计算途径并化简行列式。"
+    },
+    {
+      "id": "c2",
+      "prompt": "行列式的值或结论是什么？",
+      "technique": "证明技巧",
+      "expected": "D = (1 - x) ^ {n} + \\left| \\begin{array}{c c c c c c} - x & 0 & 0 & \\dots & 0 & 1 \\\\ - 1 & - x & 0 & \\dots & 0 & 1 \\\\ - 1 & - 1 & - x & \\dots & 0 & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例2",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 464,
+    "syllabus_note": "行变换化为三角形行列式",
+    "commentary": "评注 利用行列式的性质化行列式为三角形是计算 n 阶行列式最常见的方法."
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "tx-pu-math-contest-v2-ch9-9.1-ex-13",
+  "subject": "math",
+  "l2": "矩阵与初等变换",
+  "l3_id": "math.linalg.mat.ops",
+  "atom_id": "",
+  "book_id": "",
+  "ability_goal": "compute",
+  "item_form": "blank",
+  "difficulty": "hit",
+  "question": "设 $A$ 是 $4 \\times 2$ 阶矩阵， $B$ 是 $2 \\times 4$ 阶矩阵，满足 $AB = \\begin{pmatrix} 1 & 0 & 1 & 0 \\\\ 0 & 1 & 0 & 1 \\\\ -1 & 0 & -2 & 0 \\\\ 0 & -1 & 0 & -2 \\end{pmatrix}$ ，求 $BA$ .",
+  "answer": "$A_{1}B_{1} = I$ ， $A_{2}B_{2} = -2I$ ，故 $B_{1}A_{1} = I$ ， $B_{2}A_{2} = -2I$ ，有",
+  "ref_source": "textbook:puheping_math_contest_v2",
+  "techniques": [
+    "分块矩阵",
+    "矩阵运算"
+  ],
+  "solution": {
+    "steps": [
+      {
+        "id": "s1",
+        "text": "分析 将 AB 分块，有 $AB = \\begin{pmatrix} I & I \\\\ -I & -2I \\end{pmatrix}$ ，问题一下就简单了."
+      },
+      {
+        "id": "s2",
+        "text": "将矩阵分块，设 $A = \\begin{pmatrix} A_1 \\\\ A_2 \\end{pmatrix}$ ， $B = (B_1, B_2)$ ，其中 $A_i, B_i (i = 1, 2)$ 都是二阶方阵。由于"
+      },
+      {
+        "id": "s3",
+        "text": "$$\n\\left( \\begin{array}{c c c c} 1 & 0 & 1 & 0 \\\\ 0 & 1 & 0 & 1 \\\\ - 1 & 0 & - 2 & 0 \\\\ 0 & - 1 & 0 & - 2 \\end{array} \\right) = \\binom {\\boldsymbol {A} _ {1}} {\\boldsymbol {A} _ {2}} (\\boldsymbol {B} _ {1} \\boldsymbol {B} _ {2}) = \\left( \\begin{array}{c c} \\boldsymbol {A} _ {1} \\boldsymbol {B} _ {1} & \\boldsymbol {A} _ {1} \\boldsymbol {B} _ {2} \\\\ \\boldsymbol {A} _ {2} \\boldsymbol {B} _ {1} & \\boldsymbol {A} _ {2} \\boldsymbol {B} _ {2} \\end{array} \\right),\n$$"
+      },
+      {
+        "id": "s4",
+        "text": "所以 $A_{1}B_{1} = I$ ， $A_{2}B_{2} = -2I$ ，故 $B_{1}A_{1} = I$ ， $B_{2}A_{2} = -2I$ ，有"
+      },
+      {
+        "id": "s5",
+        "text": "$$\n\\boldsymbol {B} \\boldsymbol {A} = (\\boldsymbol {B} _ {1} \\boldsymbol {B} _ {2}) \\binom {\\boldsymbol {A} _ {1}} {\\boldsymbol {A} _ {2}} = \\boldsymbol {B} _ {1} \\boldsymbol {A} _ {1} + \\boldsymbol {B} _ {2} \\boldsymbol {A} _ {2} = - \\boldsymbol {I} = \\left( \\begin{array}{c c} - 1 & 0 \\\\ 0 & - 1 \\end{array} \\right).\n$$"
+      }
+    ],
+    "final_answer": "$A_{1}B_{1} = I$ ， $A_{2}B_{2} = -2I$ ，故 $B_{1}A_{1} = I$ ， $B_{2}A_{2} = -2I$ ，有",
+    "techniques_used": [
+      "分块矩阵",
+      "矩阵运算"
+    ]
+  },
+  "cdps": [
+    {
+      "id": "c1",
+      "prompt": "矩阵运算、等价标准形或对称性条件如何切入？",
+      "technique": "矩阵运算",
+      "expected": "选定矩阵变换或代数恒等式路径。"
+    },
+    {
+      "id": "c2",
+      "prompt": "最终结论是什么？",
+      "technique": "矩阵运算",
+      "expected": "$A_{1}B_{1} = I$ ， $A_{2}B_{2} = -2I$ ，故 $B_{1}A_{1} = I$ ， $B_{2}A_{2} = -2I$ ，有"
+    }
+  ],
+  "meta": {
+    "source": "textbook_example",
+    "book_id": "puheping_math_contest_v2",
+    "book_title": "大学生数学竞赛教程（第2版）",
+    "book_author": "蒲和平",
+    "chapter": "第9章 线性代数",
+    "section": "9.1",
+    "example_id": "例13",
+    "quality_basis": "source_textbook_worked_example",
+    "book_section_title": "行列式与矩阵",
+    "page": 471,
+    "syllabus_note": "由 AB 求 BA（低秩乘积）",
+    "commentary": "评注 矩阵分块大大降低了矩阵的阶数, 给运算、推理带来了方便. 矩阵分块有两大主要作用: 一是简化运算, 常用在矩阵乘法与求逆方面, 这时分块要以出现特殊子块为好, 如零矩阵、单位矩阵、对角矩阵、对角块（求逆）等; 二是做形式转换, 便于符号运算与理论推导, 如两矩阵相乘, 将右侧矩阵按列分块, 可得到矩阵与向量组的关系, 矩阵的等价、相似、合同标准形等都运用了矩阵分块为工具."
+  }
+}
