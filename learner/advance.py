@@ -18,7 +18,7 @@ from learner.atom_book import (
     next_atom_after,
     schema_ok,
 )
-from learner.db import get_store, now_utc_iso
+from learner.db import get_store, now_utc_iso, shanghai_day
 
 ESCAPE_K = int(os.environ.get("ADVANCE_ESCAPE_K", "5"))
 
@@ -218,8 +218,27 @@ def resolve_advance_target(learner_id: str = "") -> dict[str, Any]:
     }
 
 
+def stale_unattempted_atom(subject: str, atom_id: str, *, today: str = "") -> bool:
+    """未作答推送都早于今天 → 日推可以换一道 ready 题，不再空槽。
+
+    当天的未作答仍是 waiting_attempt。没有未作答推送则不是这条闸。
+    math/comm 日推共用；不删、不放弃旧推送，预留槽仍禁止为同一原子克隆。
+    """
+    aid = (atom_id or "").strip()
+    if not aid:
+        return False
+    days = get_store().unattempted_atom_push_days(subject, aid)
+    if not days:
+        return False
+    day = (today or shanghai_day(None)).strip()
+    return all((d or "") < day for d in days)
+
+
 def _reserved_blocked(learner_id: str, book: str, atom_id: str) -> str:
-    """返回跳过原因；空串表示可以出新题。"""
+    """返回跳过原因；空串表示可以出新题。
+
+    昨日未作答仍禁止克隆同一原子。日推空槽换其它 ready 题见 cultivate。
+    """
     lid = (learner_id or "").strip() or _owner_id()
     store = get_store()
     if lid:

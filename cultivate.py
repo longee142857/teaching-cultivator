@@ -1239,7 +1239,42 @@ def _cultivate_inner(subject: str):
             learner_id=sid or None,
             mastered_from=mastered_from,
         )
-    if item and not atom_id:
+    released_stale_atom = ""
+    if not item and atom_id:
+        from learner.advance import stale_unattempted_atom
+
+        # 当天未作答仍等原题。早于今天的 waiting_attempt 不再让本日空槽整槽跳过：
+        # math/comm 都改走其它 unused ready。旧推送留着，不克隆、不放弃。
+        if stale_unattempted_atom(subject, atom_id):
+            released_stale_atom = atom_id
+            print(
+                f"[cultivate] {subject}: stale waiting_attempt atom={atom_id} "
+                f"(prior day unanswered); walk ready bank for today's empty slot"
+            )
+            item = pick_for_push_walk(
+                subject,
+                kp=kp,
+                technique=tech,
+                learner_id=sid or None,
+            )
+            if not item:
+                print(
+                    f"[cultivate] {subject}: stale waiting_attempt atom={atom_id} "
+                    f"but no other ready item"
+                )
+        else:
+            try:
+                from learner.advance import ensure_reserved_comm_item
+
+                fill = ensure_reserved_comm_item()
+                print(f"[cultivate] {subject}: reserved atom fill {fill}")
+                if fill.get("ok"):
+                    item = pick_for_push(
+                        subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
+                    )
+            except Exception as e:
+                print(f"[cultivate] {subject}: reserved atom fill failed: {e}")
+    if item and (not atom_id or released_stale_atom):
         actual = (item.get("kp") or "").strip()
         if actual and actual != kp:
             print(
@@ -1250,18 +1285,12 @@ def _cultivate_inner(subject: str):
             if reason.startswith(kp):
                 decision.reason = actual + reason[len(kp):]
             kp = actual
-    if not item and atom_id:
-        try:
-            from learner.advance import ensure_reserved_comm_item
+        if released_stale_atom:
+            import re
 
-            fill = ensure_reserved_comm_item()
-            print(f"[cultivate] {subject}: reserved atom fill {fill}")
-            if fill.get("ok"):
-                item = pick_for_push(
-                    subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
-                )
-        except Exception as e:
-            print(f"[cultivate] {subject}: reserved atom fill failed: {e}")
+            decision.reason = re.sub(
+                r"\s*\[atom=[^\]]+\]", "", decision.reason or ""
+            )
     if not item:
         if not live_fallback_enabled():
             print(
