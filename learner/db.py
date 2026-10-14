@@ -1874,13 +1874,13 @@ class Store:
         rows = self._query(sql, tuple(params))
         return int(rows[0][0]) if rows else 0
 
-    def has_unattempted_atom_push(self, subject: str, atom_id: str) -> bool:
-        """当前原子已推送但还没有 applied 作答 → 禁止再克隆一题。"""
+    def unattempted_atom_push_days(self, subject: str, atom_id: str) -> list[str]:
+        """该原子已推送且没有 applied 作答的 pushes.day（上海日历日）。"""
         aid = (atom_id or "").strip()
         if not aid:
-            return False
+            return []
         rows = self._query(
-            """SELECT 1 FROM items i
+            """SELECT p.day AS day FROM items i
                JOIN pushes p ON p.item_id = i.id
                WHERE COALESCE(i.bank_subject, i.subject)=?
                  AND COALESCE(i.atom_id,'')=?
@@ -1889,10 +1889,24 @@ class Store:
                    WHERE a.item_id = i.id
                      AND COALESCE(a.status,'applied')='applied'
                  )
-               LIMIT 1""",
+               ORDER BY p.day ASC, p.id ASC""",
             ((subject or "").strip(), aid),
         )
-        return bool(rows)
+        return [str(r["day"] or "") for r in rows]
+
+    def has_unattempted_atom_push(
+        self, subject: str, atom_id: str, *, day: str = ""
+    ) -> bool:
+        """未作答推送。day 给定时只认该上海日历日。
+
+        日推/预留闸传今天：早于今天的未作答不在今日视图里，不再挡住补题。
+        不传 day 则任意一天都算（行仍在，只是闸不再用这个宽口径）。
+        """
+        days = self.unattempted_atom_push_days(subject, atom_id)
+        want = (day or "").strip()
+        if not want:
+            return bool(days)
+        return any((d or "") == want for d in days)
 
     def list_atom_questions(
         self, subject: str, atom_id: str, limit: int = 8

@@ -18,7 +18,7 @@ from learner.atom_book import (
     next_atom_after,
     schema_ok,
 )
-from learner.db import get_store, now_utc_iso
+from learner.db import get_store, now_utc_iso, shanghai_day
 
 ESCAPE_K = int(os.environ.get("ADVANCE_ESCAPE_K", "5"))
 
@@ -218,15 +218,33 @@ def resolve_advance_target(learner_id: str = "") -> dict[str, Any]:
     }
 
 
+def same_day_unattempted_atom(subject: str, atom_id: str, *, today: str = "") -> bool:
+    """当天已有未作答推送。早于今天的未作答不算 waiting_attempt。
+
+    今日视图只显示今天的推送，更早的未作答对学员不可见，不挡日推/预留。
+    行留在库里，不删、不放弃。math/comm 原子钉住的日推共用这一条。
+    """
+    aid = (atom_id or "").strip()
+    if not aid:
+        return False
+    day = (today or shanghai_day(None)).strip()
+    if not day:
+        return False
+    return get_store().has_unattempted_atom_push(subject, aid, day=day)
+
+
 def _reserved_blocked(learner_id: str, book: str, atom_id: str) -> str:
-    """返回跳过原因；空串表示可以出新题。"""
+    """返回跳过原因；空串表示可以出新题。
+
+    只有当天未作答算 waiting_attempt。早于今天的未作答不挡同一原子补变体。
+    """
     lid = (learner_id or "").strip() or _owner_id()
     store = get_store()
     if lid:
         prog = store.get_atom_progress(lid, book, atom_id)
         if prog and (prog.get("status") or "") in ("passed", "escaped"):
             return "atom_passed"
-    if store.has_unattempted_atom_push("comm", atom_id):
+    if same_day_unattempted_atom("comm", atom_id):
         return "waiting_attempt"
     if store.count_atom_items(
         "comm", atom_id, quality=("pass",), status=("ready",)
@@ -241,7 +259,8 @@ def _reserved_blocked(learner_id: str, book: str, atom_id: str) -> str:
 
 def reserved_comm_spec(learner_id: str = "") -> dict[str, str] | None:
     """凌晨预留槽：当前原子无 ready+pass 则补一题。
-    已过关或上一题未作答则不出；retired 旧 pass 在已作答且未过关时才补变体。
+    已过关或当天上一题未作答则不出。早于今天的未作答不挡补变体。
+    retired 旧 pass 在未过关时可以补变体。
     """
     if not advance_active("comm", learner_id):
         return None
