@@ -1240,16 +1240,44 @@ def _cultivate_inner(subject: str):
             mastered_from=mastered_from,
         )
     released_stale_atom = ""
+    skip_note = ""
     if not item and atom_id:
-        from learner.advance import stale_unattempted_atom
+        from learner.advance import same_day_unattempted_atom
 
-        # 当天未作答仍等原题。早于今天的 waiting_attempt 不再让本日空槽整槽跳过：
-        # math/comm 都改走其它 unused ready。旧推送留着，不克隆、不放弃。
-        if stale_unattempted_atom(subject, atom_id):
-            released_stale_atom = atom_id
+        # 顺序：同原子 ready（上面已抽）→ 同原子补题 → 其它 KP ready → 才跳过。
+        # 早于今天的未作答不在今日视图里，不再算 waiting_attempt。
+        # 当天未作答说明本槽已经有可见题，不再发第二道。
+        if same_day_unattempted_atom(subject, atom_id):
             print(
-                f"[cultivate] {subject}: stale waiting_attempt atom={atom_id} "
-                f"(prior day unanswered); walk ready bank for today's empty slot"
+                f"[cultivate] {subject}: same-day waiting_attempt atom={atom_id}; "
+                f"today's push is already in 今日, skip a second item"
+            )
+            return
+        fill: dict = {}
+        if (subject or "").strip().lower() == "comm":
+            try:
+                from learner.advance import ensure_reserved_comm_item
+
+                fill = ensure_reserved_comm_item() or {}
+                print(f"[cultivate] {subject}: reserved atom fill {fill}")
+                if fill.get("ok") and not fill.get("skipped"):
+                    item = pick_for_push(
+                        subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
+                    )
+            except Exception as e:
+                fill = {"ok": False, "error": f"{type(e).__name__}:{e}"}
+                print(f"[cultivate] {subject}: reserved atom fill failed: {e}")
+        else:
+            fill = {"ok": False, "error": "no_atom_refill", "subject": subject}
+            print(
+                f"[cultivate] {subject}: no same-atom refill for this subject "
+                f"atom={atom_id}"
+            )
+        if not item:
+            why = fill.get("reason") or fill.get("error") or "no_item"
+            print(
+                f"[cultivate] {subject}: same-atom refill produced nothing "
+                f"atom={atom_id} ({why}); walk other ready items"
             )
             item = pick_for_push_walk(
                 subject,
@@ -1257,23 +1285,15 @@ def _cultivate_inner(subject: str):
                 technique=tech,
                 learner_id=sid or None,
             )
-            if not item:
-                print(
-                    f"[cultivate] {subject}: stale waiting_attempt atom={atom_id} "
-                    f"but no other ready item"
+            if item:
+                released_stale_atom = atom_id
+            else:
+                skip_note = (
+                    f"no same-atom ready, refill={why}, no other ready item"
                 )
-        else:
-            try:
-                from learner.advance import ensure_reserved_comm_item
-
-                fill = ensure_reserved_comm_item()
-                print(f"[cultivate] {subject}: reserved atom fill {fill}")
-                if fill.get("ok"):
-                    item = pick_for_push(
-                        subject, kp=kp, technique=tech, learner_id=sid or None, atom_id=atom_id
-                    )
-            except Exception as e:
-                print(f"[cultivate] {subject}: reserved atom fill failed: {e}")
+                print(
+                    f"[cultivate] {subject}: skip slot atom={atom_id} {skip_note}"
+                )
     if item and (not atom_id or released_stale_atom):
         actual = (item.get("kp") or "").strip()
         if actual and actual != kp:
@@ -1295,7 +1315,8 @@ def _cultivate_inner(subject: str):
         if not live_fallback_enabled():
             print(
                 f"[cultivate] {subject}: ready 题库为空/无匹配 "
-                f"(kp={kp} tech={tech or '-'})，跳过（BANK_LIVE_FALLBACK=0）"
+                f"(kp={kp} tech={tech or '-'} atom={atom_id or '-'})"
+                f"{(' ' + skip_note) if skip_note else ''}，跳过（BANK_LIVE_FALLBACK=0）"
             )
             try:
                 from pathlib import Path
@@ -1304,7 +1325,7 @@ def _cultivate_inner(subject: str):
                 qdir.mkdir(parents=True, exist_ok=True)
                 (qdir / f"bank_empty_{subject}.md").write_text(
                     f"# bank empty\nsubject={subject}\nkp={kp}\ntech={tech}\n"
-                    f"atom_id={atom_id}\n",
+                    f"atom_id={atom_id}\nnote={skip_note}\n",
                     encoding="utf-8",
                 )
             except Exception:

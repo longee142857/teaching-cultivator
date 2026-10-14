@@ -1894,9 +1894,19 @@ class Store:
         )
         return [str(r["day"] or "") for r in rows]
 
-    def has_unattempted_atom_push(self, subject: str, atom_id: str) -> bool:
-        """当前原子已推送但还没有 applied 作答 → 禁止再克隆一题。"""
-        return bool(self.unattempted_atom_push_days(subject, atom_id))
+    def has_unattempted_atom_push(
+        self, subject: str, atom_id: str, *, day: str = ""
+    ) -> bool:
+        """未作答推送。day 给定时只认该上海日历日。
+
+        日推/预留闸传今天：早于今天的未作答不在今日视图里，不再挡住补题。
+        不传 day 则任意一天都算（行仍在，只是闸不再用这个宽口径）。
+        """
+        days = self.unattempted_atom_push_days(subject, atom_id)
+        want = (day or "").strip()
+        if not want:
+            return bool(days)
+        return any((d or "") == want for d in days)
 
     def list_atom_questions(
         self, subject: str, atom_id: str, limit: int = 8

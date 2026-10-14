@@ -1254,12 +1254,12 @@ def test_mastered_fallback_prefers_same_l1_textbook() -> None:
 
 
 def test_stale_waiting_attempt_fills_today_slot() -> None:
-    """昨日 waiting_attempt 不再挡住今天的空槽；当天未作答仍不换题、不克隆。"""
+    """早于今天的未作答不挡同原子补题；当天未作答不再发第二道。"""
     from datetime import datetime, timedelta
 
     from learner.context import bind_learner
     from learner.db import Store, TZ_SHANGHAI, shanghai_day, utc_from_shanghai
-    from learner.advance import stale_unattempted_atom
+    from learner.advance import _reserved_blocked, same_day_unattempted_atom
     import cultivate
 
     atom = "zhou.ch2.fourier.transform.def"
@@ -1302,8 +1302,8 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
         _mark_pass(store, iid)
         return iid
 
-    def _run(store, subject, td, *, reserved):
-        called = {"generate": 0, "reserved": 0}
+    def _run(store, subject, td, reserved_fn):
+        called = {"generate": 0, "reserved": 0, "clone_id": 0}
 
         def fake_generate(*_a, **_k):
             called["generate"] += 1
@@ -1311,7 +1311,7 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
 
         def fake_reserved(*_a, **_k):
             called["reserved"] += 1
-            return {"ok": True, "skipped": True, "reason": "waiting_attempt"}
+            return reserved_fn(store, subject, called)
 
         with patch.dict(os.environ, {"BANK_LIVE_FALLBACK": "0"}), \
              patch("learner.db.get_store", return_value=store), \
@@ -1331,15 +1331,20 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
              patch("config.DATA_DIR", td):
             with bind_learner("u-day", binding="schedule"):
                 cultivate._cultivate_inner(subject)
-        if not reserved:
-            check(called["reserved"] == 0, f"{subject} stale walk does not clone")
         check(called["generate"] == 0, f"{subject} does not live-author")
         return called
+
+    def _fail_reserved(_store, _subject, _called):
+        return {"ok": False, "error": "author_failed"}
+
+    def _clone_reserved(store, subject, called):
+        iid = _ready(store, subject, "同原子克隆新题", pinned_kp, atom_id=atom)
+        called["clone_id"] = iid
+        return {"ok": True, "skipped": False, "atom_id": atom, "n_pass": 1}
 
     with tempfile.TemporaryDirectory() as td:
         store = Store(os.path.join(td, "t.db"))
         stale_id = _ready(store, "comm", "昨日傅里叶未答", pinned_kp, atom_id=atom)
-        other_id = _ready(store, "comm", "今日可抽的随机过程", other_kp)
         stale_push = store.record_push_for_item(
             item_id=stale_id,
             learner_id="u-day",
@@ -1349,29 +1354,36 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
         )
         with patch("learner.advance.get_store", return_value=store):
             check(
-                stale_unattempted_atom("comm", atom, today=today),
-                f"yesterday unanswered is stale for {today}",
+                store.has_unattempted_atom_push("comm", atom),
+                "yesterday row still counts as some unanswered push",
             )
             check(
-                not stale_unattempted_atom("comm", atom, today=yday),
-                "same calendar day is not stale",
+                not store.has_unattempted_atom_push("comm", atom, day=today),
+                "yesterday does not count as today's waiting_attempt",
             )
-            check(not stale_unattempted_atom("comm", "", today=today), "empty atom is not stale")
-        _run(store, "comm", td, reserved=False)
-        rows = store._query(
-            "SELECT id, item_id, day FROM pushes ORDER BY id ASC"
-        )
-        check(len(rows) == 2, f"today comm push added beside yesterday (n={len(rows)})")
+            check(
+                not same_day_unattempted_atom("comm", atom, today=today),
+                "same_day helper ignores yesterday",
+            )
+            check(
+                _reserved_blocked("u-day", "zhou_comm", atom) == "",
+                "reserved gate ignores earlier-day unanswered",
+            )
+        other_id = _ready(store, "comm", "别的考点不该先于克隆", other_kp)
+        called = _run(store, "comm", td, _clone_reserved)
+        check(called["reserved"] == 1, "stale empty atom calls reserved clone")
+        rows = store._query("SELECT id, item_id, day FROM pushes ORDER BY id ASC")
+        check(len(rows) == 2, f"clone push added beside yesterday (n={len(rows)})")
         check(int(rows[0]["id"]) == int(stale_push), "yesterday push row kept")
-        check(str(rows[0]["day"]) == yday, f"stale push stays on {yday}")
-        check(int(rows[1]["item_id"]) == other_id, f"today slot got the other ready item {rows}")
-        check(str(rows[1]["day"]) == today, f"new push is today {rows[1]['day']}")
+        check(int(rows[1]["item_id"]) == called["clone_id"], f"today pushed the same-atom clone {rows}")
+        check(int(rows[1]["item_id"]) != other_id, "clone wins over another KP")
+        check(str(rows[1]["day"]) == today, f"clone push is today {rows[1]['day']}")
         check(
             (store.get_item(stale_id) or {}).get("status") == "retired",
             "stale item left retired, not deleted",
         )
-        meta = (store.get_item(other_id) or {}).get("meta") or {}
-        check("[atom=" not in str(meta.get("reason") or ""), f"walked push drops stale atom pin {meta}")
+        meta = (store.get_item(called["clone_id"]) or {}).get("meta") or {}
+        check("[atom=" in str(meta.get("reason") or ""), f"same-atom clone keeps atom pin {meta}")
 
     with tempfile.TemporaryDirectory() as td:
         store = Store(os.path.join(td, "t.db"))
@@ -1384,35 +1396,42 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
             slot="comm",
             pushed_at=utc_from_shanghai(yday, "15:00"),
         )
-        _run(store, "comm", td, reserved=False)
+        called = _run(store, "comm", td, _clone_reserved)
+        check(called["reserved"] == 0, "same-atom ready does not clone")
         today_rows = store._query(
             "SELECT item_id FROM pushes WHERE day=? ORDER BY id ASC",
             (today,),
         )
         check(
             today_rows and int(today_rows[0]["item_id"]) == same_atom,
-            f"same-atom unused ready wins over a different KP (got {list(today_rows)})",
+            f"same-atom unused ready wins (got {list(today_rows)})",
         )
         check(
             not today_rows or int(today_rows[0]["item_id"]) != other_id,
-            "does not skip a ready item of the pinned atom",
+            "does not walk away from a ready item of the pinned atom",
         )
 
     with tempfile.TemporaryDirectory() as td:
         store = Store(os.path.join(td, "t.db"))
-        fresh_id = _ready(store, "comm", "今天已推未答", pinned_kp, atom_id=atom)
-        other_id = _ready(store, "comm", "不该被抽走", other_kp)
+        stale_id = _ready(store, "comm", "昨天未答待 walk", pinned_kp, atom_id=atom)
+        other_id = _ready(store, "comm", "补题失败后的其它 KP", other_kp)
         store.record_push_for_item(
-            item_id=fresh_id, learner_id="u-day", slot="comm", reason="today",
+            item_id=stale_id,
+            learner_id="u-day",
+            slot="comm",
+            pushed_at=utc_from_shanghai(yday, "15:00"),
         )
-        called = _run(store, "comm", td, reserved=True)
-        check(called["reserved"] == 1, "same-day waiting still hits reserved gate")
-        extra = store._query(
-            "SELECT item_id FROM pushes WHERE item_id=?",
-            (other_id,),
+        called = _run(store, "comm", td, _fail_reserved)
+        check(called["reserved"] == 1, "failed refill is still attempted")
+        today_rows = store._query(
+            "SELECT item_id FROM pushes WHERE day=?",
+            (today,),
         )
-        check(not extra, "same-day unanswered does not take another item")
-        check(store.count_ready("comm") == 1, "other ready item stays unused")
+        check(
+            today_rows and int(today_rows[0]["item_id"]) == other_id,
+            f"refill failure walks to another KP (got {list(today_rows)})",
+        )
+        check(int(store.get_push(1)["item_id"]) == stale_id, "yesterday push kept")
 
     with tempfile.TemporaryDirectory() as td:
         store = Store(os.path.join(td, "t.db"))
@@ -1423,11 +1442,41 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
             slot="comm",
             pushed_at=utc_from_shanghai(yday, "15:00"),
         )
-        _run(store, "comm", td, reserved=False)
+        called = _run(store, "comm", td, _fail_reserved)
+        check(called["reserved"] == 1, "empty pool still tries same-atom refill")
         check(
             len(store._query("SELECT id FROM pushes")) == 1,
-            "no other ready item → slot stays empty, no clone",
+            "refill fail and no other ready → skip, no second push",
         )
+        note_path = os.path.join(td, "problem_queue", "bank_empty_comm.md")
+        text = ""
+        if os.path.isfile(note_path):
+            with open(note_path, encoding="utf-8") as f:
+                text = f.read()
+        check("refill=author_failed" in text, f"skip note names the refill failure {text!r}")
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        fresh_id = _ready(store, "comm", "今天已推未答", pinned_kp, atom_id=atom)
+        other_id = _ready(store, "comm", "不该被抽走", other_kp)
+        store.record_push_for_item(
+            item_id=fresh_id, learner_id="u-day", slot="comm", reason="today",
+        )
+        with patch("learner.advance.get_store", return_value=store):
+            check(
+                same_day_unattempted_atom("comm", atom, today=today),
+                "today unanswered is the remaining waiting_attempt",
+            )
+            check(
+                _reserved_blocked("u-day", "zhou_comm", atom) == "waiting_attempt",
+                "same-day unanswered still blocks reserved clone",
+            )
+        called = _run(store, "comm", td, _clone_reserved)
+        check(called["reserved"] == 0, "same-day slot does not refill or walk")
+        extra = store._query("SELECT item_id FROM pushes WHERE item_id=?", (other_id,))
+        check(not extra, "same-day unanswered does not take another item")
+        check(store.count_ready("comm") == 1, "other ready item stays unused")
+        check(len(store._query("SELECT id FROM pushes")) == 1, "no second push today")
 
     with tempfile.TemporaryDirectory() as td:
         store = Store(os.path.join(td, "t.db"))
@@ -1439,15 +1488,28 @@ def test_stale_waiting_attempt_fills_today_slot() -> None:
             slot="math",
             pushed_at=utc_from_shanghai(yday, "09:00"),
         )
-        _run(store, "math", td, reserved=False)
-        today_rows = store._query(
-            "SELECT item_id, day FROM pushes WHERE day=? ",
-            (today,),
-        )
+        called = _run(store, "math", td, _clone_reserved)
+        check(called["reserved"] == 0, "math has no comm reserved clone")
+        today_rows = store._query("SELECT item_id, day FROM pushes WHERE day=?", (today,))
         check(
             today_rows and int(today_rows[0]["item_id"]) == other_id,
-            f"math day-push also walks past stale waiting (got {list(today_rows)})",
+            f"math walks other ready after no same-atom refill (got {list(today_rows)})",
         )
+
+    with tempfile.TemporaryDirectory() as td:
+        store = Store(os.path.join(td, "t.db"))
+        fresh_id = _ready(store, "math", "今天数学已推未答", pinned_kp, atom_id=atom)
+        other_id = _ready(store, "math", "数学不该再推", other_kp)
+        store.record_push_for_item(
+            item_id=fresh_id,
+            learner_id="u-day",
+            slot="math",
+            pushed_at=utc_from_shanghai(today, "09:00"),
+        )
+        called = _run(store, "math", td, _clone_reserved)
+        check(called["reserved"] == 0, "math same-day does not refill")
+        extra = store._query("SELECT item_id FROM pushes WHERE item_id=?", (other_id,))
+        check(not extra, "math same-day unanswered does not take another item")
 
 
 def main() -> int:
