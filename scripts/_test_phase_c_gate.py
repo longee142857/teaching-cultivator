@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from unittest.mock import patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -61,6 +62,63 @@ def test_leak_in_draft():
     print("OK leak in draft")
 
 
+def test_set_aside_lead_stripped_on_push():
+    """Polish 把「先放一放」写回题干开头时，push 发送稿要先剥掉再质检。"""
+    draft = (
+        "求 $\\lim_{x\\to 0}\\sin x/x$\n"
+        "A. 0\n"
+        "B. 1\n"
+        "C. 2\n"
+        "D. 不存在"
+    )
+    answer = "正确选项：B\n解析：标准极限，示意足够长"
+    assert check_draft_answer(draft, answer) == []
+    lead = "把这个题先放一放。\n\n" + draft
+
+    import orchestrate as orch
+
+    def fake_polish(draft_body, answer_body, **kwargs):
+        return lead
+
+    with patch.object(orch, "_polish_or_orchestrate", fake_polish), patch.object(
+        orch,
+        "_review_item",
+        lambda *a, **kw: {"decision": "accept", "issues": [], "parse_ok": True},
+    ):
+        r = orch.orchestrate_push(
+            {"draft": draft, "answer": answer, "kp": "极限", "decision_type": "push"},
+            subject="math",
+            source="schedule",
+            max_author_retries=0,
+        )
+    assert r["status"] == "accept", r
+    assert "放一放" not in (r.get("content") or ""), r
+    assert "sin" in r["content"]
+    print("OK push strips 先放一放 lead-in")
+
+
+def test_set_aside_in_body_rejects():
+    draft = (
+        "求极限。先放一放再选。\n"
+        "A. 0\n"
+        "B. 1\n"
+        "C. 2\n"
+        "D. 不存在"
+    )
+    answer = "正确选项：B\n解析：标准极限示意"
+    issues = check_draft_answer(draft, answer)
+    assert any("放一放" in i for i in issues), issues
+    r = orchestrate_push(
+        {"draft": draft, "answer": answer, "kp": "极限", "decision_type": "push"},
+        subject="math",
+        source="schedule",
+        max_author_retries=0,
+    )
+    assert r["status"] == "reject", r
+    assert any("放一放" in i for i in r["issues"]), r
+    print("OK in-body 放一放 rejects")
+
+
 def test_clean_mcq_accept_without_llm(monkey=None):
     """质检通过后，mock 掉 LLM，应 accept fallback/polish path。"""
     draft = (
@@ -98,6 +156,8 @@ def main() -> int:
     test_duplicate_options()
     test_answer_not_in_options()
     test_leak_in_draft()
+    test_set_aside_lead_stripped_on_push()
+    test_set_aside_in_body_rejects()
     test_clean_mcq_accept_without_llm()
     report = {
         "PASS": True,
@@ -106,6 +166,8 @@ def main() -> int:
             "duplicate_options",
             "answer_letter",
             "leak_in_draft",
+            "set_aside_lead_stripped",
+            "set_aside_in_body_rejects",
             "clean_accept_mocked",
         ],
     }
