@@ -271,10 +271,11 @@ class PromptBuilder:
         if (decision_type or "").strip() in ("explain", "review"):
             return (
                 "- 保留：概念直觉/讲解/错因说明（若有）+ 恰好一道巩固题；"
-                "删除「上一题」套话与出题元思考"
+                "删除「上一题」「先放一放」「把这个题先放一放」套话与出题元思考"
             )
         return (
-            "- 删除：概念直觉/讲解/课堂衔接/「刚才我们」类旁白；只保留恰好一道题的题干"
+            "- 删除：概念直觉/讲解/课堂衔接/「刚才我们」「先放一放」「把这个题先放一放」类旁白；"
+            "只保留恰好一道题的题干"
         )
 
     @staticmethod
@@ -282,15 +283,18 @@ class PromptBuilder:
         dt = (decision_type or "push").strip()
         if source == "bank" and dt in ("explain", "review"):
             return (
-                "来源为 bank 的讲解/复诊：禁止以「上一题」开头，"
+                "来源为 bank 的讲解/复诊：禁止以「上一题」或「先放一放」「把这个题先放一放」开头，"
                 "但保留概念直觉与错因说明 + 巩固题"
             )
         if source == "bank":
             return (
-                "来源为 bank 的出题：禁止衔接，不得以「上一题」开头，"
+                "来源为 bank 的出题：禁止衔接，不得以「上一题」或「先放一放」「把这个题先放一放」开头，"
                 "删除课堂旁白与直觉讲解，只留题干"
             )
-        return "其它来源若摘要显示学生刚在做别的题，可用一句短衔接，然后出本题"
+        return (
+            "其它来源若摘要显示学生刚在做别的题，可用一句短衔接，然后出本题；"
+            "禁止「先放一放」「把这个题先放一放」「把这道题先放一放」"
+        )
 
     def build_polish(
         self, *, draft_body: str, answer_body: str, decision_type: str = "push"

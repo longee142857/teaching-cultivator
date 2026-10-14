@@ -419,6 +419,27 @@ def test_offpeak_slots_and_ref_gate() -> None:
           "parse content_subject")
     stripped = _strip_bank_transition("上一题你刚做完极限。\n\n求 lim x→0 sinx/x")
     check(not stripped.startswith("上一题") and "sinx" in stripped, "strip fake transition")
+    from quality_gate import text_contaminated
+
+    check("放一放" in text_contaminated("把这个题先放一放"), "marker 把这个题先放一放")
+    check("放一放" in text_contaminated("先把这道题放一放再看"), "marker 语序变体")
+    stem = "求 lim x→0 sinx/x"
+    for raw in (
+        f"把这个题先放一放。\n\n{stem}",
+        f"把这道题先放一放。\n\n{stem}",
+        f"先放一放。\n\n{stem}",
+        f"先把这道题放一放。\n\n{stem}",
+        f"把这题先放一放\n{stem}",
+        f"我们先放一放。\n\n{stem}",
+        f"把这个题先放一放。{stem}",
+        f"先放一放，{stem}",
+        f"把这个题先放一放。{stem}\n\nA. 0\n\nB. 1",
+    ):
+        got = _strip_bank_transition(raw)
+        check("放一放" not in got and "sinx" in got, f"strip set-aside: {raw.splitlines()[0][:24]}")
+    kept = _strip_bank_transition(f"{stem}。正文里先放一放不该被当开头删掉。")
+    check(kept.startswith("求") and "放一放" in kept, "non-leading 放一放 left for the gate")
+    check("放一放" in _strip_bank_transition("先放一放。"), "no stem left, keep for the gate")
     check("11:00" not in hours, "no 11:00 peak pregen")
     check("review" not in [s for _, s in PREGEN_SLOTS], "no review pregen slots")
 

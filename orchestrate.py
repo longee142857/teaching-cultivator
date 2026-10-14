@@ -158,18 +158,88 @@ def _log_gate_event(
     )
 
 
-def _strip_bank_transition(text: str) -> str:
-    """题库预生成不得以「上一题」假衔接；剥首段后若剩余足够则采用。"""
+# 题干开头的课堂衔接。上一题沿用旧闸；放一放覆盖「把这个/这道题先放一放」及语序近变体。
+_TRANSITION_LEAD_RE = re.compile(
+    r"^(?:(?:那我们|我们|咱们|请|好|嗯|那)[，,、\s]*)?"
+    r"(?:"
+    r"上一题"
+    r"|把这[个道]?题先放一放"
+    r"|这[个道]?题先放一放"
+    r"|先把这[个道]?题放一放"
+    r"|先放一放"
+    r")"
+)
+_LEAD_SENTENCE_RE = re.compile(r"^[^。！？\n]{1,40}[。！？]\s*")
+_LEAD_PUNCT = "，,、：:；;。！？ \t"
+
+
+def _drop_lead_clause(text: str) -> str:
+    """去掉开头的衔接短语。放一放只切短语本身，避免把同一句里的题干一起删掉。"""
     t = (text or "").strip()
-    if not t.startswith("上一题"):
+    m = _TRANSITION_LEAD_RE.match(t)
+    if not m:
+        return t
+    if "放一放" in m.group(0):
+        return t[m.end() :].lstrip(_LEAD_PUNCT)
+    sent = _LEAD_SENTENCE_RE.match(t)
+    if sent:
+        return t[sent.end() :].strip()
+    return t
+
+
+def _lead_fragment_only(fragment: str) -> bool:
+    """首段/首行去掉衔接后是否已经没有题干。"""
+    frag = (fragment or "").strip()
+    if not frag or not _TRANSITION_LEAD_RE.match(frag):
+        return False
+    if len(_drop_lead_clause(frag)) < 8:
+        return True
+    # 旧闸：以「上一题」起头且本段没有句号后的正文，整段视为衔接。
+    if re.match(r"^(?:(?:那我们|我们|咱们|请|好|嗯|那)[，,、\s]*)?上一题", frag) and not re.search(
+        r"[。！？]", frag
+    ):
+        return True
+    return False
+
+
+def _strip_bank_transition_once(text: str) -> str:
+    t = (text or "").strip()
+    if not t or not _TRANSITION_LEAD_RE.match(t):
         return t
     parts = re.split(r"\n\s*\n", t, maxsplit=1)
-    if len(parts) == 2 and len(parts[1].strip()) >= 8:
+    if len(parts) == 2 and _lead_fragment_only(parts[0]) and len(parts[1].strip()) >= 8:
         return parts[1].strip()
     nl = t.find("\n")
-    if nl != -1 and len(t[nl:].strip()) >= 8:
+    if nl != -1 and _lead_fragment_only(t[:nl]) and len(t[nl:].strip()) >= 8:
         return t[nl:].strip()
+    dropped = _drop_lead_clause(t)
+    if dropped != t and len(dropped) >= 8:
+        return dropped
     return t
+
+
+def _strip_bank_transition(text: str) -> str:
+    """题库/推送题干不得以课堂衔接开头；剥首段（或首句）后若剩余足够则采用。"""
+    t = (text or "").strip()
+    for _ in range(3):
+        nxt = _strip_bank_transition_once(t)
+        if nxt == t:
+            break
+        t = nxt
+    return t
+
+
+def _should_strip_stem_transition(source: str, decision_type: str = "") -> bool:
+    """Bank 预生成与 push 题干不留课堂衔接；讲解/复诊保留讲义。"""
+    if (source or "").strip() == "bank":
+        return True
+    return (decision_type or "").strip() == "push"
+
+
+def _maybe_strip_stem_transition(text: str, source: str, decision_type: str = "") -> str:
+    if not _should_strip_stem_transition(source, decision_type):
+        return text or ""
+    return _strip_bank_transition(text)
 
 
 def _memory_digest(max_chars: int = 600) -> str:
@@ -212,7 +282,10 @@ def _polish_or_orchestrate(
 
     builder = PromptBuilder()
     if source == "bank":
-        digest = "（题库预生成：禁止衔接上一题，不得以「上一题」开头）"
+        digest = (
+            "（题库预生成：禁止衔接上一题或「先放一放」，"
+            "不得以「上一题」「把这个题先放一放」开头）"
+        )
     else:
         digest = _memory_digest()
     try:
@@ -230,8 +303,7 @@ def _polish_or_orchestrate(
         if leaked:
             print("[orchestrate] leaked answer — stripped")
         out = normalize_markdown_body(body) or ""
-        if source == "bank":
-            out = _strip_bank_transition(out)
+        out = _maybe_strip_stem_transition(out, source, decision_type)
         if out.strip():
             return out
     except Exception as e:
@@ -245,10 +317,12 @@ def _polish_or_orchestrate(
         body, leaked = split_question_answer(raw)
         if leaked:
             print("[orchestrate] polish leaked answer — stripped")
-        return normalize_markdown_body(body) or normalize_markdown_body(draft)
+        out = normalize_markdown_body(body) or normalize_markdown_body(draft)
+        return _maybe_strip_stem_transition(out, source, decision_type)
     except Exception as e:
         print(f"[orchestrate] polish failed, use draft: {e}")
-        return normalize_markdown_body(draft)
+        out = normalize_markdown_body(draft)
+        return _maybe_strip_stem_transition(out, source, decision_type)
 
 
 def orchestrate_push(
@@ -274,6 +348,9 @@ def orchestrate_push(
     while True:
         draft = (art.get("draft") or "").strip()
         answer = (art.get("answer") or "").strip()
+        decision_type = str(art.get("decision_type") or "push")
+        # 先剥开头套话，再质检：只在段首的「先放一放」不整题作废；残留仍由污染词拦截。
+        draft = _maybe_strip_stem_transition(draft, source, decision_type)
         issues = check_draft_answer(draft, answer, item_form=item_form)
         last_issues = issues
         if issues:
@@ -380,8 +457,9 @@ def orchestrate_push(
             subject=subject,
             kp=kp,
             source=source,
-            decision_type=str(art.get("decision_type") or "push"),
+            decision_type=decision_type,
         )
+        content = _maybe_strip_stem_transition(content, source, decision_type)
         # 发送稿再扫一遍泄答 / 污染
         send_issues = check_draft_answer(content, answer)
         # 发送稿允许无 <answer>；忽略 empty_or_short_answer 对 content 侧的误报
@@ -423,7 +501,7 @@ def orchestrate_push(
                 if i.startswith("contaminate_draft") or i == "answer_leak_in_draft"
             ]
             if not fb_issues and fallback:
-                sendable = _strip_bank_transition(fallback) if source == "bank" else fallback
+                sendable = _maybe_strip_stem_transition(fallback, source, decision_type)
                 return {
                     "status": "accept",
                     "content": sendable,
@@ -453,7 +531,7 @@ def orchestrate_push(
                 "artifact": art,
             }
 
-        sendable = _strip_bank_transition(content) if source == "bank" else content
+        sendable = _maybe_strip_stem_transition(content, source, decision_type)
         return {
             "status": "accept",
             "content": sendable,
