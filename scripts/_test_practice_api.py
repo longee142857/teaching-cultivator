@@ -81,6 +81,74 @@ def test_dto():
     check(not (dto2["stem"] or "").startswith("曲面"), "stem drops duplicate title")
     check("z=x^{2}+y^{2}" in (dto2["stem"] or ""), "item 126-style equation stays")
 
+    # Character 48 of these bank stems sits inside $...$ / cases. The desk used
+    # to take that slice as the <h2> (escaped, no KaTeX) and leave the stem
+    # starting at the other half of the delimiter.
+    q1214 = (
+        r"设 $n$ 阶可逆矩阵 $\pmb{A}$ 的各行元之和均为常数 $k$ ，求 $2A^{-1}"
+        r" + 4A$ 的一个特征值与对应的一个特征向量."
+    )
+    check(q1214[:48].endswith(r"$2A^{-1}"), "i1214 fixture: 48 chars end inside $2A^{-1}")
+    check(q1214[48:].startswith(" + 4A$"), "i1214 fixture: old stem tail was + 4A$")
+    ev = push_to_shell_item(
+        {
+            "item_id": 1214,
+            "subject": "math",
+            "kp": "特征值与特征向量",
+            "question": q1214,
+            "answer": "k",
+        }
+    )
+    check(r"$2A^{-1} + 4A$" in (ev["stem"] or ""), "i1214 formula stays whole in the stem")
+    check(not (ev["stem"] or "").lstrip().startswith("+ 4A"), "i1214 stem does not start mid-formula")
+    check((ev["stem"] or "").count("$") % 2 == 0, "i1214 stem dollars stay paired")
+    check("$" not in (ev["title"] or ""), "i1214 title is not the raw 48-char slice")
+
+    q688 = (
+        r"考察函数 $f(x) = \begin{cases} \sqrt{1 - 4x - x^2}, & -4 \leqslant x < 0 "
+        r"\\ x^3 - x^2 - 2x + 1, & 0 \leqslant x \leqslant 1 \end{cases}$ "
+        r"在闭区间[-4,1]上是否满足拉格朗日中值定理的条件. 若满足，求出该定理结论中 $\xi$ 的值."
+    )
+    check(r"\begin{cases}" in q688[:48] and r"\end{cases}" not in q688[:48], "i688 fixture: 48 chars end inside cases")
+    lag = push_to_shell_item(
+        {
+            "item_id": 688,
+            "subject": "math",
+            "kp": "微分中值定理与泰勒",
+            "question": q688,
+            "answer": "xi",
+        }
+    )
+    check(r"\begin{cases}" in (lag["stem"] or "") and r"\end{cases}" in (lag["stem"] or ""), "i688 cases stay whole in the stem")
+    check(r"\begin{cases}" not in (lag["title"] or ""), "i688 title is not a mid-cases slice")
+    check(r"$\xi$" in (lag["stem"] or ""), "i688 trailing inline stays in the stem")
+
+    q1317 = (
+        r"设确定信号 $x(t)=e^{-a t}u(t)$，其中 $a>0$，$u(t)$ 为单位阶跃信号。"
+        "其傅里叶变换按频率 $f$ 定义为\n\n"
+        r"$$" "\n"
+        r"X(f)=\int_{-\infty}^{\infty} x(t)e^{-j2\pi ft}\,dt" "\n"
+        r"$$" "\n\n"
+        r"1. 利用 $u(t)$ 的取值，积分下限为 ______。"
+    )
+    check("$" in q1317[:48] and "$$" not in q1317[:48], "i1317 fixture: inline dollars sit in the first 48")
+    four = push_to_shell_item(
+        {
+            "item_id": 1317,
+            "subject": "comm",
+            "kp": "确定信号与频谱分析",
+            "question": q1317,
+            "answer": "0",
+        }
+    )
+    check(r"$x(t)=e^{-a t}u(t)$" in (four["stem"] or ""), "i1317 inline stays in the stem with the integral")
+    check(r"\int" in (four["stem"] or "") and (four["stem"] or "").count("$$") % 2 == 0, "i1317 display block stays paired in the stem")
+    check("$" not in (four["title"] or ""), "i1317 title does not hold the unrendered inline dollars")
+
+    shell = (ROOT / "web/static/teaching-shell.html").read_text(encoding="utf-8")
+    check("renderMathTitle(item.title" in shell, "desk h2 typesets the title")
+    check("prefixCutsMath" in shell, "desk will not strip a title that bisects math")
+
     pairs = _iter_mastery(
         [{"kp": "极限", "p_mastery": 0.31}, {"kp": "卷积", "p_mastery": 0.72}]
     )

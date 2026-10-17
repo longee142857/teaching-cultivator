@@ -1055,8 +1055,8 @@
       (it.kp ? '<span class="pill warn">' + esc(it.kp) + "</span>" : "") +
       '<span class="pill">' +
       esc(it.id || "") +
-      "</span></div><h2>" +
-      esc(it.title || "题目") +
+      "</span></div><h2 class=\"item-title\">" +
+      FqmMath.renderMathTitle(it.title || "题目") +
       "</h2>" +
       FqmMath.renderStemHtml(it) +
       (weak ? '<p class="hint"><strong>薄弱提示</strong> — ' + esc(weak) + "</p>" : "") +

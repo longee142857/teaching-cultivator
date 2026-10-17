@@ -223,6 +223,7 @@ textarea.composer { min-height: 44px; max-height: 120px; resize: none; }
 textarea::placeholder, input::placeholder { color: var(--muted); }
 
 .stem-body, .stem-text, .msg-body { font-size: 16px; line-height: 1.8; }
+.stem-body, h2.item-title { overflow-x: auto; max-width: 100%; }
 .stem-body p, .stem-text p, .msg-body p { margin: 0.55em 0; }
 .stem-body p:first-child, .stem-text p:first-child, .msg-body p:first-child { margin-top: 0; }
 .stem-body .katex-display, .stem-text .katex-display, .msg-body .katex-display, .fold-panel .katex-display {

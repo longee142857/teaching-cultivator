@@ -327,7 +327,8 @@
     .stem-text .katex-display, .msg-body .katex-display, .fold-panel .katex-display {
       margin: 0.5em 0; overflow-x: auto; overflow-y: hidden;
     }
-    .stem-body { font-size: 16px; line-height: 1.8; max-width: 68ch; }
+    .stem-body { font-size: 16px; line-height: 1.8; max-width: 68ch; overflow-x: auto; }
+    h2.item-title { overflow-x: auto; max-width: 100%; }
     .stem-body p { margin: 0.55em 0; }
     .stem-body p:first-child { margin-top: 0; }
     .stem-body .katex-display { margin: 0.75em 0; overflow-x: auto; overflow-y: hidden; }
@@ -2024,10 +2025,46 @@
         });
         return html;
       }
+      function renderMathTitle(src) {
+        var html = renderMathMarkdown(src || "");
+        if (html.indexOf("</p><p>") < 0 && html.slice(0, 3) === "<p>" && html.slice(-4) === "</p>") {
+          return html.slice(3, -4);
+        }
+        return html;
+      }
+      // Same spans as renderMathMarkdown. Do not strip a heading that ends inside one.
+      function prefixCutsMath(text, cut) {
+        text = String(text || "");
+        cut = cut | 0;
+        if (cut <= 0 || cut >= text.length) return false;
+        var patterns = [
+          /\$\$[\s\S]+?\$\$/g,
+          /\\\[[\s\S]+?\\\]/g,
+          /\\\([\s\S]+?\\\)/g,
+          /\$[^$\n]+?\$/g
+        ];
+        var occupied = new Array(text.length);
+        for (var p = 0; p < patterns.length; p++) {
+          var re = patterns[p];
+          var match;
+          while ((match = re.exec(text))) {
+            var start = match.index;
+            var end = start + match[0].length;
+            var overlap = false;
+            for (var i = start; i < end; i++) {
+              if (occupied[i]) { overlap = true; break; }
+            }
+            if (overlap) continue;
+            if (start < cut && cut < end) return true;
+            for (var j = start; j < end; j++) occupied[j] = true;
+          }
+        }
+        return false;
+      }
       function renderStemHtml(item) {
         var stem = (item && item.stem) || "";
         var title = (item && item.title) || "";
-        if (title && stem.indexOf(title) === 0) {
+        if (title && stem.indexOf(title) === 0 && !prefixCutsMath(stem, title.length)) {
           var rest = stem.slice(title.length).replace(/^[\s：:·。.\-—]+/, "");
           if (rest) stem = rest;
         }
@@ -2423,7 +2460,7 @@
                   '<span class="pill warn">' + esc(item.kp) + "</span>" +
                   '<span class="pill">' + esc(item.id) + "</span>" +
                 "</div>" +
-                '<h2 data-od-id="item-title">' + esc(item.title) + "</h2>" +
+                '<h2 class="item-title" data-od-id="item-title">' + renderMathTitle(item.title || "") + "</h2>" +
                 renderStemHtml(item) +
               "</section>" +
               '<aside class="card progress-card" data-od-id="progress-rail">' +

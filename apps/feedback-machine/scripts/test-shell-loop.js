@@ -52,6 +52,33 @@ assert(stem.indexOf("题一：") === -1, "title prefix stripped like the desk");
 assert(stem.indexOf("mcq-letter") >= 0, "options render");
 assert(stem.indexOf(">A<") >= 0, "option letter kept");
 
+var eigenvalue =
+  "设 $n$ 阶可逆矩阵 $\\pmb{A}$ 的各行元之和均为常数 $k$ ，求 $2A^{-1} + 4A$ 的一个特征值与对应的一个特征向量.";
+assert(math.prefixCutsMath(eigenvalue, 48), "i1214: index 48 sits inside $2A^{-1}+4A$");
+var evHtml = math.renderStemHtml({ title: eigenvalue.slice(0, 48), stem: eigenvalue });
+assert(evHtml.indexOf("阶可逆矩阵") >= 0, "bisecting title is not stripped from the stem");
+assert(evHtml.indexOf("+ 4A$") === -1, "stem is not left starting at + 4A$");
+assert(evHtml.indexOf("katex") >= 0, "full eigenvalue stem still typesets");
+
+var casesStem =
+  "考察函数 $f(x) = \\begin{cases} \\sqrt{1 - 4x - x^2}, & -4 \\leqslant x < 0 \\\\ x^3 - x^2 - 2x + 1, & 0 \\leqslant x \\leqslant 1 \\end{cases}$ 在闭区间上求 $\\xi$.";
+assert(math.prefixCutsMath(casesStem, 48), "i688: index 48 sits inside cases");
+var casesHtml = math.renderStemHtml({ title: casesStem.slice(0, 48), stem: casesStem });
+assert(casesHtml.indexOf("考察函数") >= 0, "cases lead-in stays when the title bisects math");
+assert(casesHtml.indexOf("katex") >= 0, "cases stem typesets");
+
+var titled = math.renderMathTitle("求 $x^2$ 与 $$\\int_0^1 x\\,dx$$");
+assert(titled.indexOf("<p>") === -1, "title math is not wrapped in a paragraph");
+assert(titled.indexOf("katex") >= 0, "title inline math typesets");
+assert(titled.indexOf("katex-display") >= 0, "title display math typesets");
+assert(titled.indexOf("$x^2$") === -1, "title does not keep dollar delimiters");
+
+var appJs = read("www/js/app.js");
+assert(appJs.indexOf("FqmMath.renderMathTitle") >= 0, "APK heading uses KaTeX");
+var desk = fs.readFileSync(path.join(root, "../../web/static/teaching-shell.html"), "utf8");
+assert(desk.indexOf("renderMathTitle(item.title") >= 0, "practice desk heading uses KaTeX");
+assert(desk.indexOf("prefixCutsMath") >= 0, "practice desk refuses a mid-math title cut");
+
 var katexOnly = math.renderStemHtml({ stem: "见公式", katex: "x+1" });
 assert(katexOnly.indexOf("data-tex=") >= 0, "bare katex field becomes a math block");
 var delimited = math.renderStemHtml({ stem: "见 $x$", katex: "x+1" });

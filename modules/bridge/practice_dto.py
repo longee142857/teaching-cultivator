@@ -123,21 +123,67 @@ def extract_katex(question: str) -> str:
     return (m.group(1) or m.group(2) or m.group(3) or "").strip()
 
 
+_TITLE_LIMIT = 48
+# Same delimiter order as the shell's renderMathMarkdown. A cut strictly
+# inside one of these spans leaves the heading with a raw `$` and the stem
+# with the other half (i1214 `$2A^{-1}` / `+ 4A$`, i688 mid-cases).
+_MATH_SPAN_RES = (
+    re.compile(r"\$\$[\s\S]+?\$\$"),
+    re.compile(r"\\\[[\s\S]+?\\\]"),
+    re.compile(r"\\\([\s\S]+?\\\)"),
+    re.compile(r"\$[^$\n]+?\$"),
+)
+
+
+def _kp_title(kp: str) -> str:
+    name = (kp or "").strip()
+    head = name.split("·")[0].strip() if name else "练习题"
+    return head[:_TITLE_LIMIT]
+
+
+def _cut_inside_math(text: str, cut: int) -> bool:
+    """True when ``cut`` sits strictly inside a `$` / `$$` / `\\(\\)` / `\\[\\]` span."""
+    if cut <= 0 or cut >= len(text or ""):
+        return False
+    occupied = bytearray(len(text))
+    for pat in _MATH_SPAN_RES:
+        for match in pat.finditer(text):
+            start, end = match.span()
+            if any(occupied[start:end]):
+                continue
+            if start < cut < end:
+                return True
+            occupied[start:end] = b"\x01" * (end - start)
+    return False
+
+
 def extract_title(question: str, kp: str = "") -> str:
+    """Card heading. Never a slice that ends inside a formula.
+
+    An explicit ``#`` heading is kept (the whole heading, if 48 characters
+    would bisect math). With no heading, only a complete first line of at
+    most 48 characters is lifted out of the stem. A longer line is not
+    sliced: bank stems such as i1214 and i688 put character 48 inside
+    ``$...$`` / ``cases``, and the desk would escape that slice as the
+    ``<h2>`` while the remainder keeps a broken delimiter.
+    """
     q = (question or "").strip()
     m = _TITLE_RE.search(q)
     if m:
-        return m.group(1).strip()[:48]
-    # first non-empty non-formula line
+        heading = m.group(1).strip()
+        if _cut_inside_math(heading, _TITLE_LIMIT):
+            return heading
+        return heading[:_TITLE_LIMIT]
     for line in q.splitlines():
         line = line.strip()
         if not line or line.startswith("#") or line.startswith("$$") or line.startswith("\\"):
             continue
         if line.startswith("$"):
             continue
-        return line[:48]
-    kp = (kp or "").strip()
-    return (kp.split("·")[0].strip() if kp else "练习题")[:48]
+        if len(line) <= _TITLE_LIMIT:
+            return line
+        return _kp_title(kp)
+    return _kp_title(kp)
 
 
 _OPTION_LINE_RE = re.compile(
@@ -233,7 +279,9 @@ def push_to_shell_item(
     options = extract_options(question)
     title = extract_title(question, kp)
     stem = extract_stem(question)
-    if title and stem.startswith(title):
+    # Drop a duplicate heading only when the cut is outside math. A 48-char
+    # prefix of a long stem often lands inside `$...$` (see extract_title).
+    if title and stem.startswith(title) and not _cut_inside_math(stem, len(title)):
         rest = stem[len(title) :].lstrip(" \t\n：:·。.")
         if rest:
             stem = rest
