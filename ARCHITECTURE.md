@@ -1,5 +1,7 @@
 # Architecture
 
+> **Runtime shape.** Start at [README.md](README.md). Visitor tour: <https://longee142857.github.io/teaching-cultivator/>. Run the bot: [USAGE.md](USAGE.md). Direction: [ROADMAP.md](ROADMAP.md). Site publish notes: [site/README.md](site/README.md).
+
 ## Target shape（模块拆分，本轮）
 
 六个相对独立模块，经契约关联（详见 `modules/README.md`）：

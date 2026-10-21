@@ -1,5 +1,7 @@
 # Roadmap (public)
 
+> **Open this for direction**, after [README.md](README.md) and the [live showcase](https://longee142857.github.io/teaching-cultivator/). Run the bot: [USAGE.md](USAGE.md). Runtime shape: [ARCHITECTURE.md](ARCHITECTURE.md). Site publish notes: [site/README.md](site/README.md).
+
 ## Current shape（拆分中）
 
 目标模块：`items` + `store` + `capability` + `bridge` + `notify` + `frontend`（见 `modules/`）。
