@@ -2,7 +2,18 @@
 
 自用 **答一题 → 看反馈 → 再出一题** 壳，对接现有练习台 `GET/POST /api/v1/practice/*` 与 `POST /api/v1/tutor/chat`（与 `web/static/teaching-shell.html` 同源契约）。钉钉日推与 VPS 调度**不改动**。
 
-视觉与主路径对齐练习台：纸色底、题干卡片、批改条、折叠讲解、「不懂，问讲师」。公式使用仓内 `web/static/katex` 的同一份 KaTeX（拷到 `www/vendor/katex`），不走 jsDelivr。
+视觉与主路径对齐练习台：纸色底、题干卡片、批改条、折叠讲解、「不懂，问讲师」。公式使用仓内 `web/static/katex` 的同一份 KaTeX（拷到 `www/vendor/katex`），不走 jsDelivr。正文字体是仓内 `www/vendor/fonts` 的 Source Serif 4 与 IBM Plex Mono。
+
+同一 APK 里有两套画法，页头或设置里切换，记在本机 `fqm_theme_v1`：
+
+| 值 | 画法 |
+|----|------|
+| `desk`（默认） | 对齐现网练习台：纸色、卡片微倾、软阴影、56px 横滑翻页 |
+| `studio` | 工作室对照：冷底、硬边套印、更大的翻页和批改章 |
+
+底栏四项：练习、周卷、讲师、能力。能力页是 `www/brain/`（练习台同一份脑图，接口带壳里的 Token）。
+
+改了 `www/` 之后打 APK 前要 `npx cap sync android`，否则安装包里还是旧页面。
 
 ## 包信息
 
@@ -21,8 +32,29 @@
 | 练习台 Base URL | 默认 `https://practice.longee.icu`。出题、批改、讲题都打这里 |
 | Practice API Token | 与 VPS `PRACTICE_API_TOKEN` 一致。错了会提示 **Token 无效（401）**，不会当成网络中断 |
 | Learner Id | 默认 `04022300566420984205`。请求带 `X-Learner-Id` |
+| 更新清单地址 | 可留空。留空时固定检查 `https://practice.longee.icu/app/feedback-machine/version.json` |
 
 **勿将真实密钥提交 git。**
+
+## 应用更新
+
+启动时静默拉一次更新清单，失败不打断做题。设置页显示当前 `versionName` / `versionCode`，并有「检查更新」。远端 `versionCode` 更大，或本机低于 `minVersionCode` 时，提示「有新版本」，用系统浏览器打开 `apkUrl` 下载。`package` 不是 `icu.longee.feedback` 的清单会忽略。
+
+默认地址（已挂在练习台，CORS `*`，CapacitorHttp 从 `https://localhost` 可拉，不带练习台 Token）：
+
+`https://practice.longee.icu/app/feedback-machine/version.json`
+
+| 字段 | 说明 |
+|------|------|
+| `package` | 应用包名，须为 `icu.longee.feedback` |
+| `versionCode` | 整数。大于本机 versionCode 才提示更新 |
+| `versionName` | 展示用 |
+| `apkUrl` | APK 的 https 直链 |
+| `apkMd5` | 设置页展示，下载仍直接打开 `apkUrl` |
+| `releaseNotes` | 设置页里的短说明 |
+| `minVersionCode` | 本机低于此值时也提示更新 |
+
+本机版本优先读 Capacitor `App.getInfo()`（`build` 是 versionCode，`version` 是 versionName）。浏览器预览没有该插件时，回退 `www/js/config.js` 里的 `3` / `1.0.2`，与 `android/app/build.gradle` 相同。发布新包时把这两处 `versionCode` 一起加一，并改练习台上的 `version.json`。依赖 `@capacitor/app`，打包前 `npm ci` 然后 `npx cap sync android`。
 
 ## API 假设（「再出一题」）
 
@@ -30,7 +62,7 @@
 2. 空槽补题：`GET /api/v1/practice/item?learner=&kind=math|review`。**空的通信槽不请求 `kind=comm`**（通信 ready 库存很薄）。
 3. `POST /api/v1/practice/submit` — 批改反馈。结果若已就绪，立刻 `busy=false` 并画到反馈页（不再停在「提交中」）。仍在批改则轮询 `GET /item`。
 4. `POST /api/v1/tutor/chat` — 「不懂，问讲师」/「发给老师讨论」，`Accept: text/event-stream`。浏览器边收边画；原生 CapacitorHttp 等整段结束后按 SSE 事件回放。未接线时 501，文案与练习台一致。
-5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`。
+5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`。能力页经壳代发 `practice/params` 和 `capability/events`。
 
 公网练习台需配置 `PRACTICE_API_TOKEN`。
 
@@ -105,7 +137,9 @@ npx cap open android    # 打开 Android Studio（若已安装）
 ## 和练习台对齐的主路径
 
 - 今日三槽（数学 / 通信 / 复习）、翻页、历史未答
+- 页头切换练习台 / 工作室
 - 周卷列表和试卷页
+- 能力页：`www/brain/`
 - 拍照或选图 OCR、「题质量差」
 - 讲师走 SSE。原生壳等整段响应后再按事件打字；最近会话留在本机
 - 讲师回复「复制原文」写入消息原文（含公式分隔符），并打开与练习台相同的原文面板，便于 WebView 拦剪贴板时长按复制
