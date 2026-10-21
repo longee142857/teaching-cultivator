@@ -273,28 +273,6 @@
     return request(cfg, "/api/v1/exam/papers").then(withMeta);
   }
 
-  function notes(cfg) {
-    return request(cfg, "/api/v1/notes?learner=" + encodeURIComponent(cfg.learnerId)).then(withMeta);
-  }
-
-  function noteItem(cfg, id) {
-    return request(
-      cfg,
-      "/api/v1/notes/item?learner=" +
-        encodeURIComponent(cfg.learnerId) +
-        "&id=" +
-        encodeURIComponent(id)
-    ).then(withMeta);
-  }
-
-  function saveNote(cfg, payload) {
-    return request(cfg, "/api/v1/notes?learner=" + encodeURIComponent(cfg.learnerId), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload || {})
-    }).then(withMeta);
-  }
-
   global.FqmApi = {
     bootstrap: bootstrap,
     getItem: getItem,
@@ -303,9 +281,6 @@
     ocr: ocr,
     reportPoor: reportPoor,
     examPapers: examPapers,
-    notes: notes,
-    noteItem: noteItem,
-    saveNote: saveNote,
     request: request,
     /** @internal smoke / diagnostics */
     transport: function () {

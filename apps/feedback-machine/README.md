@@ -30,7 +30,7 @@
 2. 空槽补题：`GET /api/v1/practice/item?learner=&kind=math|review`。**空的通信槽不请求 `kind=comm`**（通信 ready 库存很薄）。
 3. `POST /api/v1/practice/submit` — 批改反馈。结果若已就绪，立刻 `busy=false` 并画到反馈页（不再停在「提交中」）。仍在批改则轮询 `GET /item`。
 4. `POST /api/v1/tutor/chat` — 「不懂，问讲师」/「发给老师讨论」，`Accept: text/event-stream`。浏览器边收边画；原生 CapacitorHttp 等整段结束后按 SSE 事件回放。未接线时 501，文案与练习台一致。
-5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`、`GET/POST /api/v1/notes`。
+5. `POST /api/v1/practice/ocr`、`POST /api/v1/practice/report-poor`、`GET /api/v1/exam/papers`。
 
 公网练习台需配置 `PRACTICE_API_TOKEN`。
 
@@ -105,9 +105,10 @@ npx cap open android    # 打开 Android Studio（若已安装）
 ## 和练习台对齐的主路径
 
 - 今日三槽（数学 / 通信 / 复习）、翻页、历史未答
-- 周卷列表和试卷页、资料库（放入并查看手写图）
+- 周卷列表和试卷页
 - 拍照或选图 OCR、「题质量差」
 - 讲师走 SSE。原生壳等整段响应后再按事件打字；最近会话留在本机
+- 讲师回复「复制原文」写入消息原文（含公式分隔符），并打开与练习台相同的原文面板，便于 WebView 拦剪贴板时长按复制
 - 复习题进入「下一题」。空的复习槽按 `kind=review` 补题
 
 通信空槽不从题库补货。DeepSeek 字段只保存在本机，不发请求。

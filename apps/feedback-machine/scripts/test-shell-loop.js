@@ -172,7 +172,13 @@ assert(api.indexOf("text/event-stream") >= 0, "tutor asks for the desk SSE strea
 assert(api.indexOf("/api/v1/practice/ocr") >= 0, "ocr uses the practice route");
 assert(api.indexOf("/api/v1/practice/report-poor") >= 0, "poor-item uses the practice route");
 assert(api.indexOf("/api/v1/exam/papers") >= 0, "exam list uses the practice route");
-assert(api.indexOf("/api/v1/notes") >= 0, "notes use the practice route");
+assert(api.indexOf("/api/v1/notes") < 0, "shell does not call the materials route");
+assert(app.indexOf("复制原文") >= 0 && app.indexOf("msgSourceAt") >= 0, "lecturer copy reads the message source");
+assert(app.indexOf('tab("notes"') < 0 && app.indexOf("资料库") < 0, "materials tab is removed from the shell");
+assert(desk.indexOf('data-nav="notes"') < 0, "practice desk drops the materials nav");
+assert(desk.indexOf("/api/v1/notes") < 0, "practice desk does not fetch materials");
+assert(desk.indexOf("复制原文") >= 0 && desk.indexOf("function msgSourceAt") >= 0, "practice desk still copies original lecturer text");
+assert(desk.indexOf("repeat(3, 1fr)") >= 0, "practice desk tab bar matches the three remaining tabs");
 assert(read("www/css/app.css").indexOf("visibility: hidden") >= 0, "idle toast cannot cover the tab bar");
 assert(read("www/js/app.js").indexOf("题质量差") >= 0, "poor-item entry is on the desk");
 assert(read("www/js/app.js").indexOf("brain/index.html") < 0, "capability page is not in the shell");
@@ -181,6 +187,8 @@ assert(read("www/js/app.js").indexOf("能力") < 0, "capability tab is removed")
 var html = read("www/index.html");
 assert(html.indexOf("vendor/katex/katex.min.js") >= 0, "KaTeX is vendored");
 assert(html.indexOf("jsdelivr") === -1 && html.indexOf("cdn.") === -1, "no KaTeX CDN");
+assert(html.indexOf('id="source-sheet-text"') >= 0, "APK keeps the long-press source sheet");
+assert(read("www/css/app.css").indexOf("repeat(3, 1fr)") >= 0, "tab bar matches the three remaining tabs");
 
 var ignore = read(".gitignore");
 assert(ignore.indexOf("!artifacts/*.apk") === -1, "APK exception removed");
@@ -207,7 +215,10 @@ function runDom() {
     this.classList = { add: function () {}, remove: function () {}, toggle: function () {}, contains: function () { return false; } };
   }
   El.prototype.focus = function () {};
+  El.prototype.select = function () {};
+  El.prototype.setSelectionRange = function () {};
   El.prototype.remove = function () {};
+  El.prototype.removeAttribute = function (k) { delete this.attrs[k]; };
   El.prototype.setAttribute = function (k, v) { this.attrs[k] = v; if (k === "id") this.id = v; };
   El.prototype.getAttribute = function (k) { return this.attrs[k]; };
   function walk(node, out) {
@@ -220,6 +231,7 @@ function runDom() {
     return out.filter(function (e) {
       if (sel === "[data-tex]") return e.attrs["data-tex"] != null;
       if (sel === "[data-fill-msg]") return e.attrs["data-fill-msg"] != null;
+      if (sel === "[data-copy-msg]") return e.attrs["data-copy-msg"] != null;
       if (sel === "[data-tab]") return e.attrs["data-tab"] != null;
       if (sel === ".field-error") return /field-error/.test(e.className || "");
       return false;
@@ -271,6 +283,7 @@ function runDom() {
     })
   };
   var calls = [];
+  var copied = [];
   var dom = {
     console: console,
     setTimeout: setTimeout,
@@ -354,8 +367,17 @@ function runDom() {
   dom.window = dom;
   dom.self = dom;
   dom.globalThis = dom;
+  dom.isSecureContext = true;
+  dom.navigator = {
+    clipboard: {
+      writeText: function (text) {
+        copied.push(String(text));
+        return Promise.resolve();
+      }
+    }
+  };
   dom.document.body = new El("body");
-  ["header", "root", "dock", "tabbar", "toast"].forEach(function (id) {
+  ["header", "root", "dock", "tabbar", "toast", "source-sheet", "source-sheet-text", "source-sheet-select", "source-sheet-copy", "source-sheet-fill", "source-sheet-close"].forEach(function (id) {
     var node = new El(id === "toast" ? "div" : "div");
     node.id = id;
     byId[id] = node;
@@ -406,6 +428,15 @@ function runDom() {
     return flush();
   }).then(function () {
     assert(byId.root._html.indexOf("看定义") >= 0, "tutor JSON reply is shown");
+    assert(byId.root._html.indexOf("复制原文") >= 0, "lecturer message offers copy original");
+    var copyBtn = byId.root.querySelectorAll("[data-copy-msg]")[0];
+    assert(copyBtn, "copy control is on the lecturer message");
+    copyBtn.onclick();
+    return flush();
+  }).then(function () {
+    assert(copied.indexOf("看定义里的 $f'(x)$。") >= 0, "copy writes the raw lecturer text, including math delimiters");
+    assert(copied.join("\n").indexOf("katex") < 0 && copied.join("\n").indexOf("<") < 0, "copy does not write rendered markup");
+    assert(byId["source-sheet-text"].value === "看定义里的 $f'(x)$。", "source sheet shows the same original text");
     byId["btn-tutor-back"].onclick();
     return flush();
   }).then(function () {

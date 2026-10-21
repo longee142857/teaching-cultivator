@@ -576,11 +576,120 @@
   function fillFromTutor(text) {
     var raw = String(text || "").trim();
     if (!raw) return;
+    closeSourceSheet();
     state.draft = raw;
     state.error = "";
     state.screen = "practice";
     state.returnScreen = "practice";
     render();
+  }
+
+  function copyText(text, btn) {
+    var raw = String(text == null ? "" : text);
+    if (!raw) return Promise.resolve(false);
+    function markOk() {
+      if (!btn) return;
+      var old = btn.getAttribute("data-label") || btn.textContent;
+      btn.setAttribute("data-label", old);
+      btn.textContent = "已复制";
+      if (btn.classList) btn.classList.add("is-ok");
+      setTimeout(function () {
+        btn.textContent = btn.getAttribute("data-label") || "复制原文";
+        if (btn.classList) btn.classList.remove("is-ok");
+      }, 1400);
+    }
+    function tryExec() {
+      var ta = document.createElement("textarea");
+      ta.value = raw;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0.01;padding:0;border:0;";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { ta.setSelectionRange(0, raw.length); } catch (e1) {}
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e2) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    var nav = typeof navigator !== "undefined" ? navigator : null;
+    if (nav && nav.clipboard && nav.clipboard.writeText && window.isSecureContext) {
+      return nav.clipboard.writeText(raw).then(function () {
+        markOk();
+        return true;
+      }).catch(function () {
+        if (tryExec()) { markOk(); return true; }
+        return false;
+      });
+    }
+    if (tryExec()) { markOk(); return Promise.resolve(true); }
+    return Promise.resolve(false);
+  }
+
+  function openSourceSheet(text) {
+    var sheet = document.getElementById("source-sheet");
+    var ta = document.getElementById("source-sheet-text");
+    if (!sheet || !ta) {
+      try { window.alert(String(text == null ? "" : text).slice(0, 800)); } catch (e) {}
+      return;
+    }
+    ta.value = String(text == null ? "" : text);
+    sheet.hidden = false;
+    sheet.removeAttribute("hidden");
+    sheet.classList.add("is-open");
+    setTimeout(function () {
+      try {
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+      } catch (e2) {}
+    }, 40);
+  }
+
+  function closeSourceSheet() {
+    var sheet = document.getElementById("source-sheet");
+    if (!sheet) return;
+    sheet.classList.remove("is-open");
+    sheet.hidden = true;
+    sheet.setAttribute("hidden", "hidden");
+  }
+
+  function msgSourceAt(idx) {
+    var msgs = threadOf(state.tutorThreadId);
+    var m = msgs[idx];
+    return m ? String(m.text || "") : "";
+  }
+
+  function bindSourceSheet() {
+    var sheet = document.getElementById("source-sheet");
+    var ta = document.getElementById("source-sheet-text");
+    var btnSel = document.getElementById("source-sheet-select");
+    var btnCopy = document.getElementById("source-sheet-copy");
+    var btnFill = document.getElementById("source-sheet-fill");
+    var btnClose = document.getElementById("source-sheet-close");
+    if (!sheet) return;
+    sheet.onclick = function (ev) {
+      if (ev && ev.target === sheet) closeSourceSheet();
+    };
+    if (btnClose) btnClose.onclick = closeSourceSheet;
+    if (btnSel && ta) btnSel.onclick = function () {
+      ta.focus();
+      ta.select();
+      try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
+    };
+    if (btnCopy && ta) btnCopy.onclick = function () {
+      copyText(ta.value, btnCopy).then(function (ok) {
+        if (!ok) {
+          ta.focus();
+          ta.select();
+          btnCopy.textContent = "请长按全选复制";
+          setTimeout(function () { btnCopy.textContent = "复制到剪贴板"; }, 1800);
+        }
+      });
+    };
+    if (btnFill && ta) btnFill.onclick = function () {
+      fillFromTutor(ta.value);
+    };
   }
 
   function reportPoor() {
@@ -739,64 +848,6 @@
     if (frame.getAttribute("src") !== abs) frame.src = abs;
   }
 
-  function loadNotes() {
-    var list = document.getElementById("notes-list");
-    if (!list) return;
-    FqmApi.notes(cfg)
-      .then(function (d) {
-        if (FqmLoop.isUnauthorized(d)) {
-          state.error = FqmLoop.TOKEN_INVALID_MESSAGE;
-          state.screen = "settings";
-          render();
-          return;
-        }
-        var notes = (d && d.notes) || [];
-        if (!notes.length) {
-          list.innerHTML = '<p class="hint">还没有手写笔记。点上方放入图片即可。</p>';
-          return;
-        }
-        list.innerHTML = notes
-          .map(function (n) {
-            return (
-              '<button type="button" class="note-row" data-note-id="' +
-              esc(n.id) +
-              '">' +
-              esc(n.name || "手写笔记") +
-              "</button>"
-            );
-          })
-          .join("");
-        list.querySelectorAll("[data-note-id]").forEach(function (btn) {
-          btn.onclick = function () {
-            showNote(btn.getAttribute("data-note-id"), btn.textContent);
-          };
-        });
-        showNote(notes[0].id, notes[0].name);
-      })
-      .catch(function () {
-        list.innerHTML = '<p class="hint">资料库暂时打不开。</p>';
-      });
-  }
-
-  function showNote(id, name) {
-    var view = document.getElementById("notes-view");
-    if (!view) return;
-    view.innerHTML = '<p class="hint">正在打开这张笔记…</p>';
-    FqmApi.noteItem(cfg, id)
-      .then(function (d) {
-        if (!view) return;
-        if (!d || !d.data_url) {
-          view.innerHTML = '<p class="hint">这张笔记打不开。</p>';
-          return;
-        }
-        view.innerHTML =
-          '<img alt="' + esc(name || "手写笔记") + '" src="' + esc(d.data_url) + '"><p class="hint">' + esc(name || "手写笔记") + "</p>";
-      })
-      .catch(function () {
-        if (view) view.innerHTML = '<p class="hint">这张笔记打不开。</p>';
-      });
-  }
-
   function mountMath() {
     if (!el.root || !window.katex) return;
     el.root.querySelectorAll("[data-tex]").forEach(function (node) {
@@ -867,8 +918,7 @@
       feedback: "批改结果",
       done: "今日已完成",
       settings: "设置",
-      exam: "周卷",
-      notes: "资料库"
+      exam: "周卷"
     };
     return (
       '<div class="brand-row"><span class="brand">反馈出题机</span><div class="meta">' +
@@ -955,7 +1005,7 @@
       ) +
       field(
         "练习台地址",
-        "作答、批改、讲题、周卷和资料都请求这个地址。",
+        "作答、批改、讲题和周卷都请求这个地址。",
         '<input name="practiceBase" type="url" required value="' + esc(cfg.practiceBaseUrl) + '"/>'
       ) +
       field(
@@ -1194,7 +1244,10 @@
         "</div>" +
         cites +
         (m.role !== "user" && !m.streaming
-          ? '<div class="msg-actions"><button type="button" class="msg-action" data-fill-msg="' + i + '">填入作答</button></div>'
+          ? '<div class="msg-actions">' +
+            '<button type="button" class="msg-action" data-copy-msg="' + i + '">复制原文</button>' +
+            '<button type="button" class="msg-action" data-fill-msg="' + i + '">填入作答</button>' +
+            "</div>"
           : "") +
         "</article>";
     });
@@ -1209,22 +1262,11 @@
     );
   }
 
-  function renderNotes() {
-    return (
-      '<div class="stack"><section class="card stack"><div class="row between wrap"><h1>资料库</h1>' +
-      '<label class="btn">放入手写图片<input id="note-file" type="file" accept="image/*" hidden></label></div>' +
-      '<p class="hint">点名字看原图。图片存在练习台，问讲师时可以让他看这些笔记。</p>' +
-      '<div class="notes-layout"><div class="notes-list" id="notes-list"><p class="hint">正在读取…</p></div>' +
-      '<div class="notes-view" id="notes-view"><p class="hint">选一条笔记，在这里看原图。</p></div></div></section></div>'
-    );
-  }
-
   function renderMain() {
     if (state.screen === "settings") return renderSettings();
     if (state.screen === "feedback") return renderFeedback();
     if (state.screen === "tutor") return renderTutor();
     if (state.screen === "exam") return renderExam();
-    if (state.screen === "notes") return renderNotes();
     if (state.screen === "done") return renderDone();
     if (state.screen === "loading") return '<section class="card stack"><h1>正在连接练习台</h1><p class="hint">读取今日三槽…</p></section>';
     if (state.screen === "practice") return renderPractice();
@@ -1277,7 +1319,6 @@
     return (
       tab("practice", "练习", practiceOn) +
       tab("exam", "周卷", state.screen === "exam") +
-      tab("notes", "资料", state.screen === "notes") +
       tab("tutor", "讲师", state.screen === "tutor")
     );
   }
@@ -1302,7 +1343,6 @@
     paintDraftPreview();
     if (state.screen === "tutor") el.root.scrollTop = el.root.scrollHeight;
     if (state.screen === "exam") loadExam();
-    if (state.screen === "notes") loadNotes();
   }
 
   function bind() {
@@ -1412,22 +1452,6 @@
     };
     var ocrRun = document.getElementById("btn-ocr-run");
     if (ocrRun) ocrRun.onclick = runOcr;
-    var noteFile = document.getElementById("note-file");
-    if (noteFile) {
-      noteFile.onchange = function () {
-        var file = noteFile.files && noteFile.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function () {
-          FqmApi.saveNote(cfg, {
-            learner: cfg.learnerId,
-            name: file.name || "手写笔记",
-            image: String(reader.result || "")
-          }).then(function () { loadNotes(); });
-        };
-        reader.readAsDataURL(file);
-      };
-    }
     var composer = document.getElementById("composer-form");
     if (composer) {
       composer.onsubmit = function (e) {
@@ -1440,11 +1464,22 @@
       composerInput.value = state.tutorDraft;
       composerInput.oninput = function () { state.tutorDraft = composerInput.value; };
     }
+    el.root.querySelectorAll("[data-copy-msg]").forEach(function (btn) {
+      btn.onclick = function () {
+        var idx = parseInt(btn.getAttribute("data-copy-msg"), 10);
+        var raw = msgSourceAt(idx);
+        if (!raw) {
+          openSourceSheet("（这条消息没有可复制的原文）");
+          return;
+        }
+        openSourceSheet(raw);
+        copyText(raw, btn);
+      };
+    });
     el.root.querySelectorAll("[data-fill-msg]").forEach(function (btn) {
       btn.onclick = function () {
         var idx = parseInt(btn.getAttribute("data-fill-msg"), 10);
-        var msgs = threadOf(state.tutorThreadId);
-        if (msgs[idx]) fillFromTutor(msgs[idx].text);
+        fillFromTutor(msgSourceAt(idx));
       };
     });
     el.tabs.querySelectorAll("[data-tab]").forEach(function (btn) {
@@ -1452,9 +1487,6 @@
         var id = btn.getAttribute("data-tab");
         if (id === "exam") {
           state.screen = "exam";
-          render();
-        } else if (id === "notes") {
-          state.screen = "notes";
           render();
         } else if (id === "tutor") askTutor();
         else {
@@ -1511,6 +1543,7 @@
   }
 
   function boot() {
+    bindSourceSheet();
     if (typeof document !== "undefined" && document.addEventListener) {
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState === "visible") refreshToday();
