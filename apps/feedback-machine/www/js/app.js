@@ -2,12 +2,20 @@
   "use strict";
 
   var TUTOR_KEY = "fqm_tutor_v1";
+  var THEME_KEY = "fqm_theme_v1";
   var cfg = FqmConfig.load();
   var savedTutor = {};
+  var themeSaved = "desk";
   try {
     savedTutor = JSON.parse(localStorage.getItem(TUTOR_KEY) || "{}") || {};
   } catch (e) {
     savedTutor = {};
+  }
+  try {
+    var storedTheme = localStorage.getItem(THEME_KEY);
+    if (storedTheme === "studio" || storedTheme === "desk") themeSaved = storedTheme;
+  } catch (eTheme) {
+    themeSaved = "desk";
   }
 
   var state = {
@@ -30,10 +38,30 @@
     tutorDraft: "",
     ocrBusy: false,
     ocrMsg: "",
-    ocrMode: "document"
+    ocrMode: "document",
+    theme: themeSaved,
+    update: {
+      phase: "idle",
+      localCode: FqmConfig.APP_VERSION_CODE,
+      localName: FqmConfig.APP_VERSION_NAME,
+      remoteCode: null,
+      remoteName: "",
+      apkUrl: "",
+      notes: "",
+      apkMd5: "",
+      message: ""
+    }
   };
   var ocrPayload = null;
   var streamTimer = null;
+  var SWIPE_THRESHOLD = 56;
+  var SCREEN_ORDER = { today: 0, practice: 1, feedback: 2, done: 3 };
+  var flipOverride = null;
+  var flipGen = 0;
+  var updateGen = 0;
+  var flipBusy = false;
+  var lastPaintScreen = "";
+  var swipeBound = false;
 
   var el = {
     header: document.getElementById("header"),
@@ -42,11 +70,317 @@
     tabs: document.getElementById("tabbar"),
     toast: document.getElementById("toast"),
     chrome: document.getElementById("page-chrome"),
-    strip: document.getElementById("tutor-strip")
+    strip: document.getElementById("tutor-strip"),
+    brain: document.getElementById("brain-host")
   };
 
   function esc(s) {
     return FqmMath.esc(s);
+  }
+
+  function paintTheme() {
+    var theme = state.theme === "studio" ? "studio" : "desk";
+    var rootEl = document.documentElement;
+    if (rootEl && rootEl.setAttribute) rootEl.setAttribute("data-theme", theme);
+    if (document.body && document.body.setAttribute) document.body.setAttribute("data-theme", theme);
+    var meta = document.getElementById("theme-color");
+    if (meta && meta.setAttribute) meta.setAttribute("content", theme === "studio" ? "#D5E2EA" : "#F4EDE0");
+  }
+
+  function applyTheme(name) {
+    state.theme = name === "studio" ? "studio" : "desk";
+    try {
+      localStorage.setItem(THEME_KEY, state.theme);
+    } catch (e) {}
+    paintTheme();
+  }
+
+  function motionVars() {
+    var fallback = { drag: 18, scale: 0.015, fade: 0.18, tilt: 0 };
+    var rootEl = document.documentElement;
+    if (!rootEl || !window.getComputedStyle) return fallback;
+    var cs = window.getComputedStyle(rootEl);
+    function num(name, fb) {
+      var v = parseFloat(cs.getPropertyValue(name));
+      return isNaN(v) ? fb : v;
+    }
+    return {
+      drag: num("--swipe-drag", fallback.drag),
+      scale: num("--swipe-scale", fallback.scale),
+      fade: num("--swipe-fade", fallback.fade),
+      tilt: num("--swipe-tilt", fallback.tilt)
+    };
+  }
+
+  function canSwipe() {
+    return (
+      state.screen === "today" ||
+      state.screen === "practice" ||
+      state.screen === "feedback" ||
+      state.screen === "done" ||
+      state.screen === "settings"
+    );
+  }
+
+  function inferDir(prev, next) {
+    if (SCREEN_ORDER[prev] != null && SCREEN_ORDER[next] != null && prev !== next) {
+      return SCREEN_ORDER[next] > SCREEN_ORDER[prev] ? -1 : 1;
+    }
+    if (next === "settings") return -1;
+    if (prev === "settings") return 1;
+    if (next === "tutor" || next === "exam" || next === "notes" || next === "brain") return -1;
+    if (prev === "tutor" || prev === "exam" || prev === "notes" || prev === "brain") return 1;
+    return 0;
+  }
+
+  function playFlip(sheet, gen) {
+    if (!sheet || !sheet.classList) return;
+    flipBusy = true;
+    var raf = window.requestAnimationFrame || function (fn) { setTimeout(fn, 16); };
+    raf(function () {
+      raf(function () {
+        if (gen !== flipGen) return;
+        sheet.classList.remove("is-enter-right", "is-enter-left");
+        sheet.classList.add("is-open");
+        setTimeout(function () {
+          if (gen === flipGen) flipBusy = false;
+        }, 260);
+      });
+    });
+  }
+
+  function leaveSettings() {
+    flipOverride = 1;
+    var back = state.returnScreen;
+    if (back === "feedback" && state.lastResult) state.screen = "feedback";
+    else if (back === "practice" && state.current) state.screen = "practice";
+    else if (back === "tutor" || back === "exam" || back === "notes" || back === "done" || back === "today") state.screen = back;
+    else state.screen = "today";
+    render();
+  }
+
+  function nextDisabled() {
+    if (state.screen === "today") return false;
+    if (state.screen === "practice") return !(state.lastResult && state.current);
+    if (state.screen === "feedback") return false;
+    return true;
+  }
+
+  function flipBack() {
+    if (flipBusy) return;
+    if (state.screen === "settings") {
+      leaveSettings();
+      return;
+    }
+    if (state.screen === "feedback" && state.current) {
+      flipOverride = 1;
+      state.screen = "practice";
+      render();
+      return;
+    }
+    if (state.screen === "done") {
+      flipOverride = 1;
+      state.screen = state.lastResult && state.current ? "feedback" : "today";
+      render();
+      return;
+    }
+    if (state.screen === "practice") {
+      flipOverride = 1;
+      state.screen = "today";
+      render();
+    }
+  }
+
+  function flipForward() {
+    if (flipBusy) return;
+    if (state.screen === "settings") return;
+    if (state.screen === "today") {
+      startToday();
+      return;
+    }
+    if (state.screen === "practice") {
+      if (state.lastResult && state.current) {
+        flipOverride = -1;
+        state.screen = "feedback";
+        render();
+      }
+      return;
+    }
+    if (state.screen === "feedback") goNextQuestion();
+  }
+
+  function goToPageDot(page) {
+    if (page === state.screen) return;
+    if (page === "today") {
+      flipOverride = 1;
+      state.screen = "today";
+      render();
+      return;
+    }
+    if (page === "practice") {
+      if (state.current && (state.screen === "feedback" || state.screen === "done")) {
+        flipOverride = 1;
+        state.screen = "practice";
+        render();
+        return;
+      }
+      if (state.current && state.screen !== "today") {
+        state.screen = "practice";
+        render();
+        return;
+      }
+      startToday();
+      return;
+    }
+    if (page === "feedback") {
+      if (state.lastResult && state.current) {
+        flipOverride = state.screen === "done" ? 1 : -1;
+        state.screen = "feedback";
+        render();
+      } else if (state.screen === "today") startToday();
+      return;
+    }
+    if (page === "done") {
+      if (countOpen() === 0) {
+        flipOverride = -1;
+        state.screen = "done";
+        render();
+      } else {
+        flipOverride = 1;
+        state.screen = "today";
+        render();
+      }
+    }
+  }
+
+  function themeSwitchHtml(withIds) {
+    var studio = state.theme === "studio";
+    var idDesk = withIds ? ' id="btn-theme-desk"' : "";
+    var idStudio = withIds ? ' id="btn-theme-studio"' : "";
+    return (
+      '<div class="theme-switch" role="group" aria-label="视觉方案">' +
+      '<button type="button" class="theme-opt' +
+      (studio ? "" : " is-on") +
+      '"' +
+      idDesk +
+      ' data-theme-pick="desk" aria-pressed="' +
+      (studio ? "false" : "true") +
+      '" aria-label="练习台画法">练习台</button>' +
+      '<button type="button" class="theme-opt' +
+      (studio ? " is-on" : "") +
+      '"' +
+      idStudio +
+      ' data-theme-pick="studio" aria-pressed="' +
+      (studio ? "true" : "false") +
+      '" aria-label="工作室画法">工作室</button></div>'
+    );
+  }
+
+  function markBox(inner) {
+    return (
+      '<div class="mark-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">' +
+      inner +
+      "</svg></div>"
+    );
+  }
+
+  function readLocalVersion() {
+    var fallback = {
+      versionCode: FqmConfig.APP_VERSION_CODE,
+      versionName: FqmConfig.APP_VERSION_NAME
+    };
+    try {
+      var cap = window.Capacitor;
+      var appPlugin = cap && cap.Plugins && cap.Plugins.App;
+      if (!appPlugin || typeof appPlugin.getInfo !== "function") return Promise.resolve(fallback);
+      return Promise.resolve(appPlugin.getInfo()).then(function (info) {
+        var code = parseInt(info && info.build, 10);
+        return {
+          versionCode: isFinite(code) ? code : fallback.versionCode,
+          versionName: info && info.version ? String(info.version) : fallback.versionName
+        };
+      }).catch(function () {
+        return fallback;
+      });
+    } catch (e) {
+      return Promise.resolve(fallback);
+    }
+  }
+
+  function manifestUrlNow() {
+    var partial = {
+      practiceBaseUrl: cfg.practiceBaseUrl,
+      updateManifestUrl: cfg.updateManifestUrl
+    };
+    var form = document.getElementById("settings-form");
+    if (form && form.practiceBase && String(form.practiceBase.value || "").trim()) {
+      partial.practiceBaseUrl = String(form.practiceBase.value).trim();
+    }
+    if (form && form.updateManifest) {
+      partial.updateManifestUrl = String(form.updateManifest.value || "").trim();
+    }
+    return FqmConfig.updateManifestUrl(partial);
+  }
+
+  function openApk(url) {
+    var target = FqmConfig.safeHttpUrl(url);
+    if (!target) return;
+    try {
+      var cap = window.Capacitor;
+      var browser = cap && cap.Plugins && cap.Plugins.Browser;
+      if (browser && typeof browser.open === "function") {
+        browser.open({ url: target });
+        return;
+      }
+    } catch (e) {}
+    try {
+      if (window.open) window.open(target, "_blank", "noopener");
+    } catch (e2) {}
+  }
+
+  function checkForUpdate(opts) {
+    opts = opts || {};
+    var gen = ++updateGen;
+    try {
+      if (!opts.silent) {
+        state.update.phase = "checking";
+        state.update.message = "正在检查…";
+        if (state.screen === "settings") render();
+      }
+      return readLocalVersion().then(function (local) {
+        state.update.localCode = local.versionCode;
+        state.update.localName = local.versionName;
+        if (!FqmApi || typeof FqmApi.getAbsolute !== "function") {
+          if (!opts.silent) {
+            state.update.phase = "error";
+            state.update.message = "检查失败，不影响做题";
+            if (state.screen === "settings") render();
+          }
+          return;
+        }
+        return FqmApi.getAbsolute(manifestUrlNow()).then(function (body) {
+          if (gen !== updateGen) return;
+          var verdict = FqmConfig.interpretUpdate(local.versionCode, body);
+          state.update.phase = verdict.phase;
+          state.update.message = verdict.message;
+          state.update.apkUrl = verdict.apkUrl || "";
+          state.update.notes = verdict.notes || "";
+          state.update.apkMd5 = verdict.apkMd5 || "";
+          state.update.remoteName = verdict.remoteName || "";
+          state.update.remoteCode = verdict.remoteCode;
+          if (verdict.phase === "available") showToast(verdict.message);
+          else if (!opts.silent && verdict.phase === "current") showToast(verdict.message);
+          if (state.screen === "settings") render();
+        });
+      }).catch(function () {
+        if (gen !== updateGen) return;
+        state.update.phase = "error";
+        state.update.message = "检查失败，不影响做题";
+        if (state.screen === "settings") render();
+      });
+    } catch (e) {
+      return Promise.resolve();
+    }
   }
 
   function showToast(msg) {
@@ -239,6 +573,7 @@
   }
 
   function openSettings() {
+    if (state.screen !== "settings") state.returnScreen = state.screen;
     state.screen = "settings";
     render();
   }
@@ -249,7 +584,8 @@
       deepseekBaseUrl: form.deepseekBase.value.trim(),
       practiceBaseUrl: form.practiceBase.value.trim() || FqmConfig.DEFAULTS.practiceBaseUrl,
       practiceToken: form.practiceToken.value.trim(),
-      learnerId: form.learnerId.value.trim() || FqmConfig.DEFAULTS.learnerId
+      learnerId: form.learnerId.value.trim() || FqmConfig.DEFAULTS.learnerId,
+      updateManifestUrl: form.updateManifest ? form.updateManifest.value.trim() : ""
     });
     showToast("已保存到本机");
     if (FqmConfig.isConfigured(cfg)) loadBootstrapThenPick();
@@ -352,6 +688,7 @@
   }
 
   function startToday() {
+    flipOverride = -1;
     var next = FqmLoop.pickNextLocal(state.items, null);
     if (!next) {
       state.screen = "done";
@@ -364,6 +701,7 @@
   }
 
   function goNextQuestion() {
+    flipOverride = -1;
     if (state.current) state.current.answered = true;
     var local = FqmLoop.pickNextLocal(state.items, state.current && state.current.id);
     if (local) {
@@ -848,6 +1186,15 @@
     if (frame.getAttribute("src") !== abs) frame.src = abs;
   }
 
+  function openBrain() {
+    state.screen = "brain";
+    render();
+    var frame = document.getElementById("brain-frame");
+    if (!frame) return;
+    var src = "brain/index.html?embed=1&tab=events&learner=" + encodeURIComponent(cfg.learnerId || "");
+    if (frame.getAttribute("src") !== src) frame.src = src;
+  }
+
   function mountMath() {
     if (!el.root || !window.katex) return;
     el.root.querySelectorAll("[data-tex]").forEach(function (node) {
@@ -891,6 +1238,16 @@
   };
 
   function renderHeader() {
+    var themes = themeSwitchHtml(true);
+    var gear = '<button type="button" class="icon-btn" id="btn-gear" aria-label="设置">⚙</button>';
+    if (state.screen === "settings") {
+      return (
+        '<div class="brand-row"><button type="button" class="text-link" id="btn-settings-back">返回</button>' +
+        '<span class="brand">设置</span>' +
+        themes +
+        "</div>"
+      );
+    }
     if (state.screen === "tutor") {
       var it = state.current;
       var general = FqmLoop.isGeneralThread(state.tutorThreadId);
@@ -904,7 +1261,8 @@
         '<div class="tutor-ops">' +
         '<button type="button" class="text-link" id="btn-new-tutor">新建对话</button>' +
         '<button type="button" class="text-link" id="btn-tutor-back">返回练习</button>' +
-        '<button type="button" class="icon-btn" id="btn-gear" aria-label="设置">⚙</button>' +
+        themes +
+        gear +
         "</div>" +
         '<div class="sub">' +
         esc(general ? "可问学情或计划。要讲某一题，从练习台点「不懂，问讲师」。" : (it && it.kp) || "就这道题问卡住的步骤。") +
@@ -918,15 +1276,22 @@
       feedback: "批改结果",
       done: "今日已完成",
       settings: "设置",
-      exam: "周卷"
+      exam: "周卷",
+      brain: "能力"
     };
+    var practiceChrome =
+      state.screen === "today" || state.screen === "practice" || state.screen === "feedback" || state.screen === "done";
     return (
       '<div class="brand-row"><span class="brand">反馈出题机</span><div class="meta">' +
       esc(cfg.learnerId || "未指定学员") +
-      '</div><button type="button" class="icon-btn" id="btn-gear" aria-label="设置">⚙</button></div>' +
+      "</div>" +
+      themes +
+      gear +
+      "</div>" +
       '<div class="sub">' +
       esc(map[state.screen] || "练习台") +
-      "</div>"
+      "</div>" +
+      (practiceChrome ? '<div class="flip-hint">左右滑动，或用两侧箭头翻页</div>' : "")
     );
   }
 
@@ -935,11 +1300,14 @@
     var labels = { today: "今日", practice: "主台", feedback: "批改", done: "完成" };
     var dots = order
       .map(function (p) {
+        var on = state.screen === p;
         return (
           '<button type="button" class="page-dot' +
-          (state.screen === p ? " is-on" : "") +
+          (on ? " is-on" : "") +
           '" data-page="' +
           p +
+          '" role="tab" aria-selected="' +
+          (on ? "true" : "false") +
           '" aria-label="' +
           labels[p] +
           '"></button>'
@@ -947,12 +1315,12 @@
       })
       .join("");
     var prevOff = state.screen === "today" ? " disabled" : "";
-    var nextOff = state.screen === "practice" || state.screen === "done" ? " disabled" : "";
+    var nextOff = nextDisabled() ? " disabled" : "";
     return (
       '<button type="button" class="page-nav" id="page-prev" aria-label="上一页"' +
       prevOff +
       ">‹</button>" +
-      '<div class="page-dots">' +
+      '<div class="page-dots" role="tablist" aria-label="页码">' +
       dots +
       "</div>" +
       '<button type="button" class="page-nav" id="page-next" aria-label="下一页"' +
@@ -991,6 +1359,9 @@
     return (
       '<section class="card stack"><h1>设置</h1>' +
       '<p class="lede">密钥只保存在本机，不会写进安装包。批改和出题都走练习台，不走本机 DeepSeek。</p>' +
+      '<div class="stack"><span class="field-name">视觉方案</span>' +
+      themeSwitchHtml(false) +
+      '<p class="field-help">「练习台」对齐现网纸色、卡片微倾和滑动翻页。「工作室」是同一条作答路径上更大胆的对照画法。选择记在本机，页头也能切。</p></div>' +
       (state.error ? '<p class="field-error" role="alert">' + esc(state.error) + "</p>" : "") +
       '<form id="settings-form" class="form stack">' +
       field(
@@ -1005,7 +1376,7 @@
       ) +
       field(
         "练习台地址",
-        "作答、批改、讲题和周卷都请求这个地址。",
+        "作答、批改、讲题、周卷和能力都请求这个地址。",
         '<input name="practiceBase" type="url" required value="' + esc(cfg.practiceBaseUrl) + '"/>'
       ) +
       field(
@@ -1018,7 +1389,27 @@
         "每次请求都会带上，练习台按这个编号取题和记掌握度。",
         '<input name="learnerId" required autocomplete="off" value="' + esc(cfg.learnerId) + '"/>'
       ) +
-      '<div class="btn-row"><button type="submit" class="btn primary">保存并连接</button></div></form></section>'
+      field(
+        "更新清单地址",
+        "留空则检查 https://practice.longee.icu/app/feedback-machine/version.json。一般不用改。",
+        '<input id="update-manifest-url" name="updateManifest" type="url" placeholder="https://practice.longee.icu/app/feedback-machine/version.json" value="' + esc(cfg.updateManifestUrl || "") + '"/>'
+      ) +
+      '<div class="btn-row"><button type="submit" class="btn primary">保存并连接</button></div></form>' +
+      '<div class="stack"><h2>更新</h2><p class="meta">当前版本 ' +
+      esc(state.update.localName || FqmConfig.APP_VERSION_NAME) +
+      "（versionCode " +
+      esc(String(state.update.localCode)) +
+      "）</p>" +
+      (state.update.message ? '<p class="hint" role="status">' + esc(state.update.message) + "</p>" : '<p class="field-help">启动时会静默检查一次。失败不影响做题。</p>') +
+      (state.update.notes ? '<p class="calm-note">' + esc(state.update.notes) + "</p>" : "") +
+      (state.update.apkMd5 ? '<p class="meta">MD5 ' + esc(state.update.apkMd5) + "</p>" : "") +
+      '<div class="btn-row"><button type="button" class="btn" id="btn-check-update"' +
+      (state.update.phase === "checking" ? " disabled" : "") +
+      ">检查更新</button>" +
+      (state.update.phase === "available" && state.update.apkUrl
+        ? '<button type="button" class="btn primary" id="btn-open-apk">下载新版本</button>'
+        : "") +
+      "</div></div></section>"
     );
   }
 
@@ -1064,7 +1455,7 @@
             );
           })
           .join("")
-      : '<p class="hint">没有历史未答。今日槽或题库补练可直接开做。</p>';
+      : '<p class="calm-note">没有历史未答。今日槽或题库补练可直接开做。</p>';
     var weak = state.bootstrap && state.bootstrap.weakHint;
     var cta = open === 0 ? "查看完成状态" : "从最早未答开始";
     return (
@@ -1079,7 +1470,7 @@
       '</div><div class="t">今日剩余</div></div><div class="stat"><div class="n">' +
       done +
       '</div><div class="t">今日完成</div></div></div>' +
-      (state.error ? '<p class="field-error" role="alert">' + esc(state.error) + "</p>" : "") +
+      (state.error ? '<p class="calm-note" role="status">' + esc(state.error) + "</p>" : "") +
       '<p class="hint">数学、通信、复习各一题。过了时间窗没做的，今天仍可补，不占明天的题。</p>' +
       '<div class="stack">' +
       slotHtml +
@@ -1097,9 +1488,14 @@
   function renderPractice() {
     var it = state.current;
     if (!it) return renderToday();
-    var weak = state.bootstrap && state.bootstrap.weakHint;
+    var weak = (state.bootstrap && state.bootstrap.weakHint) || "完成今日最早未答槽";
+    var total = state.items.length || 0;
+    var openN = countOpen();
+    var doneN = total - openN;
+    var pct = total ? Math.round((doneN / total) * 100) : 0;
     return (
-      '<div class="stack"><section class="card stack stem-card"><div class="row wrap"><span class="pill">' +
+      '<div class="stack"><div class="desk-split">' +
+      '<section class="card stack stem-card"><div class="row wrap"><span class="pill">' +
       esc(it.subject || "练习") +
       "</span>" +
       (it.kp ? '<span class="pill warn">' + esc(it.kp) + "</span>" : "") +
@@ -1109,18 +1505,32 @@
       FqmMath.renderMathTitle(it.title || "题目") +
       "</h2>" +
       FqmMath.renderStemHtml(it) +
-      (weak ? '<p class="hint"><strong>薄弱提示</strong> — ' + esc(weak) + "</p>" : "") +
-      '</section><section class="card stack"><div class="row between wrap"><h3>作答</h3><span class="pill">手写可拍照</span></div>' +
-      '<div class="ocr-zone"><div class="ocr-actions">' +
-      '<button type="button" class="btn ocr-mode' +
+      '</section><aside class="card progress-card"><div class="side-rail">' +
+      '<div class="rail-item"><div class="k">进度</div><div class="row between"><strong>' +
+      doneN +
+      "/" +
+      total +
+      '</strong><span class="meta">' +
+      pct +
+      '%</span></div><div class="progress-track"><div class="progress-fill" style="width:' +
+      pct +
+      '%"></div></div></div>' +
+      '<div class="rail-item"><div class="k">当前知识点</div><div>' +
+      esc(it.kp || "—") +
+      '</div></div><div class="rail-item"><div class="k">薄弱提示</div><div>' +
+      esc(weak) +
+      "</div></div></div></aside>" +
+      '<section class="card stack answer-card"><div class="row between wrap"><h3>作答</h3><span class="pill">手写可拍照</span></div>' +
+      '<div class="ocr-zone"><div class="ocr-modes">' +
+      '<button type="button" class="ocr-mode' +
       (state.ocrMode !== "formula" ? " is-on" : "") +
       '" data-ocr-mode="document">整页识别</button>' +
-      '<button type="button" class="btn ocr-mode' +
+      '<button type="button" class="ocr-mode' +
       (state.ocrMode === "formula" ? " is-on" : "") +
       '" data-ocr-mode="formula">公式加强</button></div>' +
       '<input type="file" id="ocr-file" accept="image/*" hidden>' +
-      '<div class="ocr-actions"><button type="button" class="btn" id="btn-ocr-pick">选择手写图片</button>' +
-      '<button type="button" class="btn" id="btn-ocr-run"' +
+      '<div class="ocr-actions"><button type="button" class="btn ghost" id="btn-ocr-pick">选择手写图片</button>' +
+      '<button type="button" class="btn ghost" id="btn-ocr-run"' +
       (ocrPayload && !state.ocrBusy ? "" : " disabled") +
       ">" +
       (state.ocrBusy ? "识别中…" : "识别") +
@@ -1143,8 +1553,8 @@
       '<div class="row wrap link-row">' +
       '<button type="button" class="text-link" id="btn-send-tutor">发给老师讨论</button>' +
       '<button type="button" class="text-link" id="btn-ask-tutor">不懂，问讲师</button>' +
-      '<button type="button" class="text-link" id="btn-report-poor">题质量差</button>' +
-      "</div></section></div>"
+      '<button type="button" class="text-link is-warn" id="btn-report-poor">题质量差</button>' +
+      "</div></section></div></div>"
     );
   }
 
@@ -1155,7 +1565,6 @@
     var markCls = banner.cls;
     var markText = banner.text;
     var markSub = banner.sub;
-    var comment = FqmLoop.studentGradeComment(r.comment || "");
     var gmLabel = GRADE_MODE_LABEL[r.gradeMode] || "";
     var mastery =
       typeof r.masteryBefore === "number" && typeof r.masteryAfter === "number"
@@ -1174,11 +1583,13 @@
       '">' +
       markText +
       "</div>" +
-      (gmLabel ? '<span class="grade-chip">' + esc(gmLabel) + "</span>" : "") +
+      (gmLabel
+        ? '<span class="grade-chip' + (r.gradeMode && r.gradeMode !== "llm" ? " is-degraded" : "") + '">' + esc(gmLabel) + "</span>"
+        : "") +
       '</div><div class="result-verdict">' +
       esc(markSub) +
       '</div><div class="stem-text">' +
-      FqmMath.renderMathMarkdown(comment) +
+      FqmMath.renderMathMarkdown(FqmLoop.studentGradeComment(r.comment || "")) +
       '</div><div class="meta">' +
       mastery +
       "</div></div>" +
@@ -1186,7 +1597,7 @@
       esc(r.submitted || state.draft || "") +
       "</div>" +
       '<div class="row wrap link-row"><button type="button" class="text-link" id="btn-ask-tutor">不懂，问讲师</button>' +
-      '<button type="button" class="text-link" id="btn-report-poor">题质量差</button></div></section>' +
+      '<button type="button" class="text-link is-warn" id="btn-report-poor">题质量差</button></div></section>' +
       '<section class="card" style="padding:0"><div class="fold' +
       (state.explainOpen ? " is-open" : "") +
       '"><button type="button" class="fold-toggle" id="btn-fold" aria-expanded="' +
@@ -1202,9 +1613,11 @@
 
   function renderDone() {
     return (
-      '<div class="empty"><h1>今日练习已完成</h1><p>今天的题都交过了。明天会有新题；漏做的仍可从今日入口补。</p>' +
-      '<button type="button" class="btn" id="btn-done-home">回到今日入口</button>' +
-      '<button type="button" class="btn primary" id="btn-pull-math">从数学题库再补一题</button></div>'
+      '<div class="empty">' +
+      markBox('<path d="M5 13l4 4L19 7"/>') +
+      "<h1>今日练习已完成</h1><p>今天的题都交过了。明天会有新题；漏做的仍可从今日入口补。</p>" +
+      '<div class="stack"><button type="button" class="btn ghost" id="btn-done-home">回到今日入口</button>' +
+      '<button type="button" class="btn primary" id="btn-pull-math">从数学题库再补一题</button></div></div>'
     );
   }
 
@@ -1213,7 +1626,9 @@
     if (!msgs.length && !state.busy) {
       var general = FqmLoop.isGeneralThread(state.tutorThreadId);
       return (
-        '<div class="empty"><h1>' +
+        '<div class="empty">' +
+        markBox('<path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/>') +
+        "<h1>" +
         (general ? "新对话" : "问讲师") +
         "</h1><p>" +
         (general ? "可以问学情或接下来怎么练。要讲某一题，从练习台点「不懂，问讲师」。" : "就这道题问卡住的步骤。") +
@@ -1301,6 +1716,12 @@
   }
 
   function renderTabs() {
+    var icons = {
+      practice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg>',
+      exam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9.5A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M14 3.5V8h4.5"/></svg>',
+      tutor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 6.5h10.5A2.5 2.5 0 0 1 18 9v5.5A2.5 2.5 0 0 1 15.5 17H10l-4.5 3v-3H5A2 2 0 0 1 3 15V8.5A2 2 0 0 1 5 6.5Z"/></svg>',
+      brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 8.5v7M8.5 12h7"/></svg>'
+    };
     function tab(id, label, on) {
       return (
         '<button type="button" class="tab-btn' +
@@ -1310,8 +1731,10 @@
         '"' +
         (on ? ' aria-current="page"' : "") +
         ">" +
+        (icons[id] || "") +
+        "<span>" +
         label +
-        "</button>"
+        "</span></button>"
       );
     }
     var practiceOn =
@@ -1319,35 +1742,85 @@
     return (
       tab("practice", "练习", practiceOn) +
       tab("exam", "周卷", state.screen === "exam") +
-      tab("tutor", "讲师", state.screen === "tutor")
+      tab("tutor", "讲师", state.screen === "tutor") +
+      tab("brain", "能力", state.screen === "brain")
     );
   }
 
   function render() {
-    var onPractice = state.screen === "today" || state.screen === "practice" || state.screen === "feedback" || state.screen === "done";
-    document.body.classList.toggle("is-tutor", state.screen === "tutor");
+    var gen = ++flipGen;
+    var prev = lastPaintScreen;
+    var next = state.screen;
+    var changed = !!(prev && prev !== next);
+    if (changed && next === "settings" && prev !== "settings" && prev !== "loading") state.returnScreen = prev;
+    var dir = 0;
+    if (changed) {
+      if (flipOverride != null) dir = flipOverride;
+      else dir = inferDir(prev, next);
+    }
+    flipOverride = null;
+    paintTheme();
+    var tutor = next === "tutor";
+    var brain = next === "brain";
+    var onPractice = next === "today" || next === "practice" || next === "feedback" || next === "done";
+    if (document.body && document.body.classList) {
+      document.body.classList.toggle("is-tutor", tutor);
+      document.body.classList.toggle("is-brain", brain);
+    }
+    var appNode = document.getElementById("app");
+    if (appNode && appNode.classList) {
+      appNode.classList.toggle("is-tutor", tutor);
+      appNode.classList.toggle("is-brain", brain);
+    }
+    if (el.brain) el.brain.hidden = !brain;
+    var keepY = el.root.scrollTop || 0;
     el.header.innerHTML = renderHeader();
     if (el.chrome) {
       el.chrome.hidden = !onPractice;
       el.chrome.innerHTML = onPractice ? renderChrome() : "";
     }
     if (el.strip) {
-      el.strip.hidden = state.screen !== "tutor";
-      el.strip.innerHTML = state.screen === "tutor" ? renderStrip() : "";
+      el.strip.hidden = !tutor;
+      el.strip.innerHTML = tutor ? renderStrip() : "";
     }
-    el.root.innerHTML = renderMain();
+    var enter = changed && dir ? (dir < 0 ? "is-enter-right" : "is-enter-left") : "is-open";
+    el.root.innerHTML = '<div class="flip-sheet ' + enter + '">' + renderMain() + "</div>";
     el.dock.innerHTML = renderDock();
     el.tabs.innerHTML = renderTabs();
     bind();
     mountMath();
     paintDraftPreview();
-    if (state.screen === "tutor") el.root.scrollTop = el.root.scrollHeight;
-    if (state.screen === "exam") loadExam();
+    if (!changed) el.root.scrollTop = keepY;
+    else if (next === "practice" || next === "feedback" || next === "today" || next === "done" || next === "settings") el.root.scrollTop = 0;
+    if (tutor) el.root.scrollTop = el.root.scrollHeight;
+    if (changed && dir && el.root.querySelector) {
+      var sheet = el.root.querySelector(".flip-sheet");
+      if (sheet) playFlip(sheet, gen);
+      else flipBusy = false;
+    } else flipBusy = false;
+    lastPaintScreen = next;
+    if (next === "exam") loadExam();
+  }
+
+  function bindTheme(scope) {
+    if (!scope || !scope.querySelectorAll) return;
+    var nodes = scope.querySelectorAll("[data-theme-pick]");
+    if (!nodes || !nodes.forEach) return;
+    nodes.forEach(function (btn) {
+      btn.onclick = function () {
+        applyTheme(btn.getAttribute("data-theme-pick"));
+        render();
+      };
+    });
   }
 
   function bind() {
     var gear = document.getElementById("btn-gear");
     if (gear) gear.onclick = openSettings;
+    var settingsBack = document.getElementById("btn-settings-back");
+    if (settingsBack) settingsBack.onclick = leaveSettings;
+    bindTheme(el.header);
+    bindTheme(el.root);
     var form = document.getElementById("settings-form");
     if (form) {
       form.onsubmit = function (e) {
@@ -1355,6 +1828,10 @@
         saveSettings(form);
       };
     }
+    var checkUpdate = document.getElementById("btn-check-update");
+    if (checkUpdate) checkUpdate.onclick = function () { checkForUpdate({ silent: false }); };
+    var openUpdate = document.getElementById("btn-open-apk");
+    if (openUpdate) openUpdate.onclick = function () { openApk(state.update.apkUrl); };
     var submit = document.getElementById("btn-submit");
     if (submit) submit.onclick = submitAnswer;
     var next = document.getElementById("btn-next");
@@ -1379,33 +1856,15 @@
     if (stripNew) stripNew.onclick = startBlankTutor;
     var back = document.getElementById("btn-tutor-back");
     if (back) back.onclick = backFromTutor;
+    var brainBack = document.getElementById("btn-brain-back");
+    if (brainBack) brainBack.onclick = function () { state.screen = "today"; render(); };
     var prev = document.getElementById("page-prev");
-    if (prev) prev.onclick = function () {
-      if (state.screen !== "today") {
-        state.screen = "today";
-        render();
-      }
-    };
+    if (prev) prev.onclick = flipBack;
     var pageNext = document.getElementById("page-next");
-    if (pageNext) {
-      pageNext.onclick = function () {
-        if (state.screen === "today") startToday();
-        else if (state.screen === "feedback") goNextQuestion();
-      };
-    }
-    if (el.chrome) {
+    if (pageNext) pageNext.onclick = flipForward;
+    if (el.chrome && el.chrome.querySelectorAll) {
       el.chrome.querySelectorAll("[data-page]").forEach(function (dot) {
-        dot.onclick = function () {
-          var page = dot.getAttribute("data-page");
-          if (page === "today" || page === "done") {
-            state.screen = page === "done" && countOpen() > 0 ? "today" : page;
-            render();
-          } else if (page === "practice") startToday();
-          else if (page === "feedback" && state.lastResult) {
-            state.screen = "feedback";
-            render();
-          }
-        };
+        dot.onclick = function () { goToPageDot(dot.getAttribute("data-page")); };
       });
     }
     if (el.strip) {
@@ -1489,6 +1948,7 @@
           state.screen = "exam";
           render();
         } else if (id === "tutor") askTutor();
+        else if (id === "brain") openBrain();
         else {
           state.screen = "today";
           render();
@@ -1509,6 +1969,104 @@
         }
         paintDraftPreview();
       };
+    }
+  }
+
+  function bindSwipe() {
+    if (swipeBound) return;
+    var stageEl = document.getElementById("stage");
+    if (!stageEl || !stageEl.addEventListener) return;
+    swipeBound = true;
+    var tracking = false;
+    var startX = 0;
+    var startY = 0;
+    var dx = 0;
+    var axis = null;
+    var pointerId = null;
+    var captured = false;
+
+    function onDown(e) {
+      if (e.button != null && e.button !== 0) return;
+      var t = e.target;
+      if (t && t.closest && t.closest("button, a, input, textarea, select, .page-nav, .page-dot, .theme-opt, .composer, .tabbar, label")) return;
+      if (!canSwipe()) return;
+      tracking = true;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      dx = 0;
+      axis = null;
+      captured = false;
+    }
+    function onMove(e) {
+      if (!tracking || e.pointerId !== pointerId) return;
+      var mx = e.clientX - startX;
+      var my = e.clientY - startY;
+      if (!axis) {
+        if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+        axis = Math.abs(mx) > Math.abs(my) * 1.15 ? "x" : "y";
+        if (axis === "x") {
+          if (stageEl.classList) stageEl.classList.add("is-swiping");
+          if (!captured && stageEl.setPointerCapture) {
+            try { stageEl.setPointerCapture(pointerId); captured = true; } catch (err) {}
+          }
+          if (e.preventDefault) e.preventDefault();
+        }
+      }
+      if (axis !== "x") return;
+      if (e.preventDefault) e.preventDefault();
+      dx = mx;
+      var sheet = el.root && el.root.querySelector ? el.root.querySelector(".flip-sheet.is-open") : null;
+      if (sheet && sheet.style && canSwipe()) {
+        var mot = motionVars();
+        var amount = Math.max(-1, Math.min(1, dx / 180));
+        sheet.style.transform =
+          "translateX(" + (amount * mot.drag) + "%) rotate(" + (mot.tilt * amount) + "deg) scale(" + (1 - Math.abs(amount) * mot.scale) + ")";
+        sheet.style.opacity = String(1 - Math.abs(amount) * mot.fade);
+        sheet.style.transition = "none";
+      }
+    }
+    function clearSheet() {
+      var sheet = el.root && el.root.querySelector ? el.root.querySelector(".flip-sheet") : null;
+      if (!sheet || !sheet.style) return;
+      sheet.style.transform = "";
+      sheet.style.opacity = "";
+      sheet.style.transition = "";
+    }
+    function onUp(e) {
+      if (!tracking || (pointerId != null && e.pointerId !== pointerId)) return;
+      tracking = false;
+      if (stageEl.classList) stageEl.classList.remove("is-swiping");
+      clearSheet();
+      if (captured && stageEl.releasePointerCapture) {
+        try { stageEl.releasePointerCapture(pointerId); } catch (err2) {}
+      }
+      captured = false;
+      pointerId = null;
+      if (!flipBusy && axis === "x" && Math.abs(dx) >= SWIPE_THRESHOLD) {
+        if (dx < 0) flipForward();
+        else flipBack();
+      }
+      axis = null;
+      dx = 0;
+    }
+    stageEl.addEventListener("pointerdown", onDown);
+    stageEl.addEventListener("pointermove", onMove, { passive: false });
+    stageEl.addEventListener("pointerup", onUp);
+    stageEl.addEventListener("pointercancel", onUp);
+    if (window.addEventListener) {
+      window.addEventListener("keydown", function (e) {
+        var tag = e.target && e.target.tagName;
+        if (tag && /^(INPUT|TEXTAREA|SELECT)$/.test(tag)) return;
+        if (!canSwipe()) return;
+        if (e.key === "ArrowLeft") {
+          if (e.preventDefault) e.preventDefault();
+          flipBack();
+        } else if (e.key === "ArrowRight") {
+          if (e.preventDefault) e.preventDefault();
+          flipForward();
+        }
+      });
     }
   }
 
@@ -1543,12 +2101,21 @@
   }
 
   function boot() {
-    bindSourceSheet();
     if (typeof document !== "undefined" && document.addEventListener) {
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState === "visible") refreshToday();
       });
     }
+    if (window.addEventListener) {
+      window.addEventListener("message", function (ev) {
+        var data = ev && ev.data;
+        if (data && data.type === "cap-embed-exit") {
+          state.screen = "today";
+          render();
+        }
+      });
+    }
+    checkForUpdate({ silent: true });
     if (!FqmConfig.isConfigured(cfg)) {
       state.screen = "settings";
       state.error = "首次使用请填写练习台 Token 与学员编号。DeepSeek Key 现在不用填。";
@@ -1558,5 +2125,7 @@
     loadBootstrapThenPick();
   }
 
+  bindSourceSheet();
+  bindSwipe();
   boot();
 })();

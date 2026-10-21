@@ -133,6 +133,17 @@
     return body;
   }
 
+  /** Public JSON (version manifest). No practice token — static file, CapacitorHttp on device. */
+  function getAbsolute(fullUrl) {
+    var reqOpts = {
+      method: "GET",
+      headers: { Accept: "application/json" }
+    };
+    var http = capacitorHttpPlugin();
+    if (http) return requestViaCapacitor(http, fullUrl, reqOpts).then(withMeta);
+    return requestViaFetch(fullUrl, reqOpts).then(withMeta);
+  }
+
   function bootstrap(cfg, day) {
     var q =
       "/api/v1/practice/bootstrap?learner=" + encodeURIComponent(cfg.learnerId);
@@ -273,7 +284,9 @@
     return request(cfg, "/api/v1/exam/papers").then(withMeta);
   }
 
+
   global.FqmApi = {
+    getAbsolute: getAbsolute,
     bootstrap: bootstrap,
     getItem: getItem,
     submit: submit,

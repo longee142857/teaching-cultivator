@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="desk">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -7,18 +7,40 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
     />
     <meta name="color-scheme" content="light" />
+    <script>
+      (function () {
+        var theme = "desk";
+        try {
+          var saved = localStorage.getItem("fqm_theme_v1");
+          if (saved === "studio" || saved === "desk") theme = saved;
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <meta name="theme-color" id="theme-color" content="#F4EDE0" />
     <title>反馈出题机</title>
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/theme-desk.css" />
+    <link rel="stylesheet" href="css/theme-studio.css" />
     <link rel="stylesheet" href="vendor/katex/katex.min.css" />
   </head>
   <body>
     <div class="app" id="app">
-      <header class="app-header" id="header"></header>
-      <div class="page-chrome" id="page-chrome" hidden></div>
-      <nav class="tutor-strip" id="tutor-strip" hidden></nav>
-      <main class="content" id="root" aria-live="polite"></main>
-      <footer class="dock" id="dock"></footer>
+      <div class="stage" id="stage">
+        <header class="app-header" id="header"></header>
+        <div class="page-chrome" id="page-chrome" aria-label="练习页翻页" hidden></div>
+        <nav class="tutor-strip" id="tutor-strip" hidden></nav>
+        <main class="content" id="root" aria-live="polite"></main>
+        <footer class="dock" id="dock"></footer>
+      </div>
       <nav class="tabbar" id="tabbar" aria-label="底部导航"></nav>
+    </div>
+    <div class="brain-host" id="brain-host" hidden>
+      <div class="brain-bar">
+        <button type="button" class="text-link" id="btn-brain-back">返回练习</button>
+        <span>能力</span>
+      </div>
+      <iframe id="brain-frame" title="能力" src="about:blank"></iframe>
     </div>
     <div class="source-sheet" id="source-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="source-sheet-title">
       <div class="source-card">
