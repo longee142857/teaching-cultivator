@@ -349,7 +349,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
   padding: 10px 12px;
   box-shadow: var(--shadow);
 }
-.msg-actions { display: flex; gap: 12px; }
+.msg-actions { display: flex; flex-wrap: wrap; gap: 8px 12px; }
 .msg-action {
   appearance: none;
   border: 0;
@@ -360,6 +360,52 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
   text-decoration: underline;
   text-underline-offset: 2px;
   padding: 2px 0;
+}
+.msg-action.is-ok { color: var(--ok); text-decoration: none; }
+.source-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(43, 33, 24, 0.36);
+  padding: 12px 12px calc(12px + var(--safe-b));
+}
+.source-sheet.is-open { display: flex; }
+.source-sheet[hidden] { display: none !important; }
+.source-card {
+  width: min(720px, 100%);
+  max-height: min(78vh, 640px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 12px;
+}
+.source-card h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.source-card textarea {
+  flex: 1;
+  min-height: 180px;
+  width: 100%;
+  resize: vertical;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--bg);
+  color: var(--fg);
+}
+.source-card .btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 0;
 }
 .tutor-cites { display: flex; flex-wrap: wrap; gap: 4px 6px; }
 .tutor-cite {
@@ -392,7 +438,7 @@ textarea::placeholder, input::placeholder { color: var(--muted); }
 
 .tabbar {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   padding: 4px 0 calc(6px + var(--safe-b));
@@ -492,7 +538,7 @@ code {
 .tutor-chip .tc-title { display: block; font-size: 12px; font-weight: 550; }
 .tutor-chip .tc-sub { display: block; font-size: 10px; color: var(--muted); }
 
-.slot-row, .backlog-item, .note-row {
+.slot-row, .backlog-item {
   text-align: left;
   width: 100%;
   border: 1px solid var(--border);
@@ -507,10 +553,9 @@ code {
 .stat { border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; }
 .stat .n { font-family: var(--font-display); font-size: 22px; }
 
-.ocr-actions, .notes-layout { display: grid; gap: 8px; }
-.ocr-actions { grid-template-columns: 1fr 1fr; }
+.ocr-actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
 .ocr-mode.is-on { border-color: var(--accent); color: var(--accent); }
-.ocr-preview img, .notes-view img { width: 100%; height: auto; display: block; background: #fff; }
+.ocr-preview img { width: 100%; height: auto; display: block; background: #fff; }
 .exam-embed { width: 100%; height: 68vh; border: 1px solid var(--border); background: var(--bg); }
 .exam-pick { display: flex; gap: 8px; overflow-x: auto; }
 .exam-pick .btn { width: auto; flex: 0 0 auto; }
