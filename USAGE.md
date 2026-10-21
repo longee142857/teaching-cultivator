@@ -1,6 +1,8 @@
 # Usage
 
-Prefer the root [README.md](README.md). This file is a short operator checklist.
+> **Open this to run the bot**, after [README.md](README.md). Product tour: <https://longee142857.github.io/teaching-cultivator/>. Publish or preview notes: [site/README.md](site/README.md). Shape: [ARCHITECTURE.md](ARCHITECTURE.md). Direction: [ROADMAP.md](ROADMAP.md).
+
+Short operator checklist.
 
 ## 1. Secrets
 

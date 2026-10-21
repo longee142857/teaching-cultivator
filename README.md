@@ -1,14 +1,31 @@
 # teaching-cultivator
 
+**Live showcase:** <https://longee142857.github.io/teaching-cultivator/>
+
 Personal **adaptive exam cultivation** runtime: scheduled practice pushes, conversational tutoring agent, grading with mastery write-back, evidence-gated item authoring, weekly reports, and biweekly mock papers.
 
 Primary channel: **DingTalk Stream** (WeCom retained as optional fallback).
 
 This repository is intended as a **readable, runnable reference** of a vertical system that already survived real daily use — not a minimal chatbot demo.
 
+## Which doc to open
+
+A new human starts with this README, then the live showcase linked above.
+
+Among the longer docs, open **one** next, by what you came to do:
+
+| You came to… | Open this first |
+| --- | --- |
+| Run the bot | [`USAGE.md`](USAGE.md) — operator checklist (secrets, seed, smoke checks) |
+| Publish or preview the static site | [`site/README.md`](site/README.md) — Pages and local preview only |
+| Read how the runtime is shaped | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| Read where the project is headed | [`ROADMAP.md`](ROADMAP.md) |
+
+[`CLAUDE.md`](CLAUDE.md) is for coding assistants. It stays at the repo root so agents still load it. Humans can skip it.
+
 ## Public showcase
 
-Bilingual static site in [`site/`](site/): Practice desk (warm paper) and Studio (cool ground, hard edges, crimson). Placeholder stems only — no learner records.
+Live: <https://longee142857.github.io/teaching-cultivator/>. Source is the bilingual static site in [`site/`](site/): Practice desk (warm paper) and Studio (cool ground, hard edges, crimson). Placeholder stems only — no learner records.
 
 GitHub Pages publishes `site/` with Actions (branch deploy only allows `/` or `/docs`). Steps are in [`site/README.md`](site/README.md).
 

@@ -1,5 +1,7 @@
 # Contributor / agent notes
 
+> **For coding assistants.** Humans start at [README.md](README.md).
+
 Public guidance for humans and coding agents working in this repository.
 
 ## 项目定位：维护期，只优化不叠仓（2026-08-22 起）

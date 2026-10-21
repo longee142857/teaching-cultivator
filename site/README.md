@@ -1,5 +1,8 @@
 # 公开示意站 / Public showcase
 
+> 新人先看仓库根目录 [README.md](../README.md)，再打开线上站 <https://longee142857.github.io/teaching-cultivator/>。本文件只讲如何发布和本地预览。
+> New humans: root [README.md](../README.md) and the live site first. This file is publish and local-preview notes only.
+
 `site/` 是 teaching-cultivator 的静态示意站：中文 / English，练习台（暖纸色）与工作室（冷地面、硬边、绯红）。题干和数字都是占位，不含学员姓名、编号、令牌或会话。
 
 页面不请求练习接口。公开练习入口只在文案里作为演示链接出现：<https://practice.longee.icu>（不附带令牌）。
