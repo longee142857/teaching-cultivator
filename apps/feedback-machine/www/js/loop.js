@@ -141,6 +141,7 @@
     state.busy = false;
     state.error = "";
     state.explainOpen = false;
+    if (state.slots) state.slots = retireFinishedSlots(state.slots, state.items, null);
     return state;
   }
 
@@ -222,6 +223,91 @@
     return true;
   }
 
+  function tabForScreen(screen) {
+    if (screen === "exam" || screen === "tutor" || screen === "brain") return screen;
+    if (screen === "today" || screen === "practice" || screen === "feedback" || screen === "done") return "practice";
+    return "";
+  }
+
+  /**
+   * Practice tab return. The bottom tab must reopen the last practice page
+   * (今日 / 作答 / 批改 / 完成), not always the first page.
+   */
+  function restorePracticeScreen(saved, flags) {
+    flags = flags || {};
+    var screen = saved || "today";
+    if (screen === "feedback") {
+      if (flags.hasResult && flags.hasCurrent) return "feedback";
+      if (flags.hasCurrent) return "practice";
+      return "today";
+    }
+    if (screen === "practice") return flags.hasCurrent ? "practice" : "today";
+    if (screen === "done" || screen === "today") return screen;
+    return "today";
+  }
+
+  function itemAnswered(item, answeredMap) {
+    if (!item) return false;
+    if (item.answered) return true;
+    return !!(answeredMap && item.id && answeredMap[item.id]);
+  }
+
+  function firstOpenItem(items, kind, skipId, answeredMap) {
+    var list = items || [];
+    var i;
+    for (i = 0; i < list.length; i++) {
+      var cand = list[i];
+      if (!cand || cand.backlog || cand.kind !== kind) continue;
+      if (skipId && cand.id === skipId) continue;
+      if (itemAnswered(cand, answeredMap)) continue;
+      return cand;
+    }
+    return null;
+  }
+
+  /**
+   * Finished occupants leave the slot. Another unanswered item of the same
+   * kind already in hand takes the slot; otherwise the slot is cleared so
+   * the completed question is not shown as still pending. Bank refill of
+   * math/review is the server's job. comm is not refilled here.
+   */
+  function retireFinishedSlots(slots, items, answeredMap) {
+    return (slots || []).map(function (slot) {
+      if (!slot) return slot;
+      var id = slot.itemId || "";
+      var occupant = null;
+      var list = items || [];
+      var i;
+      for (i = 0; i < list.length; i++) {
+        if (list[i] && id && list[i].id === id) {
+          occupant = list[i];
+          break;
+        }
+      }
+      if (!id || (occupant && !itemAnswered(occupant, answeredMap))) {
+        if (!id) {
+          var openEmpty = firstOpenItem(list, slot.kind, "", answeredMap);
+          if (openEmpty) {
+            return Object.assign({}, slot, {
+              itemId: openEmpty.id,
+              pushId: openEmpty.pushId != null ? openEmpty.pushId : null
+            });
+          }
+        }
+        return slot;
+      }
+      if (!occupant) return slot;
+      var next = firstOpenItem(list, slot.kind, occupant.id, answeredMap);
+      if (next) {
+        return Object.assign({}, slot, {
+          itemId: next.id,
+          pushId: next.pushId != null ? next.pushId : null
+        });
+      }
+      return Object.assign({}, slot, { itemId: "", pushId: null });
+    });
+  }
+
   function tutorReplyText(pack, asked) {
     pack = pack || {};
     if (isUnauthorized(pack)) return TOKEN_INVALID_MESSAGE;
@@ -251,6 +337,9 @@
     studentGradeComment: studentGradeComment,
     gradeBanner: gradeBanner,
     shouldRefreshToday: shouldRefreshToday,
+    tabForScreen: tabForScreen,
+    restorePracticeScreen: restorePracticeScreen,
+    retireFinishedSlots: retireFinishedSlots,
     isGeneralThread: isGeneralThread,
     tutorReplyText: tutorReplyText
   };

@@ -1308,6 +1308,106 @@ def test_scrub_legacy_tls_feedback():
     check("结论或步骤有偏差" not in comment, "hydrate does not replace the ref note with commentBad")
 
 
+def test_finished_slot_replaced(tmp_db: str):
+    """A finished slot occupant is replaced (math/review) or cleared (comm).
+
+    Bank fills must not hand the same attempted item back as if it were still pending.
+    """
+    os.environ["TEACHING_DB"] = tmp_db
+    os.environ["PRACTICE_ALLOW_DEMO_SEED"] = "0"
+    os.environ["PRACTICE_GRADE_MODE"] = "ref"
+
+    import importlib
+    import config
+
+    importlib.reload(config)
+    import learner.db as dbmod
+
+    importlib.reload(dbmod)
+    from modules.bridge import practice_service as ps
+
+    importlib.reload(ps)
+    from modules.store import get_store
+
+    store = get_store()
+
+    def _pass_item(subject: str, question: str, answer: str, kp: str) -> int:
+        iid = store.insert_bank_item(
+            subject=subject,
+            question=question,
+            answer=answer,
+            kp=kp,
+            status="ready",
+            solution={"final_answer": answer},
+        )
+        store.apply_judge_verdict(iid, verdict="pass", reasons=["t"], confidence=1.0)
+        return int(iid)
+
+    def _slot(boot: dict, kind: str) -> dict:
+        return next(s for s in boot["slots"] if s["kind"] == kind)
+
+    math_a = _pass_item("math", "槽替换甲\n\n$$1+1$$\n\n求值。", "2", "极限")
+    math_b = _pass_item("math", "槽替换乙\n\n$$2+2$$\n\n求值。", "4", "导数")
+    store.record_push_for_item(
+        item_id=math_a, learner_id="slot_learner", slot="math", reason="test:slot-a"
+    )
+    comm_a = _pass_item("comm", "通信甲\n\n$$y=x*h$$\n\n写出要点。", "卷积", "卷积")
+    _pass_item("comm", "通信乙\n\n$$H(f)$$\n\n写出要点。", "频谱", "傅里叶")
+    store.record_push_for_item(
+        item_id=comm_a, learner_id="slot_learner", slot="comm", reason="test:slot-c"
+    )
+
+    boot = ps.bootstrap("slot_learner")
+    check(_slot(boot, "math").get("itemId") == f"i{math_a}", "math slot starts on the pushed item")
+    check(_slot(boot, "comm").get("itemId") == f"i{comm_a}", "comm slot starts on the pushed item")
+    sub = ps.submit(
+        "slot_learner",
+        answer="2",
+        item=f"i{math_a}",
+        push=_slot(boot, "math").get("pushId"),
+        mode="ref",
+    )
+    check(sub.get("ok") and (sub.get("result") or {}).get("correct") is True, "math slot submit grades")
+    boot2 = ps.bootstrap("slot_learner")
+    check(f"i{math_a}" in boot2["answered"], "finished math stays in the answered map")
+    check(
+        _slot(boot2, "math").get("itemId") == f"i{math_b}",
+        f"math slot replaced with the next pass {_slot(boot2, 'math')}",
+    )
+    check(_slot(boot2, "comm").get("itemId") == f"i{comm_a}", "unfinished comm slot stays")
+
+    subc = ps.submit(
+        "slot_learner",
+        answer="卷积",
+        item=f"i{comm_a}",
+        push=_slot(boot2, "comm").get("pushId"),
+        mode="ref",
+    )
+    check(subc.get("ok"), "comm slot submit grades")
+    boot3 = ps.bootstrap("slot_learner")
+    check(
+        _slot(boot3, "comm").get("itemId") in (None, ""),
+        f"finished comm slot is cleared, not refilled {_slot(boot3, 'comm')}",
+    )
+    check(_slot(boot3, "math").get("itemId") == f"i{math_b}", "math replacement survives the comm finish")
+    # Consume the spare pass so the next learner has exactly one math question.
+    store.record_push_for_item(
+        item_id=math_b, learner_id="slot_learner", slot="math", reason="test:consume-spare"
+    )
+
+    only = _pass_item("math", "只此一题\n\n$$3+3$$\n\n求值。", "6", "极限")
+    bootb = ps.bootstrap("bank_learner")
+    got = _slot(bootb, "math").get("itemId")
+    check(got == f"i{only}", f"empty math slot fills from bank {got}")
+    subb = ps.submit("bank_learner", answer="6", item=got, push=None, mode="ref")
+    check(subb.get("ok"), "bank slot submit grades")
+    bootb2 = ps.bootstrap("bank_learner")
+    check(
+        _slot(bootb2, "math").get("itemId") in (None, ""),
+        f"answered bank item does not return to the slot {_slot(bootb2, 'math')}",
+    )
+
+
 def main():
     test_practice_api_auth()
     test_dto()
@@ -1330,6 +1430,9 @@ def main():
     with tempfile.TemporaryDirectory() as td:
         db = os.path.join(td, "t6.db")
         test_report_poor(db)
+    with tempfile.TemporaryDirectory() as td:
+        db = os.path.join(td, "t7.db")
+        test_finished_slot_replaced(db)
     print("ALL_OK")
 
 

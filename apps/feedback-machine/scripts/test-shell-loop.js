@@ -126,6 +126,34 @@ assert(route === "feedback", "immediate submit routes to feedback");
 assert(state.screen === "feedback", "immediate submit sets feedback screen");
 assert(state.busy === false, "immediate submit clears busy");
 assert(state.items[0].answered === true, "answered item leaves the local queue");
+state.slots = [
+  { kind: "math", itemId: "m1", pushId: 1 },
+  { kind: "comm", itemId: "c1", pushId: 2 }
+];
+state.items.push({ id: "m2", kind: "math", answered: false });
+state.items.push({ id: "c1", kind: "comm", answered: true });
+state.slots = loop.retireFinishedSlots(state.slots, state.items, null);
+assert(state.slots[0].itemId === "m2", "finished math slot advances to the next open item");
+assert(state.slots[1].itemId === "", "finished comm slot is cleared");
+var kept = loop.retireFinishedSlots(
+  [{ kind: "review", itemId: "r2" }],
+  [{ id: "r1", kind: "review", answered: true }, { id: "r2", kind: "review", answered: false, backlog: true }],
+  null
+);
+assert(kept[0].itemId === "r2", "an open slot occupant stays");
+var noBacklog = loop.retireFinishedSlots(
+  [{ kind: "review", itemId: "r1" }],
+  [{ id: "r1", kind: "review", answered: true }, { id: "r9", kind: "review", answered: false, backlog: true }],
+  null
+);
+assert(noBacklog[0].itemId === "", "backlog does not refill a finished slot");
+assert(loop.restorePracticeScreen("feedback", { hasCurrent: true, hasResult: true }) === "feedback", "practice tab restores the grade page");
+assert(loop.restorePracticeScreen("practice", { hasCurrent: true, hasResult: false }) === "practice", "practice tab restores the current item");
+assert(loop.restorePracticeScreen("practice", { hasCurrent: false }) === "today", "practice tab without an item falls back to today");
+assert(loop.restorePracticeScreen("feedback", { hasCurrent: true, hasResult: false }) === "practice", "grade page without a result returns to the item");
+assert(loop.restorePracticeScreen("done", {}) === "done", "done page is restored");
+assert(loop.tabForScreen("feedback") === "practice" && loop.tabForScreen("exam") === "exam", "practice pages share one tab");
+assert(loop.tabForScreen("settings") === "", "settings is not a bottom tab");
 
 var denied = { screen: "practice", busy: true, items: [], error: "" };
 assert(loop.routeSubmit(denied, { ok: false, httpStatus: 401, error: "unauthorized" }, null) === "unauthorized");
@@ -162,6 +190,13 @@ assert(/if \(state\.screen === "feedback"\) return;/.test(app), "finally still s
 assert(/FqmLoop\.bankKind\(/.test(app), "empty-slot refill goes through bankKind");
 assert(app.indexOf("studentGradeComment") >= 0 && app.indexOf("gradeBanner") >= 0, "feedback render scrubs fallback copy");
 assert(app.indexOf("visibilitychange") >= 0, "shell refetches today slots when it returns to the foreground");
+assert(app.indexOf("restorePracticeScreen") >= 0 && app.indexOf("showTutorTab") >= 0, "bottom tabs restore the last page instead of remounting");
+assert(/id === "tutor"\) showTutorTab\(/.test(app) || /id === "tutor"\)[\s\S]{0,40}showTutorTab\(/.test(app), "讲师 tab does not rebind the thread");
+assert(app.indexOf("ensureExam") >= 0 && app.indexOf("state.examUrl") >= 0, "周卷 keeps the paper already open");
+assert(app.indexOf("retireFinishedSlots") >= 0, "finished occupants leave the local slots");
+assert(desk.indexOf("function retireFinishedSlots") >= 0, "practice desk retires finished slots the same way");
+assert(desk.indexOf("scrollMem") >= 0 && desk.indexOf("restoreMode") >= 0, "practice desk restores tab scroll");
+assert(desk.indexOf('id="exam-host"') >= 0, "practice desk keeps the exam frame mounted");
 assert(app.indexOf("不懂，问讲师") >= 0, "tutor entry uses the desk label");
 assert(app.indexOf("/api/v1/tutor/chat") === -1, "tutor URL stays in api.js");
 
