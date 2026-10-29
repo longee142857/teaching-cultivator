@@ -62,9 +62,10 @@
     .app.is-exam .page-chrome,
     .app.is-exam .practice-dock,
     .app.is-exam .chat-dock,
-    .app.is-exam .tutor-strip { display: none; }
-    .app.is-exam .content { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
-    .app.is-exam .flip-sheet { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .app.is-exam .tutor-strip,
+    .app.is-exam .content { display: none; }
+    .exam-host { display: none; flex: 1; min-height: 0; flex-direction: column; }
+    .app.is-exam .exam-host { display: flex; }
     .exam-embed { flex: 1; min-height: 0; width: 100%; border: 0; background: var(--bg); }
     .exam-pick { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px; border-bottom: 1px solid var(--border); }
     button, input, textarea { font: inherit; color: inherit; }
@@ -922,6 +923,10 @@
         </div>
         <nav class="tutor-strip" id="tutor-strip" data-od-id="tutor-strip" aria-label="最近会话"></nav>
         <div class="content" id="root" data-od-id="main-content"></div>
+        <div class="exam-host" id="exam-host" hidden data-od-id="exam-host">
+          <div class="exam-pick" id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>
+          <iframe class="exam-embed" id="exam-frame" title="周卷" src="about:blank"></iframe>
+        </div>
         <footer class="dock practice-dock" id="practice-dock" data-od-id="practice-dock"></footer>
         <footer class="dock chat-dock" id="chat-dock" data-od-id="chat-dock">
           <form class="composer-row" id="composer-form" data-od-id="composer">
@@ -1019,6 +1024,7 @@
         }
         BOOT_READY = true;
         BOOT_ERROR = "";
+        SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
         return true;
       }
       function isPlaceholderLearner(id) {
@@ -1067,6 +1073,10 @@
       var flipDir = 0;
       var flipBusy = false;
       var lastPaintKey = "";
+      var scrollMem = {};
+      var examReady = false;
+      var examLoading = false;
+      var examUrl = "";
       var appEl = document.getElementById("app");
       var root = document.getElementById("root");
       var headerEl = document.getElementById("header");
@@ -1198,6 +1208,60 @@
         });
         keys = Object.keys(weak);
         return keys.length ? "近期易错：" + keys[0] : "完成今日最早未答槽";
+      }
+      /* Same rules as apps/feedback-machine/www/js/loop.js retireFinishedSlots. */
+      function itemAnswered(item, answeredMap) {
+        if (!item) return false;
+        if (item.answered) return true;
+        return !!(answeredMap && item.id && answeredMap[item.id]);
+      }
+      function firstOpenItem(items, kind, skipId, answeredMap) {
+        var list = items || [];
+        var i;
+        for (i = 0; i < list.length; i++) {
+          var cand = list[i];
+          if (!cand || cand.backlog || cand.kind !== kind) continue;
+          if (skipId && cand.id === skipId) continue;
+          if (itemAnswered(cand, answeredMap)) continue;
+          return cand;
+        }
+        return null;
+      }
+      function retireFinishedSlots(slots, items, answeredMap) {
+        return (slots || []).map(function (slot) {
+          if (!slot) return slot;
+          var id = slot.itemId || "";
+          var occupant = null;
+          var list = items || [];
+          var i;
+          for (i = 0; i < list.length; i++) {
+            if (list[i] && id && (list[i].id === id || canonicalItemId(list[i].id) === canonicalItemId(id))) {
+              occupant = list[i];
+              break;
+            }
+          }
+          if (!id || (occupant && !itemAnswered(occupant, answeredMap))) {
+            if (!id) {
+              var openEmpty = firstOpenItem(list, slot.kind, "", answeredMap);
+              if (openEmpty) {
+                return Object.assign({}, slot, {
+                  itemId: openEmpty.id,
+                  pushId: openEmpty.pushId != null ? openEmpty.pushId : null
+                });
+              }
+            }
+            return slot;
+          }
+          if (!occupant) return slot;
+          var next = firstOpenItem(list, slot.kind, occupant.id, answeredMap);
+          if (next) {
+            return Object.assign({}, slot, {
+              itemId: next.id,
+              pushId: next.pushId != null ? next.pushId : null
+            });
+          }
+          return Object.assign({}, slot, { itemId: "", pushId: null });
+        });
       }
       function slotStatus(slot) {
         var it = itemById(slot.itemId);
@@ -1374,13 +1438,16 @@
       }
       function setMode(mode) {
         if (mode === "notes") mode = "practice";
+        if (mode === state.mode) return;
         if (mode !== "tutor") {
           stopStream();
           state.pending = false;
           setSendEnabled(true);
         }
         var prev = state.mode;
+        if ((prev === "practice" || prev === "tutor") && root) scrollMem[prev] = root.scrollTop || 0;
         state.mode = mode;
+        state.restoreMode = mode;
         if (mode === "tutor") seedRecents();
         if (mode === "tutor" && !state.contextItemId) state.contextItemId = "general";
         if (prev !== mode) flipDir = mode === "practice" ? 1 : -1;
@@ -1433,6 +1500,14 @@
           var ix = findItemIndex(it.id);
           if (ix < 0) ITEMS.push(it);
           else ITEMS[ix] = it;
+          if (data.result && data.result.status !== "grading") {
+            state.answered[it.id] = data.result;
+            it.answered = true;
+            SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
+            state.error = "这题已经做过，槽里不会再把它当作待练。";
+            render();
+            return;
+          }
           for (var i = 0; i < SLOTS.length; i++) {
             if (SLOTS[i].kind === kind) {
               SLOTS[i].itemId = it.id;
@@ -1627,8 +1702,13 @@
           if (data.item) {
             var ix = findItemIndex(item.id);
             if (ix >= 0) ITEMS[ix] = data.item;
+            else ITEMS.push(data.item);
           }
+          var curDone = itemById(item.id);
+          if (curDone) curDone.answered = true;
+          SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
           setView("result", { result: result, explainOpen: false, error: "" });
+          refreshSlotsQuiet();
         }
         function pollGradeUntilDone(startedAt) {
           function tick() {
@@ -1655,7 +1735,11 @@
                     applySubmitResult(data);
                   } else {
                     state.pending = false;
+                    var doneItem = itemById(item.id);
+                    if (doneItem) doneItem.answered = true;
+                    SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
                     render();
+                    refreshSlotsQuiet();
                   }
                   return;
                 }
@@ -1718,6 +1802,7 @@
         stopStream();
         state.pending = false;
         setSendEnabled(true);
+        if (root && (state.mode === "practice" || state.mode === "tutor")) scrollMem[state.mode] = root.scrollTop || 0;
         var item = currentItem();
         state.mode = "tutor";
         seedRecents();
@@ -1746,6 +1831,7 @@
         state.pending = false;
         state.error = "";
         setSendEnabled(true);
+        if (root && (state.mode === "practice" || state.mode === "tutor")) scrollMem[state.mode] = root.scrollTop || 0;
         state.mode = "tutor";
         seedRecents();
         if (item) {
@@ -2236,13 +2322,15 @@
       function openExamFrame(url) {
         var frame = document.getElementById("exam-frame");
         if (!frame || !url) return;
+        examUrl = url;
         if (frame.getAttribute("src") !== url) frame.src = url;
-      }
-      function renderExam() {
-        return (
-          '<div class="exam-pick" id="exam-list" data-od-id="exam-list"><p class="calm-note" style="margin:0">正在查看是否有卷…</p></div>' +
-          '<iframe class="exam-embed" id="exam-frame" title="周卷" src="about:blank"></iframe>'
-        );
+        var list = document.getElementById("exam-list");
+        if (!list) return;
+        list.querySelectorAll("[data-exam-url]").forEach(function (btn) {
+          var on = btn.getAttribute("data-exam-url") === url;
+          btn.classList.toggle("primary", on);
+          btn.classList.toggle("ghost", !on);
+        });
       }
       function fetchExamPapers() {
         var el = document.getElementById("exam-list");
@@ -2254,19 +2342,34 @@
               el.innerHTML = '<p class="calm-note" style="margin:0">这期还没有可打开的周卷。有卷时会显示在这里。</p>';
               return;
             }
-            el.innerHTML = d.papers.map(function (p, i) {
+            var keep = examUrl;
+            el.innerHTML = d.papers.map(function (p) {
               var subj = p.subject === "math" ? "数学" : (p.subject === "comm" ? "通信" : (p.subject || "试卷"));
-              return '<button type="button" class="btn' + (i === 0 ? " primary" : " ghost") + '" data-exam-url="' + escAttr(p.url) + '">' +
+              var on = keep ? p.url === keep : false;
+              return '<button type="button" class="btn' + (on ? " primary" : " ghost") + '" data-exam-url="' + escAttr(p.url) + '">' +
                 esc(subj + " · " + p.title) + "</button>";
             }).join("");
             el.querySelectorAll("[data-exam-url]").forEach(function (btn) {
               btn.addEventListener("click", function () { openExamFrame(btn.getAttribute("data-exam-url")); });
             });
-            openExamFrame(d.papers[0].url);
+            var chosen = d.papers[0];
+            if (keep) {
+              d.papers.forEach(function (p) { if (p && p.url === keep) chosen = p; });
+            }
+            examReady = true;
+            openExamFrame(chosen && chosen.url);
           })
           .catch(function () {
             el.innerHTML = '<p class="calm-note" style="margin:0">周卷暂时打不开，稍后再试即可。</p>';
-          });
+          })
+          .then(function () { examLoading = false; }, function () { examLoading = false; });
+      }
+      function ensureExam() {
+        var host = document.getElementById("exam-host");
+        if (host) host.hidden = false;
+        if (examReady || examLoading) return;
+        examLoading = true;
+        fetchExamPapers();
       }
 
       function renderToday() {
@@ -2282,12 +2385,13 @@
         var left = remainingCount();
         var done = doneCount();
         var backlog = backlogItems();
+        SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
         var slotHtml = SLOTS.map(function (slot) {
           var it = itemById(slot.itemId);
           var st = slotStatus(slot);
           var cls = "slot-row" + (st.key === "done" ? " is-done" : "") + (st.key === "open" ? " is-open" : "") + (st.key === "overdue" ? " is-overdue" : "");
           var title = it ? (slot.label + " · " + it.title) : (slot.label + " · 今日未排程");
-          var statusLabel = it ? st.label : "从题库补练";
+          var statusLabel = it ? st.label : (slot.kind === "comm" ? "待推送" : "从题库补练");
           var meta = "时段 " + slot.window + (it ? (" · " + it.kp) : " · 点此补一题");
           return (
             '<button type="button" class="' + cls + '" data-od-id="slot-' + slot.kind + '" data-item-id="' + escAttr(slot.itemId || "") + '" data-slot-kind="' + escAttr(slot.kind) + '">' +
@@ -2818,6 +2922,8 @@
         appEl.classList.toggle("is-brain", state.mode === "brain");
         appEl.classList.toggle("is-recents-collapsed", state.mode === "tutor" && !!state.recentsCollapsed);
         syncBrainHost();
+        var examHost = document.getElementById("exam-host");
+        if (examHost) examHost.hidden = state.mode !== "exam";
         var dockOn = state.mode === "practice" && (state.view === "desk" || state.view === "result");
         appEl.classList.toggle("is-practice-dock", dockOn);
         document.querySelectorAll("[data-nav]").forEach(function (btn) {
@@ -2838,7 +2944,7 @@
             var id = btn.getAttribute("data-item-id");
             var kind = btn.getAttribute("data-slot-kind");
             if (id) openItemById(id);
-            else if (kind) pickSlotFromBank(kind);
+            else if (kind && kind !== "comm") pickSlotFromBank(kind);
           });
         });
         var input = document.getElementById("answer-input");
@@ -2909,7 +3015,9 @@
           lastPaintKey = key;
           root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderChatList() + "</div>";
           practiceDock.innerHTML = "";
-          root.scrollTop = root.scrollHeight;
+          if (state.restoreMode === "tutor" && typeof scrollMem.tutor === "number") root.scrollTop = scrollMem.tutor;
+          else root.scrollTop = root.scrollHeight;
+          state.restoreMode = "";
           if (opts.animate && flipDir) {
             var sheetT = root.querySelector(".flip-sheet");
             if (sheetT) {
@@ -2927,9 +3035,9 @@
         }
         if (state.mode === "exam") {
           lastPaintKey = key;
-          root.innerHTML = '<div class="flip-sheet is-open" data-od-id="flip-sheet">' + renderExam() + "</div>";
           practiceDock.innerHTML = "";
-          fetchExamPapers();
+          ensureExam();
+          state.restoreMode = "";
           return;
         }
         var html;
@@ -2952,12 +3060,15 @@
         lastPaintKey = key;
         // Same-view refresh (fold 讲解 / OCR / pending) must keep scroll.
         // Leaving desk/result (or switching the item) still jumps to top.
-        if (sameScreen) {
+        if (state.restoreMode === "practice" && typeof scrollMem.practice === "number") {
+          root.scrollTop = scrollMem.practice;
+        } else if (sameScreen) {
           root.scrollTop = keepY;
         } else if (state.view === "result" || state.view === "desk") {
           root.scrollTop = 0;
           try { window.scrollTo(0, 0); } catch (e0) {}
         }
+        state.restoreMode = "";
         if (opts.animate && flipDir) {
           var sheet = root.querySelector(".flip-sheet");
           if (sheet) {
@@ -3162,6 +3273,26 @@
       bindSourceSheet();
       root.addEventListener("click", onRootMsgAction);
 
+
+      function refreshSlotsQuiet() {
+        if (!state.learner) return;
+        var keep = currentItem();
+        var keepId = keep && keep.id;
+        fetch(apiUrl("/api/v1/practice/bootstrap?learner=" + encodeURIComponent(state.learner)), {
+          headers: apiHeaders()
+        }).then(function (r) { return r.json(); }).then(function (data) {
+          if (!applyBootstrap(data)) return;
+          if (keep && keepId && findItemIndex(keepId) < 0) ITEMS.push(keep);
+          if (keepId) {
+            var idx = findItemIndex(keepId);
+            if (idx >= 0) state.index = idx;
+          }
+          SLOTS = retireFinishedSlots(SLOTS, ITEMS, state.answered);
+          if (state.mode !== "practice") return;
+          if (state.view === "done" && remainingCount() > 0) setView("today");
+          else if (state.view === "today" || state.view === "done") render();
+        }).catch(function () {});
+      }
 
       function refreshTodaySlots() {
         if (!state.learner || state.pending) return;

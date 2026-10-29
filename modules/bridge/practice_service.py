@@ -641,6 +641,30 @@ def _bank_item_as_row(item: dict, *, day: str, kind: str) -> dict[str, Any]:
     }
 
 
+def _attempted_item_ids(store, learner_id: str) -> set[int]:
+    """Items this learner already answered. Grading-in-flight rows are not finished."""
+    lid = (learner_id or "").strip()
+    out: set[int] = set()
+    if not lid or not hasattr(store, "get_attempts"):
+        return out
+    try:
+        rows = store.get_attempts(lid) or []
+    except Exception:
+        return out
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("status") or "").strip().lower() == "grading":
+            continue
+        try:
+            iid = int(row.get("item_id") or 0)
+        except (TypeError, ValueError):
+            continue
+        if iid:
+            out.add(iid)
+    return out
+
+
 def _pick_ready_for_kind(
     kind: str,
     learner_id: str,
@@ -648,14 +672,28 @@ def _pick_ready_for_kind(
     store,
     exclude_ids: set[int],
 ) -> dict | None:
-    """Fill an empty desk slot from the ready bank (no new service / no write)."""
+    """Fill an empty desk slot from the ready bank (no new service / no write).
+
+    Already-attempted items are excluded. A finished bank question has no push,
+    so learner_seen_hashes alone would hand the same item back as if it were pending.
+    """
     subject = (kind or "").strip() or "math"
+    exclude_ids = set(exclude_ids or set()) | _attempted_item_ids(store, learner_id)
     excl_hashes: set[str] = set()
     if hasattr(store, "learner_seen_hashes"):
         try:
-            excl_hashes = store.learner_seen_hashes(learner_id) or set()
+            excl_hashes = set(store.learner_seen_hashes(learner_id) or set())
         except Exception:
             excl_hashes = set()
+    if hasattr(store, "get_item"):
+        for iid in exclude_ids:
+            try:
+                seen = store.get_item(int(iid))
+            except Exception:
+                seen = None
+            qh = (seen or {}).get("q_hash") if isinstance(seen, dict) else None
+            if qh:
+                excl_hashes.add(str(qh))
 
     def _accept(it: dict | None) -> dict | None:
         if not it:
@@ -735,6 +773,29 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
         elif by_kind[kind].get("answered") and not dto.get("answered"):
             by_kind[kind] = dto
 
+    # A finished occupant is not the slot. Prefer another open today item of
+    # the same kind; otherwise drop it so the bank fill below can replace
+    # math/review. comm is not refilled after a finish (thin bank).
+    finished_kinds: set[str] = set()
+    for spec in SLOT_SPECS:
+        kind = spec["kind"]
+        cur = by_kind.get(kind)
+        if not cur or not cur.get("answered"):
+            continue
+        replacement = None
+        for dto in items:
+            if dto.get("backlog") or dto.get("answered") or dto.get("kind") != kind:
+                continue
+            if dto.get("id") == cur.get("id"):
+                continue
+            replacement = dto
+            break
+        if replacement is not None:
+            by_kind[kind] = replacement
+        else:
+            by_kind.pop(kind, None)
+            finished_kinds.add(kind)
+
     for row in recent:
         if (row.get("day") or "") >= day:
             continue
@@ -749,16 +810,22 @@ def bootstrap(learner_id: str, *, day: str | None = None, store=None) -> dict[st
         kind = spec["kind"]
         if kind in by_kind:
             continue
+        # Finished 通信 stays empty. The thin comm bank is not a replacement queue.
+        if kind == "comm" and kind in finished_kinds:
+            continue
         bank_item = _pick_ready_for_kind(kind, lid, store=store, exclude_ids=used_ids)
         if not bank_item:
             continue
         dto = _add(_bank_item_as_row(bank_item, day=day, kind=kind), backlog=False)
         dto["fromBank"] = True
-        by_kind[kind] = dto
         try:
             used_ids.add(int(dto.get("itemId") or 0))
         except (TypeError, ValueError):
             pass
+        if dto.get("answered"):
+            # Attempt exists: do not show this question as the slot's pending work.
+            continue
+        by_kind[kind] = dto
         filled_from_bank = True
 
     slots = build_slots(by_kind) if by_kind else empty_slots()

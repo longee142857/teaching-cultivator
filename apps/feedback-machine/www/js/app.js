@@ -40,6 +40,12 @@
     ocrMsg: "",
     ocrMode: "document",
     theme: themeSaved,
+    practiceScreen: "today",
+    scrollMem: {},
+    examUrl: "",
+    examReady: false,
+    examLoading: false,
+    restoreScroll: "",
     update: {
       phase: "idle",
       localCode: FqmConfig.APP_VERSION_CODE,
@@ -71,7 +77,8 @@
     toast: document.getElementById("toast"),
     chrome: document.getElementById("page-chrome"),
     strip: document.getElementById("tutor-strip"),
-    brain: document.getElementById("brain-host")
+    brain: document.getElementById("brain-host"),
+    exam: document.getElementById("exam-host")
   };
 
   function esc(s) {
@@ -423,7 +430,7 @@
     (state.slots || []).forEach(function (s) {
       if (s && s.kind) byKind[s.kind] = s;
     });
-    return ["math", "comm", "review"].map(function (k) {
+    var base = ["math", "comm", "review"].map(function (k) {
       var s = byKind[k] || {
         kind: k,
         label: labels[k],
@@ -431,19 +438,11 @@
         windowKey: "",
         itemId: ""
       };
-      if (!s.itemId) {
-        var i;
-        for (i = 0; i < state.items.length; i++) {
-          if (state.items[i] && state.items[i].kind === k) {
-            s = Object.assign({}, s, { itemId: state.items[i].id });
-            break;
-          }
-        }
-      }
       if (!s.label) s.label = labels[k] || k;
       if (!s.window) s.window = windows[k] || "";
       return s;
     });
+    return FqmLoop.retireFinishedSlots(base, state.items, null);
   }
 
   function todayLabel() {
@@ -471,6 +470,7 @@
       var it = itemById(id);
       if (it) it.answered = true;
     });
+    state.slots = FqmLoop.retireFinishedSlots(state.slots, state.items, answered);
   }
 
   function setCurrent(item) {
@@ -500,7 +500,13 @@
     for (i = 0; i < state.items.length; i++) if (state.items[i] && state.items[i].id === it.id) ix = i;
     if (ix < 0) state.items.push(it);
     else state.items[ix] = it;
-    if (it.kind) {
+    if (data.result && data.result.status !== "grading") {
+      it.answered = true;
+      state.slots = FqmLoop.retireFinishedSlots(state.slots, state.items, null);
+      state.error = "这题已经做过，槽里不会再把它当作待练。";
+      return false;
+    }
+    if (it.kind && !it.answered) {
       var slots = viewSlots();
       state.slots = slots.map(function (s) {
         if (s.kind === it.kind) return Object.assign({}, s, { itemId: it.id });
@@ -625,6 +631,7 @@
           state.busy = false;
           state.screen = "feedback";
           render();
+          refreshToday();
           return;
         }
         if (route === "poll") return pollGrade(it);
@@ -674,6 +681,7 @@
               state.busy = false;
               state.screen = "feedback";
               render();
+              refreshToday();
               finish();
               return;
             }
@@ -735,8 +743,41 @@
     persistTutor();
   }
 
+  function captureTabScroll() {
+    var tab = FqmLoop.tabForScreen(state.screen);
+    if ((tab !== "practice" && tab !== "tutor") || !el.root) return;
+    state.scrollMem[tab] = el.root.scrollTop || 0;
+  }
+
+  function showTutorTab() {
+    if (state.screen === "tutor") return;
+    captureTabScroll();
+    if (
+      state.screen === "practice" ||
+      state.screen === "feedback" ||
+      state.screen === "today" ||
+      state.screen === "done"
+    ) {
+      state.returnScreen = state.screen;
+    }
+    if (!state.tutorThreadId) {
+      if (state.current && state.current.id) {
+        state.tutorThreadId = state.current.id;
+        bumpRecent(state.current);
+      } else {
+        state.tutorThreadId = "general-" + Date.now();
+      }
+    }
+    state.screen = "tutor";
+    state.restoreScroll = "tutor";
+    render();
+    var box = document.getElementById("composer-input");
+    if (box) box.focus();
+  }
+
   function askTutor() {
-    if (state.screen === "practice" || state.screen === "feedback" || state.screen === "today") {
+    captureTabScroll();
+    if (state.screen === "practice" || state.screen === "feedback" || state.screen === "today" || state.screen === "done") {
       state.returnScreen = state.screen;
     }
     if (state.current && state.current.id) {
@@ -773,9 +814,11 @@
   }
 
   function backFromTutor() {
+    captureTabScroll();
     if (state.returnScreen === "feedback" && state.lastResult) state.screen = "feedback";
     else if (state.returnScreen === "practice" && state.current) state.screen = "practice";
     else state.screen = "today";
+    state.restoreScroll = "practice";
     render();
   }
 
@@ -1172,18 +1215,43 @@
             openExam(btn.getAttribute("data-exam-url"));
           };
         });
-        openExam(papers[0].url);
+        var keep = state.examUrl;
+        var chosen = papers[0];
+        if (keep) {
+          papers.forEach(function (p) {
+            if (p && p.url === keep) chosen = p;
+          });
+        }
+        state.examReady = true;
+        openExam(chosen && chosen.url);
       })
       .catch(function () {
         if (list) list.innerHTML = '<p class="hint">周卷暂时打不开。</p>';
+      })
+      .finally(function () {
+        state.examLoading = false;
       });
+  }
+
+  function ensureExam() {
+    if (state.examReady) return;
+    if (state.examLoading) return;
+    state.examLoading = true;
+    loadExam();
   }
 
   function openExam(url) {
     var frame = document.getElementById("exam-frame");
     if (!frame || !url) return;
+    state.examUrl = url;
     var abs = absPractice(url);
     if (frame.getAttribute("src") !== abs) frame.src = abs;
+    var list = document.getElementById("exam-list");
+    if (!list || !list.querySelectorAll) return;
+    list.querySelectorAll("[data-exam-url]").forEach(function (btn) {
+      var on = btn.getAttribute("data-exam-url") === url;
+      if (btn.classList) btn.classList.toggle("primary", on);
+    });
   }
 
   function openBrain() {
@@ -1681,7 +1749,7 @@
     if (state.screen === "settings") return renderSettings();
     if (state.screen === "feedback") return renderFeedback();
     if (state.screen === "tutor") return renderTutor();
-    if (state.screen === "exam") return renderExam();
+    if (state.screen === "exam") return el.exam ? "" : renderExam();
     if (state.screen === "done") return renderDone();
     if (state.screen === "loading") return '<section class="card stack"><h1>正在连接练习台</h1><p class="hint">读取今日三槽…</p></section>';
     if (state.screen === "practice") return renderPractice();
@@ -1762,10 +1830,12 @@
     paintTheme();
     var tutor = next === "tutor";
     var brain = next === "brain";
+    var exam = next === "exam";
     var onPractice = next === "today" || next === "practice" || next === "feedback" || next === "done";
     if (document.body && document.body.classList) {
       document.body.classList.toggle("is-tutor", tutor);
       document.body.classList.toggle("is-brain", brain);
+      document.body.classList.toggle("is-exam", exam);
     }
     var appNode = document.getElementById("app");
     if (appNode && appNode.classList) {
@@ -1773,6 +1843,7 @@
       appNode.classList.toggle("is-brain", brain);
     }
     if (el.brain) el.brain.hidden = !brain;
+    if (el.exam) el.exam.hidden = !exam;
     var keepY = el.root.scrollTop || 0;
     el.header.innerHTML = renderHeader();
     if (el.chrome) {
@@ -1790,16 +1861,25 @@
     bind();
     mountMath();
     paintDraftPreview();
-    if (!changed) el.root.scrollTop = keepY;
-    else if (next === "practice" || next === "feedback" || next === "today" || next === "done" || next === "settings") el.root.scrollTop = 0;
-    if (tutor) el.root.scrollTop = el.root.scrollHeight;
+    if (state.restoreScroll) {
+      var restoreTab = state.restoreScroll;
+      var savedY = state.scrollMem[restoreTab];
+      state.restoreScroll = "";
+      if (typeof savedY === "number") el.root.scrollTop = savedY;
+      else if (tutor) el.root.scrollTop = el.root.scrollHeight;
+    } else {
+      if (!changed) el.root.scrollTop = keepY;
+      else if (next === "practice" || next === "feedback" || next === "today" || next === "done" || next === "settings") el.root.scrollTop = 0;
+      if (tutor) el.root.scrollTop = el.root.scrollHeight;
+    }
     if (changed && dir && el.root.querySelector) {
       var sheet = el.root.querySelector(".flip-sheet");
       if (sheet) playFlip(sheet, gen);
       else flipBusy = false;
     } else flipBusy = false;
     lastPaintScreen = next;
-    if (next === "exam") loadExam();
+    if (FqmLoop.tabForScreen(next) === "practice" && next !== "loading") state.practiceScreen = next;
+    if (exam) ensureExam();
   }
 
   function bindTheme(scope) {
@@ -1857,7 +1937,14 @@
     var back = document.getElementById("btn-tutor-back");
     if (back) back.onclick = backFromTutor;
     var brainBack = document.getElementById("btn-brain-back");
-    if (brainBack) brainBack.onclick = function () { state.screen = "today"; render(); };
+    if (brainBack) brainBack.onclick = function () {
+      state.screen = FqmLoop.restorePracticeScreen(state.practiceScreen, {
+        hasCurrent: !!state.current,
+        hasResult: !!state.lastResult
+      });
+      state.restoreScroll = "practice";
+      render();
+    };
     var prev = document.getElementById("page-prev");
     if (prev) prev.onclick = flipBack;
     var pageNext = document.getElementById("page-next");
@@ -1945,12 +2032,24 @@
       btn.onclick = function () {
         var id = btn.getAttribute("data-tab");
         if (id === "exam") {
+          if (state.screen === "exam") return;
+          captureTabScroll();
           state.screen = "exam";
           render();
-        } else if (id === "tutor") askTutor();
-        else if (id === "brain") openBrain();
-        else {
-          state.screen = "today";
+        } else if (id === "tutor") showTutorTab();
+        else if (id === "brain") {
+          if (state.screen === "brain") return;
+          captureTabScroll();
+          openBrain();
+        } else {
+          var back = FqmLoop.restorePracticeScreen(state.practiceScreen, {
+            hasCurrent: !!state.current,
+            hasResult: !!state.lastResult
+          });
+          if (back === state.screen && FqmLoop.tabForScreen(state.screen) === "practice") return;
+          captureTabScroll();
+          state.screen = back;
+          state.restoreScroll = "practice";
           render();
           refreshToday();
         }
@@ -2110,7 +2209,11 @@
       window.addEventListener("message", function (ev) {
         var data = ev && ev.data;
         if (data && data.type === "cap-embed-exit") {
-          state.screen = "today";
+          state.screen = FqmLoop.restorePracticeScreen(state.practiceScreen, {
+            hasCurrent: !!state.current,
+            hasResult: !!state.lastResult
+          });
+          state.restoreScroll = "practice";
           render();
         }
       });
