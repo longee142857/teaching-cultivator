@@ -83,3 +83,8 @@ scripts/_patch_*.py
 scripts/_probe_dingtalk_*.py
 scripts/_install_cloud_proxy.sh
 scripts/cloud-proxy.service
+
+# Copyrighted textbook content: keep local only, never publish
+data/zhou_comm/*.db
+data/zhou_comm/qa/
+data/textbook_ingest/*/ch*/
